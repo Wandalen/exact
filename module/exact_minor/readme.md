@@ -50,6 +50,7 @@ to fall back to.
 | [`src/lib.rs`](src/lib.rs) | `Backing`, checked and saturating minor-unit arithmetic, `MinorError` |
 | [`tests/checked_arithmetic_test.rs`](tests/checked_arithmetic_test.rs) | In-range exactness and refusal at both backing extremes |
 | [`tests/saturating_arithmetic_test.rs`](tests/saturating_arithmetic_test.rs) | Clamping behaviour at both backing extremes |
+| [`tests/zero_test.rs`](tests/zero_test.rs) | `minor_zero` and `minor_is_zero` |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Invariant and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |
