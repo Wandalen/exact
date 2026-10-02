@@ -75,3 +75,12 @@ fn round_div_reports_overflow_normalizing_an_i64_min_divisor()
 {
   assert_eq!( round_div( 1, i64::MIN, Rounding::Down ), Err( RoundError::Overflow ) );
 }
+
+/// `HalfEven` on a remainder below one half rounds toward the nearer neighbour,
+/// even when that neighbour is odd.
+#[ test ]
+fn half_even_rounds_below_half_toward_the_nearer_neighbour()
+{
+  assert_eq!( round_div( 13, 4, Rounding::HalfEven ).unwrap(), 3 );   //  3.25 ->  3
+  assert_eq!( round_div( -13, 4, Rounding::HalfEven ).unwrap(), -3 ); // -3.25 -> -3
+}
