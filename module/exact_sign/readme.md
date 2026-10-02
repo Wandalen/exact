@@ -15,10 +15,10 @@ assert!( !sign_neg_allowed( false, -1 ) );
 
 `sign_neg_allowed` takes the policy flag and the value together rather than
 each kind hard-coding its own `if negative { Err } else { Ok }`. The call
-reads at the use site as a question about the value under test, and the one
-function covers every kind's construction check — `exact_kind` calls it
-once per kind at construction time, per the family's decision to enforce
-non-negativity there rather than later at arithmetic time.
+reads at the use site as a question about the value under test. No crate
+calls it yet: `exact_kind` enforces `Qty`'s non-negativity directly at
+construction (`Qty::from_decimal`) rather than through this function, so it
+is available policy, not yet the family's enforcement point.
 
 ## What it does not do
 

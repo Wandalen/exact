@@ -21,11 +21,11 @@ default case.
 
 ### Rationale
 
-Two downstream guarantees depend on this classification never being wrong or
-incomplete. `exact_kind` calls `sign_neg_allowed` once, at construction, to
-decide whether a `Qty` may hold a given value — a classification that missed
-a value (treated it as neither negative nor non-negative) would leave that
-construction check with nothing to decide against. `exact_add`'s saturating
+Two guarantees depend on this classification never being wrong or
+incomplete. `sign_neg_allowed` decides whether a kind may hold a given value
+— no kind calls it yet (`exact_kind` checks `Qty` directly at construction),
+but a classification that missed a value (treated it as neither negative nor
+non-negative) would leave that check with nothing to decide against. `exact_add`'s saturating
 clamp reads `is_negative` to pick which boundary a failed checked add clamps
 toward (see its own invariant doc) — a classification that could disagree
 with itself between two call sites would make that clamp direction
