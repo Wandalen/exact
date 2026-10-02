@@ -1,0 +1,17 @@
+[package]
+name = "smoke_exact_market_split"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Smoke lane — this family's slice end to end through exact_arith alone, with an f64 control arm required to disagree"
+publish = false
+
+# The facade alone, on purpose: if any type the slice needs were missing from
+# exact_arith's re-exports, this lane would not compile. That is the test for
+# the facade's completeness, and it only works while this stays a single
+# dependency.
+[dependencies]
+exact_arith = { path = "../exact_arith" }
+
+[lints]
+workspace = true

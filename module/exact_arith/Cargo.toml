@@ -1,0 +1,29 @@
+[package]
+name = "exact_arith"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Tier 4 facade over the 14-crate value substrate — re-exports only, no new policy"
+publish = false
+
+[dependencies]
+exact_add = { path = "../exact_add" }
+exact_bytes = { path = "../exact_bytes" }
+exact_cmp = { path = "../exact_cmp" }
+exact_conserve = { path = "../exact_conserve" }
+exact_dust = { path = "../exact_dust" }
+exact_fmt = { path = "../exact_fmt" }
+exact_kind = { path = "../exact_kind" }
+exact_minor = { path = "../exact_minor" }
+exact_parse = { path = "../exact_parse" }
+exact_ratio = { path = "../exact_ratio" }
+exact_round = { path = "../exact_round" }
+exact_scale = { path = "../exact_scale" }
+exact_sign = { path = "../exact_sign" }
+exact_snap = { path = "../exact_snap" }
+
+[dev-dependencies]
+primitive_fixed_point_decimal = "0.9"
+
+[lints]
+workspace = true

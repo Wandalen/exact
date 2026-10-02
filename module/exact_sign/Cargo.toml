@@ -1,0 +1,13 @@
+[package]
+name = "exact_sign"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+description = "Sign classification and the family's negative-value admission policy — tier 1, depends on exact_minor"
+publish = false
+
+[dependencies]
+exact_minor = { path = "../exact_minor" }
+
+[lints]
+workspace = true
