@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:55`
+`module/exact_minor/src/lib.rs:76`
 
 ```rust
 pub const fn minor_zero() -> Backing
@@ -23,26 +23,24 @@ pub const fn minor_zero() -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 55 | Declaration |
-| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
+| `src/lib.rs` | 76 | Declaration |
+| `tests/zero_test.rs` | throughout | Equality with `0`, and `minor_is_zero` on it |
+| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
 
-Not called anywhere — not in `exact_minor`'s own test suite (neither
-`checked_arithmetic_test.rs` nor `saturating_arithmetic_test.rs` references
-it), not by `exact_sign` or `exact_kind`, and not exercised by
-`exact_arith`'s own tests either.
+No production caller — not `exact_sign`, `exact_kind`, or `exact_arith`'s
+own tests. Exercised only by this crate's own `tests/zero_test.rs`.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_minor` | `(defining crate)` | Declared; unexercised by its own tests |
+| `exact_minor` | `(defining crate)` | Exercised by its own `tests/zero_test.rs` |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree, not an
-omission. Both of this crate's own test files were checked directly; neither
-calls it.
+omission. Only this crate's own `tests/zero_test.rs` calls it.
 
 ## Callee Tree
 

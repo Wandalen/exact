@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:125`
+`module/exact_minor/src/lib.rs:146`
 
 ```rust
 pub const fn minor_saturating_sub( a : Backing, b : Backing ) -> Backing
@@ -24,7 +24,7 @@ pub const fn minor_saturating_sub( a : Backing, b : Backing ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 125-128 | Declaration |
+| `src/lib.rs` | 146-149 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked subtraction; clamping past `Backing::MIN` |
 | `exact_arith/src/lib.rs:71` | — | Facade re-export only |
 

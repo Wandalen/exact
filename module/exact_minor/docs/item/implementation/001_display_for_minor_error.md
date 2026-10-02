@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:40`
+`module/exact_minor/src/lib.rs:61`
 
 ```rust
 impl fmt::Display for MinorError
@@ -29,10 +29,12 @@ impl fmt::Display for MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 40-49 | Declaration |
+| `src/lib.rs` | 61-70 | Declaration |
+| `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Exact rendered text of a `neg` overflow |
 
-No file anywhere in the workspace renders a `MinorError` via `.to_string()`
-or format interpolation — confirmed by grep. See
+No production code anywhere in the workspace renders a `MinorError` via
+`.to_string()` or format interpolation — confirmed by grep. This crate's own
+`tests/checked_arithmetic_test.rs` renders one and checks the exact text. See
 [Display::fmt for MinorError](../associated_function/001_fmt_display_for_minor_error.md)
 for the method's own honest-empty Caller Tree.
 

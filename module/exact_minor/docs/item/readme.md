@@ -75,9 +75,12 @@ operates entirely on the bare `Backing` alias and free functions.
   `exact_arith`'s facade re-exports every item but calls none of them either
   (pure `pub use`). This is the most pervasive honest-empty-tree finding in
   the family so far — grep-verified per function, not assumed.
-- **`minor_zero` and `minor_is_zero` are untested even by this crate's own
-  test suite** — the only 2 items in the entire catalog with zero callers
-  anywhere, including their own defining crate's tests.
+- **Every item is now exercised by this crate's own suite.** Until
+  2026-10-02, `minor_zero`, `minor_is_zero`, and `MinorError`'s `Display`/
+  `Error` impls had no caller anywhere, this crate's own tests included;
+  `tests/zero_test.rs` and `tests/checked_arithmetic_test.rs`'s
+  `overflow_error_names_the_failed_operation` now cover them. Production
+  callers are still absent — the first finding above still holds.
 - **The saturating functions' absence of external callers has an
   architectural reason, not an oversight**: `exact_add`'s saturating
   arithmetic clamps to the *declared ceiling* (`Money::MAX`/`MIN`), a

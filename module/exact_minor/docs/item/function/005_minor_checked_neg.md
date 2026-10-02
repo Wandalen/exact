@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:101`
+`module/exact_minor/src/lib.rs:122`
 
 ```rust
 pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
@@ -28,7 +28,7 @@ pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 101-108 | Declaration |
+| `src/lib.rs` | 122-129 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Round-trip negation over `[0, 1, -1, Backing::MAX]`, plus the `Backing::MIN` refusal |
 | `exact_arith/src/lib.rs:67` | — | Facade re-export only |
 

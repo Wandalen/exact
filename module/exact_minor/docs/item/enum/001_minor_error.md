@@ -14,7 +14,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:30`
+`module/exact_minor/src/lib.rs:51`
 
 ```rust
 pub enum MinorError
@@ -27,7 +27,7 @@ pub enum MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 30,40,44-47,51,72-78,86-92,101-107 | Return type / constructed variant of all 3 checked functions, and both trait impls it carries |
+| `src/lib.rs` | 51,61,65-68,72,93-99,107-113,122-128 | Return type / constructed variant of all 3 checked functions, and both trait impls it carries |
 | `tests/checked_arithmetic_test.rs` | throughout | Matched by equality against the exact variant and `operation` string |
 | `exact_arith/src/lib.rs:65` | — | Facade re-export only |
 

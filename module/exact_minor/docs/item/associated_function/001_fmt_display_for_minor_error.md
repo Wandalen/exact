@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:42`
+`module/exact_minor/src/lib.rs:63`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -28,18 +28,19 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 42-48 | Declaration |
+| `src/lib.rs` | 63-69 | Declaration |
+| `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Via `.to_string()` |
 
-No file anywhere in the workspace calls this method explicitly or via
-`.to_string()`/format interpolation on a `MinorError`-typed value — confirmed
-by grep across every `.rs` file in `module/`. `exact_minor`'s own
-test suite only matches `MinorError` by equality, never renders it.
+No production code anywhere in the workspace calls this method explicitly or
+via `.to_string()`/format interpolation on a `MinorError`-typed value —
+confirmed by grep across every `.rs` file in `module/`. Only `exact_minor`'s
+own `tests/checked_arithmetic_test.rs` renders one.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_minor` | `(defining crate)` | Declared here; not exercised by this crate's own test suite |
+| `exact_minor` | `(defining crate)` | Exercised by its own `tests/checked_arithmetic_test.rs` |
 
 ## Caller Tree
 
