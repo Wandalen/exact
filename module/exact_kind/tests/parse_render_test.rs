@@ -29,7 +29,7 @@ fn a_tenth_parses_exactly_and_renders_back_unchanged()
 #[ test ]
 fn every_canonical_spelling_survives_the_round_trip()
 {
-  for text in [ "0", "1", "-1", "0.000001", "-0.000001", "1.5", "-1.5", "9000000000", "123.456789" ]
+  for text in [ "0", "1", "-1", "0.000001", "-0.000001", "1.5", "-1.5", "1.05", "0.00012", "9000000000", "123.456789" ]
   {
     let value = Money::parse( text ).unwrap();
     assert_eq!( value.to_string(), text, "rendering {text} changed it" );
