@@ -28,3 +28,11 @@ fn subtraction_clamps_to_the_backing_minimum()
   assert_eq!( minor_saturating_sub( Backing::MIN, 1 ), Backing::MIN );
   assert_eq!( minor_saturating_sub( Backing::MIN, Backing::MAX ), Backing::MIN );
 }
+
+/// Clamping goes to the bound the result actually crossed, in both directions.
+#[ test ]
+fn clamping_follows_the_direction_of_overflow()
+{
+  assert_eq!( minor_saturating_add( Backing::MIN, -1 ), Backing::MIN );
+  assert_eq!( minor_saturating_sub( Backing::MAX, -1 ), Backing::MAX );
+}

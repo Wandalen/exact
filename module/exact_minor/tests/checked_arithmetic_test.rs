@@ -69,3 +69,12 @@ fn overflow_error_names_the_failed_operation()
   assert_eq!( error.to_string(), "neg left the representable range" );
   let _ : &dyn core::error::Error = &error;
 }
+
+/// Each operation is refused in its other direction too: a negative operand
+/// pushes addition past `MIN`, and subtraction past `MAX`.
+#[ test ]
+fn overflow_is_refused_in_the_other_direction()
+{
+  assert_eq!( minor_checked_add( Backing::MIN, -1 ), Err( MinorError::Overflow { operation : "add" } ) );
+  assert_eq!( minor_checked_sub( Backing::MAX, -1 ), Err( MinorError::Overflow { operation : "sub" } ) );
+}
