@@ -56,3 +56,16 @@ fn negation_is_total_except_at_the_backing_minimum()
     Err( MinorError::Overflow { operation : "neg" } ),
   );
 }
+
+/// The error names the operation that failed, and is a standard error type.
+///
+/// The `Display` text is what a log or an investigation reads, so its wording
+/// is checked exactly; the `&dyn Error` binding fails to compile if the
+/// `core::error::Error` impl is ever removed.
+#[ test ]
+fn overflow_error_names_the_failed_operation()
+{
+  let error = minor_checked_neg( Backing::MIN ).unwrap_err();
+  assert_eq!( error.to_string(), "neg left the representable range" );
+  let _ : &dyn core::error::Error = &error;
+}
