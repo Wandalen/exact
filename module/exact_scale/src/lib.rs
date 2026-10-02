@@ -57,9 +57,9 @@ const _ : () = assert!( CEILING_MINOR_UNITS <= i64::MAX / HEADROOM_FACTOR );
 ///
 /// # Panics
 ///
-/// Panics if `n` exceeds 18, the largest power of ten an `i64` holds. The
-/// panic is deliberate and reachable only from a `const` position, where it
-/// becomes a compile error rather than a runtime one.
+/// Panics if `n` exceeds 18, the largest power of ten an `i64` holds. In a
+/// `const` position the panic becomes a compile error; a runtime call with
+/// `n > 18` panics at runtime, as this crate's own test demonstrates.
 #[ must_use ]
 pub const fn pow10( n : u32 ) -> i64
 {
