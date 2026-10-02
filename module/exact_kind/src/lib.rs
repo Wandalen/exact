@@ -534,6 +534,49 @@ impl< const SCALE : u32 > Qty< SCALE >
   }
 }
 
+/// Renders a quantity exactly as its underlying decimal renders.
+///
+/// Rendering is the only place a quantity and a money value meet: arithmetic
+/// between the two kinds is a compile error, not a runtime one — the readme's
+/// "non-interchangeable types" promise, which no runtime test can observe, so
+/// the examples below pin it. (`Price` is not covered: today it is the same
+/// type as `Money`, per this crate's disclosed deviations.) Same-kind
+/// arithmetic compiles, which proves the failing examples below fail only
+/// because they mix kinds:
+///
+/// ```
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = cash.checked_add( cash );
+/// let _ = shares.checked_add( shares );
+/// ```
+///
+/// Money plus a quantity does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = cash.checked_add( shares );
+/// ```
+///
+/// Nor a quantity plus money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = shares.checked_add( cash );
+/// ```
+///
+/// Nor a quantity standing in for money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ : Money = shares;
+/// ```
 impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
