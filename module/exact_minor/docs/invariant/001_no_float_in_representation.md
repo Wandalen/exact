@@ -32,9 +32,9 @@ backing type itself.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:20` | `pub type Backing = i64;` — the only integer type ever stored or passed |
-| `src/lib.rs:55-65` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
-| `src/lib.rs:72-128` | Every arithmetic function's signature: `Backing` in, `Backing`/`Result<Backing, MinorError>` out |
+| `src/lib.rs:41` | `pub type Backing = i64;` — the only integer type ever stored or passed |
+| `src/lib.rs:76-86` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
+| `src/lib.rs:93-149` | Every arithmetic function's signature: `Backing` in, `Backing`/`Result<Backing, MinorError>` out |
 
 ### Tests
 
@@ -42,3 +42,4 @@ backing type itself.
 |------|--------------|
 | `tests/checked_arithmetic_test.rs` | Exercises every checked function at its range boundary without ever introducing a float |
 | `tests/saturating_arithmetic_test.rs` | Exercises every saturating function the same way |
+| `tests/zero_test.rs` | Exercises `minor_zero`/`minor_is_zero` — integer zero in, `bool` out |

@@ -42,13 +42,13 @@ never a default either way.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:29-38` | `MinorError` — one `Overflow { operation }` variant, naming which of `add`/`sub`/`neg` failed |
-| `src/lib.rs:72-108` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
-| `src/lib.rs:117-128` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
+| `src/lib.rs:50-59` | `MinorError` — one `Overflow { operation }` variant, naming which of `add`/`sub`/`neg` failed |
+| `src/lib.rs:93-129` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
+| `src/lib.rs:138-149` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/checked_arithmetic_test.rs` | Refusal at `Backing::MAX`/`Backing::MIN`, and totality of negation except at `Backing::MIN` |
-| `tests/saturating_arithmetic_test.rs` | Clamping at the same boundaries, confirmed to match checked arithmetic everywhere in range |
+| `tests/checked_arithmetic_test.rs` | Refusal past `Backing::MAX` and `Backing::MIN` in both directions (`MAX + 1`, `MIN + -1`, `MIN - 1`, `MAX - -1`), totality of negation except at `Backing::MIN`, and the error's rendered text |
+| `tests/saturating_arithmetic_test.rs` | Clamping at the same boundaries in both directions, always to the bound the result crossed; matches checked arithmetic in range |
