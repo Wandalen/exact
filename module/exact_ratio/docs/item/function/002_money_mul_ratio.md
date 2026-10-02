@@ -2,7 +2,7 @@
 
 ## Representation
 
-Multiply a money value by `n / d`. Widens to `i128` before dividing, so an
+Multiply a money value by `n / d`, rounding the result per `rounding`. Widens to `i128` before dividing, so an
 intermediate product that would overflow `i64` still succeeds as long as the
 final result fits.
 
@@ -15,9 +15,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:140`
 
 ```rust
-pub fn money_mul_ratio( v : Money, r : Ratio ) -> Result< Money, RatioError >
+pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```

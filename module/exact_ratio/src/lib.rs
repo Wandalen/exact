@@ -39,7 +39,7 @@
 //!
 //! let half = ratio_new( 1, 2 ).unwrap();
 //! let v = Money::parse( "10" ).unwrap();
-//! assert_eq!( money_mul_ratio( v, half ).unwrap(), Money::parse( "5" ).unwrap() );
+//! assert_eq!( money_mul_ratio( v, half, Rounding::HalfEven ).unwrap(), Money::parse( "5" ).unwrap() );
 //! assert_eq!( money_div_round( v, 4, Rounding::HalfEven ).unwrap(), Money::parse( "2.5" ).unwrap() );
 //! ```
 
@@ -137,47 +137,47 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
   Ok( Ratio { n, d } )
 }
 
-fn mul_ratio_minor( minor : i64, r : Ratio ) -> Result< i64, RatioError >
+fn mul_ratio_minor( minor : i64, r : Ratio, rounding : Rounding ) -> Result< i64, RatioError >
 {
   let wide = i128::from( minor ) * i128::from( r.n );
-  let divided = wide / i128::from( r.d );
+  let divided = exact_round::round_div_wide( wide, i128::from( r.d ), rounding ).map_err( | _ | RatioError::Overflow )?;
   i64::try_from( divided ).map_err( | _ | RatioError::Overflow )
 }
 
-/// Multiply a money value by `n / d`.
+/// Multiply a money value by `n / d`, rounding the result per `rounding`.
 ///
 /// # Errors
 ///
 /// [`RatioError::Overflow`] when the widened product or the result leaves
 /// the representable or declared range.
-pub fn money_mul_ratio( v : Money, r : Ratio ) -> Result< Money, RatioError >
+pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
-/// Multiply a quantity by `n / d`.
+/// Multiply a quantity by `n / d`, rounding the result per `rounding`.
 ///
 /// # Errors
 ///
 /// [`RatioError::Negative`] when a negative-numerator ratio would take the
 /// result below zero. [`RatioError::Overflow`] on overflow or ceiling
 /// breach.
-pub fn qty_mul_ratio( v : Quantity, r : Ratio ) -> Result< Quantity, RatioError >
+pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
-/// Multiply a price by `n / d`.
+/// Multiply a price by `n / d`, rounding the result per `rounding`.
 ///
 /// # Errors
 ///
 /// As [`money_mul_ratio`] — `Price` is `Money` under today's disclosed
 /// deviation in `exact_kind`.
-pub fn price_mul_ratio( v : Price, r : Ratio ) -> Result< Price, RatioError >
+pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 

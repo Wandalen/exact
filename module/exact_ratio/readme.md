@@ -10,7 +10,7 @@ use exact_round::Rounding;
 
 let half = ratio_new( 1, 2 ).unwrap();
 let v = Money::parse( "10" ).unwrap();
-assert_eq!( money_mul_ratio( v, half ).unwrap(), Money::parse( "5" ).unwrap() );
+assert_eq!( money_mul_ratio( v, half, Rounding::HalfEven ).unwrap(), Money::parse( "5" ).unwrap() );
 assert_eq!( money_div_round( v, 4, Rounding::HalfEven ).unwrap(), Money::parse( "2.5" ).unwrap() );
 ```
 

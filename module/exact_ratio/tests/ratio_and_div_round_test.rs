@@ -27,7 +27,7 @@ fn mul_ratio_by_one_half_halves_the_value()
 {
   let v = Money::parse( "10" ).unwrap();
   let half = ratio_new( 1, 2 ).unwrap();
-  assert_eq!( money_mul_ratio( v, half ).unwrap(), Money::parse( "5" ).unwrap() );
+  assert_eq!( money_mul_ratio( v, half, Rounding::HalfEven ).unwrap(), Money::parse( "5" ).unwrap() );
 }
 
 /// A multiply whose intermediate product would overflow `i64` still succeeds,
@@ -37,7 +37,7 @@ fn mul_ratio_by_one_half_halves_the_value()
 fn mul_ratio_survives_an_intermediate_that_would_overflow_i64()
 {
   let r = ratio_new( 1_000_000, 1_000_000 ).unwrap(); // identity, but the product alone overflows i64
-  assert_eq!( money_mul_ratio( Money::MAX, r ).unwrap(), Money::MAX );
+  assert_eq!( money_mul_ratio( Money::MAX, r, Rounding::HalfEven ).unwrap(), Money::MAX );
 }
 
 /// Multiplying the ceiling value by a ratio greater than one leaves the
@@ -47,7 +47,7 @@ fn mul_ratio_survives_an_intermediate_that_would_overflow_i64()
 fn mul_ratio_reports_overflow_when_the_result_leaves_the_declared_range()
 {
   let doubling = ratio_new( 2, 1 ).unwrap();
-  assert_eq!( money_mul_ratio( Money::MAX, doubling ), Err( RatioError::Overflow ) );
+  assert_eq!( money_mul_ratio( Money::MAX, doubling, Rounding::HalfEven ), Err( RatioError::Overflow ) );
 }
 
 /// A negative-numerator ratio taking a quantity below zero is refused, not
@@ -57,7 +57,7 @@ fn qty_mul_ratio_by_a_negative_ratio_is_refused_as_negative()
 {
   let v = Quantity::from_int( 5 ).unwrap();
   let minus_one = ratio_new( -1, 1 ).unwrap();
-  assert!( matches!( qty_mul_ratio( v, minus_one ), Err( RatioError::Negative { .. } ) ) );
+  assert!( matches!( qty_mul_ratio( v, minus_one, Rounding::HalfEven ), Err( RatioError::Negative { .. } ) ) );
 }
 
 // Every case below divides a raw minor-unit count directly (via
@@ -133,4 +133,20 @@ fn an_exact_division_agrees_across_every_rounding_mode()
   {
     assert_eq!( money_div_round( eight, 4, mode ).unwrap().minor(), 2 );
   }
+}
+
+/// A product that falls between two minor units is rounded the way the caller
+/// asked — not silently cut toward zero, which every mode used to get.
+#[ test ]
+fn mul_ratio_rounds_per_the_callers_mode()
+{
+  let half = ratio_new( 1, 2 ).unwrap();
+  let seven = Money::from_minor( 7 ).unwrap(); //  7 minor units × 1/2 =  3.5
+  let minus_seven = Money::from_minor( -7 ).unwrap(); // -7 minor units × 1/2 = -3.5
+  assert_eq!( money_mul_ratio( seven, half, Rounding::Down ).unwrap().minor(), 3 );
+  assert_eq!( money_mul_ratio( seven, half, Rounding::Up ).unwrap().minor(), 4 );
+  assert_eq!( money_mul_ratio( seven, half, Rounding::HalfEven ).unwrap().minor(), 4 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Down ).unwrap().minor(), -4 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Up ).unwrap().minor(), -3 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::HalfEven ).unwrap().minor(), -4 );
 }

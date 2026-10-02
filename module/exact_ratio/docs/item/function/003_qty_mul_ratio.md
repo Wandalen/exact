@@ -2,7 +2,7 @@
 
 ## Representation
 
-Multiply a quantity by `n / d`. Unlike `money_mul_ratio`, a negative-numerator
+Multiply a quantity by `n / d`, rounding the result per `rounding`. Unlike `money_mul_ratio`, a negative-numerator
 ratio can legitimately take the result below zero — `Quantity` refuses that,
 surfacing `RatioError::Negative` rather than wrapping or silently clamping.
 
@@ -15,9 +15,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:153`
 
 ```rust
-pub fn qty_mul_ratio( v : Quantity, r : Ratio ) -> Result< Quantity, RatioError >
+pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
