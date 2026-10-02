@@ -16,14 +16,14 @@ actually has runnable examples.
 cargo test -p exact_round --doc
 ```
 
-Expected: 0 doctests run today — this crate's rustdoc has no `# Examples`
-section yet, so there is nothing for `cargo test --doc` to execute. That is
-the honest baseline, not a failure; the check exists so a future doc example
-silently failing to run (for example a `` ```rust,ignore `` typo) would be
-caught by comparing against this record.
+Expected: 1 doctest runs and passes — the crate-level `# Examples` block in
+`src/lib.rs` (lines 24-31). The check exists so a doc example silently
+failing to run (for example a `` ```rust,ignore `` typo) would be caught by
+comparing against this record.
 
 ## Run Record
 
 | Date | By | Result | Notes |
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass | 0 doctests ran, matching the 0 found in this crate's rustdoc — confirmed via the workspace-wide `cargo test --doc --workspace` baseline. |
+| 2026-10-02 | ihortry | M1 pass | 1 doctest ran and passed (`src/lib.rs - (line 26)`); corrects the row above. |
