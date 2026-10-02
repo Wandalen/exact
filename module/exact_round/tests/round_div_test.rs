@@ -1,7 +1,7 @@
 //! `round_div` under every rounding mode, at both signs, including the
 //! divisor-normalization path.
 
-use exact_round::{ RoundError, Rounding, round_div };
+use exact_round::{ RoundError, Rounding, round_div, round_div_wide };
 
 /// A zero divisor is refused.
 #[ test ]
@@ -83,4 +83,32 @@ fn half_even_rounds_below_half_toward_the_nearer_neighbour()
 {
   assert_eq!( round_div( 13, 4, Rounding::HalfEven ).unwrap(), 3 );   //  3.25 ->  3
   assert_eq!( round_div( -13, 4, Rounding::HalfEven ).unwrap(), -3 ); // -3.25 -> -3
+}
+
+/// `round_div_wide` agrees with `round_div` on every input both accept, so the
+/// two copies of the rounding rules cannot drift apart unnoticed.
+#[ test ]
+fn round_div_wide_agrees_with_round_div()
+{
+  for n in [ -13, -8, -7, -5, -1, 0, 1, 5, 7, 8, 13, i64::MAX, i64::MIN + 1 ]
+  {
+    for d in [ -4, -2, 1, 2, 3, 4, i64::MAX ]
+    {
+      for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+      {
+        let narrow = round_div( n, d, mode ).map( i128::from );
+        assert_eq!( round_div_wide( i128::from( n ), i128::from( d ), mode ), narrow, "{n} / {d}, {mode:?}" );
+      }
+    }
+  }
+}
+
+/// `round_div_wide` divides a dividend no `i64` can hold — the case it exists for.
+#[ test ]
+fn round_div_wide_divides_a_dividend_wider_than_i64()
+{
+  let n = i128::from( i64::MAX ) * 3 + 1; // (3 × i64::MAX + 1) / 3 = i64::MAX + 1/3
+  assert_eq!( round_div_wide( n, 3, Rounding::Down ), Ok( i128::from( i64::MAX ) ) );
+  assert_eq!( round_div_wide( n, 3, Rounding::Up ), Ok( i128::from( i64::MAX ) + 1 ) );
+  assert_eq!( round_div_wide( 1, 0, Rounding::Down ), Err( RoundError::DivZero ) );
 }

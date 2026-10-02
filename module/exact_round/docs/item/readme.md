@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_round`'s
-own source tree — 8 instances across 4 Item Kinds, all in `src/lib.rs` (this
+own source tree — 9 instances across 4 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the 4 crates
@@ -34,17 +34,17 @@ fresh specification (module doc comment, `src/lib.rs:9-12`).
 | Kind | Directory | Instances |
 |------|-----------|-----------|
 | Enum | `enum/` | 2 |
-| Function | `function/` | 3 |
+| Function | `function/` | 4 |
 | Implementation | `implementation/` | 2 |
 | Associated Function/Method | `associated_function/` | 1 |
-| **Total** | | **8** |
+| **Total** | | **9** |
 
 11 of the 15 taxonomy Kinds are absent: Use Declaration, Module, Extern Crate
 Declaration, Type Alias, Struct, Union, Constant, Static, Trait, External
 Block, Macro Definition/Invocation, Associated Constant/Type. `exact_round`
 has no dependencies (Tier 0), so it needs no `use` declarations for anything
 beyond its own items, and declares no data-carrying struct or constant of its
-own — everything it exposes is policy logic (2 enums, 3 functions, their
+own — everything it exposes is policy logic (2 enums, 4 functions, their
 error-rendering machinery).
 
 ### Overview Table
@@ -56,6 +56,7 @@ error-rendering machinery).
 | function/001 | rounding_default | Function | 🔄 |
 | function/002 | rounding_name | Function | 🔄 |
 | function/003 | round_div | Function | 🔄 |
+| function/004 | round_div_wide | Function | 🔄 |
 | implementation/001 | Display for RoundError | Implementation | 🔄 |
 | implementation/002 | Error for RoundError | Implementation | 🔄 |
 | associated_function/001 | Display::fmt for RoundError | Associated Function/Method | 🔄 |
@@ -83,5 +84,5 @@ error-rendering machinery).
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_round/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 8
+# → 9
 ```

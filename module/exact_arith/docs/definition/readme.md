@@ -37,6 +37,7 @@ behaviour.
 | `Rounding` | enum | `../../../exact_round/src/lib.rs:27` | — |
 | `RoundError` | enum | `../../../exact_round/src/lib.rs:75` | — |
 | `round_div` | fn | `../../../exact_round/src/lib.rs:109` | — |
+| `round_div_wide` | fn | `../../../exact_round/src/lib.rs:209` | — |
 | `rounding_default` | fn | `../../../exact_round/src/lib.rs:53` | — |
 | `rounding_name` | fn | `../../../exact_round/src/lib.rs:63` | — |
 | `Sign` | enum | `../../../exact_sign/src/lib.rs:16` | — |

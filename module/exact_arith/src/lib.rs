@@ -74,7 +74,7 @@ pub use exact_minor::
 
 pub use exact_scale::{ CEILING_MINOR_UNITS, CEILING_WHOLE_UNITS, HEADROOM_FACTOR, MONEY_SCALE, pow10 };
 
-pub use exact_round::{ Rounding, RoundError, round_div, rounding_default, rounding_name };
+pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding_default, rounding_name };
 
 pub use exact_sign::{ Sign, is_negative, is_zero, sign_neg_allowed, sign_of };
 

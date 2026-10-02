@@ -18,6 +18,7 @@
 | `RoundError`'s `Display` impl | trait impl | `src/lib.rs:84` | [Rounding Division](../algorithm/001_rounding_division.md) |
 | `RoundError`'s `Error` impl | trait impl | `src/lib.rs:96` | [Rounding Division](../algorithm/001_rounding_division.md) |
 | `round_div` | fn | `src/lib.rs:109` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `round_div_wide` | fn | `src/lib.rs:209` | [Rounding Division](../algorithm/001_rounding_division.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.
