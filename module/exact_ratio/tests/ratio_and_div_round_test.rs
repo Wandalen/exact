@@ -2,7 +2,7 @@
 //! rounding mode `div_round` supports.
 
 use exact_kind::{ Money, Quantity };
-use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, qty_mul_ratio, ratio_new };
+use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, price_mul_qty, qty_mul_ratio, ratio_new };
 use exact_round::Rounding;
 
 /// A zero denominator is refused.
@@ -149,4 +149,36 @@ fn mul_ratio_rounds_per_the_callers_mode()
   assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Down ).unwrap().minor(), -4 );
   assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Up ).unwrap().minor(), -3 );
   assert_eq!( money_mul_ratio( minus_seven, half, Rounding::HalfEven ).unwrap().minor(), -4 );
+}
+
+/// Price × quantity is the money a trade costs — a fractional quantity counts
+/// in full, where `price.checked_mul_int( qty.whole() )` would drop the `.5`.
+#[ test ]
+fn price_mul_qty_is_the_cost_of_a_trade()
+{
+  let price = Money::parse( "1.25" ).unwrap();
+  let qty = Quantity::parse( "4.5" ).unwrap();
+  assert_eq!( price_mul_qty( price, qty, Rounding::HalfEven ).unwrap(), Money::parse( "5.625" ).unwrap() );
+}
+
+/// A cost finer than one minor unit is rounded per the caller's mode.
+#[ test ]
+fn price_mul_qty_rounds_a_cost_finer_than_one_minor_unit()
+{
+  let price = Money::parse( "0.000001" ).unwrap(); // one minor unit
+  let qty = Quantity::parse( "0.5" ).unwrap(); // half a unit: the cost is half a minor unit
+  assert_eq!( price_mul_qty( price, qty, Rounding::Down ).unwrap().minor(), 0 );
+  assert_eq!( price_mul_qty( price, qty, Rounding::Up ).unwrap().minor(), 1 );
+  assert_eq!( price_mul_qty( price, qty, Rounding::HalfEven ).unwrap().minor(), 0 ); // a tie goes to even
+}
+
+/// A cost past the declared ceiling is refused, not wrapped — even at both
+/// operands' own ceilings, where the product overflows `i64` by far.
+#[ test ]
+fn price_mul_qty_refuses_a_cost_past_the_ceiling()
+{
+  assert_eq!( price_mul_qty( Money::MAX, Quantity::MAX, Rounding::HalfEven ), Err( RatioError::Overflow ) );
+  let million = Money::from_int( 1_000_000 ).unwrap();
+  let million_units = Quantity::from_int( 1_000_000 ).unwrap(); // cost 10^12, past the 9 × 10^9 ceiling
+  assert_eq!( price_mul_qty( million, million_units, Rounding::HalfEven ), Err( RatioError::Overflow ) );
 }

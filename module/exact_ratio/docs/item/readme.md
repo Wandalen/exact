@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_ratio`'s
-own source tree — 16 instances across 6 Item Kinds, all in `src/lib.rs` (this
+own source tree — 17 instances across 6 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the one crate
@@ -42,9 +42,9 @@ call them.
 | Enum | `enum/` | 1 |
 | Struct | `struct/` | 1 |
 | Implementation | `implementation/` | 3 |
-| Function | `function/` | 6 |
+| Function | `function/` | 7 |
 | Associated Function/Method | `associated_function/` | 3 |
-| **Total** | | **16** |
+| **Total** | | **17** |
 
 Nine of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Union, Constant, Static, Trait, External Block, Macro
@@ -71,6 +71,7 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 | function/004 | price_mul_ratio | Function | 🔄 |
 | function/005 | money_div_round | Function | 🔄 |
 | function/006 | qty_div_round | Function | 🔄 |
+| function/007 | price_mul_qty | Function | 🔄 |
 | associated_function/001 | Display::fmt for RatioError | Associated Function/Method | 🔄 |
 | associated_function/002 | Ratio::n | Associated Function/Method | 🔄 |
 | associated_function/003 | Ratio::d | Associated Function/Method | 🔄 |
@@ -112,5 +113,5 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_ratio/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 16 (excludes the 3 private helper functions, which get no Item Instance)
+# → 17 (excludes the 3 private helper functions, which get no Item Instance)
 ```

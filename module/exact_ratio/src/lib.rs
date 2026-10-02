@@ -214,3 +214,21 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
   let minor = div_round_minor( v.minor(), d, rounding )?;
   Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
+
+/// The money a trade costs: `price × qty`, rounding the result per `rounding`.
+///
+/// A quantity is itself a ratio — its minor-unit count over one whole unit —
+/// so this is [`price_mul_ratio`]'s widened multiply and rounded divide, with
+/// the quantity as the ratio. A fractional quantity counts in full.
+///
+/// # Errors
+///
+/// [`RatioError::Overflow`] when the cost leaves the representable or
+/// declared range.
+pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Result< Money, RatioError >
+{
+  // `Quantity` and `Money` share one scale, so one whole quantity is `Money::ONE_MINOR` minor units.
+  let qty_as_ratio = ratio_new( qty.minor(), Money::ONE_MINOR )?;
+  let minor = mul_ratio_minor( price.minor(), qty_as_ratio, rounding )?;
+  Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
+}
