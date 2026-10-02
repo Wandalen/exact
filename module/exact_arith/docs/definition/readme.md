@@ -64,6 +64,7 @@ behaviour.
 | `RatioError` | enum | `../../../exact_ratio/src/lib.rs:38` | — |
 | `money_div_round` | fn | `../../../exact_ratio/src/lib.rs:186` | — |
 | `money_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:140` | — |
+| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:228` | — |
 | `price_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:165` | — |
 | `qty_div_round` | fn | `../../../exact_ratio/src/lib.rs:199` | — |
 | `qty_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:153` | — |
