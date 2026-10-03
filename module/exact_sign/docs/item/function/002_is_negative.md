@@ -1,4 +1,4 @@
-# 002: is_negative
+# 002: sign_is_negative
 
 ## Representation
 
@@ -10,10 +10,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_sign/src/lib.rs:48`
+`module/exact_sign/src/lib.rs:57`
 
 ```rust
-pub const fn is_negative( value : Backing ) -> bool
+pub const fn sign_is_negative( value : Backing ) -> bool
 {
   matches!( sign_of( value ), Sign::Neg )
 }
@@ -23,9 +23,9 @@ pub const fn is_negative( value : Backing ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 48 | Declaration |
+| `src/lib.rs` | 57 | Declaration |
 | `tests/sign_classification_test.rs:16-18` | — | Boundary agreement with `sign_of` |
-| `exact_add/src/lib.rs:115` | — | `money_saturating_add`'s clamp-direction decision |
+| `exact_add/src/lib.rs:133` | — | `money_saturating_add`'s clamp-direction decision |
 
 ## Crate Usage
 
@@ -36,11 +36,11 @@ pub const fn is_negative( value : Backing ) -> bool
 
 ## Caller Tree
 
-- **External:** `exact_add::money_saturating_add` (`exact_add/src/lib.rs:115`)
+- **External:** `exact_add::money_saturating_add` (`exact_add/src/lib.rs:133`)
 
 No intra-crate caller.
 
 ## Callee Tree
 
-- [sign_of](001_sign_of.md) (`src/lib.rs:50`)
+- [sign_of](001_sign_of.md) (`src/lib.rs:59`)
 - **External:** `core::matches!` macro expansion against `Sign::Neg`

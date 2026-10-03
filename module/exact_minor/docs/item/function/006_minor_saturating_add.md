@@ -12,12 +12,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:117`
+`module/exact_minor/src/lib.rs:286`
 
 ```rust
-pub const fn minor_saturating_add( a : Backing, b : Backing ) -> Backing
+pub const fn minor_saturating_add( a : Minor, b : Minor ) -> Minor
 {
-  a.saturating_add( b )
+  Minor( a.0.saturating_add( b.0 ) )
 }
 ```
 
@@ -25,9 +25,9 @@ pub const fn minor_saturating_add( a : Backing, b : Backing ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 117-120 | Declaration |
+| `src/lib.rs` | 286-289 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked addition; clamping past `Backing::MAX` |
-| `exact_arith/src/lib.rs:70` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
 
 No file outside `exact_minor` calls `minor_saturating_add` directly. This is
 not the same gap as the checked functions above: `exact_add`'s own

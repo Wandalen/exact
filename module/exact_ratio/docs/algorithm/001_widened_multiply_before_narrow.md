@@ -13,7 +13,9 @@
    numerator) to `i128`.
 2. Multiply the two widened values — this product is what must not overflow
    the intermediate.
-3. Divide the widened product by `i128::from(r.d)`.
+3. Divide the widened product by `i128::from(r.d)` with
+   `exact_round::round_div_wide`, rounding the remainder per the caller's
+   `rounding` — never a silent truncation toward zero.
 4. Narrow the quotient back to `i64` via `try_from`, returning
    `RatioError::Overflow` when it does not fit.
 5. Hand the narrowed minor-unit count to the kind's own `from_minor`, which

@@ -3,7 +3,7 @@
 ## Representation
 
 Renders each `RoundError` variant as a specific sentence: "a zero divisor was
-supplied" / "adjusting the quotient for the chosen rounding mode overflowed".
+supplied" / "normalizing a negative divisor overflowed".
 
 ## Kind
 
@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:84`
+`module/exact_round/src/lib.rs:93`
 
 ```rust
 impl core::fmt::Display for RoundError
@@ -21,7 +21,7 @@ impl core::fmt::Display for RoundError
     match self
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
-      Self::Overflow => write!( f, "adjusting the quotient for the chosen rounding mode overflowed" ),
+      Self::Overflow => write!( f, "normalizing a negative divisor overflowed" ),
     }
   }
 }
@@ -31,7 +31,7 @@ impl core::fmt::Display for RoundError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 84-94 | Declaration |
+| `src/lib.rs` | 93-103 | Declaration |
 
 No file anywhere in the workspace calls this method explicitly or via
 `.to_string()`/format interpolation — confirmed via grep. Every downstream

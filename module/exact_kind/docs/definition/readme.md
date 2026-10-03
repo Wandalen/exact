@@ -46,7 +46,7 @@
 | `Qty::checked_sub` | fn | `src/lib.rs:502` | [Checked Sub Refuses Below Zero](../algorithm/001_checked_sub_refuses_below_zero.md) |
 | `Qty::checked_mul_int` | fn | `src/lib.rs:517` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
 | `Qty::parse` | fn | `src/lib.rs:531` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty`'s `Display` impl | trait impl | `src/lib.rs:537` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty`'s `Display` impl | trait impl | `src/lib.rs:580` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
 
 `impl core::error::Error for KindError {}` (`src/lib.rs:138`) carries no
 associated item of its own, so it gets no row here — same treatment as every

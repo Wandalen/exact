@@ -2,7 +2,7 @@
 //! rounding mode `div_round` supports.
 
 use exact_kind::{ Money, Quantity };
-use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, qty_mul_ratio, ratio_new };
+use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, price_mul_qty, qty_mul_ratio, ratio_new };
 use exact_round::Rounding;
 
 /// A zero denominator is refused.
@@ -27,7 +27,7 @@ fn mul_ratio_by_one_half_halves_the_value()
 {
   let v = Money::parse( "10" ).unwrap();
   let half = ratio_new( 1, 2 ).unwrap();
-  assert_eq!( money_mul_ratio( v, half ).unwrap(), Money::parse( "5" ).unwrap() );
+  assert_eq!( money_mul_ratio( v, half, Rounding::HalfEven ).unwrap(), Money::parse( "5" ).unwrap() );
 }
 
 /// A multiply whose intermediate product would overflow `i64` still succeeds,
@@ -37,7 +37,7 @@ fn mul_ratio_by_one_half_halves_the_value()
 fn mul_ratio_survives_an_intermediate_that_would_overflow_i64()
 {
   let r = ratio_new( 1_000_000, 1_000_000 ).unwrap(); // identity, but the product alone overflows i64
-  assert_eq!( money_mul_ratio( Money::MAX, r ).unwrap(), Money::MAX );
+  assert_eq!( money_mul_ratio( Money::MAX, r, Rounding::HalfEven ).unwrap(), Money::MAX );
 }
 
 /// Multiplying the ceiling value by a ratio greater than one leaves the
@@ -47,7 +47,7 @@ fn mul_ratio_survives_an_intermediate_that_would_overflow_i64()
 fn mul_ratio_reports_overflow_when_the_result_leaves_the_declared_range()
 {
   let doubling = ratio_new( 2, 1 ).unwrap();
-  assert_eq!( money_mul_ratio( Money::MAX, doubling ), Err( RatioError::Overflow ) );
+  assert_eq!( money_mul_ratio( Money::MAX, doubling, Rounding::HalfEven ), Err( RatioError::Overflow ) );
 }
 
 /// A negative-numerator ratio taking a quantity below zero is refused, not
@@ -57,7 +57,7 @@ fn qty_mul_ratio_by_a_negative_ratio_is_refused_as_negative()
 {
   let v = Quantity::from_int( 5 ).unwrap();
   let minus_one = ratio_new( -1, 1 ).unwrap();
-  assert!( matches!( qty_mul_ratio( v, minus_one ), Err( RatioError::Negative { .. } ) ) );
+  assert!( matches!( qty_mul_ratio( v, minus_one, Rounding::HalfEven ), Err( RatioError::Negative { .. } ) ) );
 }
 
 // Every case below divides a raw minor-unit count directly (via
@@ -133,4 +133,52 @@ fn an_exact_division_agrees_across_every_rounding_mode()
   {
     assert_eq!( money_div_round( eight, 4, mode ).unwrap().minor(), 2 );
   }
+}
+
+/// A product that falls between two minor units is rounded the way the caller
+/// asked — not silently cut toward zero, which every mode used to get.
+#[ test ]
+fn mul_ratio_rounds_per_the_callers_mode()
+{
+  let half = ratio_new( 1, 2 ).unwrap();
+  let seven = Money::from_minor( 7 ).unwrap(); //  7 minor units × 1/2 =  3.5
+  let minus_seven = Money::from_minor( -7 ).unwrap(); // -7 minor units × 1/2 = -3.5
+  assert_eq!( money_mul_ratio( seven, half, Rounding::Down ).unwrap().minor(), 3 );
+  assert_eq!( money_mul_ratio( seven, half, Rounding::Up ).unwrap().minor(), 4 );
+  assert_eq!( money_mul_ratio( seven, half, Rounding::HalfEven ).unwrap().minor(), 4 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Down ).unwrap().minor(), -4 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::Up ).unwrap().minor(), -3 );
+  assert_eq!( money_mul_ratio( minus_seven, half, Rounding::HalfEven ).unwrap().minor(), -4 );
+}
+
+/// Price × quantity is the money a trade costs — a fractional quantity counts
+/// in full, where `price.checked_mul_int( qty.whole() )` would drop the `.5`.
+#[ test ]
+fn price_mul_qty_is_the_cost_of_a_trade()
+{
+  let price = Money::parse( "1.25" ).unwrap();
+  let qty = Quantity::parse( "4.5" ).unwrap();
+  assert_eq!( price_mul_qty( price, qty, Rounding::HalfEven ).unwrap(), Money::parse( "5.625" ).unwrap() );
+}
+
+/// A cost finer than one minor unit is rounded per the caller's mode.
+#[ test ]
+fn price_mul_qty_rounds_a_cost_finer_than_one_minor_unit()
+{
+  let price = Money::parse( "0.000001" ).unwrap(); // one minor unit
+  let qty = Quantity::parse( "0.5" ).unwrap(); // half a unit: the cost is half a minor unit
+  assert_eq!( price_mul_qty( price, qty, Rounding::Down ).unwrap().minor(), 0 );
+  assert_eq!( price_mul_qty( price, qty, Rounding::Up ).unwrap().minor(), 1 );
+  assert_eq!( price_mul_qty( price, qty, Rounding::HalfEven ).unwrap().minor(), 0 ); // a tie goes to even
+}
+
+/// A cost past the declared ceiling is refused, not wrapped — even at both
+/// operands' own ceilings, where the product overflows `i64` by far.
+#[ test ]
+fn price_mul_qty_refuses_a_cost_past_the_ceiling()
+{
+  assert_eq!( price_mul_qty( Money::MAX, Quantity::MAX, Rounding::HalfEven ), Err( RatioError::Overflow ) );
+  let million = Money::from_int( 1_000_000 ).unwrap();
+  let million_units = Quantity::from_int( 1_000_000 ).unwrap(); // cost 10^12, past the 9 × 10^9 ceiling
+  assert_eq!( price_mul_qty( million, million_units, Rounding::HalfEven ), Err( RatioError::Overflow ) );
 }

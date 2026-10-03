@@ -63,8 +63,9 @@ struct hides a `String`, `Vec`, or `Box` behind its private fields.
 cargo test -p exact_kind --doc
 ```
 
-Expected: 2 doc examples run and pass — confirmed 2026-10-02 via the
-workspace-wide `cargo test --doc --workspace` baseline. Then read the
+Expected: 6 doc examples run and pass — 3 that compile and 3 marked
+`compile fail`, the last group pinning that money and quantities never mix
+(`Display for Qty`'s doc comment). Then read the
 rendered docs and check the examples show the type's round-trip and
 checked-arithmetic behaviour, not just its syntax:
 
@@ -77,3 +78,4 @@ cargo doc -p exact_kind --no-deps --open
 | Date | By | Result | Notes |
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass, M2 pass, M3 pass | M1: actually compiled (via `rustc` against the built `exact_kind` rlib, equivalent to pasting the snippet into a test file) — failed exactly as predicted, with `error[E0308]: mismatched types ... expected struct 'Decimal<6>', found struct 'Decimal<2>'`. M2: all 3 derives (`KindError`, `Decimal`, `Qty`) include `Copy`. M3: 2/2 doctests passed in the workspace baseline run. |
+| 2026-10-02 | ihortry | M3 pass | 6 doctests: 3 compile (`Decimal`, `Qty`, and the same-kind companion on `Display for Qty`), 3 `compile fail` (money + quantity, quantity + money, quantity as money). |

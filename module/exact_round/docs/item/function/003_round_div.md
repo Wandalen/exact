@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:109`
+`module/exact_round/src/lib.rs:118`
 
 ```rust
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
@@ -44,19 +44,56 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 
   match rounding
   {
-    Rounding::Down => if r < 0 { Ok( q.checked_sub( 1 ).ok_or( RoundError::Overflow )? ) } else { Ok( q ) },
-    Rounding::Up => if r > 0 { Ok( q.checked_add( 1 ).ok_or( RoundError::Overflow )? ) } else { Ok( q ) },
+    Rounding::Down =>
+    {
+      if r < 0
+      {
+        let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
+        Ok( q )
+      }
+      else
+      {
+        Ok( q )
+      }
+    }
+    Rounding::Up =>
+    {
+      if r > 0
+      {
+        let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
+        Ok( q )
+      }
+      else
+      {
+        Ok( q )
+      }
+    }
     Rounding::HalfEven =>
     {
+      // `i128::from(_)` is not const-stable on this toolchain — `as` casts are.
       let twice_r_abs = ( r.unsigned_abs() as i128 ) * 2;
       let d_wide = d as i128;
-      if twice_r_abs < d_wide { Ok( q ) }
+      if twice_r_abs < d_wide
+      {
+        Ok( q )
+      }
       else if twice_r_abs > d_wide || q % 2 != 0
       {
-        if n < 0 { Ok( q.checked_sub( 1 ).ok_or( RoundError::Overflow )? ) }
-        else { Ok( q.checked_add( 1 ).ok_or( RoundError::Overflow )? ) }
+        if n < 0
+        {
+          let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
+          Ok( q )
+        }
+        else
+        {
+          let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
+          Ok( q )
+        }
       }
-      else { Ok( q ) }
+      else
+      {
+        Ok( q )
+      }
     }
   }
 }
@@ -66,11 +103,11 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 109-187 | Declaration |
+| `src/lib.rs` | 118-196 | Declaration |
 | `tests/round_div_test.rs` | throughout | Every rounding mode, both signs, zero-divisor and normalization paths |
-| `exact_dust/src/lib.rs:112` | — | **Production** — `split_minor`'s per-share division |
-| `exact_snap/src/lib.rs:120,134` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
-| `exact_ratio/src/lib.rs:173` | — | **Production** — `div_round_minor`, backing `money_div_round`/`qty_div_round` |
+| `exact_dust/src/lib.rs:125` | — | **Production** — `split_minor`'s per-share division |
+| `exact_snap/src/lib.rs:132,146` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
+| `exact_ratio/src/lib.rs:186` | — | **Production** — `div_round_minor`, backing `money_div_round`/`qty_div_round` |
 | `exact_arith/tests/facade_test.rs:56` | — | Re-exported-path test call |
 
 ## Crate Usage
@@ -83,9 +120,9 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 
 ## Caller Tree
 
-- **External:** `exact_dust::split_minor` (`exact_dust/src/lib.rs:112`)
-- **External:** `exact_snap::price_snap_tick` (`exact_snap/src/lib.rs:120`), `qty_snap_lot` (`:134`)
-- **External:** `exact_ratio::div_round_minor` (`exact_ratio/src/lib.rs:173`)
+- **External:** `exact_dust::split_minor` (`exact_dust/src/lib.rs:125`)
+- **External:** `exact_snap::price_snap_tick` (`exact_snap/src/lib.rs:132`), `qty_snap_lot` (`:146`)
+- **External:** `exact_ratio::div_round_minor` (`exact_ratio/src/lib.rs:186`)
 
 No intra-crate caller.
 

@@ -5,7 +5,7 @@
 Whether `value` is admissible under a kind's own negative-value policy. A
 policy function rather than a bare per-kind constant, so the decision reads
 at the call site as a question about the *value* being checked (doc comment,
-`src/lib.rs:62-67`).
+`src/lib.rs:71-76`).
 
 **Doc comment vs. actual wiring — a verified discrepancy.** This function's
 own doc comment states "`exact_kind` calls this once per kind, at
@@ -28,12 +28,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_sign/src/lib.rs:69`
+`module/exact_sign/src/lib.rs:78`
 
 ```rust
 pub const fn sign_neg_allowed( neg_allowed : bool, value : Backing ) -> bool
 {
-  neg_allowed || !is_negative( value )
+  neg_allowed || !sign_is_negative( value )
 }
 ```
 
@@ -41,9 +41,9 @@ pub const fn sign_neg_allowed( neg_allowed : bool, value : Backing ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 69 | Declaration |
+| `src/lib.rs` | 78 | Declaration |
 | `tests/sign_classification_test.rs:25-38` | — | Both policy states (allowed/disallowed) at all 3 signs |
-| `exact_arith/src/lib.rs:79` | — | Facade re-export |
+| `exact_arith/src/lib.rs:82` | — | Facade re-export |
 
 No production or test file in any of `exact_sign`'s 3 dependents
 (`exact_add`, `exact_arith`, and transitively nothing else) calls
@@ -66,4 +66,4 @@ omission. See the discrepancy note above.
 
 ## Callee Tree
 
-- [is_negative](002_is_negative.md) (`src/lib.rs:71`)
+- [sign_is_negative](002_is_negative.md) (`src/lib.rs:80`)

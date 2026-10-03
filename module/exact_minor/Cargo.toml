@@ -8,5 +8,14 @@ publish = false
 
 [dependencies]
 
+[features]
+# `MinorWide( i128 )` — for magnitudes past `i64`. Off by default.
+i128 = []
+
+# The `MinorWide` tests need the type they test, so Cargo skips them without the feature.
+[[test]]
+name = "wide_test"
+required-features = [ "i128" ]
+
 [lints]
 workspace = true

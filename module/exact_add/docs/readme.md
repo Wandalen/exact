@@ -12,7 +12,7 @@ Design documentation for `exact_add`, as typed doc definitions.
 This is Tier 2 of the family, depending on `exact_kind` for the conserved
 value types and `exact_sign` for classifying which direction a saturating
 operation clamps toward (`money_saturating_add` clamps to `Money::MIN` when
-the failed sum's sign, read via `exact_sign::is_negative`, is negative, and to
+the failed sum's sign, read via `exact_sign::sign_is_negative`, is negative, and to
 `Money::MAX` otherwise — see the function's own doc comment for the full
 correctness argument, which this crate's `docs/` does not restate). Every
 function here is a thin dispatch over `exact_kind`'s own methods; see

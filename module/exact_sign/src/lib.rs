@@ -54,14 +54,14 @@ pub const fn sign_of( value : Backing ) -> Sign
 
 /// Whether a backing value is strictly negative.
 #[ must_use ]
-pub const fn is_negative( value : Backing ) -> bool
+pub const fn sign_is_negative( value : Backing ) -> bool
 {
   matches!( sign_of( value ), Sign::Neg )
 }
 
 /// Whether a backing value is exactly zero.
 #[ must_use ]
-pub const fn is_zero( value : Backing ) -> bool
+pub const fn sign_is_zero( value : Backing ) -> bool
 {
   matches!( sign_of( value ), Sign::Zero )
 }
@@ -70,12 +70,12 @@ pub const fn is_zero( value : Backing ) -> bool
 ///
 /// A policy function rather than a bare per-kind constant, so the decision
 /// reads at the call site as a question about the *value* being checked,
-/// not as a scattered `if Money { true } else { false }`. `exact_kind`
-/// calls this once per kind, at construction, per the family's decision to
-/// enforce non-negativity where a `Qty` is built rather than later at
-/// arithmetic time.
+/// not as a scattered `if Money { true } else { false }`. No crate calls it
+/// yet: `exact_kind` enforces `Qty`'s non-negativity directly at construction
+/// (`Qty::from_decimal`) rather than through this function, and `exact_add`
+/// uses only [`sign_is_negative`].
 #[ must_use ]
 pub const fn sign_neg_allowed( neg_allowed : bool, value : Backing ) -> bool
 {
-  neg_allowed || !is_negative( value )
+  neg_allowed || !sign_is_negative( value )
 }

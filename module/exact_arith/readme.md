@@ -11,11 +11,11 @@ for the full sourced comparison against `rust_decimal`, `bigdecimal`,
 `fastnum`, and others.
 
 ```rust
-use exact_arith::{ Money, Quantity };
+use exact_arith::{ Money, Quantity, Rounding, price_mul_qty };
 
 let price = Money::parse( "1.25" ).unwrap();
-let held = Quantity::from_int( 2 ).unwrap();
-assert_eq!( price.checked_mul_int( held.whole() ).unwrap(), Money::parse( "2.5" ).unwrap() );
+let held = Quantity::parse( "2.5" ).unwrap();
+assert_eq!( price_mul_qty( price, held, Rounding::HalfEven ).unwrap(), Money::parse( "3.125" ).unwrap() );
 ```
 
 ## Why no `exact_zero_money`/`exact_zero_qty`/`exact_zero_price`

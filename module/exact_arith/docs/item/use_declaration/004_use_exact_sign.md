@@ -17,7 +17,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_arith/src/lib.rs:79`
 
 ```rust
-pub use exact_sign::{ Sign, is_negative, is_zero, sign_neg_allowed, sign_of };
+pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
 ```
 
 ## File Usage
@@ -29,8 +29,8 @@ pub use exact_sign::{ Sign, is_negative, is_zero, sign_neg_allowed, sign_of };
 
 No real downstream consumer (outside `module/` itself) imports
 anything from this block — confirmed via a full-workspace grep for `Sign`/
-`is_negative`/`is_zero`/`sign_neg_allowed`/`sign_of` reached through
-`exact_arith`. `is_negative`, `is_zero`, and `sign_neg_allowed` are not even
+`sign_is_negative`/`sign_is_zero`/`sign_neg_allowed`/`sign_of` reached through
+`exact_arith`. `sign_is_negative`, `sign_is_zero`, and `sign_neg_allowed` are not even
 touched by this crate's own test suite — only `Sign` and `sign_of` are.
 `sign_neg_allowed` in particular carries forward the same
 doc-comment-vs-reality gap already found in `exact_sign`'s own catalog (its

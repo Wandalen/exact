@@ -16,13 +16,24 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:27`
+`module/exact_round/src/lib.rs:36`
 
 ```rust
 pub enum Rounding
 {
+  /// Round toward negative infinity — the floor.
   Down,
+
+  /// Round toward positive infinity — the ceiling.
   Up,
+
+  /// Round to the nearest grid point; on an exact tie, round to the point
+  /// whose last digit is even.
+  ///
+  /// The tie-breaking rule a correctly-rounded decimal pipeline needs:
+  /// rounding every tie the same direction biases a long sum of many
+  /// rounded values, where biasing toward even cancels on average because
+  /// ties land on an even last digit and an odd one equally often.
   HalfEven,
 }
 ```
@@ -31,12 +42,12 @@ pub enum Rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 27,53,55,63,65,67,68,69,109,133,135,147,159 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div` |
+| `src/lib.rs` | 36,62,64,72,74,76,77,78,118,142,144,156,168 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div` |
 | `tests/rounding_mode_test.rs`, `tests/round_div_test.rs` | throughout | Every variant exercised directly |
 | `exact_dust/src/lib.rs` (via `Rounding` parameter on every `money_dust_*`/`qty_dust_*` function) | — | **Production** — the rounding-mode parameter threaded through every dust-split function |
 | `exact_snap/src/lib.rs` (via `rounding` parameter on `price_snap_tick`/`qty_snap_lot`) | — | **Production** |
 | `exact_ratio/src/lib.rs` (via `rounding` parameter on `money_div_round`/`qty_div_round`) | — | **Production** |
-| `exact_arith/src/lib.rs:77` | — | Facade re-export |
+| `exact_arith/src/lib.rs:80` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:134` | — | **Production** — `Rounding::Down` passed to `money_dust_split` in the demo ledger |
 
 ## Crate Usage

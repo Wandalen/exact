@@ -49,8 +49,8 @@ despite the crate having an enum.
 | use_declaration/001 | use exact_minor::Backing | Use Declaration | 🔄 |
 | enum/001 | Sign | Enum | 🔄 |
 | function/001 | sign_of | Function | 🔄 |
-| function/002 | is_negative | Function | 🔄 |
-| function/003 | is_zero | Function | 🔄 |
+| function/002 | sign_is_negative | Function | 🔄 |
+| function/003 | sign_is_zero | Function | 🔄 |
 | function/004 | sign_neg_allowed | Function | 🔄 |
 
 ### Notable Findings
@@ -62,10 +62,10 @@ despite the crate having an enum.
   already discloses this gap accurately — see
   [sign_neg_allowed](function/004_sign_neg_allowed.md) for the full
   cross-check. The function has zero callers anywhere in the workspace.
-- **`is_zero` also has zero external callers** — `exact_minor` solves the
+- **`sign_is_zero` also has zero external callers** — `exact_minor` solves the
   same question independently (`minor_is_zero`) rather than depending on this
   sibling Tier-1 crate.
-- **`is_negative` is the crate's one load-bearing export**: `exact_add`'s
+- **`sign_is_negative` is the crate's one load-bearing export**: `exact_add`'s
   `money_saturating_add` calls it in production to pick a clamp direction.
 
 ### Regenerate

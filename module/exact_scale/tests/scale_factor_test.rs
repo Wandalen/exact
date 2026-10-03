@@ -36,3 +36,13 @@ fn pow10_panics_past_the_backing_widths_largest_power()
 {
   let _ = pow10( 19 );
 }
+
+/// `pow10` is exact for every scale the backing width can hold, the top one included.
+#[ test ]
+fn pow10_is_exact_up_to_the_widest_power()
+{
+  for n in 0..=18
+  {
+    assert_eq!( pow10( n ), 10_i64.pow( n ), "10^{n}" );
+  }
+}

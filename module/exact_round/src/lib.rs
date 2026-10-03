@@ -26,7 +26,7 @@
 //! ```
 //! use exact_round::{ Rounding, rounding_default, round_div };
 //!
-//! assert_eq!( rounding_default(), Rounding::HalfEven );
+//! assert_eq!( rounding_default(), Rounding::Down );
 //! assert_eq!( round_div( 7, 2, Rounding::HalfEven ).unwrap(), 4 ); // 3.5 -> 4 (even)
 //! ```
 
@@ -53,15 +53,15 @@ pub enum Rounding
 
 /// The family's default rounding policy where a call site states none.
 ///
-/// `HalfEven` is the default because it is the only one of the three with
-/// no directional bias over a long run of roundings — the property a
-/// conserved-value family needs most, since a biased default would leak or
-/// manufacture value on every unrounded remainder, silently, in one
-/// direction, forever.
+/// `Down` (toward negative infinity), as the design specifies. Money code
+/// should still name its mode at every division: `Down` leans toward smaller
+/// results over many roundings, so a call site that needs an unbiased result
+/// passes `Rounding::HalfEven` itself — every division function here takes
+/// the mode as a required argument for exactly that reason.
 #[ must_use ]
 pub const fn rounding_default() -> Rounding
 {
-  Rounding::HalfEven
+  Rounding::Down
 }
 
 /// A stable, human-readable name for a rounding mode.
@@ -85,8 +85,8 @@ pub enum RoundError
 {
   /// A zero divisor was supplied.
   DivZero,
-  /// Normalizing a negative divisor, or adjusting the quotient by one,
-  /// overflowed — only reachable at `i64::MIN`/`i64::MAX`.
+  /// Normalizing a negative divisor overflowed: negating the type's minimum
+  /// value, the only overflow a rounded division can reach.
   Overflow,
 }
 
@@ -97,7 +97,7 @@ impl core::fmt::Display for RoundError
     match self
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
-      Self::Overflow => write!( f, "adjusting the quotient for the chosen rounding mode overflowed" ),
+      Self::Overflow => write!( f, "normalizing a negative divisor overflowed" ),
     }
   }
 }
@@ -113,8 +113,8 @@ impl core::error::Error for RoundError {}
 /// # Errors
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
-/// normalizing a negative divisor, or adjusting the quotient by one,
-/// overflows — only reachable at `i64::MIN`/`i64::MAX`.
+/// normalizing a negative divisor overflows — only reachable at `i64::MIN`,
+/// whose negation does not fit; adjusting the quotient by one never overflows.
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
 {
   if d == 0
@@ -175,6 +175,97 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
         Ok( q )
       }
       else if twice_r_abs > d_wide || q % 2 != 0
+      {
+        if n < 0
+        {
+          let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
+          Ok( q )
+        }
+        else
+        {
+          let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
+          Ok( q )
+        }
+      }
+      else
+      {
+        Ok( q )
+      }
+    }
+  }
+}
+
+/// [`round_div`] over `i128`, for a dividend no `i64` can hold.
+///
+/// `exact_ratio` multiplies two `i64` values in `i128` before dividing, so
+/// the dividend it divides does not fit [`round_div`]. The rounding rules are
+/// the same, and a test in this crate checks the two agree on every input
+/// both accept.
+///
+/// # Errors
+///
+/// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
+/// normalizing a negative divisor overflows — only reachable at `i128::MIN`.
+pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result< i128, RoundError >
+{
+  if d == 0
+  {
+    return Err( RoundError::DivZero );
+  }
+  let ( n, d ) = if d < 0
+  {
+    let Some( neg_n ) = n.checked_neg() else { return Err( RoundError::Overflow ) };
+    let Some( neg_d ) = d.checked_neg() else { return Err( RoundError::Overflow ) };
+    ( neg_n, neg_d )
+  }
+  else
+  {
+    ( n, d )
+  };
+
+  let q = n / d;
+  let r = n % d;
+  if r == 0
+  {
+    return Ok( q );
+  }
+
+  match rounding
+  {
+    Rounding::Down =>
+    {
+      if r < 0
+      {
+        let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
+        Ok( q )
+      }
+      else
+      {
+        Ok( q )
+      }
+    }
+    Rounding::Up =>
+    {
+      if r > 0
+      {
+        let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
+        Ok( q )
+      }
+      else
+      {
+        Ok( q )
+      }
+    }
+    Rounding::HalfEven =>
+    {
+      // `u128` rather than `i128`: twice a remainder just below `i128::MAX` would not fit `i128`.
+      let twice_r_abs = r.unsigned_abs() * 2;
+      let d_abs = d.unsigned_abs();
+      if twice_r_abs < d_abs
+      {
+        Ok( q )
+      }
+      else if twice_r_abs > d_abs || q % 2 != 0
       {
         if n < 0
         {

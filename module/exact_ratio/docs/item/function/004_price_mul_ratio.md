@@ -2,7 +2,7 @@
 
 ## Representation
 
-Multiply a price by `n / d`. Its own doc comment states the error behavior
+Multiply a price by `n / d`, rounding the result per `rounding`. Its own doc comment states the error behavior
 is "as `money_mul_ratio`" — `Price` is `Money` under `exact_kind`'s disclosed
 same-type-today deviation, so this function is byte-for-byte the same body
 as [money_mul_ratio](002_money_mul_ratio.md) with the type swapped.
@@ -26,9 +26,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:165`
 
 ```rust
-pub fn price_mul_ratio( v : Price, r : Ratio ) -> Result< Price, RatioError >
+pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```

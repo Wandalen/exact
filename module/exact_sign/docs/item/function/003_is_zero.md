@@ -1,4 +1,4 @@
-# 003: is_zero
+# 003: sign_is_zero
 
 ## Representation
 
@@ -10,10 +10,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_sign/src/lib.rs:55`
+`module/exact_sign/src/lib.rs:64`
 
 ```rust
-pub const fn is_zero( value : Backing ) -> bool
+pub const fn sign_is_zero( value : Backing ) -> bool
 {
   matches!( sign_of( value ), Sign::Zero )
 }
@@ -23,10 +23,10 @@ pub const fn is_zero( value : Backing ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 55 | Declaration |
+| `src/lib.rs` | 64 | Declaration |
 | `tests/sign_classification_test.rs:19-20` | — | Boundary agreement with `sign_of` |
 
-No file outside `exact_sign` calls `is_zero` — an honest empty finding.
+No file outside `exact_sign` calls `sign_is_zero` — an honest empty finding.
 `exact_minor` has its own, independent `minor_is_zero` rather than depending
 on this crate for the same question (it is Tier 0, with no edges to
 `exact_sign`, a sibling Tier 0 crate).
@@ -43,5 +43,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- [sign_of](001_sign_of.md) (`src/lib.rs:57`)
+- [sign_of](001_sign_of.md) (`src/lib.rs:66`)
 - **External:** `core::matches!` macro expansion against `Sign::Zero`

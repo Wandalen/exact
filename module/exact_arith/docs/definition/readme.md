@@ -37,13 +37,14 @@ behaviour.
 | `Rounding` | enum | `../../../exact_round/src/lib.rs:27` | — |
 | `RoundError` | enum | `../../../exact_round/src/lib.rs:75` | — |
 | `round_div` | fn | `../../../exact_round/src/lib.rs:109` | — |
+| `round_div_wide` | fn | `../../../exact_round/src/lib.rs:209` | — |
 | `rounding_default` | fn | `../../../exact_round/src/lib.rs:53` | — |
 | `rounding_name` | fn | `../../../exact_round/src/lib.rs:63` | — |
-| `Sign` | enum | `../../../exact_sign/src/lib.rs:16` | — |
-| `is_negative` | fn | `../../../exact_sign/src/lib.rs:48` | — |
-| `is_zero` | fn | `../../../exact_sign/src/lib.rs:55` | — |
-| `sign_neg_allowed` | fn | `../../../exact_sign/src/lib.rs:69` | — |
-| `sign_of` | fn | `../../../exact_sign/src/lib.rs:30` | — |
+| `Sign` | enum | `../../../exact_sign/src/lib.rs:25` | — |
+| `sign_is_negative` | fn | `../../../exact_sign/src/lib.rs:57` | — |
+| `sign_is_zero` | fn | `../../../exact_sign/src/lib.rs:64` | — |
+| `sign_neg_allowed` | fn | `../../../exact_sign/src/lib.rs:78` | — |
+| `sign_of` | fn | `../../../exact_sign/src/lib.rs:39` | — |
 | `Decimal` | struct | `../../../exact_kind/src/lib.rs:153` | — |
 | `KindError` | enum | `../../../exact_kind/src/lib.rs:73` | — |
 | `Money` | type alias | `../../../exact_kind/src/lib.rs:56` | — |
@@ -63,6 +64,7 @@ behaviour.
 | `RatioError` | enum | `../../../exact_ratio/src/lib.rs:38` | — |
 | `money_div_round` | fn | `../../../exact_ratio/src/lib.rs:186` | — |
 | `money_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:140` | — |
+| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:228` | — |
 | `price_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:165` | — |
 | `qty_div_round` | fn | `../../../exact_ratio/src/lib.rs:199` | — |
 | `qty_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:153` | — |

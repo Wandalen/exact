@@ -33,8 +33,8 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     return Ok( () );
   }
-  let padded = format!( "{frac:0width$}", width = SCALE as usize );
-  write!( f, ".{}", padded.trim_end_matches( '0' ) )
+  let trailing_zeros = ( 1..=SCALE ).take_while( | &k | frac.is_multiple_of( 10_u64.pow( k ) ) ).count();
+  write!( f, ".{:0width$}", frac / 10_u64.pow( trailing_zeros as u32 ), width = SCALE as usize - trailing_zeros )
 }
 ```
 
@@ -64,4 +64,4 @@ No intra-crate caller (this crate's own tests invoke it only via
 
 - **External:** `i64::unsigned_abs` (×2 — magnitude and unit)
 - **External:** `fmt::Formatter::write_fmt` (via the three `write!` calls)
-- **External:** `str::trim_end_matches` — stripping trailing fractional zeros
+- **External:** `u64::pow` — counting and removing trailing fractional zeros arithmetically, with no `String` allocated
