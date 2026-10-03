@@ -130,7 +130,7 @@ pub const fn money_saturating_add( a : Money, b : Money ) -> Money
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => if exact_sign::is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
+    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
   }
 }
 
