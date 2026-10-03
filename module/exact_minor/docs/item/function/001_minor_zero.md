@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:76`
+`module/exact_minor/src/lib.rs:220`
 
 ```rust
-pub const fn minor_zero() -> Backing
+pub const fn minor_zero() -> Minor
 {
-  0
+  Minor( 0 )
 }
 ```
 
@@ -23,9 +23,9 @@ pub const fn minor_zero() -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 76 | Declaration |
+| `src/lib.rs` | 220-223 | Declaration |
 | `tests/zero_test.rs` | throughout | Equality with `0`, and `minor_is_zero` on it |
-| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:75` | — | Facade re-export only |
 
 No production caller — not `exact_sign`, `exact_kind`, or `exact_arith`'s
 own tests. Exercised only by this crate's own `tests/zero_test.rs`.

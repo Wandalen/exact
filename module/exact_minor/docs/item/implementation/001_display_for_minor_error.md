@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:61`
+`module/exact_minor/src/lib.rs:204`
 
 ```rust
 impl fmt::Display for MinorError
@@ -19,7 +19,8 @@ impl fmt::Display for MinorError
   {
     match self
     {
-      Self::Overflow { operation } => write!( f, "{operation} left the representable range" ),
+      Self::Overflow { operation } => write!( f, "{operation} rose above the representable range" ),
+      Self::Underflow { operation } => write!( f, "{operation} fell below the representable range" ),
     }
   }
 }
@@ -29,7 +30,7 @@ impl fmt::Display for MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 61-70 | Declaration |
+| `src/lib.rs` | 204-214 | Declaration |
 | `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Exact rendered text of a `neg` overflow |
 
 No production code anywhere in the workspace renders a `MinorError` via

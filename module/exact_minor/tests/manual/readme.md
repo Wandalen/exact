@@ -16,8 +16,9 @@ actually has runnable examples.
 cargo test -p exact_minor --doc
 ```
 
-Expected: 1 doctest runs and passes — the crate-level `# Examples` block in
-`src/lib.rs` (lines 26-33), which adds two counts with `minor_checked_add`.
+Expected: 2 doctests run and pass — the `Minor` type's `compile_fail` example
+(a bare `i64` is refused) and the crate-level `# Examples` block, which adds two counts with
+`minor_checked_add`.
 The check exists so a doc example silently failing to run (for example a
 `` ```rust,ignore `` typo) would be caught by comparing against this record.
 

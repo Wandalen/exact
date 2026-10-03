@@ -11,12 +11,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:146`
+`module/exact_minor/src/lib.rs:294`
 
 ```rust
-pub const fn minor_saturating_sub( a : Backing, b : Backing ) -> Backing
+pub const fn minor_saturating_sub( a : Minor, b : Minor ) -> Minor
 {
-  a.saturating_sub( b )
+  Minor( a.0.saturating_sub( b.0 ) )
 }
 ```
 
@@ -24,9 +24,9 @@ pub const fn minor_saturating_sub( a : Backing, b : Backing ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 146-149 | Declaration |
+| `src/lib.rs` | 294-297 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked subtraction; clamping past `Backing::MIN` |
-| `exact_arith/src/lib.rs:71` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:73` | — | Facade re-export only |
 
 No file outside `exact_minor` calls `minor_saturating_sub` directly — the
 same architectural reason as

@@ -12,14 +12,15 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:63`
+`module/exact_minor/src/lib.rs:206`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 {
   match self
   {
-    Self::Overflow { operation } => write!( f, "{operation} left the representable range" ),
+    Self::Overflow { operation } => write!( f, "{operation} rose above the representable range" ),
+    Self::Underflow { operation } => write!( f, "{operation} fell below the representable range" ),
   }
 }
 ```
@@ -28,7 +29,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 63-69 | Declaration |
+| `src/lib.rs` | 206-213 | Declaration |
 | `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Via `.to_string()` |
 
 No production code anywhere in the workspace calls this method explicitly or

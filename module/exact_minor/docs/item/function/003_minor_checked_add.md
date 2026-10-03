@@ -10,15 +10,16 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:93`
+`module/exact_minor/src/lib.rs:238`
 
 ```rust
-pub const fn minor_checked_add( a : Backing, b : Backing ) -> Result< Backing, MinorError >
+pub const fn minor_checked_add( a : Minor, b : Minor ) -> Result< Minor, MinorError >
 {
-  match a.checked_add( b )
+  match a.0.checked_add( b.0 )
   {
-    Some( sum ) => Ok( sum ),
-    None => Err( MinorError::Overflow { operation : "add" } ),
+    Some( sum ) => Ok( Minor( sum ) ),
+    None if b.0 > 0 => Err( MinorError::Overflow { operation : "add" } ),
+    None => Err( MinorError::Underflow { operation : "add" } ),
   }
 }
 ```
@@ -27,9 +28,9 @@ pub const fn minor_checked_add( a : Backing, b : Backing ) -> Result< Backing, M
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 93-100 | Declaration |
+| `src/lib.rs` | 238-246 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ordinary sum and `Backing::MAX`-boundary refusal |
-| `exact_arith/src/lib.rs:66` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:67` | — | Facade re-export only |
 
 No file outside `exact_minor` calls `minor_checked_add` directly — an honest
 gap. `exact_kind`'s `Decimal::checked_add` performs the equivalent check by

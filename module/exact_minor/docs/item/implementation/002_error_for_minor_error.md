@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:72`
+`module/exact_minor/src/lib.rs:216`
 
 ```rust
 impl core::error::Error for MinorError {}
@@ -21,7 +21,7 @@ impl core::error::Error for MinorError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 72 | Declaration — empty body |
+| `src/lib.rs` | 216 | Declaration — empty body |
 | `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Bound as `&dyn core::error::Error` — fails to compile without this impl |
 
 ## Crate Usage

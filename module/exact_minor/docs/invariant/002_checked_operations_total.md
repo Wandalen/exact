@@ -9,15 +9,12 @@
 
 ### Statement
 
-Every checked function in this crate returns the mathematically exact result
-or `Err(MinorError::Overflow { operation })` — never a silently wrapped value,
-and never a panic for any input `Backing` can represent. `minor_checked_add`
-and `minor_checked_sub` delegate to `Backing::checked_add`/`checked_sub`,
-which already report both directions of range failure identically, so
-`MinorError` carries one variant rather than inventing a sign-based split with
-no observable behaviour behind it. `minor_checked_neg` is total except at the
-one backing value whose negation cannot be represented, `Backing::MIN` —
-reported the same way, not as a special case.
+Every checked function in this crate returns the mathematically exact result,
+or `Err(MinorError::Overflow { operation })` when it would be above the backing
+width, or `Err(MinorError::Underflow { operation })` when it would be below it —
+never a silently wrapped value, and never a panic. `minor_checked_neg` fails
+only on `Backing::MIN`, whose negation is above the width, so it is always
+`Overflow`.
 
 The saturating pair, `minor_saturating_add`/`minor_saturating_sub`, is the
 crate's other total contract: every input still produces a `Backing` with no
@@ -42,9 +39,9 @@ never a default either way.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:50-59` | `MinorError` — one `Overflow { operation }` variant, naming which of `add`/`sub`/`neg` failed |
-| `src/lib.rs:93-129` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
-| `src/lib.rs:138-149` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
+| `src/lib.rs:188` | `MinorError` — `Overflow` and `Underflow`, each naming the operation that failed |
+| `src/lib.rs:238-277` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
+| `src/lib.rs:286-297` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
 
 ### Tests
 

@@ -15,7 +15,7 @@ Type Alias (§ Item Kind Taxonomy : Stable Item Kinds #5)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:41`
+`module/exact_minor/src/lib.rs:39`
 
 ```rust
 pub type Backing = i64;
@@ -25,7 +25,7 @@ pub type Backing = i64;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 41,76,83,93,107,122,138,146 | Return/parameter type of every function in the crate |
+| `src/lib.rs` | 39,51,92 | Return/parameter type of every function in the crate |
 | `tests/checked_arithmetic_test.rs`, `tests/saturating_arithmetic_test.rs` | throughout | `Backing::MAX`/`MIN` boundary literals |
 | `exact_sign/src/lib.rs:21,39,57,64,78` | — | **Production** — parameter type of every one of `exact_sign`'s 4 public functions |
 | `exact_kind/src/lib.rs:52` (+34 more sites) | — | **Production** — the field type of `Decimal::minor` and the parameter/return type threaded through nearly every `Decimal`/`Qty` method (see `exact_kind`'s own `docs/item/use_declaration/001_use_exact_minor.md`) |
@@ -36,7 +36,7 @@ pub type Backing = i64;
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_minor` | `(defining crate)` | The type every function in the crate is built on |
+| `exact_minor` | `(defining crate)` | The width `Minor` wraps |
 | `exact_sign` | `src/lib.rs` | **Production** — parameter type for sign classification, unrelated to this crate's own arithmetic functions |
 | `exact_kind` | `src/lib.rs` | **Production** — `Decimal`'s storage field type and the type threaded through its entire API |
 | `exact_arith` | `src/lib.rs` | Re-export only |

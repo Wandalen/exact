@@ -7,7 +7,7 @@
 - **In Scope**: Structs, functions, and the error enum this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/001_exact_minor.md`).
 
-**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md), diverging in representation but not in arithmetic surface. `Minor(i64)` was not built as a newtype — the real crate exposes the backing width directly as `pub type Backing = i64` (see its [`docs/readme.md`](../../module/exact_minor/docs/readme.md)), so the `minor_from_i64`/`minor_to_i64` conversions this proposal named have nothing to convert between and don't exist; `MinorWide`/`i128` was never built. Every arithmetic function proposed here (`minor_zero`, `minor_is_zero`, `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`, `minor_saturating_add`, `minor_saturating_sub`) exists under the same name. `MinorError` carries one `Overflow { operation }` variant rather than a separate `Overflow`/`Underflow` split — see [Checked Operations Total](../../module/exact_minor/docs/invariant/002_checked_operations_total.md) for why the split would have no observable behaviour behind it.
+**Design status**: implemented as specified in [`exact_minor`](../../module/exact_minor/readme.md) — `Minor(i64)` with `minor_from_i64`/`minor_to_i64`, `MinorWide(i128)` behind the `i128` feature, every checked and saturating function on `Minor`, and `MinorError { Overflow, Underflow }`. `MinorError`'s variants also carry the name of the failed operation. Beyond this listing, `MinorWide` has the same arithmetic as `Minor` (`minor_wide_*`) and converts back with `Minor::try_from`.
 
 ### Structs
 

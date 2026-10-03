@@ -10,12 +10,11 @@
 ### Statement
 
 No float appears in an input or an output position anywhere in this crate.
-`Backing` is `i64`, declared once and re-exported by every other crate in the
-family rather than restated. Every function here — `minor_zero`,
-`minor_is_zero`, `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`,
-`minor_saturating_add`, `minor_saturating_sub` — takes and returns `Backing`
-or a `bool`/`Result` built from it. Nothing here constructs a `Backing` from a
-float or renders one through a float intermediate.
+`Minor` wraps one `i64` (`Backing`). Every function here takes and returns a
+`Minor`, a `bool`, or a `Result` built from one; `minor_from_i64` and
+`minor_to_i64` convert from and to `i64` only. Nothing here constructs a
+`Minor` from a float or renders one through a float intermediate. The same
+holds for `MinorWide` and its `i128`.
 
 ### Rationale
 
@@ -32,9 +31,10 @@ backing type itself.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:41` | `pub type Backing = i64;` — the only integer type ever stored or passed |
-| `src/lib.rs:76-86` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
-| `src/lib.rs:93-149` | Every arithmetic function's signature: `Backing` in, `Backing`/`Result<Backing, MinorError>` out |
+| `src/lib.rs:39` | `pub type Backing = i64;` — the only integer type ever stored or passed |
+| `src/lib.rs:220-230` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
+| `src/lib.rs:51` | `pub struct Minor( Backing );` — the one type every function takes and returns |
+| `src/lib.rs:238-297` | Every arithmetic function's signature: `Minor` in, `Minor`/`Result<Minor, MinorError>` out |
 
 ### Tests
 
