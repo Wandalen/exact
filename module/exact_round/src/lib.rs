@@ -26,7 +26,7 @@
 //! ```
 //! use exact_round::{ Rounding, rounding_default, round_div };
 //!
-//! assert_eq!( rounding_default(), Rounding::HalfEven );
+//! assert_eq!( rounding_default(), Rounding::Down );
 //! assert_eq!( round_div( 7, 2, Rounding::HalfEven ).unwrap(), 4 ); // 3.5 -> 4 (even)
 //! ```
 
@@ -53,15 +53,15 @@ pub enum Rounding
 
 /// The family's default rounding policy where a call site states none.
 ///
-/// `HalfEven` is the default because it is the only one of the three with
-/// no directional bias over a long run of roundings — the property a
-/// conserved-value family needs most, since a biased default would leak or
-/// manufacture value on every unrounded remainder, silently, in one
-/// direction, forever.
+/// `Down` (toward negative infinity), as the design specifies. Money code
+/// should still name its mode at every division: `Down` leans toward smaller
+/// results over many roundings, so a call site that needs an unbiased result
+/// passes `Rounding::HalfEven` itself — every division function here takes
+/// the mode as a required argument for exactly that reason.
 #[ must_use ]
 pub const fn rounding_default() -> Rounding
 {
-  Rounding::HalfEven
+  Rounding::Down
 }
 
 /// A stable, human-readable name for a rounding mode.
@@ -85,8 +85,8 @@ pub enum RoundError
 {
   /// A zero divisor was supplied.
   DivZero,
-  /// Normalizing a negative divisor, or adjusting the quotient by one,
-  /// overflowed — only reachable at `i64::MIN`/`i64::MAX`.
+  /// Normalizing a negative divisor overflowed: negating the type's minimum
+  /// value, the only overflow a rounded division can reach.
   Overflow,
 }
 
@@ -97,7 +97,7 @@ impl core::fmt::Display for RoundError
     match self
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
-      Self::Overflow => write!( f, "adjusting the quotient for the chosen rounding mode overflowed" ),
+      Self::Overflow => write!( f, "normalizing a negative divisor overflowed" ),
     }
   }
 }
@@ -113,8 +113,8 @@ impl core::error::Error for RoundError {}
 /// # Errors
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
-/// normalizing a negative divisor, or adjusting the quotient by one,
-/// overflows — only reachable at `i64::MIN`/`i64::MAX`.
+/// normalizing a negative divisor overflows — only reachable at `i64::MIN`,
+/// whose negation does not fit; adjusting the quotient by one never overflows.
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
 {
   if d == 0

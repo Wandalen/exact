@@ -112,3 +112,12 @@ fn round_div_wide_divides_a_dividend_wider_than_i64()
   assert_eq!( round_div_wide( n, 3, Rounding::Up ), Ok( i128::from( i64::MAX ) + 1 ) );
   assert_eq!( round_div_wide( 1, 0, Rounding::Down ), Err( RoundError::DivZero ) );
 }
+
+/// The overflow message names its real cause: negating the minimum value
+/// while normalizing a negative divisor.
+#[ test ]
+fn the_overflow_message_names_the_sign_normalization()
+{
+  let error = round_div( i64::MIN, -1, Rounding::Down ).unwrap_err();
+  assert_eq!( error.to_string(), "normalizing a negative divisor overflowed" );
+}
