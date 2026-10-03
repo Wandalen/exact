@@ -4,7 +4,7 @@
 
 - **Purpose**: State the properties this crate holds regardless of caller behavior, so a consumer can rely on them without re-checking.
 - **Responsibility**: Totality and mutual exclusivity of the sign classification.
-- **In Scope**: `sign_of`, `is_negative`, `is_zero`, `sign_neg_allowed`.
+- **In Scope**: `sign_of`, `sign_is_negative`, `sign_is_zero`, `sign_neg_allowed`.
 - **Out of Scope**: Where non-negativity is actually enforced (→ `exact_kind`'s own construction-time check) and which direction a saturating clamp picks (→ `exact_add`'s own `invariant/`) — both consume this crate's classification rather than re-deriving it.
 
 ### Overview Table

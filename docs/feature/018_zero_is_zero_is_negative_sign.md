@@ -7,7 +7,7 @@
 - **In Scope**: `sign_of`, `sign_is_negative`, `sign_is_zero`, `sign_neg_allowed`.
 - **Out of Scope**: Negation itself (→ Feature 021).
 
-**Design status**: implemented in [`exact_sign`](../../module/exact_sign/readme.md) — `sign_of` and `sign_neg_allowed` match the proposal's names exactly. `sign_is_negative`/`sign_is_zero` are realized as bare `is_negative`/`is_zero` (no `sign_` prefix) — see `exact_sign`'s own [type doc](../../module/exact_sign/docs/type/001_sign_classification.md) for the real names and behavior.
+**Design status**: implemented in [`exact_sign`](../../module/exact_sign/readme.md) — `sign_of`, `sign_is_negative`, `sign_is_zero` and `sign_neg_allowed` match the proposal's names exactly — see `exact_sign`'s own [type doc](../../module/exact_sign/docs/type/001_sign_classification.md) for their behavior.
 
 ### Statement
 

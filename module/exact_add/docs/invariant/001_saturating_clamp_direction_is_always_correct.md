@@ -22,7 +22,7 @@ A `checked_add` can only fail when `a` and `b` share a sign: two operands of
 opposite sign move the sum toward zero, which can never leave a range the
 operands themselves already fit inside. So whenever the checked path fails,
 `b`'s sign alone already tells the saturating path which direction the true
-sum overflowed in — `is_negative(b.minor())` selects `Money::MIN`, otherwise
+sum overflowed in — `sign_is_negative(b.minor())` selects `Money::MIN`, otherwise
 `Money::MAX`. There is no case where this reasoning could pick the wrong
 boundary, because the premise (same-sign operands) is not a heuristic — it is
 the only way `checked_add` fails in the first place. A clamp implementation
