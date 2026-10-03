@@ -62,13 +62,16 @@
 pub use exact_minor::
 {
   Backing,
+  Minor,
   MinorError,
   minor_checked_add,
   minor_checked_neg,
   minor_checked_sub,
+  minor_from_i64,
   minor_is_zero,
   minor_saturating_add,
   minor_saturating_sub,
+  minor_to_i64,
   minor_zero,
 };
 
