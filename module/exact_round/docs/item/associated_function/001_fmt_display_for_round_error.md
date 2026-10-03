@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:86`
+`module/exact_round/src/lib.rs:95`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -20,7 +20,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   match self
   {
     Self::DivZero => write!( f, "a zero divisor was supplied" ),
-    Self::Overflow => write!( f, "adjusting the quotient for the chosen rounding mode overflowed" ),
+    Self::Overflow => write!( f, "normalizing a negative divisor overflowed" ),
   }
 }
 ```
@@ -29,7 +29,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 86-93 | Declaration |
+| `src/lib.rs` | 95-102 | Declaration |
 
 No file anywhere calls this method — an honest empty finding (confirmed via
 grep), matching [RoundError](../enum/002_round_error.md)'s own File Usage

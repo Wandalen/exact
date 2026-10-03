@@ -50,9 +50,9 @@ that `RoundError::Overflow` exists to guard elsewhere in this same function.
 ### Failure Modes
 
 `RoundError` reports the two ways `round_div` can fail: `DivZero` (a zero
-divisor) and `Overflow` (normalizing `i64::MIN`, or adjusting a quotient
-already at `i64::MIN`/`i64::MAX` by one — both only reachable at those two
-exact values). It implements `Display` (a one-line message per variant) and
+divisor) and `Overflow` (negating `i64::MIN` while normalizing a negative
+divisor — the only overflow reachable; once the divisor is positive, the
+quotient is at most half the range, so adjusting it by one always fits). It implements `Display` (a one-line message per variant) and
 `core::error::Error`, so it composes with `?` and any call site expecting
 `dyn Error`.
 
@@ -60,10 +60,10 @@ exact values). It implements `Display` (a one-line message per variant) and
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:73-96` | `RoundError`, its `Display` impl, and its `Error` impl |
-| `src/lib.rs:98-124` | `round_div`'s doc comment, the zero-divisor refusal, and negative-divisor normalization |
-| `src/lib.rs:126-131` | The truncating divide and the exact-division shortcut |
-| `src/lib.rs:133-186` | Mode dispatch — `Down`, `Up`, `HalfEven` |
+| `src/lib.rs:82-105` | `RoundError`, its `Display` impl, and its `Error` impl |
+| `src/lib.rs:107-133` | `round_div`'s doc comment, the zero-divisor refusal, and negative-divisor normalization |
+| `src/lib.rs:135-140` | The truncating divide and the exact-division shortcut |
+| `src/lib.rs:142-195` | Mode dispatch — `Down`, `Up`, `HalfEven` |
 
 ### Tests
 

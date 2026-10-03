@@ -32,7 +32,7 @@ remainder just below `i128::MAX` would not fit `i128`.
 | `src/lib.rs` | 209-287 | Declaration |
 | `tests/round_div_test.rs` | 4,100,111-113 | Agreement with `round_div`; a dividend wider than `i64`; the zero divisor |
 | `exact_ratio/src/lib.rs:143` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio` |
-| `exact_arith/src/lib.rs:77` | — | Facade re-export |
+| `exact_arith/src/lib.rs:80` | — | Facade re-export |
 
 ## Crate Usage
 

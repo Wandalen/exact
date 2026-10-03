@@ -5,14 +5,14 @@
 - **Purpose**: State that `round_div` never touches a float and never diverges from the true quotient by more than one unit, so a caller can treat its result as a deterministic, exactly-reasoned rounding rather than one subject to platform float behavior.
 - **Responsibility**: `round_div`.
 - **In Scope**: The arithmetic types `round_div` computes with, and the bound on how far its result can sit from the unrounded quotient.
-- **Out of Scope**: Why `HalfEven` specifically is the unbiased default (→ `../decisions/001_half_even_as_the_unbiased_default.md`, which owns the bias argument); the tie-breaking procedure itself (→ `../algorithm/001_rounding_division.md`).
+- **Out of Scope**: Which mode is the default, and its history (→ `../decisions/001_half_even_as_the_unbiased_default.md`, which owns the bias argument); the tie-breaking procedure itself (→ `../algorithm/001_rounding_division.md`).
 
 ### Statement
 
-`round_div` (`src/lib.rs:109-187`) computes exclusively in `i64`/`i128`
+`round_div` (`src/lib.rs:118-196`) computes exclusively in `i64`/`i128`
 integer arithmetic — no `f32`/`f64` appears anywhere in its body, including
 the `HalfEven` tie-detection branch, which widens to `i128` via an `as` cast
-rather than a float comparison (`src/lib.rs:161-163`). Its result never
+rather than a float comparison (`src/lib.rs:170-172`). Its result never
 differs from the true, infinite-precision quotient `n / d` by one unit or
 more: every branch either returns the truncated quotient `q` unchanged or
 adjusts it by exactly `±1` (`checked_add`/`checked_sub` by `1`, never by any
@@ -36,9 +36,9 @@ either the truncated quotient or its immediate neighbor, never further.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:109-132` | `round_div`'s divisor normalization and the truncated quotient/remainder it rounds from |
-| `src/lib.rs:133-186` | The three `Rounding` branches, each adjusting by at most one unit |
-| `src/lib.rs:159-185` | `HalfEven`'s tie detection — `i128`-widened integer comparison, no float |
+| `src/lib.rs:118-140` | `round_div`'s divisor normalization and the truncated quotient/remainder it rounds from |
+| `src/lib.rs:142-195` | The three `Rounding` branches, each adjusting by at most one unit |
+| `src/lib.rs:168-194` | `HalfEven`'s tie detection — `i128`-widened integer comparison, no float |
 
 ### Tests
 

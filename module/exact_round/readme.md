@@ -6,7 +6,7 @@ falls between two representable grid points is placed onto one of them.
 ```rust
 use exact_round::{ Rounding, rounding_default, round_div };
 
-assert_eq!( rounding_default(), Rounding::HalfEven );
+assert_eq!( rounding_default(), Rounding::Down );
 assert_eq!( round_div( 7, 2, Rounding::HalfEven ).unwrap(), 4 ); // 3.5 -> 4 (even)
 ```
 
@@ -20,11 +20,9 @@ became load-bearing once [`exact_ratio`](../exact_ratio/readme.md)'s
 `div_round` and [`exact_snap`](../exact_snap/readme.md)'s tick/lot snapping
 were built in a later tier.
 
-`HalfEven` is the chosen default, not `Down` or `Up`, because it is the only
-one of the three with no directional bias over a long run of roundings — a
-biased default would leak or manufacture value on every unrounded remainder,
-silently, in one direction, forever, which is exactly what a conserved-value
-family cannot afford.
+The default is `Down`, as the design specifies. Every division function
+still takes the mode as a required argument, so a call site that needs an
+unbiased result over many roundings passes `Rounding::HalfEven` itself.
 
 ## Why `round_div` lives here, not in its two consumers
 
