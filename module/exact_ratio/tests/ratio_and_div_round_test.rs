@@ -1,7 +1,7 @@
 //! `Ratio` construction and normalization, the widened multiply, and every
 //! rounding mode `div_round` supports.
 
-use exact_kind::{ Money, Quantity };
+use exact_kind::{ Money, Price, Quantity };
 use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, price_mul_qty, qty_mul_ratio, ratio_new };
 use exact_round::Rounding;
 
@@ -156,7 +156,7 @@ fn mul_ratio_rounds_per_the_callers_mode()
 #[ test ]
 fn price_mul_qty_is_the_cost_of_a_trade()
 {
-  let price = Money::parse( "1.25" ).unwrap();
+  let price = Price::parse( "1.25" ).unwrap();
   let qty = Quantity::parse( "4.5" ).unwrap();
   assert_eq!( price_mul_qty( price, qty, Rounding::HalfEven ).unwrap(), Money::parse( "5.625" ).unwrap() );
 }
@@ -165,7 +165,7 @@ fn price_mul_qty_is_the_cost_of_a_trade()
 #[ test ]
 fn price_mul_qty_rounds_a_cost_finer_than_one_minor_unit()
 {
-  let price = Money::parse( "0.000001" ).unwrap(); // one minor unit
+  let price = Price::parse( "0.000001" ).unwrap(); // one minor unit
   let qty = Quantity::parse( "0.5" ).unwrap(); // half a unit: the cost is half a minor unit
   assert_eq!( price_mul_qty( price, qty, Rounding::Down ).unwrap().minor(), 0 );
   assert_eq!( price_mul_qty( price, qty, Rounding::Up ).unwrap().minor(), 1 );
@@ -177,8 +177,8 @@ fn price_mul_qty_rounds_a_cost_finer_than_one_minor_unit()
 #[ test ]
 fn price_mul_qty_refuses_a_cost_past_the_ceiling()
 {
-  assert_eq!( price_mul_qty( Money::MAX, Quantity::MAX, Rounding::HalfEven ), Err( RatioError::Overflow ) );
-  let million = Money::from_int( 1_000_000 ).unwrap();
+  assert_eq!( price_mul_qty( Price::MAX, Quantity::MAX, Rounding::HalfEven ), Err( RatioError::Overflow ) );
+  let million = Price::parse( "1000000" ).unwrap();
   let million_units = Quantity::from_int( 1_000_000 ).unwrap(); // cost 10^12, past the 9 × 10^9 ceiling
   assert_eq!( price_mul_qty( million, million_units, Rounding::HalfEven ), Err( RatioError::Overflow ) );
 }

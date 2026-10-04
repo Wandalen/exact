@@ -11,18 +11,6 @@
 //!
 //! # Disclosed deviations from the preferred design's own type listing
 //!
-//! - **`Money` and `Price` are the same type today.** The preferred design
-//!   lists `Money`, `Qty` and `Price` as three independent structs. `Qty`
-//!   earns that independence: its non-negativity refusal is real,
-//!   behaviourally-distinguishing logic worth a separate type. `Price` does
-//!   not yet — it has no real consumer anywhere in this codebase and no
-//!   behaviour that differs from `Money`, so hand-duplicating `Decimal`'s
-//!   entire method surface onto a second wrapper purely to make them
-//!   nominally distinct would be speculative work against the Approach
-//!   Gate's YAGNI check, done before any concrete need demonstrates what
-//!   that distinction should even enforce. `Price` is therefore a plain
-//!   alias of `Decimal< MONEY_SCALE >`, exactly like `Money`, until a real
-//!   consumer's requirement gives the distinction content.
 //! - **No `Scaled` trait.** The preferred design's trait returns a runtime
 //!   `Scale` from a value — a shape built for the runtime `Scale(u8)`
 //!   representation this family's migration plan explicitly rejected in
@@ -54,12 +42,6 @@ use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
 pub type Money = Decimal< MONEY_SCALE >;
-
-/// A price at the standard money scale.
-///
-/// Identical to [`Money`] today — see the module-level disclosed deviation
-/// on why this is a plain alias rather than a hand-duplicated wrapper.
-pub type Price = Decimal< MONEY_SCALE >;
 
 /// A non-negative quantity at the standard money scale.
 pub type Quantity = Qty< MONEY_SCALE >;
@@ -148,6 +130,15 @@ impl core::error::Error for KindError {}
 /// let a : Decimal< 6 > = Decimal::parse( "0.1" ).unwrap();
 /// let b : Decimal< 6 > = Decimal::parse( "0.2" ).unwrap();
 /// assert_eq!( a.checked_add( b ).unwrap(), Decimal::parse( "0.3" ).unwrap() );
+/// ```
+///
+/// Two scales never mix — a scale-6 value plus a scale-2 value does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::Decimal;
+/// let six : Decimal< 6 > = Decimal::from_int( 1 ).unwrap();
+/// let two : Decimal< 2 > = Decimal::from_int( 1 ).unwrap();
+/// let _ = six.checked_add( two );
 /// ```
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
 pub struct Decimal< const SCALE : u32 >
@@ -539,10 +530,9 @@ impl< const SCALE : u32 > Qty< SCALE >
 /// Rendering is the only place a quantity and a money value meet: arithmetic
 /// between the two kinds is a compile error, not a runtime one — the readme's
 /// "non-interchangeable types" promise, which no runtime test can observe, so
-/// the examples below pin it. (`Price` is not covered: today it is the same
-/// type as `Money`, per this crate's disclosed deviations.) Same-kind
-/// arithmetic compiles, which proves the failing examples below fail only
-/// because they mix kinds:
+/// the examples below pin it. (Money against [`Price`] is pinned on `Price`
+/// itself.) Same-kind arithmetic compiles, which proves the failing examples
+/// below fail only because they mix kinds:
 ///
 /// ```
 /// use exact_kind::{ Money, Quantity };
@@ -578,6 +568,118 @@ impl< const SCALE : u32 > Qty< SCALE >
 /// let _ : Money = shares;
 /// ```
 impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
+{
+  fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+  {
+    write!( f, "{}", self.value )
+  }
+}
+
+/// A price at the standard money scale.
+///
+/// A type of its own, so a price cannot stand in for money, or money for a
+/// price. Like [`Money`] it may be negative — a discount. Same-kind
+/// arithmetic compiles:
+///
+/// ```
+/// use exact_kind::Price;
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = price.checked_add( price );
+/// ```
+///
+/// Money plus a price does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Price };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = cash.checked_add( price );
+/// ```
+///
+/// Nor a price plus money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Price };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = price.checked_add( cash );
+/// ```
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct Price
+{
+  value : Money,
+}
+
+impl Price
+{
+  /// No price at all.
+  pub const ZERO : Self = Self { value : Money::ZERO };
+
+  /// The largest price this type can hold — exactly the declared ceiling.
+  pub const MAX : Self = Self { value : Money::MAX };
+
+  /// Build from a count of minor units.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::from_minor`].
+  pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
+  {
+    match Money::from_minor( minor )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// The count of minor units this price holds.
+  #[ must_use ]
+  pub const fn minor( self ) -> Backing
+  {
+    self.value.minor()
+  }
+
+  /// Add two prices.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::checked_add`].
+  pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
+  {
+    match self.value.checked_add( rhs.value )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// Subtract two prices.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::checked_sub`].
+  pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
+  {
+    match self.value.checked_sub( rhs.value )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// Parse a decimal string exactly, or say why it cannot be.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::parse`].
+  pub fn parse( text : &str ) -> Result< Self, KindError >
+  {
+    Ok( Self { value : Money::parse( text )? } )
+  }
+}
+
+/// Renders a price exactly as money of the same amount renders.
+impl fmt::Display for Price
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {

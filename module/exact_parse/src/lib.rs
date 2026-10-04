@@ -68,8 +68,7 @@ pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
 ///
 /// # Errors
 ///
-/// As [`money_from_str`] — `Price` is `Money` under today's disclosed
-/// deviation in `exact_kind`.
+/// As [`money_from_str`].
 pub fn price_from_str( text : &str ) -> Result< Price, KindError >
 {
   Price::parse( text )

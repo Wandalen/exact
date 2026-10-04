@@ -18,9 +18,12 @@
 //! facade this crate replaces, including its own mechanical purity test.
 //!
 //! ```
-//! use exact_arith::{ money_dust_split, price_mul_qty, DustTo, Entry, Money, Quantity, Rounding, verify };
+//! use exact_arith::
+//! {
+//!   money_dust_split, price_mul_qty, DustTo, Entry, Money, Price, Quantity, Rounding, verify,
+//! };
 //!
-//! let price = Money::parse( "1.25" ).unwrap();
+//! let price = Price::parse( "1.25" ).unwrap();
 //! let held = Quantity::parse( "2.5" ).unwrap();
 //! assert_eq!( price_mul_qty( price, held, Rounding::HalfEven ).unwrap(), Money::parse( "3.125" ).unwrap() );
 //! assert!( verify( &[ Entry::new( "a", 5 ), Entry::new( "b", -5 ) ] ).unwrap().is_balanced() );

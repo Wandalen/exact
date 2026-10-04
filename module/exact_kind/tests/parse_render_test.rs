@@ -7,7 +7,7 @@
 //! survives, and the tests below check the parts of the grammar where an
 //! implementation would be tempted to repair input instead of refusing it.
 
-use exact_kind::{ Decimal, KindError, Money };
+use exact_kind::{ Decimal, KindError, Money, Price };
 
 /// T01 — `"0.1"` parses exactly and renders back to `"0.1"`.
 ///
@@ -119,4 +119,13 @@ fn whole_truncates_toward_zero_on_both_sides_of_the_sign()
   assert_eq!( Money::parse( "2" ).unwrap().whole(), 2 );
   assert_eq!( Money::parse( "-2" ).unwrap().whole(), -2 );
   assert_eq!( Money::ZERO.whole(), 0 );
+}
+
+/// A price may be negative, like money — a discount — and renders back exactly.
+#[ test ]
+fn a_price_may_be_negative_and_renders_back()
+{
+  let discount = Price::parse( "-1.25" ).unwrap();
+  assert_eq!( discount.minor(), -1_250_000 );
+  assert_eq!( discount.to_string(), "-1.25" );
 }

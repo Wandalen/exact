@@ -173,8 +173,7 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< 
 ///
 /// # Errors
 ///
-/// As [`money_mul_ratio`] — `Price` is `Money` under today's disclosed
-/// deviation in `exact_kind`.
+/// As [`money_mul_ratio`].
 pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;

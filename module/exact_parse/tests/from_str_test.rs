@@ -25,10 +25,9 @@ fn qty_from_str_refuses_a_negative_value()
 #[ test ]
 fn malformed_text_is_refused_at_every_entry_point()
 {
-  for parser in [ money_from_str, price_from_str ]
-  {
-    assert!( parser( "NaN" ).is_err() );
-    assert!( parser( "" ).is_err() );
-  }
+  assert!( money_from_str( "NaN" ).is_err() );
+  assert!( money_from_str( "" ).is_err() );
+  assert!( price_from_str( "NaN" ).is_err() );
+  assert!( price_from_str( "" ).is_err() );
   assert!( qty_from_str( "NaN" ).is_err() );
 }
