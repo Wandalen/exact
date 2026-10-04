@@ -26,7 +26,7 @@ pub fn qty_cmp( a : Quantity, b : Quantity ) -> core::cmp::Ordering
 |------|---------|---------|
 | `src/lib.rs` | 31 | Declaration |
 | `tests/cmp_test.rs` | 25 | Less ordering, alongside the sibling `price_cmp` check in the same test |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 

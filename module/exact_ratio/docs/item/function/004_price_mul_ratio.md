@@ -3,9 +3,8 @@
 ## Representation
 
 Multiply a price by `n / d`, rounding the result per `rounding`. Its own doc comment states the error behavior
-is "as `money_mul_ratio`" — `Price` is `Money` under `exact_kind`'s disclosed
-same-type-today deviation, so this function is byte-for-byte the same body
-as [money_mul_ratio](002_money_mul_ratio.md) with the type swapped.
+is "as `money_mul_ratio`" — the body is the same as
+[money_mul_ratio](002_money_mul_ratio.md) with `Price` in place of `Money`.
 
 **Untested.** Verified via grep (`grep -rn price_mul_ratio` across the whole
 `module/` tree): the only matches are this declaration and the
@@ -38,7 +37,7 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 165-169 | Declaration |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 No test file anywhere calls `price_mul_ratio`.
 
@@ -60,4 +59,4 @@ workspace today.
 
 - `mul_ratio_minor` (`src/lib.rs:127`, private — no Item Instance of its own)
 - `kind_error_to_ratio_error` (`src/lib.rs:67`, private — no Item Instance of its own)
-- **External:** `exact_kind::Decimal::minor` (via the `Price` alias), `exact_kind::Decimal::from_minor`
+- **External:** `exact_kind::Price::minor`, `exact_kind::Price::from_minor` (each delegating to `Decimal`'s)

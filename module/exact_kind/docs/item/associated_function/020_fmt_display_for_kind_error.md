@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:125`
+`module/exact_kind/src/lib.rs:120`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -32,7 +32,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 125-135 | Declaration |
+| `src/lib.rs` | 120-130 | Declaration |
 
 No file anywhere in the workspace calls this method explicitly or via
 `.to_string()`/format interpolation on a `KindError`-typed value — confirmed

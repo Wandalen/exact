@@ -51,7 +51,7 @@ pub enum WireError
 | `src/lib.rs` | 79-80 | Constructed in `kind_error_to_wire_error` |
 | `src/lib.rs` | 154,179,183,207,211,232,236 | Constructed directly as the `Err` arm of each `*_from_wire`/`Wire::from_bytes` guard |
 | `tests/wire_roundtrip_test.rs` | 44,47,58,67,88,96 | Asserting the exact variant returned by each failure mode |
-| `exact_arith/src/lib.rs:108` | — | Facade re-export |
+| `exact_arith/src/lib.rs:114` | — | Facade re-export |
 
 No production call site anywhere renders a `WireError` through its `Display`
 impl — every real use is construction or `assert_eq!`/`matches!` pattern

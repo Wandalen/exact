@@ -11,7 +11,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:161`
+`module/exact_kind/src/lib.rs:176`
 
 ```rust
 pub const ONE_MINOR : Backing = pow10( SCALE );
@@ -21,7 +21,7 @@ pub const ONE_MINOR : Backing = pow10( SCALE );
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 161,202,352,366 | `from_int`'s scaling multiply; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
+| `src/lib.rs` | 176,217,364,378 | `from_int`'s scaling multiply; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
 | `exact_parse/src/lib.rs:36` | — | **Production** — compile-time assert cross-checking `Money::ONE_MINOR` against `exact_scale::pow10( MONEY_SCALE )` directly |
 
 ## Crate Usage

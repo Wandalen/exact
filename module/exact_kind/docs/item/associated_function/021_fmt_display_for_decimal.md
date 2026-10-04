@@ -12,18 +12,18 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:364`
+`module/exact_kind/src/lib.rs:376`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 {
   let unit = Self::ONE_MINOR;
-  let magnitude = self.minor.unsigned_abs();
+  let magnitude = self.minor().unsigned_abs();
   let unit_u = unit.unsigned_abs();
   let whole = magnitude / unit_u;
   let frac = magnitude % unit_u;
 
-  if self.minor < 0
+  if self.minor() < 0
   {
     write!( f, "-" )?;
   }
@@ -33,8 +33,11 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     return Ok( () );
   }
-  let trailing_zeros = ( 1..=SCALE ).take_while( | &k | frac.is_multiple_of( 10_u64.pow( k ) ) ).count();
-  write!( f, ".{:0width$}", frac / 10_u64.pow( trailing_zeros as u32 ), width = SCALE as usize - trailing_zeros )
+  let trailing_zeros = ( 1..=SCALE )
+  .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
+  .count();
+  let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
+  write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
 }
 ```
 
@@ -42,7 +45,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 364-384 | Declaration |
+| `src/lib.rs` | 376-399 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
 | `exact_fmt/src/lib.rs:93,107` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 

@@ -42,7 +42,7 @@ pub fn qty_sum_assert_zero( legs : &[ Quantity ] ) -> Result< (), ConservationEr
 |------|---------|---------|
 | `src/lib.rs` | 273-288 | Declaration |
 | `tests/conservation_test.rs:166-173` | — | All-zero slice passes; a nonzero holding is refused |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.

@@ -37,7 +37,7 @@ pub const fn money_saturating_add( a : Money, b : Money ) -> Money
 |------|---------|---------|
 | `src/lib.rs` | 110,115 | Declaration; its own clamp-direction decision |
 | `tests/checked_and_saturating_add_test.rs:60-61,70` | — | Clamps at both signs; matches checked addition in range |
-| `exact_arith/src/lib.rs:87` | — | Facade re-export |
+| `exact_arith/src/lib.rs:93` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls
 `money_saturating_add` — an honest empty finding, and notably the facade's

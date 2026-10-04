@@ -25,7 +25,7 @@ pub const fn minor_is_zero( m : Minor ) -> bool
 |------|---------|---------|
 | `src/lib.rs` | 227-230 | Declaration |
 | `tests/zero_test.rs` | throughout | True for zero; false for `±1` and both backing extremes |
-| `exact_arith/src/lib.rs:71` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:74` | — | Facade re-export only |
 
 No production caller — the same finding as
 [minor_zero](001_minor_zero.md): not `exact_sign`, `exact_kind`, or

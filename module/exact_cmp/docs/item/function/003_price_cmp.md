@@ -3,8 +3,8 @@
 ## Representation
 
 Compare two price values, dispatching to `Price`'s own derived `Ord`.
-`Price` is `Money` under `exact_kind`'s disclosed deviation, so this takes
-the identical path as [money_cmp](001_money_cmp.md) through a distinct name.
+`Price`'s `Ord` compares the `Money` it wraps, so this orders prices exactly
+as [money_cmp](001_money_cmp.md) orders money.
 
 ## Kind
 
@@ -28,7 +28,7 @@ pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
 |------|---------|---------|
 | `src/lib.rs` | 38 | Declaration |
 | `tests/cmp_test.rs` | 29 | Less ordering, alongside the sibling `qty_cmp` check in the same test |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -47,4 +47,4 @@ tree, excluding `/target/`.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Decimal::cmp` (via `a.cmp( &b )`, `Price` being an alias for `Decimal< SCALE >`)
+- **External:** `exact_kind::Price`'s derived `Ord::cmp` (via `a.cmp( &b )`), comparing the wrapped `Money`

@@ -34,7 +34,7 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 |------|---------|---------|
 | `src/lib.rs` | 196-203 | Declaration |
 | `tests/dust_split_test.rs:105,121` | — | A clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 No call site anywhere outside this crate's own 2 tests — an honest empty
 finding. `exact_arith` only re-exports the name; neither its crate-doc

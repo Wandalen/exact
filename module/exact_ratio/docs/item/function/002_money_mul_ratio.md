@@ -28,7 +28,7 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 |------|---------|---------|
 | `src/lib.rs` | 140-144 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 30,40 | One-half exact multiply; an intermediate-overflow survival case |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 ## Crate Usage
 

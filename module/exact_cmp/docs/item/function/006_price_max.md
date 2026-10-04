@@ -28,7 +28,7 @@ pub fn price_max( a : Price, b : Price ) -> Price
 |------|---------|---------|
 | `src/lib.rs` | 59 | Declaration |
 | `tests/cmp_test.rs` | 51-52 | Both argument orderings, same expected result |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 

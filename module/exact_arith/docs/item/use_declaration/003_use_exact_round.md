@@ -2,8 +2,9 @@
 
 ## Representation
 
-Re-exports `exact_round`'s rounding-mode vocabulary and its one load-bearing
-function — the third Tier-0 root.
+Re-exports `exact_round`'s rounding-mode vocabulary and its two division
+functions, `round_div` and `round_div_wide` (its `i128` counterpart) — the
+third Tier-0 root.
 
 ## Kind
 
@@ -11,18 +12,18 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:77`
+`module/exact_arith/src/lib.rs:83`
 
 ```rust
-pub use exact_round::{ Rounding, RoundError, round_div, rounding_default, rounding_name };
+pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding_default, rounding_name };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 77 | Declaration |
-| `src/lib.rs` | 21,29 | Module-level doc-test — `Rounding` |
+| `src/lib.rs` | 83 | Declaration |
+| `src/lib.rs` | 21,32 | Module-level doc-test — `Rounding` |
 | `tests/facade_test.rs:10,38,56` | — | `Rounding`, `round_div` both exercised |
 | `smoke_exact_market_split/src/lib.rs:42` | — | **Demo-lane** — `Rounding` |
 

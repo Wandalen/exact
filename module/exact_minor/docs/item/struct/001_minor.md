@@ -26,11 +26,13 @@ pub struct Minor( Backing );
 |------|---------|---------|
 | `src/lib.rs` | throughout | Parameter and return type of every function in the crate |
 | `tests/*.rs` | throughout | Every test builds its inputs with `minor_from_i64` |
-| `exact_arith/src/lib.rs:65` | — | Facade re-export |
+| `exact_kind/src/lib.rs:159` | — | **Production** — the type of `Decimal`'s stored count |
+| `exact_arith/src/lib.rs:68` | — | Facade re-export |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_minor` | `(defining crate)` | The type every function takes and returns |
+| `exact_kind` | `src/lib.rs` | **Production** — every `Money`, `Price` and `Quantity` stores one |
 | `exact_arith` | `src/lib.rs` | Re-export only |

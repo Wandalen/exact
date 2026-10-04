@@ -26,7 +26,7 @@ pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, Conserv
 |------|---------|---------|
 | `src/lib.rs` | 223-226 | Declaration |
 | `tests/conservation_test.rs:121-134` | — | `try_fold` usage and an overflow case |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests — not `exact_arith`'s own test suite, not `cluster_economy`

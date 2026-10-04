@@ -26,7 +26,7 @@ pub const fn minor_saturating_sub( a : Minor, b : Minor ) -> Minor
 |------|---------|---------|
 | `src/lib.rs` | 294-297 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked subtraction; clamping past `Backing::MIN` |
-| `exact_arith/src/lib.rs:73` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:76` | — | Facade re-export only |
 
 No file outside `exact_minor` calls `minor_saturating_sub` directly — the
 same architectural reason as

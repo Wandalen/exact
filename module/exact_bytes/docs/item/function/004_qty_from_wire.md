@@ -33,7 +33,7 @@ pub fn qty_from_wire( w : Wire ) -> Result< Quantity, WireError >
 |------|---------|---------|
 | `src/lib.rs` | 203-214 | Declaration |
 | `tests/wire_roundtrip_test.rs:26,44,96` | — | Decoding in the quantity round-trip, cross-kind-rejection, and negative-value tests |
-| `exact_arith/src/lib.rs:113` | — | Facade re-export |
+| `exact_arith/src/lib.rs:119` | — | Facade re-export |
 
 Unlike [`money_from_wire`](002_money_from_wire.md), `exact_arith`'s own
 facade test does not call this function.

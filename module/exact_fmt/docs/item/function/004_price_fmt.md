@@ -3,8 +3,7 @@
 ## Representation
 
 Render a price value to an owned `String`, through `Price`'s own `Display`
-impl (`Price` being `Money` under `exact_kind`'s disclosed "same type today"
-deviation).
+impl, which renders the `Money` it wraps.
 
 ## Kind
 
@@ -26,7 +25,7 @@ pub fn price_fmt( v : Price ) -> String
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 105-108 | Declaration |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
 No test file anywhere calls `price_fmt` — not even this crate's own
 `tests/fmt_test.rs`, which imports and exercises `money_fmt`/`qty_fmt` but
@@ -49,5 +48,5 @@ only function in this crate untested even by its own defining crate.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Decimal::to_string` (via the blanket `ToString`
-  impl every `Display` type gets; `Price` is an alias for `Decimal< SCALE >`)
+- **External:** `exact_kind::Price::to_string` (via the blanket `ToString`
+  impl every `Display` type gets; `Price`'s `Display` renders the wrapped `Money`)

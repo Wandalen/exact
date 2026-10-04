@@ -38,7 +38,7 @@ pub enum SnapError
 | `src/lib.rs` | 42-53 | `round_error_to_snap_error`'s return type and both constructed arms |
 | `src/lib.rs` | 121,122,135,136 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
 | `tests/snap_test.rs:12-13` | — | Asserts `Tick::new`/`Lot::new` reject a zero grid with the matching variant |
-| `exact_arith/src/lib.rs:117` | — | Facade re-export |
+| `exact_arith/src/lib.rs:123` | — | Facade re-export |
 
 ## Crate Usage
 

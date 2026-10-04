@@ -25,7 +25,7 @@ pub fn qty_fmt( v : Quantity ) -> String
 |------|---------|---------|
 | `src/lib.rs` | 98-101 | Declaration |
 | `tests/fmt_test.rs:15` | — | Matches a literal `"3"` |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
 ## Crate Usage
 

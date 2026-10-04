@@ -30,12 +30,13 @@ established.
 
 `Qty` stays a genuinely separate type, not an alias: its refusal to hold a
 negative value is real, tested, behaviourally-distinguishing logic, carried
-forward unchanged from the real `exact_qty`.
+forward unchanged from the real `exact_qty`. `Price` is a separate type too —
+a struct wrapping a `Money` — so a price and an amount of money cannot be
+mixed.
 
 ## What it does not do
 
-It carries no arithmetic beyond its own methods — `exact_add` (once built)
-provides the preferred design's per-kind free-function names (`money_add`,
+It carries no arithmetic beyond its own methods — `exact_add` provides the preferred design's per-kind free-function names (`money_add`,
 `qty_add`, `price_add`) as a thin dispatch layer over the methods here,
 rather than this crate reimplementing arithmetic twice under two different
 calling conventions.
@@ -44,16 +45,12 @@ It declares no `Scaled` trait and no `KindError::ScaleMismatch` — see the
 disclosed deviations in [`src/lib.rs`](src/lib.rs)'s module doc comment for
 why both are absent rather than merely unbuilt.
 
-`Price` is a plain alias of `Decimal< MONEY_SCALE >`, identical to `Money`
-today — also disclosed in the module doc comment. It earns its own wrapper
-type only once a real consumer's requirement gives that distinction content.
-
 ## Responsibility Table
 
 | File | Responsibility |
 |------|----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_minor` and `exact_scale` |
-| [`src/lib.rs`](src/lib.rs) | `Decimal`, `Qty`, `Money`/`Price`/`Quantity` aliases, `KindError` |
+| [`src/lib.rs`](src/lib.rs) | `Decimal`, `Qty`, `Price`, the `Money`/`Quantity` aliases, `KindError` |
 | [`tests/checked_arithmetic_test.rs`](tests/checked_arithmetic_test.rs) | Test Matrix T02-T04 — exactness and refusal at the edge, ported from `exact_decimal` |
 | [`tests/parse_render_test.rs`](tests/parse_render_test.rs) | Test Matrix T01 — round-tripping through text, ported from `exact_decimal` |
 | [`tests/non_negative_test.rs`](tests/non_negative_test.rs) | Test Matrix T05-T06 — the refusal, its exact boundary, and integer round-tripping, ported from `exact_qty` |

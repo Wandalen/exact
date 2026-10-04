@@ -12,7 +12,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:81`
+`module/exact_arith/src/lib.rs:87`
 
 ```rust
 pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
@@ -22,8 +22,8 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 81 | Declaration |
-| `src/lib.rs` | 21-30 | Module-level doc-test — `Money`, `Quantity` |
+| `src/lib.rs` | 87 | Declaration |
+| `src/lib.rs` | 21-33 | Module-level doc-test — `Money`, `Quantity` |
 | `tests/facade_test.rs` | throughout | `Money`, `Quantity`, `KindError` used in both tests |
 | `exchange_core/src/lib.rs:63-66` | — | **Production** — `KindError`, `Money`, `Quantity` re-exported one layer further |
 | `exchange_book`, `exchange_match`, `exchange_escrow`, `exchange_types` | `src/lib.rs` each | **Production** — `Money`/`Quantity` (every one of the 5 `substrate/exchange/` crates) |
@@ -32,7 +32,7 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
 | `smoke_cluster_economy_market`, `smoke_module_cluster_integration` | `src/lib.rs` each | **Demo-lane** — `Money`/`Quantity` (grading lanes per their own module doc comments: "Headless smoke lane grading...") |
 
 `Decimal` and `Qty` themselves (the generic backing types, as opposed to
-their `Money`/`Price`/`Quantity` aliases) have no confirmed caller anywhere
+the `Money`/`Quantity` aliases and the `Price` struct) have no confirmed caller anywhere
 outside `exact_kind`'s own tests and this facade's declaration — every real
 consumer, inside and outside `module/`, reaches the family
 exclusively through the 3 named aliases.

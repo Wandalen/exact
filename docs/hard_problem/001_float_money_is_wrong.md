@@ -7,7 +7,7 @@
 - **In Scope**: Money, quantity, and price representation.
 - **Out of Scope**: Which crate/feature enforces this (→ `../crate/`, `../feature/`).
 
-**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md) and [`exact_kind`](../../module/exact_kind/readme.md), holding exactly as stated with no deviation. Money is stored as a plain integer `Backing` (`i64`) at the base, and `Decimal`/`Qty` never admit a float anywhere in their public construction, inspection, or rendering surface — enforced by each crate's own dedicated invariant: [No Float In Representation](../../module/exact_minor/docs/invariant/001_no_float_in_representation.md) and [No Float In The Public Constructor Surface](../../module/exact_kind/docs/invariant/001_no_float_in_the_public_constructor_surface.md).
+**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md) and [`exact_kind`](../../module/exact_kind/readme.md), holding exactly as stated with no deviation. Money is stored as a plain integer at the base — an `exact_minor::Minor`, one `i64` — and `Decimal`/`Qty` never admit a float anywhere in their public construction, inspection, or rendering surface — enforced by each crate's own dedicated invariant: [No Float In Representation](../../module/exact_minor/docs/invariant/001_no_float_in_representation.md) and [No Float In The Public Constructor Surface](../../module/exact_kind/docs/invariant/001_no_float_in_the_public_constructor_surface.md).
 
 ### Statement
 

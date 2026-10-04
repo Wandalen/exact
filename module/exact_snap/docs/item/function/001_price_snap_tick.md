@@ -31,7 +31,7 @@ pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Res
 |------|---------|---------|
 | `src/lib.rs` | 118-124 | Declaration |
 | `tests/snap_test.rs` | 25,35,44,53 | On-grid identity, between-grid rounding down/up, and half-even tie-breaking |
-| `exact_arith/src/lib.rs:117` | — | Facade re-export |
+| `exact_arith/src/lib.rs:123` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests — confirmed via grep across `substrate/` and `module/`.
@@ -54,7 +54,7 @@ OT012.
 ## Callee Tree
 
 - `round_error_to_snap_error` (`src/lib.rs:42`, private — no Item Instance of its own)
-- **External:** `exact_kind::Decimal::minor` (`Price` aliases `Decimal`, via `price.minor()` and `tick.0.minor()` ×2)
+- **External:** `exact_kind::Price::minor` (via `price.minor()` and `tick.0.minor()` ×2), which delegates to `Decimal::minor`
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)
 - **External:** `exact_kind::Decimal::from_minor` (via `Price::from_minor`)

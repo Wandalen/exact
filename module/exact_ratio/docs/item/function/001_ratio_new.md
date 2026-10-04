@@ -37,7 +37,7 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 |------|---------|---------|
 | `src/lib.rs` | 112-125 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 12,19,29,39,49 | Zero-denominator refusal, negative-denominator normalization, and the sole construction path for every other test's `Ratio` value |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 ## Crate Usage
 

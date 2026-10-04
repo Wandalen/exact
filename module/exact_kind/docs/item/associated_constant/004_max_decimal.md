@@ -12,17 +12,17 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:174`
+`module/exact_kind/src/lib.rs:189`
 
 ```rust
-pub const MAX : Self = Self { minor : CEILING_MINOR_UNITS };
+pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 174 | Declaration |
+| `src/lib.rs` | 189 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ceiling-boundary checks |
 | `exact_bytes/tests/wire_roundtrip_test.rs:87` | — | Past-ceiling boundary input |
 | `exact_add/src/lib.rs:115` | — | **Production** — `money_saturating_add`'s positive clamp target |

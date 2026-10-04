@@ -37,8 +37,8 @@ pub enum DustTo
 | `src/lib.rs` | 121,123,130 | `fill_minor`'s parameter and match scrutinee (private — no Item Instance of its own) |
 | `src/lib.rs` | 151,166,196,210 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
 | `tests/dust_split_test.rs` | — | All 3 variants exercised across every split scenario |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
-| `exact_arith/src/lib.rs:21` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |
 | `smoke_exact_market_split/src/lib.rs:134` | — | `market_split`'s own call always passes `DustTo::First` |
 
 ## Crate Usage

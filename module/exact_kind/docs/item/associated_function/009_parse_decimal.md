@@ -13,7 +13,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:302`
+`module/exact_kind/src/lib.rs:314`
 
 ```rust
 pub fn parse( text : &str ) -> Result< Self, KindError >
@@ -79,7 +79,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 302,533 | Declaration; `Qty::parse`'s delegation via `?` |
+| `src/lib.rs` | 314,548 | Declaration; `Qty::parse`'s delegation via `?` |
 | `tests/parse_render_test.rs`, `tests/checked_arithmetic_test.rs` | throughout | Grammar acceptance/rejection, round-trip |
 | `exact_parse/src/lib.rs:45,66` | — | `money_from_str`, `price_from_str` |
 
@@ -92,7 +92,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- [Qty::parse](019_parse_qty.md) (`src/lib.rs:533` — via the `?` operator)
+- [Qty::parse](019_parse_qty.md) (`src/lib.rs:548` — via the `?` operator)
 - **External:** `exact_parse::money_from_str` (`exact_parse/src/lib.rs:45`), `price_from_str` (`:66`)
 
 ## Callee Tree
@@ -104,4 +104,4 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 - **External:** `str::parse::< Backing >` (×2 — integer and fractional parts)
 - **External:** `exact_scale::pow10` — scaling a short fractional part up to `SCALE` digits
 - **External:** `i64::checked_mul`, `i64::checked_add` — magnitude accumulation
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:357`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:369`)

@@ -39,7 +39,7 @@ pub fn money_sum_assert_zero( legs : &[ Money ] ) -> Result< (), ConservationErr
 |------|---------|---------|
 | `src/lib.rs` | 245-260 | Declaration |
 | `tests/conservation_test.rs:147-162` | — | A cancelling slice, a one-unit leak, and an empty slice |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.

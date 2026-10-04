@@ -33,7 +33,7 @@ pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
 |------|---------|---------|
 | `src/lib.rs` | 228-239 | Declaration |
 | `tests/wire_roundtrip_test.rs:36` | — | Decoding in the price round-trip test |
-| `exact_arith/src/lib.rs:111` | — | Facade re-export |
+| `exact_arith/src/lib.rs:117` | — | Facade re-export |
 
 `exact_arith`'s own facade test does not call this function.
 

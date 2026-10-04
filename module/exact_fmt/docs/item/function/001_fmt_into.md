@@ -40,7 +40,7 @@ own; it brings the `Write` trait's `write_fmt` method into scope for the
 | `tests/fmt_test.rs:20-26` | — | Exact round-trip into an exactly-sized buffer |
 | `tests/fmt_test.rs:28-35` | — | `FmtError::BufFull` on a too-small buffer |
 | `tests/fmt_test.rs:38-44` | — | Byte count returned matches the rendered text's length |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
 No production call site anywhere outside this crate's own tests — an honest
 empty finding. `exact_arith` only re-exports the name; its own test suite

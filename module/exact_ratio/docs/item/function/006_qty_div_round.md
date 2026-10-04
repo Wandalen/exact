@@ -19,7 +19,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:199`
+`module/exact_ratio/src/lib.rs:198`
 
 ```rust
 pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
@@ -33,8 +33,8 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 199-203 | Declaration |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `src/lib.rs` | 198-202 | Declaration |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 No test file anywhere calls `qty_div_round`.
 

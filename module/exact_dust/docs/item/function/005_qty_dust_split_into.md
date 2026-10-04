@@ -34,7 +34,7 @@ pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out 
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 210-219 | Declaration |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 Confirmed via a dedicated workspace-wide search
 (`grep -rn qty_dust_split_into --include='*.rs'`) that these are the only 2

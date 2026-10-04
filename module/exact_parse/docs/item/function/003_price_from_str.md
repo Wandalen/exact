@@ -3,8 +3,8 @@
 ## Representation
 
 Parse a price value from text. As [money_from_str](001_money_from_str.md) —
-`Price` is `Money` under today's disclosed deviation in `exact_kind` (both
-alias the same `Decimal< SCALE >` instantiation).
+`Price::parse` delegates to the same `Decimal< SCALE >` parser and wraps the
+result as a `Price`.
 
 ## Kind
 
@@ -27,7 +27,7 @@ pub fn price_from_str( text : &str ) -> Result< Price, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 64 | Declaration |
 | `tests/from_str_test.rs:14,28` | — | Exact round-trip through `"1.23"`; malformed-text rejection loop (as a function-pointer array element, not a direct call at that line — the actual call is via the `parser` variable at line 30) |
-| `exact_arith/src/lib.rs:98` | — | Facade re-export |
+| `exact_arith/src/lib.rs:104` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -43,4 +43,4 @@ across every `.rs` file in the workspace.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Decimal::parse` (via `Price::parse( text )`, `Price` being an alias for `Decimal< SCALE >`)
+- **External:** `exact_kind::Price::parse` (via `Price::parse( text )`), which delegates to `exact_kind::Decimal::parse`

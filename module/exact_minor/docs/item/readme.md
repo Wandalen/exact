@@ -69,20 +69,18 @@ since each one repeats a `Minor` item at `i128` width.
 
 ### Notable Findings
 
-- **The entire functional API has zero external callers.** Of the 7 free
-  functions plus the `Display` method, none is called by `exact_sign` or
-  `exact_kind` — the crate's only two real (non-facade) dependents. Both
-  consumers import only the `Backing` type alias and reimplement checked
-  arithmetic inline on `i64` directly, rather than delegating here.
-  `exact_arith`'s facade re-exports every item but calls none of them either
-  (pure `pub use`). This is the most pervasive honest-empty-tree finding in
-  the family so far — grep-verified per function, not assumed.
+- **`exact_kind` is the one production caller.** `Decimal` stores a `Minor`
+  and calls `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`,
+  `minor_zero`, `minor_from_i64` and `minor_to_i64`, matching `MinorError`
+  in its private `kind_overflow`. `exact_sign` imports only `Backing`.
+  `minor_is_zero`, the two saturating functions, `MinorError`'s `Display` and
+  the `i128`-gated `MinorWide` have no production caller;
+  `exact_arith`'s facade re-exports but calls nothing (pure `pub use`).
 - **Every item is now exercised by this crate's own suite.** Until
   2026-10-02, `minor_zero`, `minor_is_zero`, and `MinorError`'s `Display`/
   `Error` impls had no caller anywhere, this crate's own tests included;
   `tests/zero_test.rs` and `tests/checked_arithmetic_test.rs`'s
-  `overflow_error_names_the_failed_operation` now cover them. Production
-  callers are still absent — the first finding above still holds.
+  `overflow_error_names_the_failed_operation` now cover them.
 - **The saturating functions' absence of external callers has an
   architectural reason, not an oversight**: `exact_add`'s saturating
   arithmetic clamps to the *declared ceiling* (`Money::MAX`/`MIN`), a

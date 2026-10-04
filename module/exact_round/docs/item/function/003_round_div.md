@@ -107,7 +107,7 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 | `tests/round_div_test.rs` | throughout | Every rounding mode, both signs, zero-divisor and normalization paths |
 | `exact_dust/src/lib.rs:125` | — | **Production** — `split_minor`'s per-share division |
 | `exact_snap/src/lib.rs:132,146` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
-| `exact_ratio/src/lib.rs:186` | — | **Production** — `div_round_minor`, backing `money_div_round`/`qty_div_round` |
+| `exact_ratio/src/lib.rs:185` | — | **Production** — `div_round_minor`, backing `money_div_round`/`qty_div_round` |
 | `exact_arith/tests/facade_test.rs:56` | — | Re-exported-path test call |
 
 ## Crate Usage
@@ -122,7 +122,7 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 
 - **External:** `exact_dust::split_minor` (`exact_dust/src/lib.rs:125`)
 - **External:** `exact_snap::price_snap_tick` (`exact_snap/src/lib.rs:132`), `qty_snap_lot` (`:146`)
-- **External:** `exact_ratio::div_round_minor` (`exact_ratio/src/lib.rs:186`)
+- **External:** `exact_ratio::div_round_minor` (`exact_ratio/src/lib.rs:185`)
 
 No intra-crate caller.
 

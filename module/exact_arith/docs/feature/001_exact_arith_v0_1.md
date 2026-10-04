@@ -22,9 +22,9 @@ single-concern crates instead of the original 3
 
 - **Exact types for everything conserved.** Fixed-point decimal types for
   money and commodity quantities, with no rounding drift in their
-  representation — met. `exact_kind::Decimal<SCALE>` (aliased `Money`/`Price`)
-  and `exact_kind::Qty<SCALE>` (aliased `Quantity`) store one `Backing` field
-  (`i64`, from `exact_minor`) and never pass through a float, including in
+  representation — met. `exact_kind::Decimal<SCALE>` (aliased `Money`, and
+  wrapped by `Price`) and `exact_kind::Qty<SCALE>` (aliased `Quantity`) store
+  one `exact_minor::Minor` (an `i64`) and never pass through a float, including in
   their parser's grammar, which explicitly refuses `"1e6"`/`"NaN"`/`"inf"`
   rather than rounding them
   (→ [`exact_minor`: No Float In Representation](../../../exact_minor/docs/invariant/001_no_float_in_representation.md),

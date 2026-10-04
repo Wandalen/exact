@@ -25,7 +25,7 @@ pub fn money_to_wire( v : Money ) -> Wire
 |------|---------|---------|
 | `src/lib.rs` | 163-166 | Declaration |
 | `tests/wire_roundtrip_test.rs` | 14,43,54,65,76 | Encoding across 5 of the crate's 8 tests |
-| `exact_arith/src/lib.rs:110` | — | Facade re-export |
+| `exact_arith/src/lib.rs:116` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed in the facade's own end-to-end settlement test |
 
 ## Crate Usage

@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:138`
+`module/exact_kind/src/lib.rs:133`
 
 ```rust
 impl core::error::Error for KindError {}
@@ -23,7 +23,7 @@ impl core::error::Error for KindError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 138 | Declaration — empty body, no further call sites of its own |
+| `src/lib.rs` | 133 | Declaration — empty body, no further call sites of its own |
 
 No file calls this impl's (absent, default-provided) methods directly; its
 only effect is making `KindError: Error` hold, which downstream crates rely

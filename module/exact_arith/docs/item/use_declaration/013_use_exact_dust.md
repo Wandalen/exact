@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:121`
+`module/exact_arith/src/lib.rs:127`
 
 ```rust
 pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
@@ -21,8 +21,8 @@ pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split,
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 121 | Declaration |
-| `src/lib.rs` | 21,29 | Module-level doc-test — `money_dust_split`, `DustTo` |
+| `src/lib.rs` | 127 | Declaration |
+| `src/lib.rs` | 21,32 | Module-level doc-test — `money_dust_split`, `DustTo` |
 | `tests/facade_test.rs:9,38` | — | `money_dust_split`, `DustTo` round-tripped |
 | `smoke_exact_market_split/src/lib.rs:42` | — | **Demo-lane** — `money_dust_split`, `DustTo`, per `exact_dust`'s own catalog (`function/001_money_dust_split.md`) |
 

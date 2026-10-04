@@ -40,9 +40,9 @@ pub enum RatioError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 38,52,65,67,71-72,112,116,120-121,127,131,140,153,165,171,175-176,186,199 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
+| `src/lib.rs` | 38,52,65,67,71-72,112,116,120-121,127,131,140,153,165,171,175-176,185,198 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
 | `tests/ratio_and_div_round_test.rs` | 12,50,114 | `DivZero` and `Negative` asserted directly |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 Doc-comment mentions (lines 16,23,109,138,150-151,184,196-197, all `///`/`//!`
 prose) are excluded above — they do not resolve to the declaration.

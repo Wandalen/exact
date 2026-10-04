@@ -29,7 +29,7 @@ pub fn money_eq( a : Money, b : Money ) -> bool
 |------|---------|---------|
 | `src/lib.rs` | 45 | Declaration |
 | `tests/cmp_test.rs` | 39-40 | Equal pair and unequal pair, one assertion each |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 

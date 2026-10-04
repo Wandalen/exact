@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:123`
+`module/exact_kind/src/lib.rs:118`
 
 ```rust
 impl fmt::Display for KindError
@@ -36,7 +36,7 @@ impl fmt::Display for KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 123-136 | Declaration |
+| `src/lib.rs` | 118-131 | Declaration |
 
 No file anywhere in the workspace calls `KindError`'s `Display::fmt`
 explicitly or via `.to_string()`/format interpolation — the method named in

@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its struct/function/error surface (→ `../type/001_exact_minor_types.md`).
 
-**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md). This file's own scope — dependencies and boundary — matches the proposal exactly: no dependencies, a tier-0 root alongside `exact_scale` and `exact_round`, with no scale or kind concern. The code surface itself deviates (no `Minor` newtype, no `MinorWide`) — see `../type/001_exact_minor_types.md` for the account.
+**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md). This file's own scope — dependencies and boundary — matches the proposal exactly: no dependencies, a tier-0 root alongside `exact_scale` and `exact_round`, with no scale or kind concern. The code surface — `Minor`, and `MinorWide` behind the `i128` feature — is described in `../type/001_exact_minor_types.md`; `exact_kind`'s `Decimal` stores a `Minor` and uses this crate's checked arithmetic.
 
 ### Why It Exists
 

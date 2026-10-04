@@ -39,7 +39,7 @@ pub enum DustError
 | `src/lib.rs` | 75-86 | `Display` match arms |
 | `src/lib.rs` | 99,109,113,114,125,132,156,172,202,216 | Constructed across `round_error_to_dust_error`, `split_minor`, `fill_minor` (all private — no Item Instance of their own), and the 4 split/split-into functions' `.map_err` closures |
 | `tests/dust_split_test.rs:54,71,121` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 No production call site anywhere constructs or matches `DustError` outside
 `exact_dust` itself — an honest empty finding; `exact_arith` only re-exports

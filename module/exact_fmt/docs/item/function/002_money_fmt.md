@@ -26,7 +26,7 @@ pub fn money_fmt( v : Money ) -> String
 |------|---------|---------|
 | `src/lib.rs` | 91-94 | Declaration |
 | `tests/fmt_test.rs:11-12` | — | Matches `v.to_string()` directly and a literal `"1.5"` |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
 ## Crate Usage
 

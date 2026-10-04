@@ -25,7 +25,7 @@ pub const HEADROOM_FACTOR : i64 = 1000;
 |------|---------|---------|
 | `src/lib.rs` | 22,49 | Declaration; the crate's own compile-time range-budget assert |
 | `tests/scale_factor_test.rs` | 3,25,27 | Headroom-relation test |
-| `exact_arith/src/lib.rs:75` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:81` | — | Facade re-export only |
 | `exact_kind/tests/checked_arithmetic_test.rs:16,180,183` | — | Re-derives the same headroom check inside `exact_kind`'s own test suite |
 
 No production (non-test, non-facade) file outside `exact_scale` reads

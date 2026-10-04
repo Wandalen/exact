@@ -29,7 +29,7 @@ pub fn price_min( a : Price, b : Price ) -> Price
 |------|---------|---------|
 | `src/lib.rs` | 52 | Declaration |
 | `tests/cmp_test.rs` | 49-50 | Both argument orderings, same expected result |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 

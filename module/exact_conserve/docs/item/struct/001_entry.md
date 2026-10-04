@@ -36,7 +36,7 @@ pub struct Entry
 | `cluster_economy/src/market.rs:504-505,515-516` | — | **Production** — cash-leg and asset-leg postings per settlement |
 | `cluster_economy/tests/economy_test.rs:255-261` | — | Builds postings for a reconciliation assertion |
 | `smoke_exact_market_split/src/lib.rs:119-120` | — | Demo lane's own ledger postings |
-| `exact_arith/src/lib.rs:26,123` | — | Facade doc-test and re-export |
+| `exact_arith/src/lib.rs:29,129` | — | Facade doc-test and re-export |
 
 **The most consumed Item in this crate** — unlike almost every other type in
 this migration, `Entry` has real production call sites in two downstream

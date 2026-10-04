@@ -31,22 +31,23 @@ pub const fn minor_checked_sub( a : Minor, b : Minor ) -> Result< Minor, MinorEr
 |------|---------|---------|
 | `src/lib.rs` | 254-262 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ordinary difference and `Backing::MIN`-boundary refusal |
-| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
+| `exact_kind/src/lib.rs:262` | — | **Production** — `Decimal::checked_sub` |
+| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
 
-No file outside `exact_minor` calls `minor_checked_sub` directly — matching
-[minor_checked_add](003_minor_checked_add.md)'s honest gap, for the same
-reason.
+`exact_kind`'s `Decimal::checked_sub` delegates here on its stored `Minor`,
+as [minor_checked_add](003_minor_checked_add.md) does for addition.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_minor` | `(defining crate)` | Exercised by its own boundary tests |
+| `exact_kind` | `src/lib.rs` | **Production** — `Decimal::checked_sub`, behind every `Money`/`Price`/`Quantity` sub |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `exact_kind::Decimal::checked_sub` (`exact_kind/src/lib.rs:262`)
 
 ## Callee Tree
 

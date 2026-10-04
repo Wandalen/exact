@@ -26,7 +26,7 @@ pub fn money_cmp( a : Money, b : Money ) -> core::cmp::Ordering
 |------|---------|---------|
 | `src/lib.rs` | 24 | Declaration |
 | `tests/cmp_test.rs` | 14-16 | Less/Greater/Equal, all three orderings against the same pair |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
 ## Crate Usage
 

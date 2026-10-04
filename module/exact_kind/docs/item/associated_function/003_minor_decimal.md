@@ -11,12 +11,12 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:212`
+`module/exact_kind/src/lib.rs:227`
 
 ```rust
 pub const fn minor( self ) -> Backing
 {
-  self.minor
+  minor_to_i64( self.minor )
 }
 ```
 
@@ -24,13 +24,13 @@ pub const fn minor( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 212,420,471 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
+| `src/lib.rs` | 227,435,486 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
 | `tests/*.rs` (all 3) | throughout | Minor-count assertions |
 | `exact_bytes/src/lib.rs:165,220` | — | `money_to_wire`/`price_to_wire` |
 | `exact_conserve/src/lib.rs:250` | — | `money_sum_assert_zero`'s per-leg accumulation |
 | `exact_dust/src/lib.rs:153,168,186` | — | `money_dust_split`/`_into`/`_remainder` |
 | `exact_snap/src/lib.rs:69,120,122` | — | `Tick::new`'s zero check; `price_snap_tick` (price and tick) |
-| `exact_ratio/src/lib.rs:142,167,188` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
+| `exact_ratio/src/lib.rs:142,167,187` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
 
 ## Crate Usage
 
@@ -41,8 +41,8 @@ pub const fn minor( self ) -> Backing
 
 ## Caller Tree
 
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:420`)
-- [Qty::minor](014_minor_qty.md) (`src/lib.rs:471`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:435`)
+- [Qty::minor](014_minor_qty.md) (`src/lib.rs:486`)
 - **External:** `exact_bytes::money_to_wire` (`:165`), `price_to_wire` (`:220`)
 - **External:** `exact_conserve::money_sum_assert_zero` (`:250`)
 - **External:** `exact_dust::money_dust_split` (`:153`), `money_dust_split_into` (`:168`), `money_dust_remainder` (`:186`)

@@ -30,7 +30,7 @@ pub struct Ratio
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 78,84,112,122,124,127,140,153,165 | Declaration; inherent impl; `ratio_new`'s return type and construction; parameter type of `mul_ratio_minor` and all 3 `*_mul_ratio` functions |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 No test file names `Ratio` directly — every test constructs one through
 `ratio_new` and holds it via type inference. Doc-comment mentions (lines

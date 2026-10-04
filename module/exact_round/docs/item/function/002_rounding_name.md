@@ -32,7 +32,7 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
 |------|---------|---------|
 | `src/lib.rs` | 72 | Declaration |
 | `tests/rounding_mode_test.rs:14-17` | — | All 3 names checked |
-| `exact_arith/src/lib.rs:80` | — | Facade re-export |
+| `exact_arith/src/lib.rs:83` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any downstream
 consumer — calls `rounding_name` outside its own direct-mapping test. An

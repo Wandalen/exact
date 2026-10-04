@@ -4,7 +4,7 @@
 
 Re-exports `exact_sign`'s full surface, though no *other* re-exported leaf's
 public signature names `Sign` — included anyway per the module doc comment's
-disclosed deviation (`src/lib.rs:54-60`): this facade exposes the whole
+disclosed deviation (`src/lib.rs:57-63`): this facade exposes the whole
 value substrate through one dependency, not only the slice other leaves
 happen to reference.
 
@@ -14,7 +14,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:79`
+`module/exact_arith/src/lib.rs:85`
 
 ```rust
 pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
@@ -24,7 +24,7 @@ pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, si
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 79 | Declaration |
+| `src/lib.rs` | 85 | Declaration |
 | `tests/facade_test.rs:10,57` | — | `Sign`, `sign_of` asserted |
 
 No real downstream consumer (outside `module/` itself) imports

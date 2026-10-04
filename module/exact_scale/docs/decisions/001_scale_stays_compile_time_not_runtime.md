@@ -37,4 +37,4 @@ Make scale a runtime value everywhere, matching the preferred design literally. 
 ## Related
 
 - [Representable Range And Headroom](../non_functional_requirement/001_representable_range_and_headroom.md) — the constants this crate actually holds, and the compile-time assertion linking them
-- [`exact_kind`'s own `invariant/`](../../../exact_kind/docs/invariant/readme.md) — where the const-generic scale-mismatch guarantee this decision depends on is itself documented and tested
+- [`exact_kind`'s own type doc](../../../exact_kind/docs/type/001_conserved_value_type_family.md) — where the const-generic scale-mismatch guarantee this decision depends on is documented; the `compile_fail` doctest on `exact_kind::Decimal` tests it

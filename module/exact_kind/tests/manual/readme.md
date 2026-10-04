@@ -14,7 +14,7 @@ copy.
 ### M1 — Two different `SCALE` values are two different types, not a runtime check
 
 `Decimal<const SCALE: u32>` carries its scale as a const generic parameter
-(`src/lib.rs:153`), and `Qty<const SCALE: u32>` the same way (`:397`). `Money`
+(`src/lib.rs:157`), and `Qty<const SCALE: u32>` the same way (`:397`). `Money`
 is `Decimal<MONEY_SCALE>` (`:56`) — a scale-6 decimal and a scale-2 decimal
 are therefore different monomorphized types at compile time. This is why the
 family carries no `ScaleMismatch` runtime error anywhere: the mismatch never
@@ -63,9 +63,10 @@ struct hides a `String`, `Vec`, or `Box` behind its private fields.
 cargo test -p exact_kind --doc
 ```
 
-Expected: 6 doc examples run and pass — 3 that compile and 3 marked
-`compile fail`, the last group pinning that money and quantities never mix
-(`Display for Qty`'s doc comment). Then read the
+Expected: 10 doc examples run and pass — 4 that compile and 6 marked
+`compile fail`, pinning that money and quantities never mix (`Display for
+Qty`'s doc comment), that money and prices never mix (`Price`'s), and that
+two scales never mix (`Decimal`'s — the M1 check above, made automatic). Then read the
 rendered docs and check the examples show the type's round-trip and
 checked-arithmetic behaviour, not just its syntax:
 
@@ -79,3 +80,4 @@ cargo doc -p exact_kind --no-deps --open
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass, M2 pass, M3 pass | M1: actually compiled (via `rustc` against the built `exact_kind` rlib, equivalent to pasting the snippet into a test file) — failed exactly as predicted, with `error[E0308]: mismatched types ... expected struct 'Decimal<6>', found struct 'Decimal<2>'`. M2: all 3 derives (`KindError`, `Decimal`, `Qty`) include `Copy`. M3: 2/2 doctests passed in the workspace baseline run. |
 | 2026-10-02 | ihortry | M3 pass | 6 doctests: 3 compile (`Decimal`, `Qty`, and the same-kind companion on `Display for Qty`), 3 `compile fail` (money + quantity, quantity + money, quantity as money). |
+| 2026-10-04 | claude | M3 pass | 10 doctests: 4 compile (`Decimal`, `Qty`, `Price`, and the same-kind companion on `Display for Qty`), 6 `compile fail` (money + quantity, quantity + money, quantity as money, money + price, price + money, scale 6 + scale 2). |

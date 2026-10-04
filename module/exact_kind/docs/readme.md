@@ -4,7 +4,7 @@ Design documentation for `exact_kind`, as typed doc definitions.
 
 | Directory | Responsibility |
 |------|-----------------|
-| `type/` | `Decimal`/`Qty` and the `Money`/`Price`/`Quantity` aliases built from them |
+| `type/` | `Decimal`/`Qty`/`Price` and the `Money`/`Quantity` aliases built from them |
 | `invariant/` | No float anywhere, and every checked operation total, at the decimal/kind level |
 | `decisions/` | Why non-negativity is a separate wrapper type, enforced at construction |
 | `algorithm/` | `Qty::checked_sub`'s exact below-zero procedure |

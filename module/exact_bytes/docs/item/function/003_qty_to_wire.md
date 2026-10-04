@@ -25,7 +25,7 @@ pub fn qty_to_wire( v : Quantity ) -> Wire
 |------|---------|---------|
 | `src/lib.rs` | 190-193 | Declaration |
 | `tests/wire_roundtrip_test.rs:24,46` | — | Encoding in the quantity round-trip test and the cross-kind-rejection test |
-| `exact_arith/src/lib.rs:114` | — | Facade re-export |
+| `exact_arith/src/lib.rs:120` | — | Facade re-export |
 
 Unlike [`money_to_wire`](001_money_to_wire.md), `exact_arith`'s own facade
 test does not call this function — only the Money roundtrip is exercised at

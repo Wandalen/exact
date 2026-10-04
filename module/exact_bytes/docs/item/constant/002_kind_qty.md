@@ -24,7 +24,7 @@ pub const KIND_QTY : u8 = 1;
 | `src/lib.rs` | 192 | `qty_to_wire`'s encoded discriminator |
 | `src/lib.rs` | 205 | `qty_from_wire`'s expected-discriminator check |
 | `tests/wire_roundtrip_test.rs` | 25,95 | Asserting the round-tripped discriminator; constructing a negative-value `Wire` directly |
-| `exact_arith/src/lib.rs:106` | — | Facade re-export |
+| `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
 

@@ -20,9 +20,9 @@
 | `money_mul_ratio` | fn | `src/lib.rs:140` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
 | `qty_mul_ratio` | fn | `src/lib.rs:153` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
 | `price_mul_ratio` | fn | `src/lib.rs:165` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
-| `money_div_round` | fn | `src/lib.rs:186` | — |
-| `qty_div_round` | fn | `src/lib.rs:199` | — |
-| `price_mul_qty` | fn | `src/lib.rs:228` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
+| `money_div_round` | fn | `src/lib.rs:185` | — |
+| `qty_div_round` | fn | `src/lib.rs:198` | — |
+| `price_mul_qty` | fn | `src/lib.rs:227` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

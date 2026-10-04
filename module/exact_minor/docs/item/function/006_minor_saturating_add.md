@@ -27,7 +27,7 @@ pub const fn minor_saturating_add( a : Minor, b : Minor ) -> Minor
 |------|---------|---------|
 | `src/lib.rs` | 286-289 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked addition; clamping past `Backing::MAX` |
-| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:75` | — | Facade re-export only |
 
 No file outside `exact_minor` calls `minor_saturating_add` directly. This is
 not the same gap as the checked functions above: `exact_add`'s own

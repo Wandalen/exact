@@ -14,7 +14,7 @@ Type Alias (§ Item Kind Taxonomy : Stable Item Kinds #5)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:56`
+`module/exact_kind/src/lib.rs:57`
 
 ```rust
 pub type Money = Decimal< MONEY_SCALE >;
@@ -24,7 +24,7 @@ pub type Money = Decimal< MONEY_SCALE >;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 56 | Declaration only — `exact_kind`'s own source never names `Money`, only generic `Decimal< SCALE >` |
+| `src/lib.rs` | 57,634,640,643,652,701 | Declaration; `Price`'s wrapped `value` and the members that delegate to it (`ZERO`, `MAX`, `from_minor`, `parse`); also named by the `compile_fail` doctests on `Display for Qty` and `Price` |
 | `tests/checked_arithmetic_test.rs`, `tests/parse_render_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `exact_parse/src/lib.rs:36,43,45` | — | Compile-time `ONE_MINOR` assert; `money_from_str`'s parameter/return/body |
 | `exact_bytes/src/lib.rs:163,175,185` | — | `money_to_wire`/`money_from_wire` signatures and bodies |
@@ -32,8 +32,8 @@ pub type Money = Decimal< MONEY_SCALE >;
 | `exact_dust/src/lib.rs:151,156,166,172,184` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_add/src/lib.rs:35,45,95,110` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported (`use exact_kind::{ Money, .. }`); re-exported `Display`/derived `Ord` exercised through it |
-| `exact_ratio/src/lib.rs:140,143,186,189` | — | `money_mul_ratio`/`money_div_round` |
-| `exact_arith/src/lib.rs:81` | — | Facade re-export (`pub use exact_kind::{ .., Money, .. }`) |
+| `exact_ratio/src/lib.rs:140,143,185,188` | — | `money_mul_ratio`/`money_div_round` |
+| `exact_arith/src/lib.rs:87` | — | Facade re-export (`pub use exact_kind::{ .., Money, .. }`) |
 
 ## Crate Usage
 

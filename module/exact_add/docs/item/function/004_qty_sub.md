@@ -27,7 +27,7 @@ pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 |------|---------|---------|
 | `src/lib.rs` | 65 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:31` | — | Non-negativity refusal, subtracting a larger quantity from a smaller one |
-| `exact_arith/src/lib.rs:93` | — | Facade re-export |
+| `exact_arith/src/lib.rs:99` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `qty_sub` — an
 honest empty finding. `exact_conserve` only ever adds legs via

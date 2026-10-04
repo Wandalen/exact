@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:186`
+`module/exact_ratio/src/lib.rs:185`
 
 ```rust
 pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Money, RatioError >
@@ -26,9 +26,9 @@ pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Mon
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 186-190 | Declaration |
+| `src/lib.rs` | 185-189 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 65-66,75-76,85,89,93,102,106,114,124 | Every rounding mode (`Down`/`Up`/`HalfEven`), both signs, tie and non-tie remainders, zero-divisor refusal, and exact-division agreement across modes — by far the most heavily tested function in this crate |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 ## Crate Usage
 

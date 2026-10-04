@@ -22,7 +22,7 @@ use exact_round::Rounding;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 34,171,186,199 | Parameter type of `div_round_minor` (private) and both public `*_div_round` functions |
+| `src/lib.rs` | 34,171,185,198 | Parameter type of `div_round_minor` (private) and both public `*_div_round` functions |
 
 A doc-comment mention at line 20 (`` [`exact_round::Rounding`] ``) is prose,
 not a usage, and is excluded above.

@@ -25,7 +25,7 @@ pub const CEILING_WHOLE_UNITS : i64 = 9_000_000_000;
 |------|---------|---------|
 | `src/lib.rs` | 29,45 | Declaration; `CEILING_MINOR_UNITS`'s own definition |
 | `tests/scale_factor_test.rs:3,21` | — | Cross-check against `CEILING_MINOR_UNITS` |
-| `exact_arith/src/lib.rs:75` | — | Facade re-export |
+| `exact_arith/src/lib.rs:81` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:11,54` | — | Cross-check via the re-exported name |
 | `exact_kind/tests/checked_arithmetic_test.rs:16,179` | — | Cross-check, same pattern as `exact_scale`'s own test |
 | `exact_kind/tests/non_negative_test.rs:9,46,84,87,112,135` | — | Whole-unit ceiling boundary for `Quantity` |

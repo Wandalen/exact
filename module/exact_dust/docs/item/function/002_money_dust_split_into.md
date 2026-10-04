@@ -33,7 +33,7 @@ pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out :
 |------|---------|---------|
 | `src/lib.rs` | 166-175 | Declaration |
 | `tests/dust_split_test.rs:81` | — | Confirms it writes the same shares as the allocating `money_dust_split` |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name; neither its crate-doc

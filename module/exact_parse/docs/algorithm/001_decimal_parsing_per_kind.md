@@ -25,7 +25,7 @@ None of this crate's three functions narrow or widen that grammar — dispatch a
 |----------|---------------|------|
 | `money_from_str` | `Money::parse` (`exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — direct pass-through |
 | `qty_from_str` | `Quantity::parse` (`exact_kind::Qty<MONEY_SCALE>::parse`) | Refuses a negative result with `KindError::Negative` |
-| `price_from_str` | `Price::parse` (`exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — `Price` is `Money` under `exact_kind`'s disclosed deviation |
+| `price_from_str` | `Price::parse` (delegating to `exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — a negative price is allowed, like money |
 
 Every input either produces the exact value it spells, or a `KindError`: `Malformed` (grammar violation), `ExcessPrecision` (more fractional digits than the type's scale), `Overflow` (the integer or scaled magnitude leaves the backing width), `ExceedsCeiling` (a value inside the backing width but past the declared ceiling), or — `qty_from_str` only — `Negative` (a well-formed, in-range value that is still below zero). `NaN`, `inf`, exponent forms, and digit separators are all rejected as `Malformed`, same as at the `exact_kind` layer this crate dispatches to.
 

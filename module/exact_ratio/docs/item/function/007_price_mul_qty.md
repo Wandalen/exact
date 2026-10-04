@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:228`
+`module/exact_ratio/src/lib.rs:227`
 
 ```rust
 pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Result< Money, RatioError >
@@ -31,9 +31,9 @@ pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Re
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 228-234 | Declaration |
+| `src/lib.rs` | 227-233 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 5,161,170-172,180,183 | A fractional quantity; a cost finer than one minor unit under each mode; a cost past the ceiling |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/src/lib.rs:102` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:25` | — | The settlement test's notional, through the facade |
 
 ## Crate Usage

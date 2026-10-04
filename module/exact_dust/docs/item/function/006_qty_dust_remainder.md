@@ -28,7 +28,7 @@ pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) ->
 |------|---------|---------|
 | `src/lib.rs` | 226-230 | Declaration |
 | `tests/dust_split_test.rs:131` | — | Confirms the held-back amount matches the `Money` case's figure (identical minor-unit arithmetic) |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.

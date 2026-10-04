@@ -25,8 +25,8 @@ pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 53 | Declaration |
-| `tests/from_str_test.rs:13,21,33` | — | Exact round-trip through `"1.23"`; negative-value refusal (`KindError::Negative`); `"NaN"` rejection |
-| `exact_arith/src/lib.rs:98` | — | Facade re-export |
+| `tests/from_str_test.rs:13,21,32` | — | Exact round-trip through `"1.23"`; negative-value refusal (`KindError::Negative`); `"NaN"` rejection |
+| `exact_arith/src/lib.rs:104` | — | Facade re-export |
 
 ## Crate Usage
 

@@ -37,13 +37,11 @@ pub enum MinorError
 |------|---------|---------|
 | `src/lib.rs` | 88,90,95-96,124,129-130,141,146-147,157,162,188,204,216,238,243-244,254,259-260,270,275 | Return type / constructed variant of all 3 checked functions, and both trait impls it carries |
 | `tests/checked_arithmetic_test.rs` | throughout | Matched by equality against the exact variant and `operation` string |
-| `exact_arith/src/lib.rs:66` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
 
-No file outside `exact_minor` and the facade re-export constructs, matches,
-or renders a `MinorError` — an honest gap: neither `exact_sign` nor
-`exact_kind` (the crate's only two real dependents) ever receives one, since
-neither calls any of the 3 checked functions this error type is returned
-from (see each function's own Caller Tree).
+`exact_kind` receives one from the 3 checked functions and matches it in its
+private `kind_overflow` (`exact_kind/src/lib.rs:164-171`), turning both variants into
+`KindError::Overflow`; nothing else outside this crate does.
 
 ## Crate Usage
 

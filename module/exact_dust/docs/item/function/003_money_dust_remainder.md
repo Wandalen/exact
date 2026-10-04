@@ -29,7 +29,7 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 |------|---------|---------|
 | `src/lib.rs` | 184-188 | Declaration |
 | `tests/dust_split_test.rs:46` | — | Confirms the held-back amount under `DustTo::Sink` |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.
