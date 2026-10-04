@@ -32,12 +32,25 @@
 //!
 //! Every checked operation, the parser, the renderer, and the declared
 //! ceiling's headroom relation are ported from `exact_decimal` and
-//! `exact_qty` without behavioural change — only the backing alias and the
-//! scale constants now come from `exact_minor` and `exact_scale` rather
-//! than being declared again here.
+//! `exact_qty` without behavioural change. What they are built on now comes
+//! from the two Tier-0 crates rather than being declared again here: the
+//! stored count is an `exact_minor::Minor`, added, subtracted and negated by
+//! `exact_minor`'s own checked functions, and the scale constants and powers
+//! of ten come from `exact_scale`.
 
 use core::fmt;
-use exact_minor::Backing;
+use exact_minor::
+{
+  Backing,
+  Minor,
+  MinorError,
+  minor_checked_add,
+  minor_checked_neg,
+  minor_checked_sub,
+  minor_from_i64,
+  minor_to_i64,
+  minor_zero,
+};
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
@@ -143,7 +156,18 @@ impl core::error::Error for KindError {}
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
 pub struct Decimal< const SCALE : u32 >
 {
-  minor : Backing,
+  minor : Minor,
+}
+
+/// Report a failure of `exact_minor`'s arithmetic as this crate's own
+/// overflow, keeping the name of the operation that failed.
+const fn kind_overflow( e : MinorError ) -> KindError
+{
+  match e
+  {
+    MinorError::Overflow { operation } | MinorError::Underflow { operation } =>
+      KindError::Overflow { operation },
+  }
 }
 
 impl< const SCALE : u32 > Decimal< SCALE >
@@ -152,20 +176,20 @@ impl< const SCALE : u32 > Decimal< SCALE >
   pub const ONE_MINOR : Backing = pow10( SCALE );
 
   /// Zero — the one infallible constructor, representable at every scale.
-  pub const ZERO : Self = Self { minor : 0 };
+  pub const ZERO : Self = Self { minor : minor_zero() };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = Self { minor : 1 };
+  pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = Self { minor : CEILING_MINOR_UNITS };
+  pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = Self { minor : -CEILING_MINOR_UNITS };
+  pub const MIN : Self = Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) };
 
   /// Build from a count of minor units.
   ///
@@ -178,7 +202,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
     {
       return Err( KindError::ExceedsCeiling { minor } );
     }
-    Ok( Self { minor } )
+    Ok( Self { minor : minor_from_i64( minor ) } )
   }
 
   /// Build from a whole number of units.
@@ -202,14 +226,14 @@ impl< const SCALE : u32 > Decimal< SCALE >
   #[ must_use ]
   pub const fn minor( self ) -> Backing
   {
-    self.minor
+    minor_to_i64( self.minor )
   }
 
   /// The whole-unit part, truncated toward zero.
   #[ must_use ]
   pub const fn whole( self ) -> Backing
   {
-    self.minor / Self::ONE_MINOR
+    self.minor() / Self::ONE_MINOR
   }
 
   /// Add two values of the same scale.
@@ -221,12 +245,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// obtainable through this type's public API.
   pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_add( rhs.minor )
-    else
+    match minor_checked_add( self.minor, rhs.minor )
     {
-      return Err( KindError::Overflow { operation : "add" } );
-    };
-    Self::from_minor( minor )
+      Ok( sum ) => Self::from_minor( minor_to_i64( sum ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Subtract two values of the same scale.
@@ -236,12 +259,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// As [`checked_add`](Self::checked_add).
   pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_sub( rhs.minor )
-    else
+    match minor_checked_sub( self.minor, rhs.minor )
     {
-      return Err( KindError::Overflow { operation : "sub" } );
-    };
-    Self::from_minor( minor )
+      Ok( diff ) => Self::from_minor( minor_to_i64( diff ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Multiply by a dimensionless integer, holding the scale.
@@ -253,7 +275,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// breaches the declared ceiling.
   pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_mul( n )
+    let Some( minor ) = self.minor().checked_mul( n )
     else
     {
       return Err( KindError::Overflow { operation : "mul_int" } );
@@ -271,12 +293,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// constructible value's magnitude far below that edge.
   pub const fn checked_neg( self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_neg()
-    else
+    match minor_checked_neg( self.minor )
     {
-      return Err( KindError::Overflow { operation : "neg" } );
-    };
-    Self::from_minor( minor )
+      Ok( neg ) => Self::from_minor( minor_to_i64( neg ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Parse a decimal string exactly, or say why it cannot be.
@@ -355,12 +376,12 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     let unit = Self::ONE_MINOR;
-    let magnitude = self.minor.unsigned_abs();
+    let magnitude = self.minor().unsigned_abs();
     let unit_u = unit.unsigned_abs();
     let whole = magnitude / unit_u;
     let frac = magnitude % unit_u;
 
-    if self.minor < 0
+    if self.minor() < 0
     {
       write!( f, "-" )?;
     }
@@ -370,8 +391,11 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
     {
       return Ok( () );
     }
-    let trailing_zeros = ( 1..=SCALE ).take_while( | &k | frac.is_multiple_of( 10_u64.pow( k ) ) ).count();
-    write!( f, ".{:0width$}", frac / 10_u64.pow( trailing_zeros as u32 ), width = SCALE as usize - trailing_zeros )
+    let trailing_zeros = ( 1..=SCALE )
+    .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
+    .count();
+    let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
+    write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
   }
 }
 
