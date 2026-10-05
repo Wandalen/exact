@@ -160,9 +160,9 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 ///
 /// # Errors
 ///
-/// [`RatioError::Negative`] when a negative-numerator ratio would take the
-/// result below zero. [`RatioError::Overflow`] on overflow or ceiling
-/// breach.
+/// [`RatioError::Negative`] when a negative-numerator ratio takes the rounded
+/// result below zero — so the mode decides a sub-unit product: `Down` refuses
+/// it, `Up` and `HalfEven` give zero. [`RatioError::Overflow`] on overflow.
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
@@ -231,3 +231,7 @@ pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Re
   let minor = mul_ratio_minor( price.minor(), qty_as_ratio, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
+
+// `price_mul_qty` counts one whole quantity as `Money::ONE_MINOR` minor units, which holds only
+// while `Quantity` and `Money` share one scale — fail the build the moment they drift apart.
+const _ : () = assert!( matches!( Quantity::from_int( 1 ), Ok( q ) if q.minor() == Money::ONE_MINOR ) );

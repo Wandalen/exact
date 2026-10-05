@@ -81,3 +81,15 @@ fn wide_saturating_arithmetic_clamps_to_the_crossed_bound()
   assert_eq!( minor_wide_saturating_sub( MinorWide( i128::MIN ), MinorWide( 1 ) ), MinorWide( i128::MIN ) );
   assert_eq!( minor_wide_saturating_sub( MinorWide( i128::MAX ), MinorWide( -1 ) ), MinorWide( i128::MAX ) );
 }
+
+/// Inside the range, wide checked subtraction is exact and saturating
+/// arithmetic leaves the result unclamped.
+#[ test ]
+fn wide_arithmetic_in_range_is_exact_and_unclamped()
+{
+  let past_i64 = MinorWide( i128::from( i64::MAX ) + 10 );
+  let max_i64 = MinorWide( i128::from( i64::MAX ) );
+  assert_eq!( minor_wide_checked_sub( past_i64, MinorWide( 10 ) ), Ok( max_i64 ) );
+  assert_eq!( minor_wide_saturating_add( MinorWide( -5 ), MinorWide( 3 ) ), MinorWide( -2 ) );
+  assert_eq!( minor_wide_saturating_sub( MinorWide( -5 ), MinorWide( 3 ) ), MinorWide( -8 ) );
+}

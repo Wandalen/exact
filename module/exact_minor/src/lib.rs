@@ -41,8 +41,8 @@ pub type Backing = i64;
 /// A count of minor units — the family's base subunit type.
 ///
 /// A distinct type rather than a bare `Backing`, so a count of minor units
-/// cannot be confused with any other `i64`. The only ways in and out are
-/// [`minor_from_i64`] and [`minor_to_i64`]; a bare `i64` is refused:
+/// cannot be confused with any other `i64`. It goes in and out through
+/// [`minor_from_i64`]/[`minor_to_i64`], or `From`/`TryFrom` with `MinorWide`; a bare `i64` is refused:
 ///
 /// ```compile_fail
 /// let _ = exact_minor::minor_checked_add( 1, 2 );
@@ -181,22 +181,22 @@ pub const fn minor_wide_saturating_sub( a : MinorWide, b : MinorWide ) -> MinorW
 
 /// Why a checked operation could not be completed.
 ///
-/// Two variants, one per direction: a result above `Backing::MAX` is an
-/// overflow, a result below `Backing::MIN` an underflow, so an investigation
-/// knows which bound was crossed.
+/// Two variants, one per direction: a result above the integer type's maximum
+/// is an overflow, below its minimum an underflow — `Backing` for `Minor`,
+/// `i128` for `MinorWide` — so an investigation knows which bound was crossed.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum MinorError
 {
-  /// The result would have been above the largest value the backing width holds.
+  /// The result would have been above the largest value the integer type holds.
   Overflow
   {
-    /// Which operation — `add`, `sub`, `neg`.
+    /// Which operation — `add`, `sub`, `neg`, or `narrow` (`MinorWide` to `Minor`).
     operation : &'static str,
   },
-  /// The result would have been below the smallest value the backing width holds.
+  /// The result would have been below the smallest value the integer type holds.
   Underflow
   {
-    /// Which operation — `add`, `sub`.
+    /// Which operation — `add`, `sub`, or `narrow` (`MinorWide` to `Minor`).
     operation : &'static str,
   },
 }

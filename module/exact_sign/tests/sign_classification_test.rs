@@ -15,8 +15,8 @@ fn sign_of_classifies_negative_zero_and_positive()
 #[ test ]
 fn sign_of_classifies_both_ends_of_the_backing_range()
 {
-  assert_eq!( sign_of( i64::MIN ), Sign::Neg );
-  assert_eq!( sign_of( i64::MAX ), Sign::Pos );
+  assert_eq!( sign_of( exact_minor::Backing::MIN ), Sign::Neg );
+  assert_eq!( sign_of( exact_minor::Backing::MAX ), Sign::Pos );
 }
 
 /// `sign_is_negative` and `sign_is_zero` agree with `sign_of` at the boundary.
