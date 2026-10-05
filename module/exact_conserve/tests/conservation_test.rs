@@ -171,3 +171,36 @@ fn qty_sum_assert_zero_passes_only_when_every_leg_is_zero()
   let holding = [ Quantity::ZERO, Quantity::from_minor( 3 ).unwrap() ];
   assert_eq!( qty_sum_assert_zero( &holding ), Err( ConservationError::NotZero { got : 3 } ) );
 }
+
+/// A slice whose running total passes the ceiling partway, but ends at
+/// zero, still conserves — only the final sum is judged, which is why the
+/// sum runs in `i128` rather than through `money_add`.
+#[ test ]
+fn money_sum_assert_zero_judges_the_final_sum_not_the_running_total()
+{
+  let minus_max = Money::MIN;
+  assert_eq!( money_sum_assert_zero( &[ Money::MAX, Money::MAX, minus_max, minus_max ] ), Ok( () ) );
+}
+
+/// Folding a quantity past the ceiling is refused, the same as for money.
+#[ test ]
+fn qty_conserve_into_reports_overflow_past_the_declared_ceiling()
+{
+  assert_eq!( qty_conserve_into( Quantity::MAX, Quantity::EPSILON ), Err( ConservationError::Overflow ) );
+}
+
+/// Credits and debits fold back to exactly zero.
+#[ test ]
+fn money_conserve_into_folds_credits_and_debits_back_to_zero()
+{
+  let legs = [ 5, -3, -2 ].map( | m | Money::from_minor( m ).unwrap() );
+  assert_eq!( legs.into_iter().try_fold( Money::ZERO, money_conserve_into ), Ok( Money::ZERO ) );
+}
+
+/// A failed assertion names the signed discrepancy in its message.
+#[ test ]
+fn the_not_zero_error_names_the_signed_discrepancy()
+{
+  let error = ConservationError::NotZero { got : -1 };
+  assert_eq!( error.to_string(), "expected a zero sum, got -1 minor units" );
+}

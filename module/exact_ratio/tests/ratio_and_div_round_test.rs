@@ -2,7 +2,11 @@
 //! rounding mode `div_round` supports.
 
 use exact_kind::{ Money, Price, Quantity };
-use exact_ratio::{ RatioError, money_div_round, money_mul_ratio, price_mul_qty, qty_mul_ratio, ratio_new };
+use exact_ratio::
+{
+  RatioError, money_div_round, money_mul_ratio, price_mul_qty, price_mul_ratio, qty_div_round, qty_mul_ratio,
+  ratio_new,
+};
 use exact_round::Rounding;
 
 /// A zero denominator is refused.
@@ -181,4 +185,150 @@ fn price_mul_qty_refuses_a_cost_past_the_ceiling()
   let million = Price::parse( "1000000" ).unwrap();
   let million_units = Quantity::from_int( 1_000_000 ).unwrap(); // cost 10^12, past the 9 × 10^9 ceiling
   assert_eq!( price_mul_qty( million, million_units, Rounding::HalfEven ), Err( RatioError::Overflow ) );
+}
+
+/// A positive denominator is stored as given, numerator untouched.
+#[ test ]
+fn ratio_new_keeps_a_positive_denominator_as_given()
+{
+  let r = ratio_new( 3, 4 ).unwrap();
+  assert_eq!( ( r.n(), r.d() ), ( 3, 4 ) );
+}
+
+/// Normalizing a negative denominator negates both fields, and `i64::MIN`
+/// has no positive counterpart — either field at `i64::MIN` is refused.
+#[ test ]
+fn ratio_new_refuses_a_normalization_that_would_overflow()
+{
+  assert_eq!( ratio_new( 1, i64::MIN ), Err( RatioError::Overflow ) );
+  assert_eq!( ratio_new( i64::MIN, -1 ), Err( RatioError::Overflow ) );
+}
+
+/// A price multiplies like money, each mode rounding its own way, at both
+/// signs: `7 × 1/2 = 3.5` and `-7 × 1/2 = -3.5`.
+#[ test ]
+fn price_mul_ratio_rounds_per_the_callers_mode_at_both_signs()
+{
+  let half = ratio_new( 1, 2 ).unwrap();
+  let seven = Price::from_minor( 7 ).unwrap();
+  let minus_seven = Price::from_minor( -7 ).unwrap();
+  assert_eq!( price_mul_ratio( seven, half, Rounding::Down ).unwrap().minor(), 3 );
+  assert_eq!( price_mul_ratio( seven, half, Rounding::Up ).unwrap().minor(), 4 );
+  assert_eq!( price_mul_ratio( seven, half, Rounding::HalfEven ).unwrap().minor(), 4 );
+  assert_eq!( price_mul_ratio( minus_seven, half, Rounding::Down ).unwrap().minor(), -4 );
+  assert_eq!( price_mul_ratio( minus_seven, half, Rounding::Up ).unwrap().minor(), -3 );
+  assert_eq!( price_mul_ratio( minus_seven, half, Rounding::HalfEven ).unwrap().minor(), -4 );
+}
+
+/// A price pushed past its ceiling is refused, not wrapped.
+#[ test ]
+fn price_mul_ratio_refuses_a_result_past_the_ceiling()
+{
+  let double = ratio_new( 2, 1 ).unwrap();
+  assert_eq!( price_mul_ratio( Price::MAX, double, Rounding::Down ), Err( RatioError::Overflow ) );
+}
+
+/// A negative ratio rounds with the sign handled correctly: `10 × -1/3 =
+/// -3.33…`, whose floor is `-4` and ceiling `-3`.
+#[ test ]
+fn money_mul_ratio_by_a_negative_ratio_rounds_toward_the_named_infinity()
+{
+  let minus_third = ratio_new( -1, 3 ).unwrap();
+  let ten = Money::from_minor( 10 ).unwrap();
+  assert_eq!( money_mul_ratio( ten, minus_third, Rounding::Down ).unwrap().minor(), -4 );
+  assert_eq!( money_mul_ratio( ten, minus_third, Rounding::Up ).unwrap().minor(), -3 );
+  assert_eq!( money_mul_ratio( ten, minus_third, Rounding::HalfEven ).unwrap().minor(), -3 );
+}
+
+/// A zero ratio gives zero, whatever the value and mode.
+#[ test ]
+fn mul_ratio_by_zero_is_zero()
+{
+  let zero = ratio_new( 0, 5 ).unwrap();
+  let v = Money::from_minor( -7 ).unwrap();
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  {
+    assert_eq!( money_mul_ratio( v, zero, mode ).unwrap(), Money::ZERO );
+  }
+}
+
+/// A quantity multiplies with each mode rounding its own way — `7 × 1/2 =
+/// 3.5`, and `5 × 1/2 = 2.5`, a tie `HalfEven` sends to the even 2.
+#[ test ]
+fn qty_mul_ratio_rounds_per_the_callers_mode()
+{
+  let half = ratio_new( 1, 2 ).unwrap();
+  let seven = Quantity::from_minor( 7 ).unwrap();
+  assert_eq!( qty_mul_ratio( seven, half, Rounding::Down ).unwrap().minor(), 3 );
+  assert_eq!( qty_mul_ratio( seven, half, Rounding::Up ).unwrap().minor(), 4 );
+  assert_eq!( qty_mul_ratio( seven, half, Rounding::HalfEven ).unwrap().minor(), 4 );
+  let five = Quantity::from_minor( 5 ).unwrap();
+  assert_eq!( qty_mul_ratio( five, half, Rounding::HalfEven ).unwrap().minor(), 2 );
+}
+
+/// A quantity divides with each mode rounding its own way: `7 / 2 = 3.5`.
+#[ test ]
+fn qty_div_round_rounds_per_the_callers_mode()
+{
+  let seven = Quantity::from_minor( 7 ).unwrap();
+  assert_eq!( qty_div_round( seven, 2, Rounding::Down ).unwrap().minor(), 3 );
+  assert_eq!( qty_div_round( seven, 2, Rounding::Up ).unwrap().minor(), 4 );
+  assert_eq!( qty_div_round( seven, 2, Rounding::HalfEven ).unwrap().minor(), 4 );
+}
+
+/// A zero divisor is refused for a quantity too.
+#[ test ]
+fn qty_div_round_refuses_a_zero_divisor()
+{
+  let v = Quantity::from_int( 1 ).unwrap();
+  assert_eq!( qty_div_round( v, 0, Rounding::Down ), Err( RatioError::DivZero ) );
+}
+
+/// A negative divisor would make a quantity negative, which it refuses —
+/// unless the rounded result is zero: `1 / -2 = -0.5` floors to `-1` but
+/// ceils to `0`.
+#[ test ]
+fn qty_div_round_by_a_negative_divisor_is_refused_unless_it_rounds_to_zero()
+{
+  let ten = Quantity::from_minor( 10 ).unwrap();
+  assert_eq!( qty_div_round( ten, -2, Rounding::Down ), Err( RatioError::Negative { minor : -5 } ) );
+  let one = Quantity::from_minor( 1 ).unwrap();
+  assert_eq!( qty_div_round( one, -2, Rounding::Down ), Err( RatioError::Negative { minor : -1 } ) );
+  assert_eq!( qty_div_round( one, -2, Rounding::Up ).unwrap(), Quantity::ZERO );
+}
+
+/// A negative price — a debit-style quote — costs negative money, and a zero
+/// quantity costs nothing.
+#[ test ]
+fn price_mul_qty_carries_a_negative_price_and_a_zero_quantity()
+{
+  let negative = Price::parse( "-4" ).unwrap();
+  let qty = Quantity::parse( "2.5" ).unwrap();
+  assert_eq!( price_mul_qty( negative, qty, Rounding::HalfEven ).unwrap(), Money::parse( "-10" ).unwrap() );
+  assert_eq!( price_mul_qty( negative, Quantity::ZERO, Rounding::HalfEven ).unwrap(), Money::ZERO );
+}
+
+/// Every error renders a message naming its cause.
+#[ test ]
+fn every_ratio_error_renders_its_cause()
+{
+  assert_eq!( RatioError::DivZero.to_string(), "a zero denominator was supplied" );
+  assert_eq!( RatioError::Overflow.to_string(), "left the representable or declared range" );
+  assert_eq!(
+    RatioError::Negative { minor : -5 }.to_string(),
+    "-5 minor units is below zero, which this kind cannot hold"
+  );
+}
+
+/// A negative ratio on a quantity is refused only when the chosen mode rounds
+/// the product below zero: one minor unit × -1/3 is -0.33…, which `Down`
+/// floors to -1 (refused) and `Up`/`HalfEven` take to 0 (accepted).
+#[ test ]
+fn qty_mul_ratio_by_a_sub_unit_negative_product_depends_on_the_mode()
+{
+  let one = Quantity::from_minor( 1 ).unwrap();
+  let neg_third = ratio_new( -1, 3 ).unwrap();
+  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::Down ), Err( RatioError::Negative { minor : -1 } ) );
+  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::Up ).unwrap(), Quantity::ZERO );
+  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::HalfEven ).unwrap(), Quantity::ZERO );
 }
