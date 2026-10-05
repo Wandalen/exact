@@ -23,6 +23,14 @@ smoke_exact_market_split — this family's slice, one process
 
   market split   100.000001 into 3 -> [33.333335, 33.333333, 33.333333] (recombines exactly)
 
+  sum=0
+  parts=3.333333,3.333333,3.333333 dust=0.000001
+  tick=1.25 lot=9
+  extra=1 overflow=1
+  wire=10000000
+  a=0x3f95a355a4945bbd b=0x3f95a355a4945bbd
+  ok
+
 VERDICT: reached — exact arithmetic holds across the full facade,
          the floating-point control arm does not, and a market split conserves.
 ```
@@ -33,7 +41,12 @@ Ported at the Tier 5 cutover: steps 1 through 4 carry `smoke_exact_arithmetic`'s
 exact content forward unchanged (including its fix-documented
 `ledger` subtraction bug); step 5 is new — a market fill split with
 `exact_dust` and recombined with `exact_conserve`, exercising a pairing
-neither crate's own unit tests cover.
+neither crate's own unit tests cover; step 6 is new too — the ten scenes of
+[`docs/scene/`](../../docs/scene/readme.md) in their proposed golden-print
+shape. Scenes 001, 002 and 006 run at scale 2 through `Decimal< 2 >`; scenes
+003 and 009 run on `Money`, fixed at scale 6, because `exact_dust` and
+`exact_bytes` take `Money` only — so they print `3.333333`/`0.000001` and
+`10000000` where the proposal printed `3.33`/`0.01` and `1000`.
 
 ## The control arm
 
@@ -46,7 +59,8 @@ through `f64`, and the lane **asserts that the two disagree**. If a future
 change made the exact path inexact, the arms would agree, the assertion would
 fail, and the lane would go red.
 
-`f64` appears in this crate and in no other crate of the family.
+`f64` appears in this crate and in no other library source of the family —
+only `exact_arith`'s timing bench, a test, also uses it.
 
 ## Why one dependency
 
@@ -68,9 +82,9 @@ so the lane lives in `src/lib.rs` and the suite drives it.
 | File | Responsibility |
 |------|----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — the facade as the single dependency |
-| [`src/lib.rs`](src/lib.rs) | The lane: the exact path, the control arm, the asserted disagreement, and the market split |
+| [`src/lib.rs`](src/lib.rs) | The lane: the exact path, the control arm, the asserted disagreement, the market split, and the ten scenes |
 | [`src/main.rs`](src/main.rs) | The lane's process entry point, and nothing else |
-| [`tests/lane_test.rs`](tests/lane_test.rs) | Runs the lane, each arm, and the market split, from the suite |
+| [`tests/lane_test.rs`](tests/lane_test.rs) | Runs the lane, each arm, the market split, and the scenes' golden values and checksum, from the suite |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Design documentation — the control-arm and library-not-bare-main decisions, the ledger pitfall, module index, workaround (none) |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

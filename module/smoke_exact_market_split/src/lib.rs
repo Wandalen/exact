@@ -2,10 +2,11 @@
 //! end with a control arm, through `exact_arith` — the 14-crate facade —
 //! alone.
 //!
-//! Five steps in one process: a [`Money`] parsed and added by a fixed-point
+//! Six steps in one process: a [`Money`] parsed and added by a fixed-point
 //! decimal type, a [`Quantity`] refusing to go below zero, a log audited by a
 //! conservation auditor, a market fill split among several accounts with the
-//! dust accounted for and the split proven to conserve, and every one of
+//! dust accounted for and the split proven to conserve, the ten scenes of
+//! `docs/scene/` printed in their golden-print shape, and every one of
 //! those names imported from `exact_arith` and from nowhere else — which is
 //! what makes the facade's completeness a thing this lane tests rather than
 //! a thing its documentation claims.
@@ -14,7 +15,8 @@
 //! 15-crate migration — steps 1 through 4 carry its exact content forward
 //! unchanged; step 5 is new, added because a lane named for a market split
 //! ought to run one, exercising `exact_dust` and `exact_conserve` together in
-//! a way neither crate's own unit tests do on their own.
+//! a way neither crate's own unit tests do on their own; step 6 runs the
+//! proposed lane's scenes ([`golden`], [`checksum`]).
 //!
 //! # The control arm
 //!
@@ -29,7 +31,8 @@
 //! to be wrong; a lane where it stops being wrong has stopped discriminating,
 //! and reporting that as a pass would be worse than reporting nothing.
 //!
-//! `f64` appears in this file and in no other file of the family.
+//! `f64` appears in this file and in no other library source of the family —
+//! only `exact_arith`'s timing bench, a test, also uses it.
 //!
 //! # Why the lane is a library and not `src/main.rs`
 //!
@@ -39,7 +42,12 @@
 //! argument-free entry point and nothing else, and `tests/lane_test.rs`
 //! drives what moved.
 
-use exact_arith::{ money_dust_split, Entry, Money, Quantity, Rounding, verify, DustTo };
+use exact_arith::
+{
+  money_dust_remainder, money_dust_split, money_from_wire, money_to_wire, minor_checked_add, minor_from_i64,
+  price_snap_tick, qty_snap_lot, verify,
+  Decimal, DustTo, Entry, KindError, Lot, Money, Price, Quantity, Rounding, Tick,
+};
 
 /// How many times the tenth is added, in both arms.
 pub const REPEATS : i64 = 10;
@@ -134,7 +142,97 @@ pub fn market_split( fill : Money, parts : usize ) -> Vec< Money >
   money_dust_split( fill, parts, Rounding::Down, DustTo::First ).expect( "a small demo fill splits within range" )
 }
 
-/// Run the five steps, print what each found, and assert every claim.
+/// The proposed lane's golden values — scenes 001 to 006 and 008 to 009 of
+/// `docs/scene/`. Scene 007 has no value: mixing kinds does not compile.
+#[ derive( Debug, Clone, PartialEq, Eq ) ]
+pub struct Golden
+{
+  /// Scenes 001-002: `10.00 + 3.33 - 13.33`, at scale 2.
+  pub sum : Decimal< 2 >,
+  /// Scene 003: `10` split into 3, rounded down, the dust held back.
+  pub parts : Vec< Money >,
+  /// Scene 003: the held-back dust, in minor units.
+  pub dust_minor : i64,
+  /// Scene 004: `1.26` snapped to a `0.05` tick.
+  pub tick : Price,
+  /// Scene 005: `10` snapped to a lot of `3`.
+  pub lot : Quantity,
+  /// Scene 006: whether `"1.234"` was refused at scale 2.
+  pub extra : bool,
+  /// Scene 008: whether an add at `i64::MAX` was refused.
+  pub overflow : bool,
+  /// Scene 009: the minor units of `10` after a wire round trip.
+  pub wire_minor : i64,
+}
+
+/// Run scenes 001 to 009 and return what each produced.
+///
+/// Scenes 001, 002 and 006 run at scale 2, as proposed. Scenes 003 and 009
+/// run on `Money`, whose scale is fixed at 6, because `exact_dust` and
+/// `exact_bytes` take `Money` only.
+///
+/// # Panics
+///
+/// If any scene's assertion fails.
+#[ must_use ]
+pub fn golden() -> Golden
+{
+  // Scenes 001-002: parse at scale 2, add, subtract the total, land on exactly zero.
+  let a = Decimal::< 2 >::parse( "10.00" ).expect( "10.00 fits scale 2" );
+  let b = Decimal::< 2 >::parse( "3.33" ).expect( "3.33 fits scale 2" );
+  let total = Decimal::< 2 >::parse( "13.33" ).expect( "13.33 fits scale 2" );
+  let sum = a.checked_add( b ).and_then( | s | s.checked_sub( total ) ).expect( "small values fit" );
+  assert_eq!( sum, Decimal::< 2 >::ZERO, "10.00 + 3.33 - 13.33 must be exactly zero" );
+
+  // Scene 003: split, hold the dust back, and lose nothing.
+  let ten = Money::from_int( 10 ).expect( "10 is representable" );
+  let parts = money_dust_split( ten, 3, Rounding::Down, DustTo::Sink ).expect( "10 splits within range" );
+  let dust_minor = money_dust_remainder( ten, 3, Rounding::Down ).expect( "10 splits within range" );
+  let parts_minor : i64 = parts.iter().map( | p | p.minor() ).sum();
+  assert_eq!( parts_minor + dust_minor, ten.minor(), "parts plus dust must equal the total" );
+
+  // Scenes 004-005: snap to the grid.
+  let tick_size = Tick::new( Price::parse( "0.05" ).expect( "parses" ) ).expect( "a positive tick" );
+  let tick = price_snap_tick( Price::parse( "1.26" ).expect( "parses" ), tick_size, Rounding::Down )
+  .expect( "1.26 snaps within range" );
+  assert_eq!( tick, Price::parse( "1.25" ).expect( "parses" ), "1.26 must snap down to 1.25" );
+  let lot_size = Lot::new( Quantity::from_int( 3 ).expect( "3 fits" ) ).expect( "a positive lot" );
+  let lot = qty_snap_lot( Quantity::from_int( 10 ).expect( "10 fits" ), lot_size, Rounding::Down )
+  .expect( "10 snaps within range" );
+  assert_eq!( lot, Quantity::from_int( 9 ).expect( "9 is representable" ), "10 must snap down to 9" );
+
+  // Scene 006: a third decimal digit at scale 2 is refused, never cut off.
+  let extra = matches!( Decimal::< 2 >::parse( "1.234" ), Err( KindError::ExcessPrecision { .. } ) );
+  assert!( extra, "1.234 must be refused at scale 2" );
+
+  // Scene 008: an add at `i64::MAX` is refused, never wrapped.
+  let overflow = minor_checked_add( minor_from_i64( i64::MAX ), minor_from_i64( 1 ) ).is_err();
+  assert!( overflow, "i64::MAX + 1 must be refused" );
+
+  // Scene 009: the wire round trip keeps the exact minor units.
+  let back = money_from_wire( money_to_wire( ten ) ).expect( "a value just encoded decodes" );
+  assert_eq!( back, ten, "the wire round trip must be exact" );
+
+  Golden { sum, parts, dust_minor, tick, lot, extra, overflow, wire_minor : back.minor() }
+}
+
+/// Scene 010's checksum: FNV-1a over every minor-unit value in `g`.
+#[ must_use ]
+pub fn checksum( g : &Golden ) -> u64
+{
+  let minors = [ g.sum.minor(), g.dust_minor, g.tick.minor(), g.lot.minor(), g.wire_minor ]
+  .into_iter()
+  .chain( g.parts.iter().map( | p | p.minor() ) )
+  .chain( [ i64::from( g.extra ), i64::from( g.overflow ) ] );
+  let mut hash : u64 = 0xcbf2_9ce4_8422_2325;
+  for byte in minors.flat_map( i64::to_le_bytes )
+  {
+    hash = ( hash ^ u64::from( byte ) ).wrapping_mul( 0x100_0000_01b3 );
+  }
+  hash
+}
+
+/// Run the six steps, print what each found, and assert every claim.
 ///
 /// # Panics
 ///
@@ -142,7 +240,8 @@ pub fn market_split( fill : Money, parts : usize ) -> Vec< Money >
 /// round-trip, ten exact tenths that are not one, a control arm that has
 /// stopped disagreeing, a withdrawal below zero that is permitted, a
 /// balanced log reported as leaking, a leak whose signed magnitude is not
-/// named, or a market split that does not recombine to the original total.
+/// named, a market split that does not recombine to the original total, a
+/// scene whose assertion fails, or two runs whose checksums differ.
 pub fn run()
 {
   println!( "smoke_exact_market_split — this family's slice, one process" );
@@ -212,6 +311,21 @@ pub fn run()
     "  market split   {fill} into 3 -> [{}, {}, {}] (recombines exactly)",
     shares[ 0 ], shares[ 1 ], shares[ 2 ],
   );
+
+  // ---- Step 6: the proposed lane's scenes, in its golden-print shape --------
+
+  let g = golden();
+  println!();
+  println!( "  sum={}", g.sum );
+  let dust = Money::from_minor( g.dust_minor ).expect( "the dust is below one share" );
+  println!( "  parts={},{},{} dust={dust}", g.parts[ 0 ], g.parts[ 1 ], g.parts[ 2 ] );
+  println!( "  tick={} lot={}", g.tick, g.lot );
+  println!( "  extra={} overflow={}", u8::from( g.extra ), u8::from( g.overflow ) );
+  println!( "  wire={}", g.wire_minor );
+  let ( a, b ) = ( checksum( &g ), checksum( &golden() ) );
+  assert_eq!( a, b, "two runs must produce the same checksum" );
+  println!( "  a=0x{a:016x} b=0x{b:016x}" );
+  println!( "  ok" );
 
   // ---- Verdict -------------------------------------------------------------
 
