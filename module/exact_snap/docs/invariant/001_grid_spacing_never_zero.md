@@ -5,7 +5,7 @@
 - **Purpose**: State that a `Tick` or `Lot` can never carry a zero-sized grid spacing, so every division this crate drives through `exact_round::round_div` is guaranteed a nonzero divisor before it runs.
 - **Responsibility**: `Tick::new` and `Lot::new`'s zero refusal.
 - **In Scope**: Construction of `Tick` and `Lot`.
-- **Out of Scope**: A negative grid spacing, which is accepted — `round_div`'s own divisor normalization already handles it correctly, and neither the preferred design nor this crate names an error for it; the division itself (→ [`exact_round`](../../../exact_round/readme.md)).
+- **Out of Scope**: A negative grid spacing, which is accepted — `round_div` already divides by a negative divisor correctly, and neither the preferred design nor this crate names an error for it; the division itself (→ [`exact_round`](../../../exact_round/readme.md)).
 
 ### Statement
 
@@ -29,7 +29,7 @@ once, at the moment the grid is defined, in the shape the caller actually
 caused: a zero-sized grid, not an overflow.
 
 A negative spacing is deliberately not refused the same way: `round_div`
-already normalizes a negative divisor correctly, so there is no analogous
+already divides by a negative divisor correctly, so there is no analogous
 confusing-failure case to guard against, and neither the preferred design
 nor this crate's own `SnapError` names a variant for it.
 

@@ -3,7 +3,7 @@
 ### Scope
 
 - **Purpose**: State exactly how this crate's operations compute their result, so a caller can predict the output — and the failure mode — of a call without reading the implementation.
-- **Responsibility**: `round_div` — the sign-normalized, mode-driven rounding division both `exact_ratio` and `exact_snap` share.
+- **Responsibility**: `round_div` and `round_div_wide` — the mode-driven rounding division `exact_ratio`, `exact_snap` and `exact_dust` share.
 - **In Scope**: The procedure's steps and its correctness argument, including `RoundError`.
 - **Out of Scope**: Which mode applies by default (→ [`decisions/`](../decisions/readme.md)); the meaning of each `Rounding` variant itself (→ [`type/`](../type/readme.md)).
 
@@ -11,7 +11,7 @@
 
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
-| 001 | [Rounding Division](001_rounding_division.md) | Sign normalization, truncating divide, and mode-driven remainder adjustment | 🔄 |
+| 001 | [Rounding Division](001_rounding_division.md) | Truncating divide, the direction of the exact quotient, and the mode-driven step | 🔄 |
 
 ### Regenerate
 

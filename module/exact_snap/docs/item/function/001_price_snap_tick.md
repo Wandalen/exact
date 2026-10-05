@@ -3,7 +3,7 @@
 ## Representation
 
 Snap a price to the nearest multiple of `tick`, per `rounding`. Divides to
-find the nearest grid index (sign-normalized, tie-broken by `rounding`), then
+find the nearest grid index (sign-handled, tie-broken by `rounding`), then
 multiplies back out — the same round-then-rescale shape `exact_ratio`'s
 `*_div_round` functions use, built on the same shared `exact_round::round_div`.
 

@@ -16,7 +16,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:36`
+`module/exact_round/src/lib.rs:38`
 
 ```rust
 pub enum Rounding
@@ -42,11 +42,11 @@ pub enum Rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 36,62,64,72,74,76,77,78,118,142,144,156,168 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div` |
+| `src/lib.rs` | 38,64,66,74,76,78,79,80,118,140,157,159,160,161 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div_wide`; parameter of `round_div` and `round_div_wide` |
 | `tests/rounding_mode_test.rs`, `tests/round_div_test.rs` | throughout | Every variant exercised directly |
 | `exact_dust/src/lib.rs` (via `Rounding` parameter on every `money_dust_*`/`qty_dust_*` function) | — | **Production** — the rounding-mode parameter threaded through every dust-split function |
 | `exact_snap/src/lib.rs` (via `rounding` parameter on `price_snap_tick`/`qty_snap_lot`) | — | **Production** |
-| `exact_ratio/src/lib.rs` (via `rounding` parameter on `money_div_round`/`qty_div_round`) | — | **Production** |
+| `exact_ratio/src/lib.rs` (via `rounding` parameter on `money_div_round`/`qty_div_round`, every `*_mul_ratio`, and `price_mul_qty`) | — | **Production** |
 | `exact_arith/src/lib.rs:83` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:134` | — | **Production** — `Rounding::Down` passed to `money_dust_split` in the demo ledger |
 

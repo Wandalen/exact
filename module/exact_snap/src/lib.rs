@@ -2,7 +2,7 @@
 //! size for price, a lot size for quantity.
 //!
 //! Tier 2, depending on `exact_kind` for the conserved value types and
-//! `exact_round` for [`exact_round::round_div`], the sign-normalizing,
+//! `exact_round` for [`exact_round::round_div`], the sign-handling,
 //! tie-breaking division this crate's snap is built from — shared with
 //! `exact_ratio` rather than duplicated here.
 //!

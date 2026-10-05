@@ -25,8 +25,8 @@ different names.
 ## What it does not do
 
 `Tick::new` and `Lot::new` refuse only an exactly-zero grid spacing — a
-negative one is accepted, since `round_div`'s own divisor normalization
-already handles it correctly, and the preferred design names no error for
+negative one is accepted, since `round_div` already divides by a negative
+divisor correctly, and the preferred design names no error for
 it.
 
 ## Responsibility Table

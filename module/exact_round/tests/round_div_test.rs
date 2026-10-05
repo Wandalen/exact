@@ -1,5 +1,5 @@
-//! `round_div` under every rounding mode, at both signs, including the
-//! divisor-normalization path.
+//! `round_div` and `round_div_wide` under every rounding mode, at both signs,
+//! including the minimum value as either operand.
 
 use exact_round::{ RoundError, Rounding, round_div, round_div_wide };
 
@@ -10,10 +10,9 @@ fn round_div_refuses_a_zero_divisor()
   assert_eq!( round_div( 1, 0, Rounding::Down ), Err( RoundError::DivZero ) );
 }
 
-/// A negative divisor is normalized — the sign cases below only ever see a
-/// positive one.
+/// A negative divisor rounds exactly as negating both operands would.
 #[ test ]
-fn round_div_normalizes_a_negative_divisor()
+fn a_negative_divisor_rounds_like_negating_both_operands()
 {
   assert_eq!( round_div( 7, -2, Rounding::Down ).unwrap(), round_div( -7, 2, Rounding::Down ).unwrap() );
 }
@@ -61,19 +60,29 @@ fn an_exact_division_agrees_across_every_rounding_mode()
   }
 }
 
-/// Normalizing a negative divisor overflows when the dividend is `i64::MIN` —
-/// `i64::MIN.checked_neg()` has no representable result.
+/// The one overflow: `i64::MIN / -1`, whose quotient is one past `i64::MAX`.
 #[ test ]
-fn round_div_reports_overflow_normalizing_i64_min_against_a_negative_divisor()
+fn round_div_reports_overflow_only_when_the_quotient_does_not_fit()
 {
-  assert_eq!( round_div( i64::MIN, -1, Rounding::Down ), Err( RoundError::Overflow ) );
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  {
+    assert_eq!( round_div( i64::MIN, -1, mode ), Err( RoundError::Overflow ) );
+  }
 }
 
-/// Normalizing a negative divisor of `i64::MIN` itself overflows the same way.
+/// The minimum value divides like any other value, as dividend or divisor.
 #[ test ]
-fn round_div_reports_overflow_normalizing_an_i64_min_divisor()
+fn round_div_handles_the_minimum_value_on_either_side()
 {
-  assert_eq!( round_div( 1, i64::MIN, Rounding::Down ), Err( RoundError::Overflow ) );
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  {
+    assert_eq!( round_div( 0, i64::MIN, mode ), Ok( 0 ) );
+    assert_eq!( round_div( i64::MIN, -2, mode ), Ok( 1 << 62 ) );
+    assert_eq!( round_div( i64::MIN, i64::MIN, mode ), Ok( 1 ) );
+  }
+  assert_eq!( round_div( 1, i64::MIN, Rounding::Down ), Ok( -1 ) ); // just below zero
+  assert_eq!( round_div( 1, i64::MIN, Rounding::Up ), Ok( 0 ) );
+  assert_eq!( round_div( 1, i64::MIN, Rounding::HalfEven ), Ok( 0 ) );
 }
 
 /// `HalfEven` on a remainder below one half rounds toward the nearer neighbour,
@@ -85,19 +94,32 @@ fn half_even_rounds_below_half_toward_the_nearer_neighbour()
   assert_eq!( round_div( -13, 4, Rounding::HalfEven ).unwrap(), -3 ); // -3.25 -> -3
 }
 
-/// `round_div_wide` agrees with `round_div` on every input both accept, so the
-/// two copies of the rounding rules cannot drift apart unnoticed.
+/// Every mode matches its definition on a grid of small operands, both signs:
+/// `Down` is the largest integer at most `n / d`, `Up` the smallest at least
+/// `n / d`, and `HalfEven` the nearest, a tie going to the even one.
 #[ test ]
-fn round_div_wide_agrees_with_round_div()
+fn every_mode_matches_its_definition_on_a_grid()
 {
-  for n in [ -13, -8, -7, -5, -1, 0, 1, 5, 7, 8, 13, i64::MAX, i64::MIN + 1 ]
+  for n in -60_i64..=60
   {
-    for d in [ -4, -2, 1, 2, 3, 4, i64::MAX ]
+    for d in ( -13_i64..=13 ).filter( | &d | d != 0 )
     {
-      for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+      let at_most = | k : i64 | if d > 0 { k * d <= n } else { k * d >= n }; // k <= n / d
+      let down = ( -61..=61 ).filter( | &k | at_most( k ) ).max().unwrap();
+      let up = if down * d == n { down } else { down + 1 };
+      let distance = | k : i64 | ( n - k * d ).abs();
+      let half_even = match distance( down ).cmp( &distance( up ) )
       {
-        let narrow = round_div( n, d, mode ).map( i128::from );
-        assert_eq!( round_div_wide( i128::from( n ), i128::from( d ), mode ), narrow, "{n} / {d}, {mode:?}" );
+        core::cmp::Ordering::Less => down,
+        core::cmp::Ordering::Greater => up,
+        core::cmp::Ordering::Equal => if down % 2 == 0 { down } else { up },
+      };
+      let expected = [ ( Rounding::Down, down ), ( Rounding::Up, up ), ( Rounding::HalfEven, half_even ) ];
+      for ( mode, want ) in expected
+      {
+        assert_eq!( round_div( n, d, mode ), Ok( want ), "{n} / {d}, {mode:?}" );
+        let wide = round_div_wide( i128::from( n ), i128::from( d ), mode );
+        assert_eq!( wide, Ok( i128::from( want ) ), "wide {n} / {d}, {mode:?}" );
       }
     }
   }
@@ -110,14 +132,41 @@ fn round_div_wide_divides_a_dividend_wider_than_i64()
   let n = i128::from( i64::MAX ) * 3 + 1; // (3 × i64::MAX + 1) / 3 = i64::MAX + 1/3
   assert_eq!( round_div_wide( n, 3, Rounding::Down ), Ok( i128::from( i64::MAX ) ) );
   assert_eq!( round_div_wide( n, 3, Rounding::Up ), Ok( i128::from( i64::MAX ) + 1 ) );
+  assert_eq!( round_div_wide( n, 3, Rounding::HalfEven ), Ok( i128::from( i64::MAX ) ) );
+  // a negative divisor: -(i64::MAX + 1/3)
+  assert_eq!( round_div_wide( n, -3, Rounding::Down ), Ok( -i128::from( i64::MAX ) - 1 ) );
+  assert_eq!( round_div_wide( n, -3, Rounding::Up ), Ok( -i128::from( i64::MAX ) ) );
+  assert_eq!( round_div_wide( n, -3, Rounding::HalfEven ), Ok( -i128::from( i64::MAX ) ) );
   assert_eq!( round_div_wide( 1, 0, Rounding::Down ), Err( RoundError::DivZero ) );
 }
 
-/// The overflow message names its real cause: negating the minimum value
-/// while normalizing a negative divisor.
+/// `round_div_wide` handles `i128`'s minimum value on either side; only
+/// `i128::MIN / -1` overflows.
 #[ test ]
-fn the_overflow_message_names_the_sign_normalization()
+fn round_div_wide_handles_the_minimum_value_on_either_side()
+{
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  {
+    assert_eq!( round_div_wide( 0, i128::MIN, mode ), Ok( 0 ) );
+    assert_eq!( round_div_wide( i128::MIN, -2, mode ), Ok( 1 << 126 ) );
+    assert_eq!( round_div_wide( i128::MIN, i128::MIN, mode ), Ok( 1 ) );
+    assert_eq!( round_div_wide( i128::MIN, -1, mode ), Err( RoundError::Overflow ) );
+  }
+  assert_eq!( round_div_wide( 1, i128::MIN, Rounding::Down ), Ok( -1 ) );
+  assert_eq!( round_div_wide( 1, i128::MIN, Rounding::Up ), Ok( 0 ) );
+}
+
+/// The overflow message names its real cause: a quotient past the integer type.
+#[ test ]
+fn the_overflow_message_names_the_real_cause()
 {
   let error = round_div( i64::MIN, -1, Rounding::Down ).unwrap_err();
-  assert_eq!( error.to_string(), "normalizing a negative divisor overflowed" );
+  assert_eq!( error.to_string(), "the quotient does not fit the integer type" );
+}
+
+/// The zero-divisor message names the zero divisor.
+#[ test ]
+fn the_div_zero_message_names_the_zero_divisor()
+{
+  assert_eq!( RoundError::DivZero.to_string(), "a zero divisor was supplied" );
 }

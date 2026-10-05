@@ -3,7 +3,7 @@
 //! silently vanish into truncation.
 //!
 //! Tier 3, depending on `exact_kind` for the conserved value types and
-//! `exact_round` for [`exact_round::round_div`] — the same sign-normalizing,
+//! `exact_round` for [`exact_round::round_div`] — the same sign-handling,
 //! tie-breaking division `exact_ratio` and `exact_snap` already share,
 //! driven directly here rather than through `exact_ratio`.
 //!

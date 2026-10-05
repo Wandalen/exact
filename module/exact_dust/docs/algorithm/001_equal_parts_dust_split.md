@@ -5,14 +5,14 @@
 - **Purpose**: Define how a conserved value is divided into equal integer shares without ever creating or destroying a unit, so a division is never a hole in the conservation argument a logged split later has to pass.
 - **Responsibility**: `split_minor`'s per-share quotient and leftover, and `fill_minor`'s distribution of that leftover across the output slots.
 - **In Scope**: Equal-count splitting (`parts: usize`) of `Money`/`Quantity`, the effect of the chosen `Rounding` mode on the per-share quotient, and the three `DustTo` destinations for whatever the chosen mode leaves over.
-- **Out of Scope**: `round_div`'s own sign-normalization and tie-breaking rules — that is `exact_round`'s own responsibility (see `../../../exact_round/src/lib.rs`); detecting, after the fact, that a logged split failed to conserve (→ [Conservation Verification Fold](../../../exact_conserve/docs/algorithm/001_conservation_verification_fold.md)); weighted (non-equal-share) splitting, which this crate does not implement (→ [Equal-Count Split Surface](../decisions/002_equal_count_split_surface.md)).
+- **Out of Scope**: `round_div`'s own sign-handling and tie-breaking rules — that is `exact_round`'s own responsibility (see `../../../exact_round/src/lib.rs`); detecting, after the fact, that a logged split failed to conserve (→ [Conservation Verification Fold](../../../exact_conserve/docs/algorithm/001_conservation_verification_fold.md)); weighted (non-equal-share) splitting, which this crate does not implement (→ [Equal-Count Split Surface](../decisions/002_equal_count_split_surface.md)).
 
 ### Algorithm
 
 **Inputs.** A total `total` (a `Money` or `Quantity`, read at its raw minor-unit count), a part count `parts: usize`, a `Rounding` mode, and a `DustTo` destination.
 
 1. **Reject zero parts.** `parts == 0` returns [`DustError::EmptyParts`] immediately — there is no share size for an empty split, and silently returning an empty `Vec` would leave `total` unaccounted at the call site.
-2. **Compute the per-share quotient.** `share = round_div(total_minor, parts, mode)` — `exact_round`'s own sign-normalizing, tie-breaking division, the same one `exact_ratio` and `exact_snap` already share. Which way `share` leans relative to the exact rational quotient depends entirely on `mode`: `Down` floors it, `Up` ceils it, `HalfEven` rounds to the nearest representable share and breaks an exact tie toward the even one.
+2. **Compute the per-share quotient.** `share = round_div(total_minor, parts, mode)` — `exact_round`'s own sign-handling, tie-breaking division, the same one `exact_ratio` and `exact_snap` already share. Which way `share` leans relative to the exact rational quotient depends entirely on `mode`: `Down` floors it, `Up` ceils it, `HalfEven` rounds to the nearest representable share and breaks an exact tie toward the even one.
 3. **Compute the leftover by subtraction, not by a second rounding.** `allocated = share.checked_mul(parts)`, then `leftover = total_minor.checked_sub(allocated)`. Both steps are checked — an overflow in either returns [`DustError::Overflow`] rather than wrapping. The leftover is derived once, by subtracting the allocated amount from the total, never accumulated from per-share error terms — so there is no rounding of a rounding to hide a defect behind.
    - Under `Down`, `share` never exceeds the exact quotient, so `leftover >= 0`.
    - Under `Up`, `share` never falls short of the exact quotient, so `leftover <= 0` — the per-share claims collectively over-cover `total`, and `leftover` is the (non-positive) correction still owed back.
@@ -48,7 +48,7 @@ This is a narrower guarantee than a weighted, multi-share split would need: ther
 | `src/lib.rs:143-158` | `money_dust_split` — reconstructs the typed output via `Money::from_minor` (step 5) |
 | `src/lib.rs:196-203` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
 | `src/lib.rs:65-73` | `DustError` — the three failure modes steps 1, 3, and 4 return |
-| `../../../exact_round/src/lib.rs:109-187` | `round_div` — the per-share division this procedure drives directly (step 2) |
+| `../../../exact_round/src/lib.rs:118-126` | `round_div` — the per-share division this procedure drives directly (step 2), rounding through `round_div_wide` |
 
 ### Tests
 

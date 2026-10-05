@@ -3,7 +3,7 @@
 ## Representation
 
 Divide a money value by `d`, rounding the remainder per `rounding`. The
-family's one shared sign-normalizing, tie-breaking division logic
+family's one shared sign-handling, tie-breaking division logic
 (`exact_round::round_div`) is driven here rather than duplicated.
 
 ## Kind

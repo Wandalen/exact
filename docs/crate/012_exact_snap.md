@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its struct/function/error surface (→ `../type/012_exact_snap_types.md`).
 
-**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md). Dependencies match as specified (`exact_kind`, `exact_round`); its function surface diverges from this proposal — see [`type/012_exact_snap_types.md`](../type/012_exact_snap_types.md) for the account. A zero-sized tick or lot is refused at construction, but a negative grid spacing is deliberately accepted — `exact_round::round_div` already normalizes a negative divisor correctly, so there is no analogous failure to guard against — see [`exact_snap`'s own invariant doc](../../module/exact_snap/docs/invariant/001_grid_spacing_never_zero.md).
+**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md). Dependencies match as specified (`exact_kind`, `exact_round`); its function surface diverges from this proposal — see [`type/012_exact_snap_types.md`](../type/012_exact_snap_types.md) for the account. A zero-sized tick or lot is refused at construction, but a negative grid spacing is deliberately accepted — `exact_round::round_div` already divides by a negative divisor correctly, so there is no analogous failure to guard against — see [`exact_snap`'s own invariant doc](../../module/exact_snap/docs/invariant/001_grid_spacing_never_zero.md).
 
 ### Why It Exists
 

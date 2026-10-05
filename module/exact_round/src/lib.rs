@@ -11,15 +11,17 @@
 //! is no real-code precedent to port here — every item below is written
 //! fresh against the preferred design's own crate specification.
 //!
-//! [`round_div`] lives here rather than in `exact_ratio` or `exact_snap`
-//! individually, even though the preferred design does not list it under
-//! this crate's own name: both of those tier-2 crates need "divide an
-//! integer by another, applying a rounding mode to the remainder," and both
-//! already depend on this crate for [`Rounding`] itself. Giving each of them
-//! its own private copy of the same sign-handling and tie-breaking logic
-//! would be exactly the duplication this family's own hygiene rules forbid;
-//! owning it once here, where both consumers already have an edge, avoids
-//! it without adding a new dependency edge to either.
+//! [`round_div`] and [`round_div_wide`] live here rather than in
+//! `exact_ratio` or `exact_snap` individually, even though the preferred
+//! design does not list them under this crate's own name: those tier-2
+//! crates need "divide an integer by another, applying a rounding mode to
+//! the remainder," and they already depend on this crate for [`Rounding`]
+//! itself. Giving each of them its own private copy of the same
+//! sign-handling and tie-breaking logic would be exactly the duplication
+//! this family's own hygiene rules forbid; owning it once here, where every
+//! consumer already has an edge, avoids it without adding a new dependency
+//! edge to any of them. [`round_div_wide`] is the `i128` form, for
+//! `exact_ratio`'s multiply-before-divide, whose product no `i64` can hold.
 //!
 //! # Examples
 //!
@@ -85,8 +87,8 @@ pub enum RoundError
 {
   /// A zero divisor was supplied.
   DivZero,
-  /// Normalizing a negative divisor overflowed: negating the type's minimum
-  /// value, the only overflow a rounded division can reach.
+  /// The quotient does not fit the integer type — only reachable dividing
+  /// the type's minimum value by `-1`.
   Overflow,
 }
 
@@ -97,7 +99,7 @@ impl core::fmt::Display for RoundError
     match self
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
-      Self::Overflow => write!( f, "normalizing a negative divisor overflowed" ),
+      Self::Overflow => write!( f, "the quotient does not fit the integer type" ),
     }
   }
 }
@@ -106,182 +108,68 @@ impl core::error::Error for RoundError {}
 
 /// Divide `n` by `d`, applying `rounding` to a nonzero remainder.
 ///
-/// A negative `d` is accepted and normalized — `n / d` with `d < 0` is
-/// computed as `-n / -d` — so every sign case below only has to handle a
-/// positive divisor.
+/// The `i64` form of [`round_div_wide`]: every `i64` fits an `i128`, so the
+/// rounding rules are implemented once, there, and the result is narrowed back.
 ///
 /// # Errors
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
-/// normalizing a negative divisor overflows — only reachable at `i64::MIN`,
-/// whose negation does not fit; adjusting the quotient by one never overflows.
+/// the quotient does not fit an `i64` — only `i64::MIN / -1`.
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
 {
-  if d == 0
+  match round_div_wide( n as i128, d as i128, rounding )
   {
-    return Err( RoundError::DivZero );
-  }
-  let ( n, d ) = if d < 0
-  {
-    let Some( neg_n ) = n.checked_neg() else { return Err( RoundError::Overflow ) };
-    let Some( neg_d ) = d.checked_neg() else { return Err( RoundError::Overflow ) };
-    ( neg_n, neg_d )
-  }
-  else
-  {
-    ( n, d )
-  };
-
-  let q = n / d;
-  let r = n % d;
-  if r == 0
-  {
-    return Ok( q );
-  }
-
-  match rounding
-  {
-    Rounding::Down =>
-    {
-      if r < 0
-      {
-        let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
-        Ok( q )
-      }
-      else
-      {
-        Ok( q )
-      }
-    }
-    Rounding::Up =>
-    {
-      if r > 0
-      {
-        let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
-        Ok( q )
-      }
-      else
-      {
-        Ok( q )
-      }
-    }
-    Rounding::HalfEven =>
-    {
-      // `i128::from(_)` is not const-stable on this toolchain — `as` casts are.
-      let twice_r_abs = ( r.unsigned_abs() as i128 ) * 2;
-      let d_wide = d as i128;
-      if twice_r_abs < d_wide
-      {
-        Ok( q )
-      }
-      else if twice_r_abs > d_wide || q % 2 != 0
-      {
-        if n < 0
-        {
-          let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
-          Ok( q )
-        }
-        else
-        {
-          let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
-          Ok( q )
-        }
-      }
-      else
-      {
-        Ok( q )
-      }
-    }
+    Ok( q ) if q >= i64::MIN as i128 && q <= i64::MAX as i128 => Ok( q as i64 ),
+    Ok( _ ) => Err( RoundError::Overflow ),
+    Err( e ) => Err( e ),
   }
 }
 
-/// [`round_div`] over `i128`, for a dividend no `i64` can hold.
+/// Divide `n` by `d` over `i128`, applying `rounding` to a nonzero remainder.
 ///
-/// `exact_ratio` multiplies two `i64` values in `i128` before dividing, so
-/// the dividend it divides does not fit [`round_div`]. The rounding rules are
-/// the same, and a test in this crate checks the two agree on every input
-/// both accept.
+/// The one implementation of the rounding rules: [`round_div`] calls it, and
+/// `exact_ratio` calls it directly for a product of two `i64` values, which no
+/// `i64` can hold. The operands keep their signs — the rounding direction
+/// comes from the signs of the remainder and the divisor — so a minimum-value
+/// operand rounds like any other.
 ///
 /// # Errors
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
-/// normalizing a negative divisor overflows — only reachable at `i128::MIN`.
+/// the quotient does not fit an `i128` — only `i128::MIN / -1`.
 pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result< i128, RoundError >
 {
   if d == 0
   {
     return Err( RoundError::DivZero );
   }
-  let ( n, d ) = if d < 0
-  {
-    let Some( neg_n ) = n.checked_neg() else { return Err( RoundError::Overflow ) };
-    let Some( neg_d ) = d.checked_neg() else { return Err( RoundError::Overflow ) };
-    ( neg_n, neg_d )
-  }
-  else
-  {
-    ( n, d )
-  };
-
-  let q = n / d;
+  // Truncates toward zero; `MIN / -1` is the one quotient with no representable result.
+  let Some( q ) = n.checked_div( d ) else { return Err( RoundError::Overflow ) };
   let r = n % d;
   if r == 0
   {
     return Ok( q );
   }
 
-  match rounding
+  // The exact quotient lies strictly between `q` and its neighbour one step
+  // further from zero: below `q` when the remainder and divisor differ in sign.
+  let exact_is_below = ( r < 0 ) != ( d < 0 );
+  let step_toward_exact = match rounding
   {
-    Rounding::Down =>
-    {
-      if r < 0
-      {
-        let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
-        Ok( q )
-      }
-      else
-      {
-        Ok( q )
-      }
-    }
-    Rounding::Up =>
-    {
-      if r > 0
-      {
-        let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
-        Ok( q )
-      }
-      else
-      {
-        Ok( q )
-      }
-    }
+    Rounding::Down => exact_is_below,
+    Rounding::Up => !exact_is_below,
     Rounding::HalfEven =>
     {
-      // `u128` rather than `i128`: twice a remainder just below `i128::MAX` would not fit `i128`.
-      let twice_r_abs = r.unsigned_abs() * 2;
+      // `u128`: twice a remainder just below `i128::MAX` would not fit `i128`.
+      let twice_r = r.unsigned_abs() * 2;
       let d_abs = d.unsigned_abs();
-      if twice_r_abs < d_abs
-      {
-        Ok( q )
-      }
-      else if twice_r_abs > d_abs || q % 2 != 0
-      {
-        if n < 0
-        {
-          let Some( q ) = q.checked_sub( 1 ) else { return Err( RoundError::Overflow ) };
-          Ok( q )
-        }
-        else
-        {
-          let Some( q ) = q.checked_add( 1 ) else { return Err( RoundError::Overflow ) };
-          Ok( q )
-        }
-      }
-      else
-      {
-        Ok( q )
-      }
+      twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 )
     }
+  };
+  if !step_toward_exact
+  {
+    return Ok( q );
   }
+  // Cannot overflow: a nonzero remainder needs `|d| >= 2`, so `|q| <= |n| / 2`.
+  Ok( if exact_is_below { q - 1 } else { q + 1 } )
 }

@@ -63,20 +63,23 @@ error-rendering machinery).
 
 ### Notable Findings
 
-- **`round_div` is the crate's one load-bearing export**: real production
-  callers in all 3 of `exact_dust`, `exact_snap`, and `exact_ratio` — the
-  single shared rounding-division primitive the migration plan's own module
-  doc comment explains was deliberately centralized here to avoid
-  duplicating sign-handling/tie-breaking logic three times.
+- **`round_div` and `round_div_wide` are the crate's load-bearing exports**:
+  `round_div` has real production callers in all 3 of `exact_dust`,
+  `exact_snap`, and `exact_ratio`, and `round_div_wide` in `exact_ratio`'s
+  ratio multiplies — the shared rounding division the module doc comment
+  explains was deliberately centralized here to avoid duplicating
+  sign-handling/tie-breaking logic three times. The rounding rules
+  themselves live once, in `round_div_wide`; `round_div` widens into it.
 - **`rounding_default` and `rounding_name` are each unused outside their own
   tests** — both are re-exported through `exact_arith`'s facade, but no
   production or test file anywhere in the 15-crate family actually calls
   either one. Every call site that needs `HalfEven` currently writes the
   variant literally rather than calling `rounding_default()`. A real,
   individually grep-verified gap, not an omission.
-- **`RoundError`'s `Display` is never rendered anywhere** — every consumer
-  (`exact_dust`, `exact_snap`, `exact_ratio`) maps it into its own local
-  error type via `match`, never by formatting the message. Same pattern as
+- **`RoundError`'s `Display` is rendered only by this crate's own tests**,
+  which pin both messages — every consumer (`exact_dust`, `exact_snap`,
+  `exact_ratio`) maps it into its own local error type via `match`, never by
+  formatting the message. Same pattern as
   [`exact_kind::KindError`](../../../exact_kind/docs/item/enum/001_kind_error.md).
 
 ### Regenerate

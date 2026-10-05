@@ -3,7 +3,7 @@
 //! Tier 2, depending on `exact_kind` for the conserved value types and
 //! `exact_round` for the rounding modes the `div_round`-family functions
 //! take, and for [`exact_round::round_div`] itself — the actual
-//! sign-normalizing, tie-breaking division logic, shared with `exact_snap`
+//! sign-handling, tie-breaking division logic, shared with `exact_snap`
 //! rather than duplicated here.
 //!
 //! Net-new: no real precedent exists for either operation. Every multiply
