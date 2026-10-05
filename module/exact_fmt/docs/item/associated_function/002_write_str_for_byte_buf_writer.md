@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:58-68`
+`module/exact_fmt/src/lib.rs:72-82`
 
 ```rust
 fn write_str( &mut self, s : &str ) -> core::fmt::Result
@@ -31,7 +31,7 @@ fn write_str( &mut self, s : &str ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58-68 | Declaration |
+| `src/lib.rs` | 72-82 | Declaration |
 | `tests/fmt_test.rs:34` | — | Indirectly exercises the `Err` branch (too-small buffer) through `fmt_into` |
 
 ## Crate Usage
@@ -42,7 +42,7 @@ fn write_str( &mut self, s : &str ) -> core::fmt::Result
 
 ## Caller Tree
 
-- [fmt_into](../function/001_fmt_into.md) (`src/lib.rs:85`) — **not a direct
+- [fmt_into](../function/001_fmt_into.md) (`src/lib.rs:99`) — **not a direct
   call in the source text**: `write!( writer, "{value}" )` expands to
   `writer.write_fmt( format_args!( "{value}" ) )`, whose default
   implementation (`core::fmt::Write`, external) drives `value`'s own

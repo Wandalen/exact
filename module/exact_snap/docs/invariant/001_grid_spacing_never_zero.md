@@ -21,25 +21,27 @@ both fields are private, so a `Tick` or `Lot` reaching `price_snap_tick` or
 `price_snap_tick` and `qty_snap_lot` both divide by the grid spacing
 (`tick.0.minor()`, `lot.0.minor()`) to find which grid point a value is
 nearest to. A zero divisor reaching `exact_round::round_div` would return
-`RoundError::DivZero` deep inside the snap, reported as `SnapError::Overflow`
-through this crate's defensive-but-unreachable error mapping — a confusing
-result for a caller who passed a value `round_div` itself would have refused
-outright. Refusing at construction instead means the failure is reported
+`RoundError::DivZero` deep inside the snap, surfacing only through this
+crate's defensive-but-unreachable error mapping (to `ZeroTick`/`ZeroLot`) at
+the moment a value is snapped — long after, and far from, where the
+zero-sized grid was actually defined. Refusing at construction instead means the failure is reported
 once, at the moment the grid is defined, in the shape the caller actually
 caused: a zero-sized grid, not an overflow.
 
-A negative spacing is deliberately not refused the same way: `round_div`
-already divides by a negative divisor correctly, so there is no analogous
-confusing-failure case to guard against, and neither the preferred design
-nor this crate's own `SnapError` names a variant for it.
+A negative spacing is deliberately not refused the same way: a tick of `-5`
+marks the same grid as a tick of `5`, and `price_snap_tick` divides by the
+tick's magnitude, so a negative tick snaps exactly like its positive
+counterpart — `Down` still lands at or below, `Up` at or above. Neither the
+preferred design nor this crate's own `SnapError` names a variant for it. A
+`Lot` can never be negative, since a `Quantity` refuses it.
 
 ### Sources
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:62-74` | `Tick::new` — the zero check and refusal |
-| `src/lib.rs:90-102` | `Lot::new` — the same check and refusal |
-| `src/lib.rs:42-54` | `round_error_to_snap_error` — the comment on why `RoundError::DivZero` is unreachable through this crate's public API once this invariant holds |
+| `src/lib.rs:74-86` | `Tick::new` — the zero check and refusal |
+| `src/lib.rs:102-114` | `Lot::new` — the same check and refusal |
+| `src/lib.rs:54-66` | `round_error_to_snap_error` — the comment on why `RoundError::DivZero` is unreachable through this crate's public API once this invariant holds |
 
 ### Tests
 

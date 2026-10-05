@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:56-69`
+`module/exact_fmt/src/lib.rs:70-83`
 
 ```rust
 impl core::fmt::Write for ByteBufWriter< '_ >
@@ -35,7 +35,7 @@ impl core::fmt::Write for ByteBufWriter< '_ >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 56-69 | Declaration |
+| `src/lib.rs` | 70-83 | Declaration |
 
 ## Crate Usage
 

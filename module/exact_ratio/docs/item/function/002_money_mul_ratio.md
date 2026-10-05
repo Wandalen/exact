@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:140`
+`module/exact_ratio/src/lib.rs:153`
 
 ```rust
 pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
@@ -26,8 +26,8 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 140-144 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 30,40 | One-half exact multiply; an intermediate-overflow survival case |
+| `src/lib.rs` | 153-157 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 34,44 | One-half exact multiply; an intermediate-overflow survival case |
 | `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 ## Crate Usage
@@ -46,6 +46,6 @@ across `substrate/` and `module/`).
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:127`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:67`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:140`, private — no Item Instance of its own)
+- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Money::minor`, `exact_kind::Money::from_minor`

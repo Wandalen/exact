@@ -17,9 +17,9 @@ ceiling. It consolidates what the real codebase built as two separate
 crates — `exact_decimal`'s signed `Decimal<SCALE>` and `exact_qty`'s
 non-negative `Qty<SCALE>` — into the one crate the family's preferred design
 names `exact_kind`, carrying both representations forward unchanged in
-behaviour; see each collection's own instances for the three disclosed
-deviations from that preferred design (`Price == Money`, no `Scaled` trait,
-`KindError` with no `ScaleMismatch`).
+behaviour, plus `Price` as its own type wrapping a `Money`; see each
+collection's own instances for the two disclosed deviations from that
+preferred design (no `Scaled` trait, `KindError` with no `ScaleMismatch`).
 
 `Decimal::parse`'s grammar and `Display`'s rendering are documented as part
 of [Conserved Value Type Family](type/001_conserved_value_type_family.md)

@@ -35,7 +35,7 @@ The preferred design for this crate specifies its own `ParseError { Empty, BadCh
 
 ### Cross-Crate Scale Consistency Guard
 
-`src/lib.rs:36` asserts `Money::ONE_MINOR == exact_scale::pow10(exact_scale::MONEY_SCALE)` at compile time. `exact_kind::Money`'s scale and `exact_scale::MONEY_SCALE` are declared in two different crates, connected only by each definition site independently choosing the same numeral; this assertion fails the build the moment the two drift apart, rather than waiting for a parse to silently use the wrong scale.
+`src/lib.rs:45` asserts `Money::ONE_MINOR == exact_scale::pow10(exact_scale::MONEY_SCALE)` at compile time. `exact_kind::Money`'s scale and `exact_scale::MONEY_SCALE` are declared in two different crates, connected only by each definition site independently choosing the same numeral; this assertion fails the build the moment the two drift apart, rather than waiting for a parse to silently use the wrong scale.
 
 ### Round-Trip Property
 
@@ -46,11 +46,11 @@ The preferred design for this crate specifies its own `ParseError { Empty, BadCh
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:1-27` | Module doc — disclosed deviations: no `ParseError`, no standalone `parse_reject_extra_digits` |
-| `src/lib.rs:29` | Imports `KindError`, `Money`, `Price`, `Quantity` from `exact_kind` |
-| `src/lib.rs:31-36` | The cross-crate scale consistency guard (compile-time assertion) |
-| `src/lib.rs:38-46` | `money_from_str` |
-| `src/lib.rs:48-56` | `qty_from_str` |
-| `src/lib.rs:58-67` | `price_from_str` |
+| `src/lib.rs:38` | Imports `KindError`, `Money`, `Price`, `Quantity` from `exact_kind` |
+| `src/lib.rs:40-45` | The cross-crate scale consistency guard (compile-time assertion) |
+| `src/lib.rs:47-55` | `money_from_str` |
+| `src/lib.rs:57-65` | `qty_from_str` |
+| `src/lib.rs:67-75` | `price_from_str` |
 
 ### Tests
 

@@ -26,6 +26,7 @@ pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, Conserv
 |------|---------|---------|
 | `src/lib.rs` | 223-226 | Declaration |
 | `tests/conservation_test.rs:121-134` | — | `try_fold` usage and an overflow case |
+| `tests/conservation_test.rs:197` | — | Credits and debits folding back to exactly zero |
 | `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
@@ -38,7 +39,7 @@ zero production or cross-crate test consumers, unlike `verify`/`Entry`/
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_conserve` | `(defining crate)` | Exercised by its own 2 tests |
+| `exact_conserve` | `(defining crate)` | Exercised by its own 3 tests |
 | `exact_arith` | `src/lib.rs` | Re-export only — not called by the facade's own test suite |
 
 ## Caller Tree
@@ -47,5 +48,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_add::money_add` (`exact_add/src/lib.rs:35`)
+- **External:** `exact_add::money_add` (`exact_add/src/lib.rs:53`)
 - `kind_error_to_conservation_error` (`src/lib.rs:134`, private — no Item Instance of its own)

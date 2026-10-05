@@ -12,7 +12,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:27`
+`module/exact_fmt/src/lib.rs:41`
 
 ```rust
 use exact_kind::{ Money, Price, Quantity };
@@ -22,7 +22,7 @@ use exact_kind::{ Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 27 | Declaration |
+| `src/lib.rs` | 41 | Declaration |
 | `src/lib.rs` | 91, 98, 105 | `Money`/`Quantity`/`Price` parameter types on `money_fmt`/`qty_fmt`/`price_fmt` |
 
 Does not import `KindError` — unlike `exact_add`/`exact_parse`/`exact_ratio`,

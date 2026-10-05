@@ -1,7 +1,7 @@
 # verb
 
 Crate-scoped test/lint/build for `exact_bytes`, thin wrappers over the workspace's
-`verb/_crate_dispatch` (see [../../verb/readme.md](../../verb/readme.md) for the full
+`verb/_crate_dispatch` (see [../../../verb/readme.md](../../../verb/readme.md) for the full
 parameter convention and rationale). Every parameter is `key::val`, never `--flag val`.
 
 | File | Responsibility |

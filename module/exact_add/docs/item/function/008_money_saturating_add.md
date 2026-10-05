@@ -18,7 +18,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:110`
+`module/exact_add/src/lib.rs:128`
 
 ```rust
 pub const fn money_saturating_add( a : Money, b : Money ) -> Money
@@ -35,8 +35,8 @@ pub const fn money_saturating_add( a : Money, b : Money ) -> Money
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 110,115 | Declaration; its own clamp-direction decision |
-| `tests/checked_and_saturating_add_test.rs:60-61,70` | — | Clamps at both signs; matches checked addition in range |
+| `src/lib.rs` | 128,133 | Declaration; its own clamp-direction decision |
+| `tests/checked_and_saturating_add_test.rs:61-62,71` | — | Clamps at both signs; matches checked addition in range |
 | `exact_arith/src/lib.rs:93` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls

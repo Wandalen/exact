@@ -42,7 +42,7 @@ pub const fn sign_neg_allowed( neg_allowed : bool, value : Backing ) -> bool
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 78 | Declaration |
-| `tests/sign_classification_test.rs:25-38` | — | Both policy states (allowed/disallowed) at all 3 signs |
+| `tests/sign_classification_test.rs:36-50` | — | Both policy states (allowed/disallowed) at all 3 signs |
 | `exact_arith/src/lib.rs:85` | — | Facade re-export |
 
 No production or test file in any of `exact_sign`'s 3 dependents

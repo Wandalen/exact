@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:132-138`
+`module/exact_snap/src/lib.rs:147-153`
 
 ```rust
 pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
@@ -28,8 +28,8 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 132-138 | Declaration |
-| `tests/snap_test.rs` | 62,63,73,74 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
+| `src/lib.rs` | 147-153 | Declaration |
+| `tests/snap_test.rs` | 105,106,116,117 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
@@ -50,7 +50,7 @@ OT012.
 
 ## Callee Tree
 
-- `round_error_to_snap_error` (`src/lib.rs:42`, private — no Item Instance of its own)
+- `round_error_to_snap_error` (`src/lib.rs:54`, private — no Item Instance of its own)
 - **External:** `exact_kind::Qty::minor` (via `qty.minor()` and `lot.0.minor()` ×2)
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)

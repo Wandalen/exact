@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:60-82`
+`module/exact_snap/src/lib.rs:72-94`
 
 ```rust
 impl Tick
@@ -37,7 +37,7 @@ impl Tick
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 60-82 | Declaration |
+| `src/lib.rs` | 72-94 | Declaration |
 
 ## Crate Usage
 

@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:196-203`
+`module/exact_dust/src/lib.rs:207-214`
 
 ```rust
 pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
@@ -32,11 +32,11 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 196-203 | Declaration |
-| `tests/dust_split_test.rs:105,121` | — | A clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
+| `src/lib.rs` | 207-214 | Declaration |
+| `tests/dust_split_test.rs:97,136,152` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
 | `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
-No call site anywhere outside this crate's own 2 tests — an honest empty
+No call site anywhere outside this crate's own 3 tests — an honest empty
 finding. `exact_arith` only re-exports the name; neither its crate-doc
 example nor its test suite calls this function (both only exercise the
 `Money` side).
@@ -54,8 +54,9 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:198`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:112`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:209`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- `fill_minor` (`src/lib.rs:199`, private — no Item Instance of its own)
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:198`), `exact_kind::Quantity::from_minor` (`src/lib.rs:201`)
+- `fill_minor` (`src/lib.rs:210`, private — no Item Instance of its own)
+  - `slot_minor` (`src/lib.rs:151`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:209`), `exact_kind::Quantity::from_minor` (`src/lib.rs:212`)

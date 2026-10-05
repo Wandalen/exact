@@ -27,7 +27,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 546 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative-string refusal, `"-0.0"` edge case |
-| `exact_parse/src/lib.rs:53,55` | — | `qty_from_str`'s entire body |
+| `exact_parse/src/lib.rs:62,64` | — | `qty_from_str`'s entire body |
 
 ## Crate Usage
 
@@ -38,7 +38,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_parse::qty_from_str` (`exact_parse/src/lib.rs:55`)
+- **External:** `exact_parse::qty_from_str` (`exact_parse/src/lib.rs:64`)
 
 No intra-crate caller.
 

@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:27-38`
+`module/exact_snap/src/lib.rs:39-50`
 
 ```rust
 impl core::fmt::Display for SnapError
@@ -31,7 +31,7 @@ impl core::fmt::Display for SnapError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 27-38 | Declaration |
+| `src/lib.rs` | 39-50 | Declaration |
 
 ## Crate Usage
 

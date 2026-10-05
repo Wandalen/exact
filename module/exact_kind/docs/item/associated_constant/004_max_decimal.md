@@ -25,10 +25,10 @@ pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
 | `src/lib.rs` | 189 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ceiling-boundary checks |
 | `exact_bytes/tests/wire_roundtrip_test.rs:87` | — | Past-ceiling boundary input |
-| `exact_add/src/lib.rs:115` | — | **Production** — `money_saturating_add`'s positive clamp target |
-| `exact_add/tests/checked_and_saturating_add_test.rs:60` | — | Saturation test |
+| `exact_add/src/lib.rs:133` | — | **Production** — `money_saturating_add`'s positive clamp target |
+| `exact_add/tests/checked_and_saturating_add_test.rs:61` | — | Saturation test |
 | `exact_conserve/tests/conservation_test.rs:133` | — | Overflow-boundary test input |
-| `exact_ratio/tests/ratio_and_div_round_test.rs:40` | — | Saturation-adjacent test |
+| `exact_ratio/tests/ratio_and_div_round_test.rs:44` | — | Saturation-adjacent test |
 
 ## Crate Usage
 

@@ -17,7 +17,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:39-56`
+`module/exact_bytes/src/lib.rs:52-69`
 
 ```rust
 /// Why a `Wire` could not be decoded, or a decoded value could not be
@@ -46,10 +46,10 @@ pub enum WireError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 40-56 | Declaration |
-| `src/lib.rs` | 64-68 | Matched exhaustively in `Display for WireError` |
-| `src/lib.rs` | 79-80 | Constructed in `kind_error_to_wire_error` |
-| `src/lib.rs` | 154,179,183,207,211,232,236 | Constructed directly as the `Err` arm of each `*_from_wire`/`Wire::from_bytes` guard |
+| `src/lib.rs` | 53-69 | Declaration |
+| `src/lib.rs` | 77-81 | Matched exhaustively in `Display for WireError` |
+| `src/lib.rs` | 92-93 | Constructed in `kind_error_to_wire_error` |
+| `src/lib.rs` | 167,192,196,220,224,245,249 | Constructed directly as the `Err` arm of each `*_from_wire`/`Wire::from_bytes` guard |
 | `tests/wire_roundtrip_test.rs` | 44,47,58,67,88,96 | Asserting the exact variant returned by each failure mode |
 | `exact_arith/src/lib.rs:114` | — | Facade re-export |
 

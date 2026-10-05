@@ -11,25 +11,25 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `KIND_MONEY` | const | `src/lib.rs:29` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `KIND_QTY` | const | `src/lib.rs:31` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `KIND_PRICE` | const | `src/lib.rs:33` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `WireError` | enum | `src/lib.rs:40` | [Wire Error Adds Overflow And Negative](../decisions/001_wire_error_overflow_and_negative_variants.md) |
-| `WireError`'s `Display` impl | trait impl | `src/lib.rs:58` | [Wire Error Adds Overflow And Negative](../decisions/001_wire_error_overflow_and_negative_variants.md) |
-| `Wire` | struct | `src/lib.rs:87` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::ENCODED_LEN` | assoc const | `src/lib.rs:98` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::new` | fn | `src/lib.rs:107` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::minor` | fn | `src/lib.rs:114` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::scale` | fn | `src/lib.rs:121` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::kind` | fn | `src/lib.rs:128` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::to_bytes` | fn | `src/lib.rs:135` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `Wire::from_bytes` | fn | `src/lib.rs:149` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `money_to_wire` | fn | `src/lib.rs:163` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `money_from_wire` | fn | `src/lib.rs:175` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `qty_to_wire` | fn | `src/lib.rs:190` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `qty_from_wire` | fn | `src/lib.rs:203` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `price_to_wire` | fn | `src/lib.rs:218` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
-| `price_from_wire` | fn | `src/lib.rs:228` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `KIND_MONEY` | const | `src/lib.rs:42` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `KIND_QTY` | const | `src/lib.rs:44` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `KIND_PRICE` | const | `src/lib.rs:46` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `WireError` | enum | `src/lib.rs:53` | [Wire Error Adds Overflow And Negative](../decisions/001_wire_error_overflow_and_negative_variants.md) |
+| `WireError`'s `Display` impl | trait impl | `src/lib.rs:71` | [Wire Error Adds Overflow And Negative](../decisions/001_wire_error_overflow_and_negative_variants.md) |
+| `Wire` | struct | `src/lib.rs:100` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::ENCODED_LEN` | assoc const | `src/lib.rs:111` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::new` | fn | `src/lib.rs:120` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::minor` | fn | `src/lib.rs:127` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::scale` | fn | `src/lib.rs:134` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::kind` | fn | `src/lib.rs:141` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::to_bytes` | fn | `src/lib.rs:148` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `Wire::from_bytes` | fn | `src/lib.rs:162` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `money_to_wire` | fn | `src/lib.rs:176` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `money_from_wire` | fn | `src/lib.rs:188` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `qty_to_wire` | fn | `src/lib.rs:203` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `qty_from_wire` | fn | `src/lib.rs:216` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `price_to_wire` | fn | `src/lib.rs:231` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
+| `price_from_wire` | fn | `src/lib.rs:241` | [Wire Record Encoding](../format/001_wire_record_encoding.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

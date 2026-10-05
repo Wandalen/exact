@@ -95,7 +95,7 @@ behaviour.
 | `SnapError` | enum | `../../../exact_snap/src/lib.rs:29` | — |
 | `Tick` | struct | `../../../exact_snap/src/lib.rs:70` | — |
 | `price_snap_tick` | fn | `../../../exact_snap/src/lib.rs:130` | — |
-| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:144` | — |
+| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:147` | — |
 | `money_cmp` | fn | `../../../exact_cmp/src/lib.rs:36` | — |
 | `money_eq` | fn | `../../../exact_cmp/src/lib.rs:57` | — |
 | `price_cmp` | fn | `../../../exact_cmp/src/lib.rs:50` | — |
@@ -104,12 +104,12 @@ behaviour.
 | `qty_cmp` | fn | `../../../exact_cmp/src/lib.rs:43` | — |
 | `DustError` | enum | `../../../exact_dust/src/lib.rs:78` | — |
 | `DustTo` | enum | `../../../exact_dust/src/lib.rs:65` | — |
-| `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:197` | — |
-| `money_dust_split` | fn | `../../../exact_dust/src/lib.rs:164` | — |
-| `money_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:179` | — |
-| `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:239` | — |
-| `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:209` | — |
-| `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:223` | — |
+| `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:195` | — |
+| `money_dust_split` | fn | `../../../exact_dust/src/lib.rs:162` | — |
+| `money_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:177` | — |
+| `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:237` | — |
+| `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:207` | — |
+| `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:221` | — |
 | `ConservationError` | enum | `../../../exact_conserve/src/lib.rs:108` | — |
 | `Entry` | struct | `../../../exact_conserve/src/lib.rs:87` | — |
 | `Report` | struct | `../../../exact_conserve/src/lib.rs:141` | — |

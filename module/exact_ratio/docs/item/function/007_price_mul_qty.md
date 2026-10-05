@@ -32,7 +32,7 @@ pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Re
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 227-233 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 5,161,170-172,180,183 | A fractional quantity; a cost finer than one minor unit under each mode; a cost past the ceiling |
+| `tests/ratio_and_div_round_test.rs` | 161,170,182,303 | A fractional quantity; a cost finer than one minor unit under each mode; a cost past the ceiling; a negative price and a zero quantity |
 | `exact_arith/src/lib.rs:102` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:25` | — | The settlement test's notional, through the facade |
 

@@ -11,16 +11,16 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `SnapError` | enum | `src/lib.rs:17` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `SnapError`'s `Display` impl | trait impl | `src/lib.rs:27` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `Tick` | struct | `src/lib.rs:58` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `Tick::new` | fn | `src/lib.rs:67` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `Tick::price` | fn | `src/lib.rs:78` | — |
-| `Lot` | struct | `src/lib.rs:86` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `Lot::new` | fn | `src/lib.rs:95` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
-| `Lot::qty` | fn | `src/lib.rs:106` | — |
-| `price_snap_tick` | fn | `src/lib.rs:118` | — |
-| `qty_snap_lot` | fn | `src/lib.rs:132` | — |
+| `SnapError` | enum | `src/lib.rs:29` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `SnapError`'s `Display` impl | trait impl | `src/lib.rs:39` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `Tick` | struct | `src/lib.rs:70` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `Tick::new` | fn | `src/lib.rs:79` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `Tick::price` | fn | `src/lib.rs:90` | — |
+| `Lot` | struct | `src/lib.rs:98` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `Lot::new` | fn | `src/lib.rs:107` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
+| `Lot::qty` | fn | `src/lib.rs:118` | — |
+| `price_snap_tick` | fn | `src/lib.rs:130` | — |
+| `qty_snap_lot` | fn | `src/lib.rs:147` | — |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

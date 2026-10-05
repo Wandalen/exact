@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:75`
+`module/exact_add/src/lib.rs:93`
 
 ```rust
 pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
@@ -25,8 +25,8 @@ pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 75 | Declaration |
-| `tests/checked_and_saturating_add_test.rs:41` | — | Dispatch parity with `price_sub`, confirming a price adds exactly as money does |
+| `src/lib.rs` | 93 | Declaration |
+| `tests/checked_and_saturating_add_test.rs:42` | — | Dispatch parity with `price_sub`, confirming a price adds exactly as money does |
 | `exact_arith/src/lib.rs:95` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `price_add` — an

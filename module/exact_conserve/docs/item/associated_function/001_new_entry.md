@@ -30,7 +30,7 @@ pub fn new( account : impl Into< String >, amount_minor : i64 ) -> Self
 | `exchange_core/src/lib.rs:460-461` | — | **Production** |
 | `cluster_economy/src/market.rs:504-505,515-516` | — | **Production** |
 | `cluster_economy/tests/economy_test.rs:255-261` | — | Reconciliation assertion setup |
-| `smoke_exact_market_split/src/lib.rs:119-120` | — | Demo-lane ledger postings |
+| `smoke_exact_market_split/src/lib.rs:127-128` | — | Demo-lane ledger postings |
 
 ## Crate Usage
 
@@ -45,7 +45,7 @@ pub fn new( account : impl Into< String >, amount_minor : i64 ) -> Self
 
 - **External:** `exchange_core::<settlement path>` (`exchange_core/src/lib.rs:460-461`)
 - **External:** `cluster_economy::market::<settlement path>` (`cluster_economy/src/market.rs:504-505,515-516`)
-- **External:** `smoke_exact_market_split::<ledger path>` (`smoke_exact_market_split/src/lib.rs:119-120`)
+- **External:** `smoke_exact_market_split::<ledger path>` (`smoke_exact_market_split/src/lib.rs:127-128`)
 
 No intra-crate caller — `Entry::new` is a leaf constructor within
 `exact_conserve` itself. The crate's most externally-called Item by a wide

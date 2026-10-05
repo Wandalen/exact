@@ -17,12 +17,13 @@ the preferred design's own `exact_kind, exact_ratio` listing, matching
 `exact_snap`'s identical precedent for reaching `round_div` without an
 unused dependency on `exact_ratio`'s rational-multiplier surface.
 
-**Three private top-level functions are real call-graph hops, cataloged
+**Four private top-level functions are real call-graph hops, cataloged
 nowhere of their own** (`item_des.rulebook.md` § Instance Documentation :
-Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:90`),
-`split_minor` (`105`), and `fill_minor` (`121`). `split_minor` is called by
-all 6 public functions; `fill_minor` only by the 4 `*_split`/`*_split_into`
-functions, never by the 2 `*_remainder` functions — each function's own
+Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:103`),
+`split_minor` (`118`), `slot_minor` (`135`), and `fill_minor` (`149`).
+`split_minor` is called by all 6 public functions; `slot_minor` by the 2
+`*_split_into` functions directly and by `fill_minor`; `fill_minor` only by
+the 2 `*_split` functions — never by the 2 `*_remainder` functions — each function's own
 Callee Tree reflects this exactly rather than repeating one copy-pasted
 shape across all 6.
 
@@ -78,7 +79,7 @@ only the two trait impls on `DustError`.
 
 - **`money_dust_split` is the one function in this entire crate with a real
   production caller** — `smoke_exact_market_split::market_split`
-  (`smoke_exact_market_split/src/lib.rs:134`), reached through the
+  (`smoke_exact_market_split/src/lib.rs:142`), reached through the
   `exact_arith` facade re-export and confirmed via that crate's own
   `Cargo.toml` dependency, not assumed from the name match alone. It's also
   the one function `exact_arith`'s own crate-doc doctest and test suite

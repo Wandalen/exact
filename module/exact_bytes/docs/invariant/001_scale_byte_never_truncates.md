@@ -9,7 +9,7 @@
 
 ### Statement
 
-`src/lib.rs:35` declares `const _ : () = assert!( exact_scale::MONEY_SCALE <=
+`src/lib.rs:48` declares `const _ : () = assert!( exact_scale::MONEY_SCALE <=
 u8::MAX as u32 );`. Every `*_to_wire` function casts `exact_scale::MONEY_SCALE`
 (a `u32`) down to the record's one-byte `scale` field via `as u8`. An `as`
 cast from a wider integer to a narrower one truncates silently rather than
@@ -36,8 +36,8 @@ of constants.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:35` | The compile-time assertion itself |
-| `src/lib.rs:163-166, 190-193, 218-221` | The three `*_to_wire` functions performing the `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
+| `src/lib.rs:48` | The compile-time assertion itself |
+| `src/lib.rs:176-179, 203-206, 231-234` | The three `*_to_wire` functions performing the `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
 
 ### Tests
 

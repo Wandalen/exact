@@ -33,7 +33,7 @@ pub const fn checked_neg( self ) -> Result< Self, KindError >
 | `src/lib.rs` | 294 | Declaration — `Qty` has no `checked_neg` (negating a non-negative value is not a `Qty`-shaped operation) |
 | `tests/checked_arithmetic_test.rs` | throughout | Round-trip negate, boundary checks at `MAX`/`MIN` |
 | `exact_add/src/lib.rs:115` | — | `money_checked_neg`'s entire body |
-| `exact_add/tests/checked_and_saturating_add_test.rs:59` | — | `Money::EPSILON.checked_neg()` |
+| `exact_add/tests/checked_and_saturating_add_test.rs:60` | — | `Money::EPSILON.checked_neg()` |
 
 ## Crate Usage
 

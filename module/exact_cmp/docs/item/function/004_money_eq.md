@@ -13,7 +13,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_cmp/src/lib.rs:45`
+`module/exact_cmp/src/lib.rs:57`
 
 ```rust
 #[ must_use ]
@@ -27,7 +27,7 @@ pub fn money_eq( a : Money, b : Money ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 45 | Declaration |
+| `src/lib.rs` | 57 | Declaration |
 | `tests/cmp_test.rs` | 39-40 | Equal pair and unequal pair, one assertion each |
 | `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
@@ -41,7 +41,7 @@ pub fn money_eq( a : Money, b : Money ) -> bool
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`src/lib.rs:119`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:125`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'money_eq(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.

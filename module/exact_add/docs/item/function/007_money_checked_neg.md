@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:95`
+`module/exact_add/src/lib.rs:113`
 
 ```rust
 pub const fn money_checked_neg( a : Money ) -> Result< Money, KindError >
@@ -25,8 +25,8 @@ pub const fn money_checked_neg( a : Money ) -> Result< Money, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 95 | Declaration |
-| `tests/checked_and_saturating_add_test.rs:50-51` | — | Negation at both signs; double negation round-trips to the original |
+| `src/lib.rs` | 113 | Declaration |
+| `tests/checked_and_saturating_add_test.rs:51-52` | — | Negation at both signs; double negation round-trips to the original |
 | `exact_arith/src/lib.rs:92` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `money_checked_neg`

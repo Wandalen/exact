@@ -11,8 +11,8 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `money_from_str` | fn | `src/lib.rs:43` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
-| `qty_from_str` | fn | `src/lib.rs:53` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
-| `price_from_str` | fn | `src/lib.rs:64` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
+| `money_from_str` | fn | `src/lib.rs:52` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
+| `qty_from_str` | fn | `src/lib.rs:62` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
+| `price_from_str` | fn | `src/lib.rs:72` | [Decimal Parsing Per Kind](../algorithm/001_decimal_parsing_per_kind.md) |
 
-`KindError`, `Money`, `Price` and `Quantity` appear in these functions' signatures but are declared and documented in `exact_kind`, not here — this crate imports them (`src/lib.rs:29`) without re-exporting them under its own path.
+`KindError`, `Money`, `Price` and `Quantity` appear in these functions' signatures but are declared and documented in `exact_kind`, not here — this crate imports them (`src/lib.rs:38`) without re-exporting them under its own path.

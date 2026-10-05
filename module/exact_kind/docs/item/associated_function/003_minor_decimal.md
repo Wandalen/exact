@@ -26,11 +26,11 @@ pub const fn minor( self ) -> Backing
 |------|---------|---------|
 | `src/lib.rs` | 227,435,486 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
 | `tests/*.rs` (all 3) | throughout | Minor-count assertions |
-| `exact_bytes/src/lib.rs:165,220` | — | `money_to_wire`/`price_to_wire` |
+| `exact_bytes/src/lib.rs:178,233` | — | `money_to_wire`/`price_to_wire` |
 | `exact_conserve/src/lib.rs:250` | — | `money_sum_assert_zero`'s per-leg accumulation |
-| `exact_dust/src/lib.rs:153,168,186` | — | `money_dust_split`/`_into`/`_remainder` |
-| `exact_snap/src/lib.rs:69,120,122` | — | `Tick::new`'s zero check; `price_snap_tick` (price and tick) |
-| `exact_ratio/src/lib.rs:142,167,187` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
+| `exact_dust/src/lib.rs:164,179,197` | — | `money_dust_split`/`_into`/`_remainder` |
+| `exact_snap/src/lib.rs:81,134,136` | — | `Tick::new`'s zero check; `price_snap_tick` (price and tick) |
+| `exact_ratio/src/lib.rs:155,180,200` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
 
 ## Crate Usage
 

@@ -44,5 +44,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:55`)
+- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:73`)
 - `kind_error_to_conservation_error` (`src/lib.rs:134`, private — no Item Instance of its own)

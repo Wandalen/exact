@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:54`
+`module/exact_ratio/src/lib.rs:67`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -29,7 +29,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 54-62 | Declaration |
+| `src/lib.rs` | 67-75 | Declaration |
 
 ## Crate Usage
 

@@ -3,7 +3,7 @@
 ### Scope
 
 - **Purpose**: Define how a conserved value is divided into equal integer shares without ever creating or destroying a unit, so a division is never a hole in the conservation argument a logged split later has to pass.
-- **Responsibility**: `split_minor`'s per-share quotient and leftover, and `fill_minor`'s distribution of that leftover across the output slots.
+- **Responsibility**: `split_minor`'s per-share quotient and leftover, and `slot_minor`'s distribution of that leftover across the output slots.
 - **In Scope**: Equal-count splitting (`parts: usize`) of `Money`/`Quantity`, the effect of the chosen `Rounding` mode on the per-share quotient, and the three `DustTo` destinations for whatever the chosen mode leaves over.
 - **Out of Scope**: `round_div`'s own sign-handling and tie-breaking rules — that is `exact_round`'s own responsibility (see `../../../exact_round/src/lib.rs`); detecting, after the fact, that a logged split failed to conserve (→ [Conservation Verification Fold](../../../exact_conserve/docs/algorithm/001_conservation_verification_fold.md)); weighted (non-equal-share) splitting, which this crate does not implement (→ [Equal-Count Split Surface](../decisions/002_equal_count_split_surface.md)).
 
@@ -19,8 +19,8 @@
    - Under `HalfEven`, `leftover` can land on either side of zero, since the rounded share can lean either way relative to the plain truncating quotient.
 
    The identity that actually matters, and that holds unconditionally regardless of which way `mode` leans: `share * parts + leftover == total_minor`, exactly, because `leftover` is defined as that difference and nothing else — there is no path through this function where the two sides can disagree.
-4. **Distribute the leftover per `DustTo`** (`fill_minor`):
-   - **`Reject`**: a nonzero `leftover` is refused outright as [`DustError::Remainder`] before any slot is built. A zero leftover falls through to the same output every other destination would produce.
+4. **Distribute the leftover per `DustTo`** (`slot_minor`, one slot at a time — the `Vec`-returning `*_split` functions collect every slot through `fill_minor`, while the `*_split_into` functions write each slot straight into the caller's buffer, with no allocation):
+   - **`Reject`**: a nonzero `leftover` is refused outright as [`DustError::Remainder`] before any slot is built or written. A zero leftover falls through to the same output every other destination would produce.
    - **`Sink`**: every one of the `parts` slots gets exactly `share`; `leftover` is never applied to any slot. It stays queryable on its own via [`money_dust_remainder`]/[`qty_dust_remainder`], so it is held back rather than dropped — the caller that asked for `Sink` owns deciding what becomes of it.
    - **`First`**: slot `0` gets `share.checked_add(leftover)`; every other slot gets plain `share`. Because `leftover` can be negative (the `Up` case above), this "add" is sometimes effectively a subtraction — which is exactly why it is done at this raw-minor stage rather than through either kind's own checked arithmetic (→ [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md)).
 5. **Reconstruct the typed output.** Every raw minor count — slot 0's possibly-adjusted value included — goes back through `Money::from_minor`/`Quantity::from_minor`, which is where each kind's own range and (for `Quantity`) non-negativity check actually runs. A `Quantity` split whose slot 0 would need to go negative under `First` is refused here, as [`DustError::Overflow`] — see `qty_dust_split_refuses_a_first_slot_that_would_go_negative_under_up_rounding` in this crate's own tests.
@@ -43,11 +43,11 @@ This is a narrower guarantee than a weighted, multi-share split would need: ther
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:105-116` | `split_minor` — the per-share quotient and the subtraction-derived leftover (steps 2-3) |
-| `src/lib.rs:121-141` | `fill_minor` — leftover distribution per `DustTo` (step 4) |
-| `src/lib.rs:143-158` | `money_dust_split` — reconstructs the typed output via `Money::from_minor` (step 5) |
-| `src/lib.rs:196-203` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
-| `src/lib.rs:65-73` | `DustError` — the three failure modes steps 1, 3, and 4 return |
+| `src/lib.rs:118-129` | `split_minor` — the per-share quotient and the subtraction-derived leftover (steps 2-3) |
+| `src/lib.rs:131-152` | `slot_minor` — leftover distribution per `DustTo`, one slot at a time (step 4); `fill_minor` — every slot, for the `Vec`-returning variants |
+| `src/lib.rs:154-169` | `money_dust_split` — reconstructs the typed output via `Money::from_minor` (step 5) |
+| `src/lib.rs:207-214` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
+| `src/lib.rs:78-86` | `DustError` — the three failure modes steps 1, 3, and 4 return |
 | `../../../exact_round/src/lib.rs:118-126` | `round_div` — the per-share division this procedure drives directly (step 2), rounding through `round_div_wide` |
 
 ### Tests

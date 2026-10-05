@@ -12,7 +12,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:50-61`
+`module/exact_dust/src/lib.rs:63-74`
 
 ```rust
 /// Where the remainder of an equal split goes.
@@ -33,13 +33,13 @@ pub enum DustTo
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 51-61 | Declaration |
-| `src/lib.rs` | 121,123,130 | `fill_minor`'s parameter and match scrutinee (private — no Item Instance of its own) |
-| `src/lib.rs` | 151,166,196,210 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
+| `src/lib.rs` | 64-74 | Declaration |
+| `src/lib.rs` | 135,137,141,149 | `slot_minor`'s and `fill_minor`'s parameter, and `slot_minor`'s match scrutinee (private — no Item Instance of its own) |
+| `src/lib.rs` | 162,177,207,221 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
 | `tests/dust_split_test.rs` | — | All 3 variants exercised across every split scenario |
 | `exact_arith/src/lib.rs:127` | — | Facade re-export |
 | `exact_arith/src/lib.rs:127` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |
-| `smoke_exact_market_split/src/lib.rs:134` | — | `market_split`'s own call always passes `DustTo::First` |
+| `smoke_exact_market_split/src/lib.rs:142` | — | `market_split`'s own call always passes `DustTo::First` |
 
 ## Crate Usage
 

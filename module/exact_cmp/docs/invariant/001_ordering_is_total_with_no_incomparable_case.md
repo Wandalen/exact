@@ -39,7 +39,7 @@ that no exceptional value could have reached them.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:22-41` | `money_cmp`, `qty_cmp`, `price_cmp`, `money_eq` — direct dispatch to the derived `Ord`/`PartialEq` this invariant is a property of |
+| `src/lib.rs:34-53` | `money_cmp`, `qty_cmp`, `price_cmp`, `money_eq` — direct dispatch to the derived `Ord`/`PartialEq` this invariant is a property of |
 | `../../../exact_kind/src/lib.rs` | `Decimal`/`Qty`'s own `#[derive(..., PartialOrd, Ord, ...)]` over a plain `i64` field |
 
 ### Tests

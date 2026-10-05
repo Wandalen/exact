@@ -59,7 +59,7 @@ Enum is absent despite every sibling Tier-2 crate having one.
 
 - **None of the 3 functions have any production caller anywhere in the
   workspace** — an honest empty finding, grep-verified. `exact_arith` only
-  re-exports all three names (`src/lib.rs:98`); the facade's own test suite
+  re-exports all three names (`exact_arith/src/lib.rs:104`); the facade's own test suite
   (`exact_arith/tests/facade_test.rs`) parses values via
   `exact_kind::Decimal::parse` (`Money::parse`) directly instead of through
   this crate's wrappers — the identical bypass pattern already found in

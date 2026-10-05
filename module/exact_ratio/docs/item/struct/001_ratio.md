@@ -15,7 +15,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:78`
+`module/exact_ratio/src/lib.rs:91`
 
 ```rust
 pub struct Ratio
@@ -29,7 +29,7 @@ pub struct Ratio
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 78,84,112,122,124,127,140,153,165 | Declaration; inherent impl; `ratio_new`'s return type and construction; parameter type of `mul_ratio_minor` and all 3 `*_mul_ratio` functions |
+| `src/lib.rs` | 91,97,125,135,137,140,153,166,178 | Declaration; inherent impl; `ratio_new`'s return type and construction; parameter type of `mul_ratio_minor` and all 3 `*_mul_ratio` functions |
 | `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 No test file names `Ratio` directly — every test constructs one through

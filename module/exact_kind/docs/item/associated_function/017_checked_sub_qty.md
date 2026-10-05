@@ -31,7 +31,7 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 517 | Declaration |
 | `tests/non_negative_test.rs` | throughout | The primary invariant test — `rhs > self` refusal, exact-zero success |
-| `exact_add/src/lib.rs:67` | — | `qty_sub`'s entire body |
+| `exact_add/src/lib.rs:85` | — | `qty_sub`'s entire body |
 
 ## Crate Usage
 
@@ -42,7 +42,7 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_add::qty_sub` (`exact_add/src/lib.rs:67`)
+- **External:** `exact_add::qty_sub` (`exact_add/src/lib.rs:85`)
 
 No intra-crate caller.
 

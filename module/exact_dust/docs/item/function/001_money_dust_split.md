@@ -23,7 +23,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:151-158`
+`module/exact_dust/src/lib.rs:162-169`
 
 ```rust
 pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
@@ -40,12 +40,12 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 151-158 | Declaration |
-| `tests/dust_split_test.rs` | 21-23,32,44,54,63,71,79,93 | Every split scenario this crate's own tests cover |
+| `src/lib.rs` | 162-169 | Declaration |
+| `tests/dust_split_test.rs` | 25-27,36,48,58,67,75,83,124 | Every split scenario this crate's own tests cover |
 | `exact_arith/src/lib.rs:32` | — | Doctest call (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`, not production) |
 | `exact_arith/src/lib.rs:127` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:38` | — | Test-only call exercising the facade re-export |
-| `smoke_exact_market_split/src/lib.rs:134` | — | `market_split`'s own body — the only production (non-test, non-doctest) call site anywhere in the workspace |
+| `smoke_exact_market_split/src/lib.rs:142` | — | `market_split`'s own body — the only production (non-test, non-doctest) call site anywhere in the workspace |
 
 ## Crate Usage
 
@@ -60,10 +60,10 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 No caller within `exact_dust` itself, and no *production* caller within any
 other crate's own source either, when scoped strictly to
 non-test/non-doctest code — `smoke_exact_market_split::market_split`
-(`smoke_exact_market_split/src/lib.rs:134`) is the one exception: a genuine
+(`smoke_exact_market_split/src/lib.rs:142`) is the one exception: a genuine
 production call from a different crate.
 
-- **External:** `smoke_exact_market_split::market_split` (`smoke_exact_market_split/src/lib.rs:134`)
+- **External:** `smoke_exact_market_split::market_split` (`smoke_exact_market_split/src/lib.rs:142`)
 
 Also reached, but out of scope for this tree per `item_des.rulebook.md` §
 Instance Documentation : Completeness Verification ("test-only call sites
@@ -72,8 +72,9 @@ are out of scope for both trees"): `exact_arith`'s own crate-doc doctest
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:153`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:112`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:164`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- `fill_minor` (`src/lib.rs:154`, private — no Item Instance of its own)
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:153`), `exact_kind::Money::from_minor` (`src/lib.rs:156`)
+- `fill_minor` (`src/lib.rs:165`, private — no Item Instance of its own)
+  - `slot_minor` (`src/lib.rs:151`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:164`), `exact_kind::Money::from_minor` (`src/lib.rs:167`)

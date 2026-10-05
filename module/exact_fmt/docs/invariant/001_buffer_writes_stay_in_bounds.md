@@ -9,7 +9,7 @@
 
 ### Statement
 
-`ByteBufWriter::write_str` (`src/lib.rs:56-69`) compares the incoming
+`ByteBufWriter::write_str` (`src/lib.rs:70-83`) compares the incoming
 fragment's length against the buffer's remaining capacity — `self.len +
 bytes.len() > self.buf.len()` — before copying anything. If the fragment
 would not fit, it copies nothing and returns `Err(core::fmt::Error)`
@@ -36,9 +36,9 @@ caller happened to size correctly.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:50-54` | `ByteBufWriter` — the private buffer-backed writer |
-| `src/lib.rs:56-69` | `write_str` — the bounds check, before any copy |
-| `src/lib.rs:81-87` | `fmt_into` — maps a bounds failure to `FmtError::BufFull` |
+| `src/lib.rs:64-68` | `ByteBufWriter` — the private buffer-backed writer |
+| `src/lib.rs:70-83` | `write_str` — the bounds check, before any copy |
+| `src/lib.rs:95-101` | `fmt_into` — maps a bounds failure to `FmtError::BufFull` |
 
 ### Tests
 

@@ -7,7 +7,7 @@
 - **In Scope**: The parse inputs and target type/scale.
 - **Out of Scope**: The add/subtract step that consumes these values (→ `002_add_subtract_assert_sum_zero.md`).
 
-**Design status**: implemented, but not as specified — `Money` has no selectable "scale 2": the whole family shares one fixed [`MONEY_SCALE = 6`](../../module/exact_scale/readme.md), so this literal pair ("10.00"/"3.33" at scale 2) is unrepresentable as written. The demo lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), does exercise this step's underlying capability — `Money::parse("0.1")`, the inherent `Decimal::parse` in [`exact_kind`](../../module/exact_kind/readme.md) — just with a different literal and the family's one fixed scale, not these two inputs.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — `"10.00"` and `"3.33"` are parsed as `Decimal< 2 >`, the scale-2 instance of the type `Money` (`Decimal< 6 >`) also instantiates. `Money` itself has no selectable scale: the family shares one fixed [`MONEY_SCALE = 6`](../../module/exact_scale/readme.md), so the scale-2 value is a `Decimal< 2 >` rather than a `Money`.
 
 ### Procedure
 

@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:65`
+`module/exact_add/src/lib.rs:83`
 
 ```rust
 pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
@@ -25,7 +25,7 @@ pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 65 | Declaration |
+| `src/lib.rs` | 83 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:31` | — | Non-negativity refusal, subtracting a larger quantity from a smaller one |
 | `exact_arith/src/lib.rs:99` | — | Facade re-export |
 

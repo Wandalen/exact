@@ -23,7 +23,7 @@ pub const EPSILON : Self = Self { value : Decimal::EPSILON };
 |------|---------|---------|
 | `src/lib.rs` | 423 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Boundary-adjacent values (`ZERO.checked_sub(EPSILON)`, `MAX.checked_add(EPSILON)`) |
-| `exact_add/tests/checked_and_saturating_add_test.rs:77` | — | Saturation-boundary test input |
+| `exact_add/tests/checked_and_saturating_add_test.rs:78` | — | Saturation-boundary test input |
 
 No production (non-test) file outside `exact_kind` uses `Quantity::EPSILON`
 directly — an honest gap, matching [Decimal::EPSILON](003_epsilon_decimal.md).

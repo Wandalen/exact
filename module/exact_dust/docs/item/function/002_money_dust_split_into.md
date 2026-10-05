@@ -12,39 +12,46 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:166-175`
+`module/exact_dust/src/lib.rs:177-186`
 
 ```rust
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  let minors = fill_minor( share, leftover, to, out.len() )?;
-  for ( slot, minor ) in out.iter_mut().zip( minors )
+  for ( i, slot ) in out.iter_mut().enumerate()
   {
+    let minor = slot_minor( share, leftover, to, i )?;
     *slot = Money::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
   }
   Ok( () )
 }
 ```
 
+Each slot's value is computed by `slot_minor` and written straight into
+`out` — no intermediate `Vec`, so the call makes no heap allocation. Under
+[`DustTo::Reject`] with a remainder, `slot_minor` refuses on slot 0, before
+anything is written.
+
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 166-175 | Declaration |
-| `tests/dust_split_test.rs:81` | — | Confirms it writes the same shares as the allocating `money_dust_split` |
+| `src/lib.rs` | 177-186 | Declaration |
+| `tests/dust_split_test.rs:80` | — | Writes the same shares as the allocating `money_dust_split` |
+| `tests/dust_split_test.rs:106` | — | `DustTo::Reject` refuses before writing — the buffer keeps what it held |
+| `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
+| `tests/dust_split_test.rs:181` | — | `DustTo::Sink` leaves every slot at the plain share |
 | `exact_arith/src/lib.rs:127` | — | Facade re-export |
 
-No call site anywhere outside this crate's own single test — an honest
-empty finding. `exact_arith` only re-exports the name; neither its crate-doc
-example nor its test suite calls this variant (both exercise
-`money_dust_split` instead).
+No call site anywhere outside this crate's own tests. `exact_arith` only
+re-exports the name; neither its crate-doc example nor its test suite calls
+this variant (both exercise `money_dust_split` instead).
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_dust` | `(defining crate)` | Exercised by its one parity test against `money_dust_split` |
+| `exact_dust` | `(defining crate)` | Exercised by its own tests — parity with `money_dust_split`, refusal, empty and `Sink` buffers |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
@@ -53,8 +60,8 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:168`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:112`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:179`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- `fill_minor` (`src/lib.rs:169`, private — no Item Instance of its own)
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:168`), `exact_kind::Money::from_minor` (`src/lib.rs:172`)
+- `slot_minor` (`src/lib.rs:182`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:179`), `exact_kind::Money::from_minor` (`src/lib.rs:183`)

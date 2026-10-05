@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:26`
+`module/exact_bytes/src/lib.rs:39`
 
 ```rust
 use exact_kind::{ KindError, Money, Price, Quantity };
@@ -23,9 +23,9 @@ use exact_kind::{ KindError, Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 26 | Declaration |
-| `src/lib.rs` | 75 | `KindError` as `kind_error_to_wire_error`'s parameter type |
-| `src/lib.rs` | 163,175,185,190,203,213,218,228,238 | `Money`/`Quantity`/`Price` across the 6 to/from-wire functions |
+| `src/lib.rs` | 39 | Declaration |
+| `src/lib.rs` | 88 | `KindError` as `kind_error_to_wire_error`'s parameter type |
+| `src/lib.rs` | 176,188,198,203,216,226,231,241,251 | `Money`/`Quantity`/`Price` across the 6 to/from-wire functions |
 
 ## Crate Usage
 

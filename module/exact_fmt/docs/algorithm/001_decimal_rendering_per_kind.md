@@ -38,16 +38,16 @@ Internally, `fmt_into` drives a private `ByteBufWriter` through `core::fmt::Writ
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:1-25` | Module doc — why `Display` cannot move into this crate, and what stays ported unchanged |
-| `src/lib.rs:27` | Imports `Money`, `Price`, `Quantity` from `exact_kind` |
-| `src/lib.rs:29-35` | `FmtError` — the one failure mode, `BufFull` |
-| `src/lib.rs:37-46` | `Display` for `FmtError` |
-| `src/lib.rs:48` | `core::error::Error` for `FmtError` |
-| `src/lib.rs:50-54` | `ByteBufWriter` — the private buffer-backed `core::fmt::Write` target |
-| `src/lib.rs:56-69` | `ByteBufWriter::write_str` — the atomic per-fragment capacity check |
-| `src/lib.rs:71-87` | `fmt_into` — doc comment states the no-allocation rationale (lines 71-72, 74), implementation at 81-87 |
-| `src/lib.rs:89-94` | `money_fmt` |
-| `src/lib.rs:96-101` | `qty_fmt` |
-| `src/lib.rs:103-108` | `price_fmt` |
+| `src/lib.rs:41` | Imports `Money`, `Price`, `Quantity` from `exact_kind` |
+| `src/lib.rs:43-49` | `FmtError` — the one failure mode, `BufFull` |
+| `src/lib.rs:51-60` | `Display` for `FmtError` |
+| `src/lib.rs:62` | `core::error::Error` for `FmtError` |
+| `src/lib.rs:64-68` | `ByteBufWriter` — the private buffer-backed `core::fmt::Write` target |
+| `src/lib.rs:70-83` | `ByteBufWriter::write_str` — the atomic per-fragment capacity check |
+| `src/lib.rs:85-101` | `fmt_into` — doc comment states the no-allocation rationale (lines 71-72, 74), implementation at 81-87 |
+| `src/lib.rs:103-108` | `money_fmt` |
+| `src/lib.rs:110-115` | `qty_fmt` |
+| `src/lib.rs:117-122` | `price_fmt` |
 
 ### Tests
 

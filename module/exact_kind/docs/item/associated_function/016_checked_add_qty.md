@@ -31,7 +31,7 @@ pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 503 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Ordinary-sum and ceiling-breach checks |
-| `exact_add/src/lib.rs:57` | — | `qty_add`'s entire body |
+| `exact_add/src/lib.rs:75` | — | `qty_add`'s entire body |
 
 ## Crate Usage
 
@@ -42,7 +42,7 @@ pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:57`)
+- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:75`)
 
 No intra-crate caller.
 

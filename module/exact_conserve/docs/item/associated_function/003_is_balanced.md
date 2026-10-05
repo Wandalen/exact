@@ -36,7 +36,7 @@ pub const fn is_balanced( &self ) -> bool
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |
 | `exchange_core/tests/submission_test.rs:258` | — | Integration test |
 | `smoke_exchange_core/src/lib.rs:107` | — | Demo-lane settlement check |
-| `smoke_exact_market_split/src/lib.rs:189,194`, `tests/lane_test.rs:61,64` | — | Demo-lane ledger checks |
+| `smoke_exact_market_split/src/lib.rs:288,293`, `tests/lane_test.rs:64,67` | — | Demo-lane ledger checks |
 
 **The crate's most heavily used method by far, and corrects an error in
 this file's own first draft** — an earlier pass wrongly reported this as an

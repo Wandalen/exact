@@ -47,7 +47,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 |------|---------|---------|
 | `src/lib.rs` | 376-399 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
-| `exact_fmt/src/lib.rs:93,107` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
+| `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
 ## Crate Usage
 
@@ -58,7 +58,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 ## Caller Tree
 
-- **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:93`), `price_fmt` (`:107`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
+- **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:107`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
 
 No intra-crate caller (this crate's own tests invoke it only via
 `.to_string()` in test-context, out of Caller Tree scope per OT012).

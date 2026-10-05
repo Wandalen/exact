@@ -7,7 +7,7 @@
 - **In Scope**: The arithmetic sequence and its exact-zero pass criterion.
 - **Out of Scope**: The parse step that produces these values (→ `001_parse_money_at_scale_two.md`).
 
-**Design status**: implemented, but not with this shape or these literals — the demo lane's nearest counterpart is step 2 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md): ten `0.1`s summed via `checked_add` and asserted equal to `Money::parse("1.0")`, not this step's add-10.00-then-subtract-13.33-assert-zero sequence. A function named almost exactly for this step's concept, `money_sum_assert_zero`, is real and ships in [`exact_conserve`](../../module/exact_conserve/readme.md), but the demo lane doesn't call it — its own zero-sum check (step 4) instead runs `verify()`/`Report::is_balanced()` over ledger `Entry` records, a related but differently-shaped conservation check.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — the two scale-2 values are added with `checked_add`, `"13.33"` is subtracted with `checked_sub`, and the result is asserted equal to `Decimal::< 2 >::ZERO`; the lane prints `sum=0`. The per-kind `money_add`/`money_sub` of [`exact_add`](../../module/exact_add/readme.md) take `Money` (scale 6) only, so the scale-2 values use `Decimal`'s own checked methods, which those functions dispatch to.
 
 ### Procedure
 

@@ -25,11 +25,11 @@ pub const fn minor( self ) -> Backing
 |------|---------|---------|
 | `src/lib.rs` | 484 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Minor-count assertions |
-| `exact_bytes/src/lib.rs:192` | — | `qty_to_wire` |
+| `exact_bytes/src/lib.rs:205` | — | `qty_to_wire` |
 | `exact_conserve/src/lib.rs:278` | — | `qty_sum_assert_zero`'s per-leg accumulation |
-| `exact_dust/src/lib.rs:198,212,228` | — | `qty_dust_split`/`_into`/`_remainder` |
-| `exact_snap/src/lib.rs:97,134,136` | — | `Lot::new`'s zero check; `qty_snap_lot` (qty and lot) |
-| `exact_ratio/src/lib.rs:155,200` | — | `qty_mul_ratio`, `qty_div_round` |
+| `exact_dust/src/lib.rs:209,223,239` | — | `qty_dust_split`/`_into`/`_remainder` |
+| `exact_snap/src/lib.rs:109,149,151` | — | `Lot::new`'s zero check; `qty_snap_lot` (qty and lot) |
+| `exact_ratio/src/lib.rs:168,213` | — | `qty_mul_ratio`, `qty_div_round` |
 
 ## Crate Usage
 

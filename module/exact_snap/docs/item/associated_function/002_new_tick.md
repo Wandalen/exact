@@ -15,7 +15,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:67-74`
+`module/exact_snap/src/lib.rs:79-86`
 
 ```rust
 pub const fn new( price : Price ) -> Result< Self, SnapError >
@@ -32,7 +32,7 @@ pub const fn new( price : Price ) -> Result< Self, SnapError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 67-74 | Declaration |
+| `src/lib.rs` | 79-86 | Declaration |
 | `tests/snap_test.rs` | 12,21,33,42,51 | Zero-rejection check, and as the fixture every snap test builds before calling `price_snap_tick` |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export |
 

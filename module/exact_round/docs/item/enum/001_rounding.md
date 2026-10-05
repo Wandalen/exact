@@ -48,7 +48,7 @@ pub enum Rounding
 | `exact_snap/src/lib.rs` (via `rounding` parameter on `price_snap_tick`/`qty_snap_lot`) | — | **Production** |
 | `exact_ratio/src/lib.rs` (via `rounding` parameter on `money_div_round`/`qty_div_round`, every `*_mul_ratio`, and `price_mul_qty`) | — | **Production** |
 | `exact_arith/src/lib.rs:83` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:134` | — | **Production** — `Rounding::Down` passed to `money_dust_split` in the demo ledger |
+| `smoke_exact_market_split/src/lib.rs:142` | — | **Production** — `Rounding::Down` passed to `money_dust_split` in the demo ledger |
 
 ## Crate Usage
 

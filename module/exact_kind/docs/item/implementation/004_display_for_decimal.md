@@ -52,7 +52,7 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 |------|---------|---------|
 | `src/lib.rs` | 373-400 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
-| `exact_fmt/src/lib.rs:93,107` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
+| `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
 ## Crate Usage
 

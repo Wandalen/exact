@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:39-45`
+`module/exact_fmt/src/lib.rs:53-59`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -27,7 +27,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 39-45 | Declaration |
+| `src/lib.rs` | 53-59 | Declaration |
 
 No file anywhere formats a `FmtError` value — not this crate's own
 `tests/fmt_test.rs` (which asserts `Err( FmtError::BufFull )` by equality,

@@ -78,18 +78,14 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 
 ### Notable Findings
 
-- **Zero intra-workspace callers for every single function in this crate.**
-  `exact_arith` re-exports the entire surface but never calls it (its own
-  `tests/facade_test.rs` doesn't either); no other workspace crate depends on
-  `exact_ratio` at all today (`grep -rl exact_ratio --include=Cargo.toml`
-  returns only `exact_ratio` and `exact_arith`). Every function is exercised
-  exclusively by `exact_ratio`'s own 11-test suite — or, for 2 functions,
-  not even that.
-- **Two functions are completely untested**: [price_mul_ratio](function/004_price_mul_ratio.md)
-  and [qty_div_round](function/006_qty_div_round.md) have zero call sites
-  anywhere, test or production — confirmed by grep across the whole
-  `module/` tree. `exact_ratio`'s own module doc comment doesn't
-  flag this; it was found independently.
+- **Almost no intra-workspace callers.** The one production call between
+  this crate's own functions is [price_mul_qty](function/007_price_mul_qty.md)
+  calling [ratio_new](function/001_ratio_new.md); outside the crate, only
+  `exact_arith` calls into it — `price_mul_qty`, in its crate-doc example and
+  `tests/facade_test.rs`. No other workspace crate depends on `exact_ratio`
+  at all today (`grep -rl exact_ratio --include=Cargo.toml` returns only
+  `exact_ratio` and `exact_arith`). Every function is exercised by
+  `exact_ratio`'s own 28-test suite.
 - **The plan's Tier 3 dependency table is stale relative to what was actually
   built.** The migration plan lists `exact_dust` as depending on
   `exact_kind, exact_ratio`; the real `exact_dust/Cargo.toml` depends on

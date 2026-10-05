@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_parse/src/lib.rs:64`
+`module/exact_parse/src/lib.rs:72`
 
 ```rust
 pub fn price_from_str( text : &str ) -> Result< Price, KindError >
@@ -25,7 +25,7 @@ pub fn price_from_str( text : &str ) -> Result< Price, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 64 | Declaration |
+| `src/lib.rs` | 72 | Declaration |
 | `tests/from_str_test.rs:14,28` | — | Exact round-trip through `"1.23"`; malformed-text rejection loop (as a function-pointer array element, not a direct call at that line — the actual call is via the `parser` variable at line 30) |
 | `exact_arith/src/lib.rs:104` | — | Facade re-export |
 

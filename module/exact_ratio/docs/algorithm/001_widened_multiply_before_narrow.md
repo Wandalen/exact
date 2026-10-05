@@ -45,8 +45,9 @@ multiply itself runs in `i128`.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:127-132` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
-| `src/lib.rs:134-169` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — the three callers, one per kind |
+| `src/lib.rs:140-145` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
+| `src/lib.rs:147-182` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
+| `src/lib.rs:217-233` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
 
 ### Tests
 

@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:135-142`
+`module/exact_bytes/src/lib.rs:148-155`
 
 ```rust
 pub fn to_bytes( self ) -> [ u8; Self::ENCODED_LEN ]
@@ -28,8 +28,8 @@ pub fn to_bytes( self ) -> [ u8; Self::ENCODED_LEN ]
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 135-142 | Declaration |
-| `tests/wire_roundtrip_test.rs` | 55,66,76 | Encoding a `Wire` before tampering a byte, before truncating, and for a raw-byte round-trip |
+| `src/lib.rs` | 148-155 | Declaration |
+| `tests/wire_roundtrip_test.rs` | 55,66,76,147 | Encoding a `Wire` before tampering a byte, before truncating, for a raw-byte round-trip, and before extending the slice |
 
 No production function in `exact_bytes` or `exact_arith` calls `to_bytes` —
 only test code does.
@@ -38,7 +38,7 @@ only test code does.
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_bytes` | `tests/wire_roundtrip_test.rs` | Exercised by 3 of the crate's 8 tests |
+| `exact_bytes` | `tests/wire_roundtrip_test.rs` | Exercised by 4 of the crate's 14 tests |
 
 ## Caller Tree
 
@@ -48,4 +48,4 @@ empty production tree. Exercised only by this crate's own tests.
 ## Callee Tree
 
 - **External:** `i64::to_le_bytes` (`self.minor.to_le_bytes()`) and
-  `<[u8]>::copy_from_slice` (both standard-library methods, `src/lib.rs:138`)
+  `<[u8]>::copy_from_slice` (both standard-library methods, `src/lib.rs:151`)

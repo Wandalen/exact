@@ -13,24 +13,31 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:118-124`
+`module/exact_snap/src/lib.rs:130-139`
 
 ```rust
 pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
 {
-  let q = exact_round::round_div( price.minor(), tick.0.minor(), rounding )
+  // A tick of -5 marks the same grid as a tick of 5; dividing by the
+  // positive spacing keeps `Down` meaning the grid point at or below.
+  let spacing = tick.0.minor().abs();
+  let q = exact_round::round_div( price.minor(), spacing, rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
-  let snapped = q.checked_mul( tick.0.minor() ).ok_or( SnapError::Overflow )?;
+  let snapped = q.checked_mul( spacing ).ok_or( SnapError::Overflow )?;
   Price::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
 }
 ```
+
+The division and the multiplication use the tick's magnitude, so a negative
+tick — which `Tick::new` accepts — snaps exactly like its positive
+counterpart instead of reversing `Down` and `Up`.
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 118-124 | Declaration |
-| `tests/snap_test.rs` | 25,35,44,53 | On-grid identity, between-grid rounding down/up, and half-even tie-breaking |
+| `src/lib.rs` | 130-139 | Declaration |
+| `tests/snap_test.rs` | 25,35,44,53,63-64,74-75,92,132 | On-grid identity, between-grid rounding down/up, half-even on and off a tie, a negative price, a negative tick matching its positive counterpart, and overflow past the ceiling |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
@@ -53,8 +60,9 @@ OT012.
 
 ## Callee Tree
 
-- `round_error_to_snap_error` (`src/lib.rs:42`, private — no Item Instance of its own)
-- **External:** `exact_kind::Price::minor` (via `price.minor()` and `tick.0.minor()` ×2), which delegates to `Decimal::minor`
+- `round_error_to_snap_error` (`src/lib.rs:54`, private — no Item Instance of its own)
+- **External:** `exact_kind::Price::minor` (via `price.minor()` and `tick.0.minor()`), which delegates to `Decimal::minor`
+- **External:** `i64::abs` (core primitive method, via `tick.0.minor().abs()`)
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)
 - **External:** `exact_kind::Decimal::from_minor` (via `Price::from_minor`)

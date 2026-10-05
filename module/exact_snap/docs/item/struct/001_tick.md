@@ -13,7 +13,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:56-58`
+`module/exact_snap/src/lib.rs:68-70`
 
 ```rust
 /// A price grid's spacing — the smallest meaningful price increment.
@@ -25,9 +25,9 @@ pub struct Tick( Price );
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58 | Declaration |
-| `src/lib.rs` | 60-82 | `impl Tick` (constructor and accessor) |
-| `src/lib.rs` | 118,120,122 | `tick` parameter type and field access in `price_snap_tick` |
+| `src/lib.rs` | 70 | Declaration |
+| `src/lib.rs` | 72-94 | `impl Tick` (constructor and accessor) |
+| `src/lib.rs` | 130,132,137 | `tick` parameter type and field access in `price_snap_tick` |
 | `tests/snap_test.rs` | 6,12,21,33,42,51 | Constructed via `Tick::new` and passed into `price_snap_tick` |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export |
 

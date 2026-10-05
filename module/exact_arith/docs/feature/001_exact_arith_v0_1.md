@@ -76,11 +76,12 @@ for the budget arithmetic these constants had to close, and still do).
 
 - Float interop for conserved values — still true for this facade and all 14
   leaves it re-exports: no lossy constructor, no `as f64` escape hatch, and
-  `Display` is the one sanctioned float-free rendering path. `f64` appears
-  exactly once in the whole family, deliberately, as the required-to-disagree
-  control arm in a different crate
-  (→ [`smoke_exact_market_split`](../../../smoke_exact_market_split/readme.md)'s
-  own `f64 appears in this crate and in no other crate of the family`).
+  `Display` is the one sanctioned float-free rendering path. `f64` appears in
+  exactly one library source in the whole family, deliberately, as the
+  required-to-disagree control arm in a different crate
+  (→ [`smoke_exact_market_split`](../../../smoke_exact_market_split/readme.md)),
+  and otherwise only in this crate's own timing bench, a test
+  (`tests/bench_vs_f64.rs`).
 - General-purpose bignum or computer-algebra ambitions — still true; no such
   code exists anywhere in the 14 leaves or this facade.
 - Game-side pricing, currency design, and market content — still true, a

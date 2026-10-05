@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_cmp/src/lib.rs:20`
+`module/exact_cmp/src/lib.rs:32`
 
 ```rust
 use exact_kind::{ Money, Price, Quantity };
@@ -21,7 +21,7 @@ use exact_kind::{ Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 20 | Declaration |
+| `src/lib.rs` | 32 | Declaration |
 | `tests/cmp_test.rs` | 6 | Identical import, for the same three types |
 
 ## Crate Usage

@@ -31,14 +31,14 @@ library crates. Confirmed 2026-10-02.
 cargo test -p exact_cmp --doc
 ```
 
-Expected: 0 doctests run today — this crate's rustdoc has no `# Examples`
-section yet, so there is nothing for `cargo test --doc` to execute. That is
-the honest baseline, not a failure; the check exists so a future doc example
-silently failing to run (for example a `` ```rust,ignore `` typo) would be
-caught by comparing against this record.
+Expected: 1 doctest runs and passes — the crate-level `# Examples` block in
+`src/lib.rs`'s module doc. The check exists so a future doc example silently
+failing to run (for example a `` ```rust,ignore `` typo) would be caught by
+comparing against this record.
 
 ## Run Record
 
 | Date | By | Result | Notes |
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass, M2 pass | M1: all `f32`/`f64` hits confined to `smoke_exact_market_split`'s disclosed control arm; zero hits in `exact_cmp` or the other 14 library crates. M2: 0 doctests ran, matching the 0 found in this crate's rustdoc — confirmed via the workspace-wide `cargo test --doc --workspace` baseline. |
+| 2026-10-05 | claude | M2 pass | 1 doctest ran and passed (the module doc's `# Examples` block); corrects the 0 recorded above, which predates that block. |

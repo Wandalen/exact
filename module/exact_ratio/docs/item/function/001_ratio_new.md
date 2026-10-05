@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:112`
+`module/exact_ratio/src/lib.rs:125`
 
 ```rust
 pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
@@ -35,8 +35,9 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 112-125 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 12,19,29,39,49 | Zero-denominator refusal, negative-denominator normalization, and the sole construction path for every other test's `Ratio` value |
+| `src/lib.rs` | 125-138 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 14,21,192,201 | Zero-denominator refusal, negative-denominator normalization, a positive denominator kept as given, and the `i64::MIN` refusal — and the construction path for every other test's `Ratio` value |
+| `src/lib.rs` | 230 | **Production** — `price_mul_qty` builds the quantity's ratio |
 | `exact_arith/src/lib.rs:102` | — | Facade re-export |
 
 ## Crate Usage
@@ -48,9 +49,13 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree. Every
-call site is in `exact_ratio`'s own tests, which are out of scope for this
-tree (production call-graph only); `exact_arith` only re-exports the name.
+- [price_mul_qty](007_price_mul_qty.md) (`src/lib.rs:230`) — the one
+  production caller, turning a quantity into the ratio `qty.minor() /
+  Money::ONE_MINOR`
+
+Every other call site is in `exact_ratio`'s own tests, which are out of
+scope for this tree (production call-graph only); `exact_arith` only
+re-exports the name.
 
 ## Callee Tree
 

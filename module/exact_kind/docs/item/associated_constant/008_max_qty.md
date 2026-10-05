@@ -23,8 +23,8 @@ pub const MAX : Self = Self { value : Decimal::MAX };
 |------|---------|---------|
 | `src/lib.rs` | 426 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Ceiling-boundary checks |
-| `exact_add/src/lib.rs:129` | — | **Production** — `qty_saturating_add`'s clamp target |
-| `exact_add/tests/checked_and_saturating_add_test.rs:77` | — | Saturation test |
+| `exact_add/src/lib.rs:147` | — | **Production** — `qty_saturating_add`'s clamp target |
+| `exact_add/tests/checked_and_saturating_add_test.rs:78` | — | Saturation test |
 
 ## Crate Usage
 

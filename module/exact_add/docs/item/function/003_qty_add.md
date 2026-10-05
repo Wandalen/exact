@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:55`
+`module/exact_add/src/lib.rs:73`
 
 ```rust
 pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
@@ -24,8 +24,8 @@ pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 55 | Declaration |
-| `tests/checked_and_saturating_add_test.rs:30,81` | — | Non-negativity refusal carried through; cross-check against `qty_saturating_add` in range |
+| `src/lib.rs` | 73 | Declaration |
+| `tests/checked_and_saturating_add_test.rs:30,82` | — | Non-negativity refusal carried through; cross-check against `qty_saturating_add` in range |
 | `exact_conserve/src/lib.rs:236` | — | `qty_conserve_into`'s own body |
 | `exact_arith/src/lib.rs:97` | — | Facade re-export |
 

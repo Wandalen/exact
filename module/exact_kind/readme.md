@@ -54,6 +54,7 @@ why both are absent rather than merely unbuilt.
 | [`tests/checked_arithmetic_test.rs`](tests/checked_arithmetic_test.rs) | Test Matrix T02-T04 — exactness and refusal at the edge, ported from `exact_decimal` |
 | [`tests/parse_render_test.rs`](tests/parse_render_test.rs) | Test Matrix T01 — round-tripping through text, ported from `exact_decimal` |
 | [`tests/non_negative_test.rs`](tests/non_negative_test.rs) | Test Matrix T05-T06 — the refusal, its exact boundary, and integer round-tripping, ported from `exact_qty` |
+| [`tests/price_test.rs`](tests/price_test.rs) | `Price` as its own kind — its range, exact arithmetic, text form, and ordering |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Invariant, type, decisions, algorithm, and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

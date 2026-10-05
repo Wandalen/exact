@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_cmp/src/lib.rs:31`
+`module/exact_cmp/src/lib.rs:43`
 
 ```rust
 #[ must_use ]
@@ -24,7 +24,7 @@ pub fn qty_cmp( a : Quantity, b : Quantity ) -> core::cmp::Ordering
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 31 | Declaration |
+| `src/lib.rs` | 43 | Declaration |
 | `tests/cmp_test.rs` | 25 | Less ordering, alongside the sibling `price_cmp` check in the same test |
 | `exact_arith/src/lib.rs:125` | — | Facade re-export |
 
@@ -38,7 +38,7 @@ pub fn qty_cmp( a : Quantity, b : Quantity ) -> core::cmp::Ordering
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`src/lib.rs:119`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:125`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'qty_cmp(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.

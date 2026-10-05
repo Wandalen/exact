@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_parse/src/lib.rs:29`
+`module/exact_parse/src/lib.rs:38`
 
 ```rust
 use exact_kind::{ KindError, Money, Price, Quantity };
@@ -23,7 +23,7 @@ use exact_kind::{ KindError, Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 29 | Declaration — brings all 4 names into scope for every function signature and the compile-time assertion in the file |
+| `src/lib.rs` | 38 | Declaration — brings all 4 names into scope for every function signature and the compile-time assertion in the file |
 | `tests/from_str_test.rs:5` | — | Re-imports only `KindError` directly from `exact_kind` for the negative/malformed assertions; does not re-import `Money`/`Price`/`Quantity` |
 
 ## Crate Usage

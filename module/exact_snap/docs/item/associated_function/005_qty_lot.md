@@ -17,7 +17,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:106-109`
+`module/exact_snap/src/lib.rs:118-121`
 
 ```rust
 #[ must_use ]
@@ -31,7 +31,7 @@ pub const fn qty( self ) -> Quantity
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 106-109 | Declaration |
+| `src/lib.rs` | 118-121 | Declaration |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export (via `Lot`'s re-export) |
 
 No call site anywhere, production or test — an honest empty finding, matching

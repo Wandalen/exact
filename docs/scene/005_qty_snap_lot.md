@@ -7,7 +7,7 @@
 - **In Scope**: The snap input, lot size, and expected output.
 - **Out of Scope**: `exact_snap`'s general design (→ `../crate/012_exact_snap.md`, `../type/012_exact_snap_types.md`).
 
-**Design status**: not exercised by the demo lane — [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md)'s 5 steps never call a snap function. The function itself is real and matches this proposal's name exactly, [`qty_snap_lot`](../../module/exact_snap/readme.md) in `exact_snap` (→ [`type/012_exact_snap_types.md`](../type/012_exact_snap_types.md)) — just not demoed in this lane.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — [`qty_snap_lot`](../../module/exact_snap/readme.md) snaps `10` to a lot of `3` under `Rounding::Down` and the result is asserted equal to `9`; the lane prints `lot=9`. The function takes the lot as a `Lot` and an explicit rounding mode (→ [`type/012_exact_snap_types.md`](../type/012_exact_snap_types.md)).
 
 ### Procedure
 

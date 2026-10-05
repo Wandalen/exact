@@ -42,11 +42,11 @@ pub enum KindError
 |------|---------|---------|
 | `src/lib.rs` | 68,118,124-129,133,199,203,212,215,220,241,243,246,251,255,258,260,265,269,273,276,281,286,288,290,294,299,301,309,311,312,314,324,331,335,339,345,350,360,367,369,430,432,437,440,445,447,448,453,459,461,462,468,473,474,477,499,501,503,508,510,514,516,517,522,524,528,530,532,537,539,543,545,546,549 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries |
 | `tests/*.rs` (3 files) | throughout | Matched against specific variants |
-| `exact_parse/src/lib.rs:29,43-66` | — | `use` import; return type of all 3 `*_from_str` functions |
-| `exact_bytes/src/lib.rs:26,79` | — | `use` import; mapped to `WireError::Negative` in `kind_error_to_wire_error` |
+| `exact_parse/src/lib.rs:38,52-74` | — | `use` import; return type of all 3 `*_from_str` functions |
+| `exact_bytes/src/lib.rs:39,92` | — | `use` import; mapped to `WireError::Negative` in `kind_error_to_wire_error` |
 | `exact_conserve/src/lib.rs:77` | — | `use` import |
-| `exact_add/src/lib.rs:28` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
-| `exact_ratio/src/lib.rs:33,71` | — | `use` import; mapped to `RatioError::Negative` in `kind_error_to_ratio_error` |
+| `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
+| `exact_ratio/src/lib.rs:46,84` | — | `use` import; mapped to `RatioError::Negative` in `kind_error_to_ratio_error` |
 | `exact_arith/src/lib.rs:87` | — | Facade re-export |
 
 ## Crate Usage

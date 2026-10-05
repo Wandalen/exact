@@ -9,7 +9,7 @@
 
 ### Statement
 
-`src/lib.rs:36` declares `const _ : () = assert!( Money::ONE_MINOR ==
+`src/lib.rs:45` declares `const _ : () = assert!( Money::ONE_MINOR ==
 exact_scale::pow10( exact_scale::MONEY_SCALE ) );`. `Money`'s scale (fixed by
 its own const-generic parameter in `exact_kind`) and `exact_scale::MONEY_SCALE`
 are declared in two different crates, connected only by each site
@@ -35,7 +35,7 @@ two values that disagree.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:31-36` | The comment explaining the drift risk, and the compile-time assertion itself |
+| `src/lib.rs:40-45` | The comment explaining the drift risk, and the compile-time assertion itself |
 
 ### Tests
 

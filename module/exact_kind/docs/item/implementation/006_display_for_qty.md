@@ -30,7 +30,7 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 |------|---------|---------|
 | `src/lib.rs` | 594-600 | Declaration |
 | `tests/non_negative_test.rs:50` | — | `qty.to_string()` compared against the inner decimal's own rendering |
-| `exact_fmt/src/lib.rs:100` | — | `qty_fmt`'s `v.to_string()` |
+| `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |
 
 ## Crate Usage
 

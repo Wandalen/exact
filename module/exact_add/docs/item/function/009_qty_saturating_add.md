@@ -13,7 +13,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:124`
+`module/exact_add/src/lib.rs:142`
 
 ```rust
 pub const fn qty_saturating_add( a : Quantity, b : Quantity ) -> Quantity
@@ -30,8 +30,8 @@ pub const fn qty_saturating_add( a : Quantity, b : Quantity ) -> Quantity
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 124 | Declaration |
-| `tests/checked_and_saturating_add_test.rs:77,81` | — | Clamps at the ceiling; matches checked addition in range |
+| `src/lib.rs` | 142 | Declaration |
+| `tests/checked_and_saturating_add_test.rs:78,82` | — | Clamps at the ceiling; matches checked addition in range |
 | `exact_arith/src/lib.rs:98` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `qty_saturating_add`

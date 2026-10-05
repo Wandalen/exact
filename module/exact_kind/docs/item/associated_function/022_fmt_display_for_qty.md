@@ -25,7 +25,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 |------|---------|---------|
 | `src/lib.rs` | 596-599 | Declaration |
 | `tests/non_negative_test.rs:50` | — | Compared against the inner decimal's own rendering, via `.to_string()` |
-| `exact_fmt/src/lib.rs:100` | — | `qty_fmt`'s `v.to_string()` |
+| `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |
 
 ## Crate Usage
 
@@ -36,7 +36,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 ## Caller Tree
 
-- **External:** `exact_fmt::qty_fmt` (`exact_fmt/src/lib.rs:100`) — via `v.to_string()`
+- **External:** `exact_fmt::qty_fmt` (`exact_fmt/src/lib.rs:114`) — via `v.to_string()`
 
 No intra-crate caller.
 

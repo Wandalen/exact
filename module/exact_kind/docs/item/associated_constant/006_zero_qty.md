@@ -24,7 +24,7 @@ pub const ZERO : Self = Self { value : Decimal::ZERO };
 | `src/lib.rs` | 420 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Accumulator seed, boundary comparisons |
 | `exact_conserve/tests/conservation_test.rs:141,169,171` | — | `try_fold` seed; `qty_sum_assert_zero` inputs |
-| `exact_snap/tests/snap_test.rs:12,13,73` | — | `Tick`/`Lot` zero-rejection and zero-result checks |
+| `exact_snap/tests/snap_test.rs:12,13,116` | — | `Tick`/`Lot` zero-rejection and zero-result checks |
 | `exact_arith/tests/facade_test.rs:33` | — | Remainder-check comparison |
 
 No production (non-test) file outside `exact_kind` uses `Quantity::ZERO`

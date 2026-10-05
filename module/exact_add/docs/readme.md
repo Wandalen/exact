@@ -21,6 +21,6 @@ arithmetic this crate dispatches to.
 
 This crate owns part of [Hard Problem 12](../../../docs/hard_problem/012_hot_path_performance.md)
 (hot-path performance) — every function here is a `const fn` thin dispatch
-with no loop or heap type, but no benchmark harness exists anywhere in this
-family to measure that claim against `f64`; see the hard-problem doc for the
-full disclosure.
+with no loop or heap type, and `exact_arith`'s timing bench
+(`tests/bench_vs_f64.rs`) measures add against `f64`; see the hard-problem
+doc for the recorded numbers.

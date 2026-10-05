@@ -34,8 +34,8 @@ operand that never overflowed on its own — sidesteps that risk entirely.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:106-123` | `money_saturating_add` — the clamp and its doc comment's full correctness argument |
-| `src/lib.rs:125-137` | `qty_saturating_add` — the same shape, upper-bound-only |
+| `src/lib.rs:118-135` | `money_saturating_add` — the clamp and its doc comment's full correctness argument |
+| `src/lib.rs:137-149` | `qty_saturating_add` — the same shape, upper-bound-only |
 
 ### Tests
 
