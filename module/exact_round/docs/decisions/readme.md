@@ -11,7 +11,7 @@
 
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
-| 001 | [Half-Even As The Default](001_half_even_as_the_unbiased_default.md) | Superseded — `rounding_default` now returns `Down`, as designed; kept as the record of why `HalfEven` was once the default | 🔄 |
+| 001 | [Half-Even As The Default](001_half_even_as_the_unbiased_default.md) | Why `rounding_default` returns `HalfEven`, departing from the preferred design's planned `Down` | 🔄 |
 | 002 | [`round_div` Owned By `exact_round`](002_round_div_owned_by_exact_round.md) | Why the shared rounding division lives here rather than in `exact_ratio`/`exact_snap` | 🔄 |
 
 ### Regenerate

@@ -26,7 +26,7 @@
 //! ```
 //! use exact_round::{ Rounding, rounding_default, round_div };
 //!
-//! assert_eq!( rounding_default(), Rounding::Down );
+//! assert_eq!( rounding_default(), Rounding::HalfEven );
 //! assert_eq!( round_div( 7, 2, Rounding::HalfEven ).unwrap(), 4 ); // 3.5 -> 4 (even)
 //! ```
 
@@ -53,15 +53,15 @@ pub enum Rounding
 
 /// The family's default rounding policy where a call site states none.
 ///
-/// `Down` (toward negative infinity), as the design specifies. Money code
-/// should still name its mode at every division: `Down` leans toward smaller
-/// results over many roundings, so a call site that needs an unbiased result
-/// passes `Rounding::HalfEven` itself — every division function here takes
-/// the mode as a required argument for exactly that reason.
+/// `HalfEven` is the default because it is the only one of the three with
+/// no directional bias over a long run of roundings — the property a
+/// conserved-value family needs most, since a biased default would leak or
+/// manufacture value on every unrounded remainder, silently, in one
+/// direction, forever.
 #[ must_use ]
 pub const fn rounding_default() -> Rounding
 {
-  Rounding::Down
+  Rounding::HalfEven
 }
 
 /// A stable, human-readable name for a rounding mode.

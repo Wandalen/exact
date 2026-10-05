@@ -1,9 +1,7 @@
 # ADR-001: Half-Even As The Default, Departing From The Preferred Design's `Down`
 
 **Date**: 2026-10-01
-**Status**: Superseded (2026-10-03) — `rounding_default()` now returns `Down`, as the
-preferred design specifies. The bias argument below still applies to any call
-site that needs an unbiased result: it passes `Rounding::HalfEven` explicitly.
+**Status**: Accepted
 **Deciders**: wandalen
 
 ## Context

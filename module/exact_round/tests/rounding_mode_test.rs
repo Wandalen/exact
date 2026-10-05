@@ -2,11 +2,11 @@
 
 use exact_round::{ Rounding, rounding_default, rounding_name };
 
-/// The family's default is `Down`, as the design specifies.
+/// The family's default is `HalfEven`, the only unbiased mode of the three.
 #[ test ]
-fn the_default_rounding_mode_is_down()
+fn the_default_rounding_mode_is_half_even()
 {
-  assert_eq!( rounding_default(), Rounding::Down );
+  assert_eq!( rounding_default(), Rounding::HalfEven );
 }
 
 /// Every rounding mode has a stable, lowercase, snake_case name.
