@@ -129,9 +129,12 @@ impl Lot
 /// or declared range.
 pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
 {
-  let q = exact_round::round_div( price.minor(), tick.0.minor(), rounding )
+  // A tick of -5 marks the same grid as a tick of 5; dividing by the
+  // positive spacing keeps `Down` meaning the grid point at or below.
+  let spacing = tick.0.minor().abs();
+  let q = exact_round::round_div( price.minor(), spacing, rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
-  let snapped = q.checked_mul( tick.0.minor() ).ok_or( SnapError::Overflow )?;
+  let snapped = q.checked_mul( spacing ).ok_or( SnapError::Overflow )?;
   Price::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
 }
 

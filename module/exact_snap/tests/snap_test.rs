@@ -53,6 +53,49 @@ fn half_even_snaps_an_exact_tie_to_the_even_multiple()
   assert_eq!( price_snap_tick( tie, tick, Rounding::HalfEven ).unwrap().minor(), 20 );
 }
 
+/// `HalfEven` off a tie snaps to the nearer grid point, whichever side it is.
+#[ test ]
+fn half_even_off_a_tie_snaps_to_the_nearer_grid_point()
+{
+  let tick = Tick::new( Price::from_minor( 5 ).unwrap() ).unwrap();
+  let nearer_below = Price::from_minor( 17 ).unwrap(); // 2 from 15, 3 from 20
+  let nearer_above = Price::from_minor( 18 ).unwrap(); // 3 from 15, 2 from 20
+  assert_eq!( price_snap_tick( nearer_below, tick, Rounding::HalfEven ).unwrap().minor(), 15 );
+  assert_eq!( price_snap_tick( nearer_above, tick, Rounding::HalfEven ).unwrap().minor(), 20 );
+}
+
+/// A negative price snaps the same way: `Down` toward negative infinity, `Up`
+/// toward positive infinity — `-17` lies between `-20` and `-15`.
+#[ test ]
+fn a_negative_price_snaps_down_to_the_lower_grid_point_and_up_to_the_higher()
+{
+  let tick = Tick::new( Price::from_minor( 5 ).unwrap() ).unwrap();
+  let negative = Price::from_minor( -17 ).unwrap();
+  assert_eq!( price_snap_tick( negative, tick, Rounding::Down ).unwrap().minor(), -20 );
+  assert_eq!( price_snap_tick( negative, tick, Rounding::Up ).unwrap().minor(), -15 );
+}
+
+/// A negative tick marks the same grid as its positive counterpart, so it
+/// snaps identically — before the fix, `-5` turned `Down` into up and `Up`
+/// into down, because the tick count was rounded and then multiplied back
+/// by a negative spacing.
+#[ test ]
+fn a_negative_tick_snaps_exactly_like_its_positive_counterpart()
+{
+  let positive = Tick::new( Price::from_minor( 5 ).unwrap() ).unwrap();
+  let negative = Tick::new( Price::from_minor( -5 ).unwrap() ).unwrap();
+  for v in [ 17, -17, 15, 0 ]
+  {
+    let price = Price::from_minor( v ).unwrap();
+    for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+    {
+      assert_eq!( price_snap_tick( price, negative, mode ), price_snap_tick( price, positive, mode ) );
+    }
+  }
+  let between = Price::from_minor( 17 ).unwrap();
+  assert_eq!( price_snap_tick( between, negative, Rounding::Down ).unwrap().minor(), 15 );
+}
+
 /// Quantity snapping onto a lot behaves the same as price snapping onto a tick.
 #[ test ]
 fn qty_snap_lot_behaves_the_same_as_price_snap_tick()
@@ -87,4 +130,37 @@ fn price_snap_tick_reports_overflow_rounding_up_past_the_ceiling()
   let near_ceiling = Price::from_minor( Price::MAX.minor() - 4 ).unwrap();
   let tick = Tick::new( Price::from_minor( 7 ).unwrap() ).unwrap();
   assert_eq!( price_snap_tick( near_ceiling, tick, Rounding::Up ), Err( SnapError::Overflow ) );
+}
+
+/// A tick or lot hands back exactly the size it was built from — a negative
+/// tick included, which `Tick::new` accepts.
+#[ test ]
+fn tick_and_lot_return_the_size_they_were_built_from()
+{
+  let size = Price::from_minor( -5 ).unwrap();
+  assert_eq!( Tick::new( size ).unwrap().price(), size );
+  let lot = Quantity::from_minor( 3 ).unwrap();
+  assert_eq!( Lot::new( lot ).unwrap().qty(), lot );
+}
+
+/// `HalfEven` on a lot: off a tie to the nearer point, on a tie to the even
+/// multiple — `15` is halfway between `10` (1×, odd) and `20` (2×, even).
+#[ test ]
+fn qty_snap_lot_half_even_takes_the_nearer_point_and_breaks_a_tie_to_even()
+{
+  let five = Lot::new( Quantity::from_minor( 5 ).unwrap() ).unwrap();
+  let seventeen = Quantity::from_minor( 17 ).unwrap();
+  assert_eq!( qty_snap_lot( seventeen, five, Rounding::HalfEven ).unwrap().minor(), 15 );
+  let ten = Lot::new( Quantity::from_minor( 10 ).unwrap() ).unwrap();
+  let fifteen = Quantity::from_minor( 15 ).unwrap();
+  assert_eq!( qty_snap_lot( fifteen, ten, Rounding::HalfEven ).unwrap().minor(), 20 );
+}
+
+/// Snapping a quantity up past the ceiling is refused, as for a price.
+#[ test ]
+fn qty_snap_lot_reports_overflow_rounding_up_past_the_ceiling()
+{
+  let near_ceiling = Quantity::from_minor( Quantity::MAX.minor() - 4 ).unwrap();
+  let lot = Lot::new( Quantity::from_minor( 7 ).unwrap() ).unwrap();
+  assert_eq!( qty_snap_lot( near_ceiling, lot, Rounding::Up ), Err( SnapError::Overflow ) );
 }
