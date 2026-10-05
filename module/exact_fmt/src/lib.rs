@@ -90,8 +90,8 @@ impl core::fmt::Write for ByteBufWriter< '_ >
 /// # Errors
 ///
 /// [`FmtError::BufFull`] when `buf` is too small to hold the rendered text —
-/// nothing is partially written in that case; the buffer's contents past
-/// whatever was written before the failure are unspecified.
+/// pieces written before the one that did not fit stay in `buf`, so its
+/// contents are unspecified on error.
 pub fn fmt_into( value : impl core::fmt::Display, buf : &mut [ u8 ] ) -> Result< usize, FmtError >
 {
   use core::fmt::Write;
