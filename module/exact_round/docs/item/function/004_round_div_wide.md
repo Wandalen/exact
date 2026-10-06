@@ -29,6 +29,15 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
   {
     return Err( RoundError::DivZero );
   }
+  // Fix(exact_round_minimum_value_refused): a negative divisor used to be
+  // handled by negating both operands first, which has no result for the
+  // type's `MIN` (`i64::MIN` in `round_div`, `i128::MIN` here), so `(0, MIN)`,
+  // `(1, MIN)`, `(MIN, -2)` and `(MIN, MIN)` returned `Overflow` though each
+  // quotient fits. The operands now keep their signs; only the quotient can overflow.
+  //
+  // Root cause: `checked_neg` on an operand, where only the quotient can overflow.
+  // Pitfall: two's-complement `MIN` has no positive counterpart — normalising
+  //   signs by negation fails exactly at the edge a test grid rarely reaches.
   // Truncates toward zero; `MIN / -1` is the one quotient with no representable result.
   let Some( q ) = n.checked_div( d ) else { return Err( RoundError::Overflow ) };
   let r = n % d;
@@ -65,11 +74,11 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 140-175 | Declaration |
+| `src/lib.rs` | 140-184 | Declaration |
 | `src/lib.rs` | 120 | `round_div`'s call, with widened operands |
-| `tests/round_div_test.rs` | 4,121,133-140,150-156 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
-| `exact_ratio/src/lib.rs:143` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
-| `exact_arith/src/lib.rs:83` | — | Facade re-export |
+| `tests/round_div_test.rs` | 4,140,152-159,190-196 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
+| `exact_ratio/src/lib.rs:150-151` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
+| `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -82,7 +91,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 ## Caller Tree
 
 - [round_div](003_round_div.md) (`src/lib.rs:120`)
-- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:143`)
+- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:150-151`)
 
 ## Callee Tree
 

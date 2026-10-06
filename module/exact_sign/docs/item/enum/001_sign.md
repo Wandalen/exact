@@ -31,12 +31,12 @@ pub enum Sign
 |------|---------|---------|
 | `src/lib.rs` | 25,39,43,47,51,59,66 | Return type of `sign_of`; matched in `sign_is_negative`/`sign_is_zero` |
 | `tests/sign_classification_test.rs` | throughout | All 3 variants checked at the boundary |
-| `exact_arith/src/lib.rs:85` | — | Facade re-export |
+| `exact_arith/src/lib.rs:86` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:57` | — | `sign_of( -5 )` via the re-exported path |
 
 No production (non-test) file outside `exact_sign` constructs or matches on
 `Sign` directly — `exact_add`, the one crate that calls into this crate in
-production, uses [`sign_is_negative`](../function/002_is_negative.md) instead,
+production, uses [`sign_is_negative`](../function/002_sign_is_negative.md) instead,
 which hides the enum entirely behind a boolean question.
 
 ## Crate Usage

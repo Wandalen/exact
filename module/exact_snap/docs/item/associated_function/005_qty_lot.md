@@ -32,7 +32,7 @@ pub const fn qty( self ) -> Quantity
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 118-121 | Declaration |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export (via `Lot`'s re-export) |
+| `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Lot`'s re-export) |
 
 No call site anywhere, production or test — an honest empty finding, matching
 [Tick::price](003_price_tick.md) exactly: declared, part of the public API,

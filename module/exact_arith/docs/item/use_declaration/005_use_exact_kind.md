@@ -12,7 +12,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:87`
+`module/exact_arith/src/lib.rs:88`
 
 ```rust
 pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
@@ -22,8 +22,8 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 87 | Declaration |
-| `src/lib.rs` | 21-33 | Module-level doc-test — `Money`, `Quantity` |
+| `src/lib.rs` | 88 | Declaration |
+| `src/lib.rs` | 21-34 | Module-level doc-test — `Money`, `Quantity` |
 | `tests/facade_test.rs` | throughout | `Money`, `Quantity`, `KindError` used in both tests |
 | `exchange_core/src/lib.rs:63-66` | — | **Production** — `KindError`, `Money`, `Quantity` re-exported one layer further |
 | `exchange_book`, `exchange_match`, `exchange_escrow`, `exchange_types` | `src/lib.rs` each | **Production** — `Money`/`Quantity` (every one of the 5 `substrate/exchange/` crates) |

@@ -12,7 +12,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:83`
+`module/exact_arith/src/lib.rs:84`
 
 ```rust
 pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding_default, rounding_name };
@@ -22,8 +22,8 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 83 | Declaration |
-| `src/lib.rs` | 21,32 | Module-level doc-test — `Rounding` |
+| `src/lib.rs` | 84 | Declaration |
+| `src/lib.rs` | 21,33 | Module-level doc-test — `Rounding` |
 | `tests/facade_test.rs:10,38,56` | — | `Rounding`, `round_div` both exercised |
 | `smoke_exact_market_split/src/lib.rs:45` | — | **Demo-lane** — `Rounding` |
 

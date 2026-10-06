@@ -68,8 +68,8 @@ It implements `Display` (a one-line message per variant) and
 | `src/lib.rs:84-107` | `RoundError`, its `Display` impl, and its `Error` impl |
 | `src/lib.rs:109-126` | `round_div` — widen, divide through `round_div_wide`, narrow back |
 | `src/lib.rs:128-145` | `round_div_wide`'s doc comment and the zero-divisor refusal |
-| `src/lib.rs:146-152` | The truncating divide and the exact-division shortcut |
-| `src/lib.rs:154-174` | The direction of the exact quotient, the mode decision — `Down`, `Up`, `HalfEven` — and the step |
+| `src/lib.rs:155-161` | The truncating divide and the exact-division shortcut |
+| `src/lib.rs:163-183` | The direction of the exact quotient, the mode decision — `Down`, `Up`, `HalfEven` — and the step |
 
 ### Tests
 

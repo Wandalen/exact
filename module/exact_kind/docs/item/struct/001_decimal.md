@@ -30,7 +30,7 @@ pub struct Decimal< const SCALE : u32 >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 57,634,139-146,157,173,189,192,199,215,227,234,246,250,260,264,276,283,294,298,314,369,373,412,414,433,435,437,450,464,477,479 | Backs the `Money` alias and `Price`'s `value` field; receiver/return type of every `Decimal` method; backs `Qty`'s `value` field |
+| `src/lib.rs` | 57,642,139-146,157,173,189,192,199,215,227,234,246,250,260,264,276,283,294,298,314,369,373,420,422,441,443,445,458,472,485,487 | Backs the `Money` alias and `Price`'s `value` field; receiver/return type of every `Decimal` method; backs `Qty`'s `value` field |
 | `tests/*.rs` (3 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money` |
 | 9 downstream crates (`exact_parse` … `exact_arith`) | `src/lib.rs` | Named only through the `Money` alias and `Price` — see [Money](../type_alias/001_money.md), [Price](003_price.md) for the full per-crate breakdown; no downstream file names bare `Decimal` |
 

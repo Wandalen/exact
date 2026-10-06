@@ -16,10 +16,10 @@
 | `DustError`'s `Display` impl | trait impl | `src/lib.rs:88` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
 | `money_dust_split` | fn | `src/lib.rs:162` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 | `money_dust_split_into` | fn | `src/lib.rs:177` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_remainder` | fn | `src/lib.rs:195` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split` | fn | `src/lib.rs:207` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split_into` | fn | `src/lib.rs:221` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_remainder` | fn | `src/lib.rs:237` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_remainder` | fn | `src/lib.rs:203` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split` | fn | `src/lib.rs:215` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split_into` | fn | `src/lib.rs:229` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_remainder` | fn | `src/lib.rs:253` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 
 `impl core::error::Error for DustError {}` (`src/lib.rs:101`) carries no associated item of its own, so it gets no row here — same treatment as every other marker trait impl in this family's `definition/` indexes.
 

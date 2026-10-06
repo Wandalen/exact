@@ -20,7 +20,7 @@
 | `Lot::new` | fn | `src/lib.rs:107` | [Grid Spacing Is Never Zero](../invariant/001_grid_spacing_never_zero.md) |
 | `Lot::qty` | fn | `src/lib.rs:118` | — |
 | `price_snap_tick` | fn | `src/lib.rs:130` | — |
-| `qty_snap_lot` | fn | `src/lib.rs:147` | — |
+| `qty_snap_lot` | fn | `src/lib.rs:154` | — |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

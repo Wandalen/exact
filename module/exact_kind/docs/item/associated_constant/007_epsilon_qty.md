@@ -11,7 +11,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:423`
+`module/exact_kind/src/lib.rs:431`
 
 ```rust
 pub const EPSILON : Self = Self { value : Decimal::EPSILON };
@@ -21,7 +21,7 @@ pub const EPSILON : Self = Self { value : Decimal::EPSILON };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 423 | Declaration |
+| `src/lib.rs` | 431 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Boundary-adjacent values (`ZERO.checked_sub(EPSILON)`, `MAX.checked_add(EPSILON)`) |
 | `exact_add/tests/checked_and_saturating_add_test.rs:78` | — | Saturation-boundary test input |
 

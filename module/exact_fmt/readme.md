@@ -28,8 +28,8 @@ foreign type. See the disclosed deviation in
 ## What it does not do
 
 It implements no formatting logic of its own — every function here renders
-through `exact_kind`'s existing `Display` impl, ported unchanged from the
-real codebase.
+through `exact_kind`'s existing `Display` impl, ported from the real
+codebase and since reworked not to allocate (`Price`'s delegates to `Money`'s).
 
 ## Responsibility Table
 

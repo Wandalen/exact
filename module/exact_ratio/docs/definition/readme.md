@@ -17,12 +17,12 @@
 | `Ratio::n` | fn | `src/lib.rs:101` | [Rational Multiplier](../type/001_rational_multiplier.md) |
 | `Ratio::d` | fn | `src/lib.rs:108` | [Rational Multiplier](../type/001_rational_multiplier.md) |
 | `ratio_new` | fn | `src/lib.rs:125` | [Rational Multiplier](../type/001_rational_multiplier.md) |
-| `money_mul_ratio` | fn | `src/lib.rs:153` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
-| `qty_mul_ratio` | fn | `src/lib.rs:166` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
-| `price_mul_ratio` | fn | `src/lib.rs:177` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
-| `money_div_round` | fn | `src/lib.rs:198` | — |
-| `qty_div_round` | fn | `src/lib.rs:211` | — |
-| `price_mul_qty` | fn | `src/lib.rs:227` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
+| `money_mul_ratio` | fn | `src/lib.rs:161` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
+| `qty_mul_ratio` | fn | `src/lib.rs:174` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
+| `price_mul_ratio` | fn | `src/lib.rs:185` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
+| `money_div_round` | fn | `src/lib.rs:206` | — |
+| `qty_div_round` | fn | `src/lib.rs:219` | — |
+| `price_mul_qty` | fn | `src/lib.rs:235` | [Widened Multiply Before Narrow](../algorithm/001_widened_multiply_before_narrow.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:108-121`
+`module/exact_arith/src/lib.rs:120-133`
 
 ```rust
 pub use exact_bytes::
@@ -34,7 +34,7 @@ pub use exact_bytes::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 108-121 | Declaration |
+| `src/lib.rs` | 120-133 | Declaration |
 | `tests/facade_test.rs:9,41-42` | — | `money_to_wire`/`money_from_wire` round-tripped |
 
 **Only 2 of the 11 re-exported names are exercised anywhere through this

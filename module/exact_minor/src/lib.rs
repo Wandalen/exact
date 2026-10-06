@@ -34,8 +34,8 @@ use core::fmt;
 
 /// The backing integer width for every conserved value in the family.
 ///
-/// Named exactly once, here, so a width change is one edit. Every other crate
-/// in the family re-exports this alias rather than restating `i64`.
+/// Named once, here, as the stored width (the `i64` conversions `minor_from_i64`
+/// and `minor_to_i64` are the raw-integer boundary). Other crates reuse this alias.
 pub type Backing = i64;
 
 /// A count of minor units — the family's base subunit type.

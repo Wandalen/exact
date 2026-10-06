@@ -27,7 +27,7 @@ pub const fn rounding_default() -> Rounding
 |------|---------|---------|
 | `src/lib.rs` | 64 | Declaration |
 | `tests/rounding_mode_test.rs:9` | — | Confirms the default is `HalfEven` |
-| `exact_arith/src/lib.rs:83` | — | Facade re-export |
+| `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any of its 4
 downstream consumers — calls `rounding_default()` to actually obtain a

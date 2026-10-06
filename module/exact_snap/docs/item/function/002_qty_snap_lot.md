@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:147-153`
+`module/exact_snap/src/lib.rs:154-160`
 
 ```rust
 pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
@@ -28,9 +28,9 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 147-153 | Declaration |
-| `tests/snap_test.rs` | 105,106,116,117 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `src/lib.rs` | 154-160 | Declaration |
+| `tests/snap_test.rs` | 119,120,130,131 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
+| `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests. `exact_arith`'s own facade test suite never calls it either.

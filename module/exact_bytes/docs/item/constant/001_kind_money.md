@@ -24,7 +24,7 @@ pub const KIND_MONEY : u8 = 0;
 | `src/lib.rs` | 178 | `money_to_wire`'s encoded discriminator |
 | `src/lib.rs` | 190 | `money_from_wire`'s expected-discriminator check |
 | `tests/wire_roundtrip_test.rs` | 15,87,98 | Asserting the round-tripped discriminator; constructing a tampered `Wire` directly |
-| `exact_arith/src/lib.rs:110` | — | Facade re-export |
+| `exact_arith/src/lib.rs:122` | — | Facade re-export |
 
 ## Crate Usage
 

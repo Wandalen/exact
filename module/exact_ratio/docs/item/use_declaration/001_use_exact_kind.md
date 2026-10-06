@@ -23,7 +23,7 @@ use exact_kind::{ KindError, Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 46,80,84,153,156,166,169,178,181,198,201,211,214 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject (67,71); `Money`/`Price`/`Quantity` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions |
+| `src/lib.rs` | 46,80,84,161,164,174,177,186,189,206,209,219,222 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject (67,71); `Money`/`Price`/`Quantity` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions |
 
 ## Crate Usage
 

@@ -20,9 +20,11 @@ grep -n "for .* in \|while \|Vec<\|Box<\|String" src/lib.rs | grep -v "^[0-9]*:\
 
 Expected: no output. Confirmed 2026-10-02 — every public function
 (`ratio_new`, `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio`,
-`money_div_round`, `qty_div_round`) is a short, straight-line body: a
-widen-multiply-narrow sequence, or a delegating call into
-`exact_round::round_div`. No loop construct and no heap-backed type appears
+`money_div_round`, `qty_div_round`, `price_mul_qty`) is a short,
+straight-line body: a widen-multiply-narrow sequence through
+`exact_round::round_div_wide`, or a delegating call into
+`exact_round::round_div`. Re-confirmed 2026-10-06 after `price_mul_qty` was
+added. No loop construct and no heap-backed type appears
 anywhere in the crate.
 
 ### M2 — Documented examples compile and are worth reading

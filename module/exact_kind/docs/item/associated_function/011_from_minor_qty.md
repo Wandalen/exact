@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:448`
+`module/exact_kind/src/lib.rs:456`
 
 ```rust
 pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
@@ -28,11 +28,11 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 448 | Declaration |
+| `src/lib.rs` | 456 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative/ceiling-breach checks |
 | `exact_bytes/src/lib.rs:226` | — | `qty_from_wire` |
-| `exact_dust/src/lib.rs:212,227` | — | `qty_dust_split`/`qty_dust_split_into` |
-| `exact_ratio/src/lib.rs:169,214` | — | `qty_mul_ratio`/`qty_div_round` |
+| `exact_dust/src/lib.rs:220,243` | — | `qty_dust_split`/`qty_dust_split_into` |
+| `exact_ratio/src/lib.rs:177,222` | — | `qty_mul_ratio`/`qty_div_round` |
 
 ## Crate Usage
 
@@ -44,12 +44,12 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 ## Caller Tree
 
 - **External:** `exact_bytes::qty_from_wire` (`exact_bytes/src/lib.rs:226`)
-- **External:** `exact_dust::qty_dust_split` (`exact_dust/src/lib.rs:212`), `qty_dust_split_into` (`:216`)
-- **External:** `exact_ratio::qty_mul_ratio` (`exact_ratio/src/lib.rs:169`), `qty_div_round` (`:202`)
+- **External:** `exact_dust::qty_dust_split` (`exact_dust/src/lib.rs:220`), `qty_dust_split_into` (`:243`)
+- **External:** `exact_ratio::qty_mul_ratio` (`exact_ratio/src/lib.rs:177`), `qty_div_round` (`:222`)
 
 No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:450`)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:452`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:458`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:460`)

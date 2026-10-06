@@ -18,7 +18,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:211`
+`module/exact_ratio/src/lib.rs:219`
 
 ```rust
 pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
@@ -32,9 +32,9 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 211-215 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 271,281,291 | Every mode, a zero divisor, and a negative divisor — refused unless the result rounds to zero |
-| `exact_arith/src/lib.rs:102` | — | Facade re-export |
+| `src/lib.rs` | 219-223 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 292,302,312 | Every mode, a zero divisor, and a negative divisor — refused unless the result rounds to zero |
+| `exact_arith/src/lib.rs:111` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -51,6 +51,6 @@ name.
 
 ## Callee Tree
 
-- `div_round_minor` (`src/lib.rs:183`, private — no Item Instance of its own)
+- `div_round_minor` (`src/lib.rs:191`, private — no Item Instance of its own)
 - `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Quantity::minor`, `exact_kind::Quantity::from_minor`

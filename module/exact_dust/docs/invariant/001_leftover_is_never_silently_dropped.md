@@ -53,7 +53,7 @@ not destroyed.
 |------|--------------|
 | `src/lib.rs:118-129` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
 | `src/lib.rs:131-152` | `slot_minor`/`fill_minor` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
-| `src/lib.rs:195-199` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
+| `src/lib.rs:203-207` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
 
 ### Tests
 

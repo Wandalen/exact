@@ -29,7 +29,7 @@ pub fn money_eq( a : Money, b : Money ) -> bool
 |------|---------|---------|
 | `src/lib.rs` | 57 | Declaration |
 | `tests/cmp_test.rs` | 39-40 | Equal pair and unequal pair, one assertion each |
-| `exact_arith/src/lib.rs:125` | — | Facade re-export |
+| `exact_arith/src/lib.rs:137` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -41,7 +41,7 @@ pub fn money_eq( a : Money, b : Money ) -> bool
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:125`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:137`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'money_eq(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.

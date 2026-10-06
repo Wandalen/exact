@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:198`
+`module/exact_ratio/src/lib.rs:206`
 
 ```rust
 pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Money, RatioError >
@@ -26,9 +26,9 @@ pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Mon
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 198-202 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 79-80,89-90,99,103,107,116,120,128,138 | Every rounding mode (`Down`/`Up`/`HalfEven`), both signs, tie and non-tie remainders, zero-divisor refusal, and exact-division agreement across modes — by far the most heavily tested function in this crate |
-| `exact_arith/src/lib.rs:102` | — | Facade re-export |
+| `src/lib.rs` | 206-210 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 82-83,92-93,102,106,110,119,123,131,141 | Every rounding mode (`Down`/`Up`/`HalfEven`), both signs, tie and non-tie remainders, zero-divisor refusal, and exact-division agreement across modes — by far the most heavily tested function in this crate |
+| `exact_arith/src/lib.rs:107` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -49,6 +49,6 @@ depending on `exact_kind, exact_ratio`).
 
 ## Callee Tree
 
-- `div_round_minor` (`src/lib.rs:183`, private — no Item Instance of its own)
+- `div_round_minor` (`src/lib.rs:191`, private — no Item Instance of its own)
 - `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Money::minor`, `exact_kind::Money::from_minor`

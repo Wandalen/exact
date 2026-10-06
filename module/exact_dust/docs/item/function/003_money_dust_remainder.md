@@ -13,7 +13,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:195-199`
+`module/exact_dust/src/lib.rs:203-207`
 
 ```rust
 pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> Result< i64, DustError >
@@ -27,9 +27,9 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 195-199 | Declaration |
+| `src/lib.rs` | 203-207 | Declaration |
 | `tests/dust_split_test.rs:50` | — | Confirms the held-back amount under `DustTo::Sink` |
-| `exact_arith/src/lib.rs:127` | — | Facade re-export |
+| `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.
@@ -47,10 +47,10 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:197`, private — no Item Instance of its own)
+- `split_minor` (`src/lib.rs:205`, private — no Item Instance of its own)
   - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:197`)
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:205`)
 
 No call to `fill_minor` — this function returns the raw leftover and never
 builds a set of output slots, the one structural difference from

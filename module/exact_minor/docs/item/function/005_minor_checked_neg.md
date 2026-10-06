@@ -31,7 +31,7 @@ pub const fn minor_checked_neg( a : Minor ) -> Result< Minor, MinorError >
 | `src/lib.rs` | 270-277 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Round-trip negation over `[0, 1, -1, Backing::MAX]`, plus the `Backing::MIN` refusal |
 | `exact_kind/src/lib.rs:296` | — | **Production** — `Decimal::checked_neg` |
-| `exact_arith/src/lib.rs:71` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
 
 `exact_kind`'s `Decimal::checked_neg` delegates here on its stored `Minor`.
 

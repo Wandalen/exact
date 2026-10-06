@@ -12,12 +12,20 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:177-186`
+`module/exact_dust/src/lib.rs:177-194`
 
 ```rust
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
   for ( i, slot ) in out.iter_mut().enumerate()
   {
     let minor = slot_minor( share, leftover, to, i )?;
@@ -36,12 +44,12 @@ anything is written.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 177-186 | Declaration |
+| `src/lib.rs` | 177-194 | Declaration |
 | `tests/dust_split_test.rs:80` | — | Writes the same shares as the allocating `money_dust_split` |
 | `tests/dust_split_test.rs:106` | — | `DustTo::Reject` refuses before writing — the buffer keeps what it held |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
 | `tests/dust_split_test.rs:181` | — | `DustTo::Sink` leaves every slot at the plain share |
-| `exact_arith/src/lib.rs:127` | — | Facade re-export |
+| `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own tests. `exact_arith` only
 re-exports the name; neither its crate-doc example nor its test suite calls
@@ -63,5 +71,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 - `split_minor` (`src/lib.rs:179`, private — no Item Instance of its own)
   - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- `slot_minor` (`src/lib.rs:182`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:179`), `exact_kind::Money::from_minor` (`src/lib.rs:183`)
+- `slot_minor` (`src/lib.rs:190`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:179`), `exact_kind::Money::from_minor` (`src/lib.rs:191`)

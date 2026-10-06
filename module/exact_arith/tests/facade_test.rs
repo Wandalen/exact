@@ -6,8 +6,8 @@
 
 use exact_arith::
 {
-  money_dust_split, money_from_wire, money_to_wire, price_mul_qty, round_div, verify, ConservationError, DustTo,
-  Entry, KindError, Money, Price, Quantity, Report, Rounding, Sign, sign_of, CEILING_MINOR_UNITS,
+  money_dust_split, money_from_wire, money_to_wire, price_mul_qty, round_div, verify, ConservationError,
+  DustTo, Entry, KindError, Money, Price, Quantity, Report, Rounding, Sign, sign_of, CEILING_MINOR_UNITS,
   CEILING_WHOLE_UNITS, MONEY_SCALE, pow10,
 };
 

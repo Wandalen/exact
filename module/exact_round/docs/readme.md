@@ -10,6 +10,7 @@ Design documentation for `exact_round`, as typed doc definitions.
 | `decisions/` | Why `HalfEven` departs from the preferred design's planned default, and why `round_div` lives here |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 Tier 0 of the family — a dependency-free root alongside
 [`exact_minor`](../../exact_minor/readme.md) and

@@ -177,6 +177,14 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
   for ( i, slot ) in out.iter_mut().enumerate()
   {
     let minor = slot_minor( share, leftover, to, i )?;
@@ -221,6 +229,14 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
   for ( i, slot ) in out.iter_mut().enumerate()
   {
     let minor = slot_minor( share, leftover, to, i )?;

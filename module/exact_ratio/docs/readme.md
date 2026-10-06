@@ -10,6 +10,7 @@ Design documentation for `exact_ratio`, as typed doc definitions.
 | `decisions/` | Why `RatioError` departs from the preferred design's own listing |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 Tier 2 of the family: multiplies and divides the conserved value types
 [`exact_kind`](../../exact_kind/readme.md) declares, using the rounding

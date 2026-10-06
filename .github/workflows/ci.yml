@@ -32,6 +32,11 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: nextest
         run: cargo nextest run --workspace --all-features
+      # The default build (no `i128` on `exact_minor`) is what every downstream
+      # dependency gets, so it is tested too, not only the all-features one.
+      # The timing bench already ran in the step above; it is skipped here.
+      - name: nextest (default features)
+        run: cargo nextest run --workspace -E 'not binary(bench_vs_f64)'
       - name: doctests
         run: RUSTDOCFLAGS="-D warnings" cargo test --doc --workspace --all-features
 
@@ -47,6 +52,8 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: clippy
         run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: clippy (default features)
+        run: cargo clippy --all-targets -- -D warnings
 
   doc:
     name: cargo doc --no-deps

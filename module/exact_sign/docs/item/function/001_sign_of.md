@@ -36,12 +36,12 @@ pub const fn sign_of( value : Backing ) -> Sign
 |------|---------|---------|
 | `src/lib.rs` | 39,59,66 | Declaration; `sign_is_negative`/`sign_is_zero`'s delegation |
 | `tests/sign_classification_test.rs:7-12` | — | All 3 classifications |
-| `exact_arith/src/lib.rs:85` | — | Facade re-export |
+| `exact_arith/src/lib.rs:86` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:57` | — | `sign_of( -5 )` via the re-exported path |
 
 No production (non-test) file outside `exact_sign` calls `sign_of` directly
 — `exact_add`, the crate's one production consumer, calls
-[`sign_is_negative`](002_is_negative.md) instead.
+[`sign_is_negative`](002_sign_is_negative.md) instead.
 
 ## Crate Usage
 
@@ -52,8 +52,8 @@ No production (non-test) file outside `exact_sign` calls `sign_of` directly
 
 ## Caller Tree
 
-- [sign_is_negative](002_is_negative.md) (`src/lib.rs:59`)
-- [sign_is_zero](003_is_zero.md) (`src/lib.rs:66`)
+- [sign_is_negative](002_sign_is_negative.md) (`src/lib.rs:59`)
+- [sign_is_zero](003_sign_is_zero.md) (`src/lib.rs:66`)
 - **External:** `exact_arith`'s own test (`tests/facade_test.rs:57`) — test-context, not production
 
 No production external caller.

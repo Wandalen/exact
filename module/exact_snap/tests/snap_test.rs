@@ -76,9 +76,23 @@ fn a_negative_price_snaps_down_to_the_lower_grid_point_and_up_to_the_higher()
 }
 
 /// A negative tick marks the same grid as its positive counterpart, so it
-/// snaps identically — before the fix, `-5` turned `Down` into up and `Up`
-/// into down, because the tick count was rounded and then multiplied back
-/// by a negative spacing.
+/// snaps identically.
+///
+/// Root Cause: `price_snap_tick` divided the price by the signed tick, so
+/// for a tick of -5 the tick count was rounded on a reversed axis and then
+/// multiplied back by the negative spacing — `Down` snapped up and `Up` down.
+///
+/// Why Not Caught: every snap test used a positive tick; `Tick::new` accepts
+/// a negative one, but nothing exercised it.
+///
+/// Fix Applied: the price is divided by the tick's magnitude
+/// (`tick.0.minor().abs()`), so the sign of the tick no longer matters.
+///
+/// Prevention: this test compares a tick of -5 with a tick of 5 on prices
+/// above, below and on the grid under every mode; it fails on the old code.
+///
+/// Pitfall: `Down`/`Up` round a quotient toward -∞/+∞; multiplied back by a
+/// negative divisor, that direction reverses for the value itself.
 #[ test ]
 fn a_negative_tick_snaps_exactly_like_its_positive_counterpart()
 {

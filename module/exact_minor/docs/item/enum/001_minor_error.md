@@ -35,9 +35,10 @@ pub enum MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 88,90,95-96,124,129-130,141,146-147,157,162,188,204,216,238,243-244,254,259-260,270,275 | Return type / constructed variant of all 3 checked functions, and both trait impls it carries |
+| `src/lib.rs` | 88,90,95-96,124,129-130,141,146-147,157,162,188,204,216,238,243-244,254,259-260,270,275 | Return type / constructed variant of all 6 checked functions (3 `minor_*`, 3 `minor_wide_*` behind the `i128` feature) and of `TryFrom< MinorWide > for Minor`, and both trait impls it carries |
 | `tests/checked_arithmetic_test.rs` | throughout | Matched by equality against the exact variant and `operation` string |
-| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
+| `tests/wide_test.rs` | 7,42-61,83-102,104-108 | The same, for the `i128` narrowing and `minor_wide_*` functions |
+| `exact_arith/src/lib.rs:70` | — | Facade re-export only |
 
 `exact_kind` receives one from the 3 checked functions and matches it in its
 private `kind_overflow` (`exact_kind/src/lib.rs:164-171`), turning both variants into

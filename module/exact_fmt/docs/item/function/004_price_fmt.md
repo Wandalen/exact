@@ -26,7 +26,7 @@ pub fn price_fmt( v : Price ) -> String
 |------|---------|---------|
 | `src/lib.rs` | 119-122 | Declaration |
 | `tests/fmt_test.rs:48` | — | A positive and a negative price render exactly |
-| `exact_arith/src/lib.rs:106` | — | Facade re-export |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 No caller outside this crate's own tests.
 

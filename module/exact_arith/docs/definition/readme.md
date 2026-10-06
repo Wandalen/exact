@@ -51,8 +51,8 @@ behaviour.
 | `Decimal` | struct | `../../../exact_kind/src/lib.rs:157` | — |
 | `KindError` | enum | `../../../exact_kind/src/lib.rs:68` | — |
 | `Money` | type alias | `../../../exact_kind/src/lib.rs:57` | — |
-| `Price` | struct | `../../../exact_kind/src/lib.rs:632` | — |
-| `Qty` | struct | `../../../exact_kind/src/lib.rs:412` | — |
+| `Price` | struct | `../../../exact_kind/src/lib.rs:640` | — |
+| `Qty` | struct | `../../../exact_kind/src/lib.rs:420` | — |
 | `Quantity` | type alias | `../../../exact_kind/src/lib.rs:60` | — |
 | `money_add` | fn | `../../../exact_add/src/lib.rs:53` | — |
 | `money_checked_neg` | fn | `../../../exact_add/src/lib.rs:113` | — |
@@ -65,12 +65,12 @@ behaviour.
 | `qty_sub` | fn | `../../../exact_add/src/lib.rs:83` | — |
 | `Ratio` | struct | `../../../exact_ratio/src/lib.rs:91` | — |
 | `RatioError` | enum | `../../../exact_ratio/src/lib.rs:51` | — |
-| `money_div_round` | fn | `../../../exact_ratio/src/lib.rs:198` | — |
-| `money_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:153` | — |
-| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:227` | — |
-| `price_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:177` | — |
-| `qty_div_round` | fn | `../../../exact_ratio/src/lib.rs:211` | — |
-| `qty_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:166` | — |
+| `money_div_round` | fn | `../../../exact_ratio/src/lib.rs:206` | — |
+| `money_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:161` | — |
+| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:235` | — |
+| `price_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:185` | — |
+| `qty_div_round` | fn | `../../../exact_ratio/src/lib.rs:219` | — |
+| `qty_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:174` | — |
 | `ratio_new` | fn | `../../../exact_ratio/src/lib.rs:125` | — |
 | `money_from_str` | fn | `../../../exact_parse/src/lib.rs:52` | — |
 | `price_from_str` | fn | `../../../exact_parse/src/lib.rs:72` | — |
@@ -95,7 +95,7 @@ behaviour.
 | `SnapError` | enum | `../../../exact_snap/src/lib.rs:29` | — |
 | `Tick` | struct | `../../../exact_snap/src/lib.rs:70` | — |
 | `price_snap_tick` | fn | `../../../exact_snap/src/lib.rs:130` | — |
-| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:147` | — |
+| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:154` | — |
 | `money_cmp` | fn | `../../../exact_cmp/src/lib.rs:36` | — |
 | `money_eq` | fn | `../../../exact_cmp/src/lib.rs:57` | — |
 | `price_cmp` | fn | `../../../exact_cmp/src/lib.rs:50` | — |
@@ -104,12 +104,12 @@ behaviour.
 | `qty_cmp` | fn | `../../../exact_cmp/src/lib.rs:43` | — |
 | `DustError` | enum | `../../../exact_dust/src/lib.rs:78` | — |
 | `DustTo` | enum | `../../../exact_dust/src/lib.rs:65` | — |
-| `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:195` | — |
+| `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:203` | — |
 | `money_dust_split` | fn | `../../../exact_dust/src/lib.rs:162` | — |
 | `money_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:177` | — |
-| `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:237` | — |
-| `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:207` | — |
-| `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:221` | — |
+| `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:253` | — |
+| `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:215` | — |
+| `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:229` | — |
 | `ConservationError` | enum | `../../../exact_conserve/src/lib.rs:108` | — |
 | `Entry` | struct | `../../../exact_conserve/src/lib.rs:87` | — |
 | `Report` | struct | `../../../exact_conserve/src/lib.rs:141` | — |

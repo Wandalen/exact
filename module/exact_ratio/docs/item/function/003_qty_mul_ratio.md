@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:166`
+`module/exact_ratio/src/lib.rs:174`
 
 ```rust
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
@@ -26,9 +26,9 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 166-170 | Declaration |
+| `src/lib.rs` | 174-178 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 54 | Negative-numerator ratio refused as `RatioError::Negative` |
-| `exact_arith/src/lib.rs:102` | — | Facade re-export |
+| `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
 

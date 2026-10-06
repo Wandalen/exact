@@ -26,7 +26,7 @@ pub const fn minor_from_i64( v : i64 ) -> Minor
 | `src/lib.rs` | 55-58 | Declaration |
 | `tests/` | throughout | Every test builds its inputs with it; round trip in `tests/conversion_test.rs` |
 | `exact_kind/src/lib.rs:182,189,192,205` | — | **Production** — `Decimal`'s `EPSILON`, `MAX`, `MIN` and `from_minor` build their stored `Minor` |
-| `exact_arith/src/lib.rs:73` | — | Facade re-export |
+| `exact_arith/src/lib.rs:74` | — | Facade re-export |
 
 ## Crate Usage
 

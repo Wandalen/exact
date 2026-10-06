@@ -24,7 +24,7 @@ use exact_round::{ RoundError, Rounding };
 |------|---------|---------|
 | `src/lib.rs` | 61 | Declaration |
 | `src/lib.rs` | 103 | `RoundError` match scrutinee in `round_error_to_dust_error` (private — no Item Instance of its own) |
-| `src/lib.rs` | 118,162,177,195,207,221,237 | `Rounding` parameter type on `split_minor` (private) and all 6 public functions |
+| `src/lib.rs` | 118,162,177,203,215,229,253 | `Rounding` parameter type on `split_minor` (private) and all 6 public functions |
 
 Deliberately depends on `exact_round` directly rather than through
 `exact_ratio` — the module doc comment (`src/lib.rs:12-19`) discloses this:

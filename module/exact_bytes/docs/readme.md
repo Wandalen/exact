@@ -9,6 +9,7 @@ Design documentation for `exact_bytes`, as typed doc definitions.
 | `decisions/` | Why decoding needs two more failure variants than the preferred design named |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 Tier 2 of the family: encodes and decodes the conserved value types
 [`exact_kind`](../../exact_kind/readme.md) declares, checked against the

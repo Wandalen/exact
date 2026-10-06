@@ -45,12 +45,14 @@ specifically and not every possible intermediate.
 `pow10(n)` returns `10ⁿ` as a `Backing`-shaped value for any `n` up to 18 —
 the largest power of ten an `i64` holds (`10¹⁸ ≈ 1.0×10¹⁸ < i64::MAX`; `10¹⁹`
 overflows). Past that, it panics rather than wrapping or returning a
-truncated value. The panic is deliberate and reachable only from a `const`
-position in every real call site today (`CEILING_MINOR_UNITS`'s own
-declaration, and every `Decimal<SCALE>::ONE_MINOR` in `exact_kind`), where it
-becomes a compile error rather than a runtime surprise — a `SCALE` past 18
-fails to build rather than silently misbehaving at whatever call first
-reaches it.
+truncated value. The panic is deliberate. In a `const` position
+(`CEILING_MINOR_UNITS`'s own declaration, and every `Decimal<SCALE>::ONE_MINOR`
+in `exact_kind`) it becomes a compile error, so a `SCALE` past 18 fails to
+build. A runtime call past 18 panics at runtime instead, as this crate's own
+test shows. `exact_kind` does call `pow10` at runtime — in `Decimal::parse`
+(`pow10( SCALE - supplied )`) and twice in `Decimal`'s `Display` (trimming
+trailing zeros) — but each exponent is at most `SCALE`, so none of them can
+pass 18 while `SCALE` itself does not.
 
 ### Sources
 

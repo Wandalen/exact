@@ -68,19 +68,20 @@ Constant, Associated Type) — a pure facade has nothing to attach one to.
 - **A 3-way usage split across the 14 re-export blocks, verified via
   full-workspace grep rather than assumed from this crate's own test suite
   alone:**
-  - **Touched by this facade's own doc-test/test suite** (7 of 14):
+  - **Touched by this facade's own doc-test/test suite** (8 of 14):
     `exact_scale`, `exact_round`, `exact_sign`, `exact_kind`, `exact_bytes`,
-    `exact_dust`, `exact_conserve` — though each still carries at least one
+    `exact_dust`, `exact_conserve` and `exact_ratio` (`price_mul_qty`, in
+    `tests/facade_test.rs`) — though each still carries at least one
     re-exported name with no confirmed caller anywhere (e.g. `exact_scale`'s
     `HEADROOM_FACTOR`, `exact_kind`'s bare `Decimal`/`Qty`), so "touched"
     here means partial, not exhaustive, exercise.
   - **Downstream-only, zero facade-test touch** (1 of 14): `exact_minor` —
     real production usage in `exchange_core`/`exchange_types`, yet not one
-    of its 9 names is imported by this crate's own `tests/facade_test.rs`.
+    of its 12 names is imported by this crate's own tests.
     The inverse of the usual pattern, where a name untested at the facade
     layer is also unused everywhere else.
-  - **Touched nowhere through this facade** (6 of 14): `exact_add`,
-    `exact_ratio`, `exact_parse`, `exact_fmt`, `exact_snap`, `exact_cmp` —
+  - **Touched nowhere through this facade** (5 of 14): `exact_add`,
+    `exact_parse`, `exact_fmt`, `exact_snap`, `exact_cmp` —
     entirely dormant from this facade's perspective, confirmed via
     full-workspace grep with every positive-looking hit (a `Term::Ratio` in
     unrelated `module/play_verify`, `Tick`/`Lot` as simulation/session

@@ -33,6 +33,14 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     return Ok( () );
   }
+  // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+  // into a `String` with `format!` and then trimmed — one heap allocation
+  // per render, against feature 016's non-allocating display. The trailing
+  // zeros are now counted arithmetically and the digits written directly.
+  //
+  // Root cause: `format!` used as a scratch buffer inside `fmt`.
+  // Pitfall: `write!` into the formatter does not allocate but `format!`
+  //   does, and the rendered text is identical — output tests cannot tell.
   let trailing_zeros = ( 1..=SCALE )
   .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
   .count();
@@ -45,7 +53,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 376-399 | Declaration |
+| `src/lib.rs` | 376-407 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
@@ -58,7 +66,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 ## Caller Tree
 
-- **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:107`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
+- **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:121`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
 
 No intra-crate caller (this crate's own tests invoke it only via
 `.to_string()` in test-context, out of Caller Tree scope per OT012).

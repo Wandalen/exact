@@ -30,8 +30,8 @@ pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 107-114 | Declaration |
-| `tests/snap_test.rs` | 13,103,114 | Zero-rejection check, and as the fixture every `qty_snap_lot` test builds |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `tests/snap_test.rs` | 13,117,128 | Zero-rejection check, and as the fixture every `qty_snap_lot` test builds |
+| `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests — `exact_arith`'s own facade test suite never constructs a `Lot`

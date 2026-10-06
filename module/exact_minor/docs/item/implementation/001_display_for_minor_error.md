@@ -2,7 +2,8 @@
 
 ## Representation
 
-Renders the one variant as `"{operation} left the representable range"`.
+Renders `Overflow` as `"{operation} rose above the representable range"` and
+`Underflow` as `"{operation} fell below the representable range"`.
 
 ## Kind
 
@@ -31,7 +32,7 @@ impl fmt::Display for MinorError
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 204-214 | Declaration |
-| `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Exact rendered text of a `neg` overflow |
+| `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Exact rendered text of a `neg` overflow and a `sub` underflow |
 
 No production code anywhere in the workspace renders a `MinorError` via
 `.to_string()` or format interpolation — confirmed by grep. This crate's own

@@ -10,6 +10,7 @@ Design documentation for `exact_kind`, as typed doc definitions.
 | `algorithm/` | `Qty::checked_sub`'s exact below-zero procedure |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 This is Tier 1 of the family, depending on `exact_minor` for the backing
 integer and `exact_scale` for the power-of-ten table and the declared

@@ -24,7 +24,7 @@ pub const fn sign_is_zero( value : Backing ) -> bool
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 64 | Declaration |
-| `tests/sign_classification_test.rs:19-20` | — | Boundary agreement with `sign_of` |
+| `tests/sign_classification_test.rs:28-30` | — | Boundary agreement with `sign_of` |
 
 No file outside `exact_sign` calls `sign_is_zero` — an honest empty finding.
 `exact_minor` has its own, independent `minor_is_zero` rather than depending

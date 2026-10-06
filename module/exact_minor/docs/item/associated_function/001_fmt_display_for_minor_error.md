@@ -2,7 +2,9 @@
 
 ## Representation
 
-Renders the one `MinorError` variant as a sentence. See
+Renders each of the two `MinorError` variants as a sentence: `Overflow` as
+`"{operation} rose above the representable range"`, `Underflow` as
+`"{operation} fell below the representable range"`. See
 [impl Display for MinorError](../implementation/001_display_for_minor_error.md)
 for the full body.
 

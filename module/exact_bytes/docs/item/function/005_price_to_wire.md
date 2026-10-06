@@ -25,7 +25,7 @@ pub fn price_to_wire( v : Price ) -> Wire
 |------|---------|---------|
 | `src/lib.rs` | 231-234 | Declaration |
 | `tests/wire_roundtrip_test.rs:34` | — | Encoding in the price round-trip test |
-| `exact_arith/src/lib.rs:118` | — | Facade re-export |
+| `exact_arith/src/lib.rs:130` | — | Facade re-export |
 
 `exact_arith`'s own facade test does not call this function — only the Money
 roundtrip is exercised at the facade level.

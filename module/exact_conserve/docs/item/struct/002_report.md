@@ -30,7 +30,7 @@ pub struct Report
 | `src/lib.rs` | 141-147 | Declaration |
 | `src/lib.rs` | 214 | Constructed by `verify` as its return value |
 | `tests/conservation_test.rs` | throughout | Every test inspects a `Report` returned by `verify` |
-| `exact_arith/src/lib.rs:129` | — | Facade re-export |
+| `exact_arith/src/lib.rs:141` | — | Facade re-export |
 
 No production call site anywhere constructs a `Report` directly — only
 `verify` does (its sole constructor). `exchange_core` and `cluster_economy`

@@ -143,6 +143,15 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
   {
     return Err( RoundError::DivZero );
   }
+  // Fix(exact_round_minimum_value_refused): a negative divisor used to be
+  // handled by negating both operands first, which has no result for the
+  // type's `MIN` (`i64::MIN` in `round_div`, `i128::MIN` here), so `(0, MIN)`,
+  // `(1, MIN)`, `(MIN, -2)` and `(MIN, MIN)` returned `Overflow` though each
+  // quotient fits. The operands now keep their signs; only the quotient can overflow.
+  //
+  // Root cause: `checked_neg` on an operand, where only the quotient can overflow.
+  // Pitfall: two's-complement `MIN` has no positive counterpart — normalising
+  //   signs by negation fails exactly at the edge a test grid rarely reaches.
   // Truncates toward zero; `MIN / -1` is the one quotient with no representable result.
   let Some( q ) = n.checked_div( d ) else { return Err( RoundError::Overflow ) };
   let r = n % d;

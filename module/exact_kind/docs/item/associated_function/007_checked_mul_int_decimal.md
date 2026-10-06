@@ -28,7 +28,7 @@ pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 276,534 | Declaration; `Qty::checked_mul_int`'s delegation |
+| `src/lib.rs` | 276,542 | Declaration; `Qty::checked_mul_int`'s delegation |
 | `tests/checked_arithmetic_test.rs` | throughout | Overflow and ceiling-breach checks |
 
 No file outside `exact_kind` calls `Decimal::checked_mul_int` directly — an
@@ -43,7 +43,7 @@ integer (only `exact_ratio`'s rational scaling exists today).
 
 ## Caller Tree
 
-- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:534`)
+- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:542`)
 
 No external caller anywhere in the workspace.
 

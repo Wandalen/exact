@@ -46,7 +46,7 @@ This is a narrower guarantee than a weighted, multi-share split would need: ther
 | `src/lib.rs:118-129` | `split_minor` — the per-share quotient and the subtraction-derived leftover (steps 2-3) |
 | `src/lib.rs:131-152` | `slot_minor` — leftover distribution per `DustTo`, one slot at a time (step 4); `fill_minor` — every slot, for the `Vec`-returning variants |
 | `src/lib.rs:154-169` | `money_dust_split` — reconstructs the typed output via `Money::from_minor` (step 5) |
-| `src/lib.rs:207-214` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
+| `src/lib.rs:215-222` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
 | `src/lib.rs:78-86` | `DustError` — the three failure modes steps 1, 3, and 4 return |
 | `../../../exact_round/src/lib.rs:118-126` | `round_div` — the per-share division this procedure drives directly (step 2), rounding through `round_div_wide` |
 

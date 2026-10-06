@@ -26,7 +26,7 @@ pub const fn minor_zero() -> Minor
 | `src/lib.rs` | 220-223 | Declaration |
 | `tests/zero_test.rs` | throughout | Equality with `0`, and `minor_is_zero` on it |
 | `exact_kind/src/lib.rs:179` | — | `Decimal::ZERO` |
-| `exact_arith/src/lib.rs:78` | — | Facade re-export |
+| `exact_arith/src/lib.rs:79` | — | Facade re-export |
 
 ## Crate Usage
 

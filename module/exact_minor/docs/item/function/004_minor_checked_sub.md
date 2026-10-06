@@ -32,7 +32,7 @@ pub const fn minor_checked_sub( a : Minor, b : Minor ) -> Result< Minor, MinorEr
 | `src/lib.rs` | 254-262 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ordinary difference and `Backing::MIN`-boundary refusal |
 | `exact_kind/src/lib.rs:262` | — | **Production** — `Decimal::checked_sub` |
-| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:73` | — | Facade re-export only |
 
 `exact_kind`'s `Decimal::checked_sub` delegates here on its stored `Minor`,
 as [minor_checked_add](003_minor_checked_add.md) does for addition.

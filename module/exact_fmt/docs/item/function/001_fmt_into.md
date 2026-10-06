@@ -43,7 +43,7 @@ own; it brings the `Write` trait's `write_fmt` method into scope for the
 | `tests/fmt_test.rs:56` | — | Every kind, and a negative sign |
 | `tests/fmt_test.rs:73` | — | `BufFull` when the buffer runs out partway, after an earlier piece fit |
 | `tests/fmt_test.rs:96` | — | `BufFull` on a zero-length buffer |
-| `exact_arith/src/lib.rs:106` | — | Facade re-export |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 No production call site anywhere outside this crate's own tests — an honest
 empty finding. `exact_arith` only re-exports the name; its own test suite

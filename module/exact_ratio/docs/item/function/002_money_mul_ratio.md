@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:153`
+`module/exact_ratio/src/lib.rs:161`
 
 ```rust
 pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
@@ -26,9 +26,9 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 153-157 | Declaration |
+| `src/lib.rs` | 161-165 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 34,44 | One-half exact multiply; an intermediate-overflow survival case |
-| `exact_arith/src/lib.rs:102` | — | Facade re-export |
+| `exact_arith/src/lib.rs:108` | — | Facade re-export |
 
 ## Crate Usage
 

@@ -32,7 +32,7 @@ pub const fn qty_saturating_add( a : Quantity, b : Quantity ) -> Quantity
 |------|---------|---------|
 | `src/lib.rs` | 142 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:78,82` | — | Clamps at the ceiling; matches checked addition in range |
-| `exact_arith/src/lib.rs:98` | — | Facade re-export |
+| `exact_arith/src/lib.rs:99` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `qty_saturating_add`
 — an honest empty finding.

@@ -56,14 +56,14 @@ a `Qty` again.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:57-60` | `Money`, `Quantity` — the two aliases |
-| `src/lib.rs:631-635` | The `Price` struct — one `value: Money` field |
+| `src/lib.rs:639-643` | The `Price` struct — one `value: Money` field |
 | `src/lib.rs:156-160` | The `Decimal<const SCALE: u32>` struct — one `minor: Minor` field |
 | `src/lib.rs:176-192` | `ONE_MINOR`, `ZERO`, `EPSILON`, `MAX`, `MIN` associated constants |
 | `src/lib.rs:199-223` | `from_minor`, `from_int` — the two range-checked constructors |
 | `src/lib.rs:314-370` | `parse` — the grammar |
-| `src/lib.rs:373-400` | `Display` — canonical rendering, trailing zeros trimmed |
-| `src/lib.rs:412-415` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
-| `src/lib.rs:477-480` | `as_decimal` — the escape hatch back to a signed value |
+| `src/lib.rs:373-408` | `Display` — canonical rendering, trailing zeros trimmed |
+| `src/lib.rs:420-423` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
+| `src/lib.rs:485-488` | `as_decimal` — the escape hatch back to a signed value |
 
 ### Tests
 

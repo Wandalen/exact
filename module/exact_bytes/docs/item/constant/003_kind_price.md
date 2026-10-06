@@ -24,7 +24,7 @@ pub const KIND_PRICE : u8 = 2;
 | `src/lib.rs` | 233 | `price_to_wire`'s encoded discriminator |
 | `src/lib.rs` | 243 | `price_from_wire`'s expected-discriminator check |
 | `tests/wire_roundtrip_test.rs:35` | — | Asserting the round-tripped discriminator |
-| `exact_arith/src/lib.rs:111` | — | Facade re-export |
+| `exact_arith/src/lib.rs:123` | — | Facade re-export |
 
 ## Crate Usage
 

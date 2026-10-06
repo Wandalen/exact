@@ -22,7 +22,7 @@ use exact_round::Rounding;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 25 | Declaration |
-| `src/lib.rs` | 130,147 | `rounding` parameter type on `price_snap_tick`/`qty_snap_lot` |
+| `src/lib.rs` | 130,154 | `rounding` parameter type on `price_snap_tick`/`qty_snap_lot` |
 
 ## Crate Usage
 

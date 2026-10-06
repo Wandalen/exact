@@ -33,7 +33,7 @@ impl core::fmt::Display for RoundError
 |------|---------|---------|
 | `src/lib.rs` | 95-105 | Declaration |
 
-Rendered only by this crate's own tests (`tests/round_div_test.rs:164,171`,
+Rendered only by this crate's own tests (`tests/round_div_test.rs:204,211`,
 via `.to_string()`), which pin both messages. Every downstream crate maps
 `RoundError` into its own local error type by `match` reconstruction, never
 by rendering the message (see [RoundError](../enum/002_round_error.md)'s

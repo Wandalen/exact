@@ -391,6 +391,14 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
     {
       return Ok( () );
     }
+    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+    // into a `String` with `format!` and then trimmed — one heap allocation
+    // per render, against feature 016's non-allocating display. The trailing
+    // zeros are now counted arithmetically and the digits written directly.
+    //
+    // Root cause: `format!` used as a scratch buffer inside `fmt`.
+    // Pitfall: `write!` into the formatter does not allocate but `format!`
+    //   does, and the rendered text is identical — output tests cannot tell.
     let trailing_zeros = ( 1..=SCALE )
     .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
     .count();
@@ -551,8 +559,8 @@ impl< const SCALE : u32 > Qty< SCALE >
 
 /// Renders a quantity exactly as its underlying decimal renders.
 ///
-/// Rendering is the only place a quantity and a money value meet: arithmetic
-/// between the two kinds is a compile error, not a runtime one — the readme's
+/// Arithmetic between a quantity and a money value does not compile: it is a
+/// compile error, not a runtime one — the readme's
 /// "non-interchangeable types" promise, which no runtime test can observe, so
 /// the examples below pin it. (Money against [`Price`] is pinned on `Price`
 /// itself.) Same-kind arithmetic compiles, which proves the failing examples

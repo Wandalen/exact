@@ -17,8 +17,8 @@
 //! `exact_kind` depended on `exact_fmt` instead would contradict the
 //! family's own topological tier order for no behavioural gain.
 //!
-//! `Display` therefore stays on `exact_kind::Decimal`/`Qty`, ported
-//! unchanged from the real codebase. This crate provides the preferred
+//! `Display` therefore stays on `exact_kind::Decimal`/`Qty` (and `Price`, which delegates),
+//! ported from the real codebase, then reworked not to allocate. This crate provides the preferred
 //! design's per-kind names and the buffer-writing primitive as a layer over
 //! that existing impl, which is the closest satisfiable reading of "no
 //! independent formatting logic" — every function here renders through the

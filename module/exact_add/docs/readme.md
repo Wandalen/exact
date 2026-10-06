@@ -8,6 +8,7 @@ Design documentation for `exact_add`, as typed doc definitions.
 | `decisions/` | Why this crate reuses `exact_kind::KindError` directly, and why no panicking variant exists yet |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 This is Tier 2 of the family, depending on `exact_kind` for the conserved
 value types and `exact_sign` for classifying which direction a saturating

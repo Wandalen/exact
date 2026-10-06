@@ -11,18 +11,29 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:102`
+`module/exact_arith/src/lib.rs:103-114`
 
 ```rust
-pub use exact_ratio::{ Ratio, RatioError, money_div_round, money_mul_ratio, price_mul_qty, price_mul_ratio, qty_div_round, qty_mul_ratio, ratio_new };
+pub use exact_ratio::
+{
+  Ratio,
+  RatioError,
+  money_div_round,
+  money_mul_ratio,
+  price_mul_qty,
+  price_mul_ratio,
+  qty_div_round,
+  qty_mul_ratio,
+  ratio_new,
+};
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 102 | Declaration |
-| `src/lib.rs` | 23,28 | Module doc example — `price_mul_qty` |
+| `src/lib.rs` | 103-114 | Declaration |
+| `src/lib.rs` | 23,28-29 | Module doc example — `price_mul_qty` |
 | `tests/facade_test.rs` | 9,25 | `price_mul_qty`, through the facade |
 
 Through `exact_arith`, only `price_mul_qty` is used — by this crate's own

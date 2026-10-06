@@ -85,7 +85,7 @@ generated, not hand-written `impl` blocks, and are not cataloged.
   `tests/facade_test.rs`. No other workspace crate depends on `exact_ratio`
   at all today (`grep -rl exact_ratio --include=Cargo.toml` returns only
   `exact_ratio` and `exact_arith`). Every function is exercised by
-  `exact_ratio`'s own 28-test suite.
+  `exact_ratio`'s own 29-test suite.
 - **The plan's Tier 3 dependency table is stale relative to what was actually
   built.** The migration plan lists `exact_dust` as depending on
   `exact_kind, exact_ratio`; the real `exact_dust/Cargo.toml` depends on

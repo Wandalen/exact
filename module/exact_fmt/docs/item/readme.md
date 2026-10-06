@@ -94,7 +94,7 @@ Definition/Invocation. No Associated Constant either — `Wire`-style
   formats an error message through it; every consumer matches on the enum
   variant instead.
 - **`exact_arith`'s own facade test never calls into this crate at all** —
-  it re-exports all 4 public items (`exact_arith/src/lib.rs:106`) but exercises none of
+  it re-exports all 4 public items (`exact_arith/src/lib.rs:118`) but exercises none of
   them, the same bypass pattern independently found in `exact_add` and
   `exact_parse`'s catalogs.
 

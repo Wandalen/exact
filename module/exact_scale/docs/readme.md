@@ -9,6 +9,7 @@ Design documentation for `exact_scale`, as typed doc definitions.
 | `decisions/` | Why scale stays a compile-time const-generic fact, not a runtime `Scale` type |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 This is Tier 0 of the family, alongside `exact_minor` — a sibling root with no
 edge to it, by design: scale and the backing width are two independent

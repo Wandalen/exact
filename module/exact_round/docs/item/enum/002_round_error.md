@@ -29,11 +29,11 @@ pub enum RoundError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 86,101,102,118,123,140,144,147 | Return/constructed variant in `round_div` and `round_div_wide`, and its `Display` impl |
+| `src/lib.rs` | 86,101,102,118,123,140,144,156 | Return/constructed variant in `round_div` and `round_div_wide`, and its `Display` impl |
 | `tests/round_div_test.rs` | throughout | `DivZero` refusal, the one `Overflow` (`MIN / -1`), and both messages |
 | `exact_dust/src/lib.rs:112,113` | — | **Production** — mapped to `DustError::EmptyParts`/`DustError::Overflow` in `round_error_to_dust_error` |
 | `exact_snap/src/lib.rs:63,64` | — | **Production** — mapped to a zero-rounding fallback / `SnapError::Overflow` |
-| `exact_ratio/src/lib.rs:187,188` | — | **Production** — mapped to `RatioError::DivZero`/`RatioError::Overflow` |
+| `exact_ratio/src/lib.rs:195,196` | — | **Production** — mapped to `RatioError::DivZero`/`RatioError::Overflow` |
 
 ## Crate Usage
 

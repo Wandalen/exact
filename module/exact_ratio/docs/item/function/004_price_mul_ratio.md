@@ -21,7 +21,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:177`
+`module/exact_ratio/src/lib.rs:185`
 
 ```rust
 pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
@@ -35,9 +35,9 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 177-181 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 210,225 | Every mode at both signs, and refusal past the ceiling |
-| `exact_arith/src/lib.rs:102` | — | Facade re-export |
+| `src/lib.rs` | 185-189 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 231,246 | Every mode at both signs, and refusal past the ceiling |
+| `exact_arith/src/lib.rs:110` | — | Facade re-export |
 
 ## Crate Usage
 

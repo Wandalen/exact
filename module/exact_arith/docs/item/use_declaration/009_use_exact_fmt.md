@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:106`
+`module/exact_arith/src/lib.rs:118`
 
 ```rust
 pub use exact_fmt::{ FmtError, fmt_into, money_fmt, price_fmt, qty_fmt };
@@ -21,7 +21,7 @@ pub use exact_fmt::{ FmtError, fmt_into, money_fmt, price_fmt, qty_fmt };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 106 | Declaration |
+| `src/lib.rs` | 118 | Declaration |
 
 Confirmed via a full-workspace grep: not one of these 5 names is imported
 or called through `exact_arith` anywhere, including this crate's own test

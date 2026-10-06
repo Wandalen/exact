@@ -33,7 +33,7 @@ backing type itself.
 |------|--------------|
 | `src/lib.rs:39` | `pub type Backing = i64;` — the only integer type ever stored or passed |
 | `src/lib.rs:220-230` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
-| `src/lib.rs:51` | `pub struct Minor( Backing );` — the one type every function takes and returns |
+| `src/lib.rs:51` | `pub struct Minor( Backing );` — the type every non-wide arithmetic function takes and returns (the `i64` conversions and `minor_wide_*` functions take integers and `MinorWide`, never a float) |
 | `src/lib.rs:238-297` | Every arithmetic function's signature: `Minor` in, `Minor`/`Result<Minor, MinorError>` out |
 
 ### Tests
@@ -43,3 +43,5 @@ backing type itself.
 | `tests/checked_arithmetic_test.rs` | Exercises every checked function at its range boundary without ever introducing a float |
 | `tests/saturating_arithmetic_test.rs` | Exercises every saturating function the same way |
 | `tests/zero_test.rs` | Exercises `minor_zero`/`minor_is_zero` — integer zero in, `bool` out |
+| `tests/conversion_test.rs` | Exercises `minor_from_i64`/`minor_to_i64` — `i64` in, `i64` back out, both extremes included |
+| `tests/wide_test.rs` | Exercises `MinorWide` and the `minor_wide_*` functions (`i128` feature) — integers only, both `i128` extremes included |

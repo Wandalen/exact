@@ -9,6 +9,7 @@ Design documentation for `exact_sign`, as typed doc definitions.
 | `decisions/` | Why negative-admission is a policy function taking an explicit bool, not a per-kind trait |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 This is Tier 1 of the family, depending on `exact_minor` alone for the
 backing primitive a sign is classified over. Net-new: the family's prior

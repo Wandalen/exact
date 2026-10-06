@@ -28,3 +28,4 @@ The check exists so a doc example silently failing to run (for example a
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass | 0 doctests ran, matching the 0 found in this crate's rustdoc — confirmed via the workspace-wide `cargo test --doc --workspace` baseline. |
 | 2026-10-02 | ihortry | M1 pass | 1 doctest ran and passed (`src/lib.rs - (line 28)`). Corrects the row above: the crate-level example already existed, so its "0 doctests" count was wrong. |
+| 2026-10-06 | ihortry | M1 pass | 2 doctests ran and passed: `src/lib.rs - (line 26)` and `src/lib.rs - Minor (line 47) - compile fail` (rustdoc reports the `compile_fail` one in its own result line). Corrects the row above, which counted only the first. |

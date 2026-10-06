@@ -25,7 +25,8 @@
 //!
 //! let price = Price::parse( "1.25" ).unwrap();
 //! let held = Quantity::parse( "2.5" ).unwrap();
-//! assert_eq!( price_mul_qty( price, held, Rounding::HalfEven ).unwrap(), Money::parse( "3.125" ).unwrap() );
+//! let cost = price_mul_qty( price, held, Rounding::HalfEven ).unwrap();
+//! assert_eq!( cost, Money::parse( "3.125" ).unwrap() );
 //! assert!( verify( &[ Entry::new( "a", 5 ), Entry::new( "b", -5 ) ] ).unwrap().is_balanced() );
 //!
 //! let total = Money::from_minor( 11 ).unwrap();
@@ -99,7 +100,18 @@ pub use exact_add::
   qty_sub,
 };
 
-pub use exact_ratio::{ Ratio, RatioError, money_div_round, money_mul_ratio, price_mul_qty, price_mul_ratio, qty_div_round, qty_mul_ratio, ratio_new };
+pub use exact_ratio::
+{
+  Ratio,
+  RatioError,
+  money_div_round,
+  money_mul_ratio,
+  price_mul_qty,
+  price_mul_ratio,
+  qty_div_round,
+  qty_mul_ratio,
+  ratio_new,
+};
 
 pub use exact_parse::{ money_from_str, price_from_str, qty_from_str };
 

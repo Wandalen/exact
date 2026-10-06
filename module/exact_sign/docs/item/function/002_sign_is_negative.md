@@ -24,7 +24,7 @@ pub const fn sign_is_negative( value : Backing ) -> bool
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 57 | Declaration |
-| `tests/sign_classification_test.rs:16-18` | — | Boundary agreement with `sign_of` |
+| `tests/sign_classification_test.rs:26-27` | — | Boundary agreement with `sign_of` |
 | `exact_add/src/lib.rs:133` | — | `money_saturating_add`'s clamp-direction decision |
 
 ## Crate Usage

@@ -27,7 +27,7 @@ pub const fn money_add( a : Money, b : Money ) -> Result< Money, KindError >
 | `src/lib.rs` | 53 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:18,71` | — | Dispatch parity with `Money::checked_add`; cross-check against `money_saturating_add` in range |
 | `exact_conserve/src/lib.rs:225` | — | `money_conserve_into`'s own body |
-| `exact_arith/src/lib.rs:91` | — | Facade re-export |
+| `exact_arith/src/lib.rs:92` | — | Facade re-export |
 
 ## Crate Usage
 

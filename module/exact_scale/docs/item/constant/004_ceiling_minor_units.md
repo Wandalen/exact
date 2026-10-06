@@ -25,7 +25,7 @@ pub const CEILING_MINOR_UNITS : i64 = CEILING_WHOLE_UNITS * pow10( MONEY_SCALE )
 |------|---------|---------|
 | `src/lib.rs` | 45,49 | Declaration; the crate's own range-budget assert |
 | `tests/scale_factor_test.rs` | throughout | Headroom-relation and cross-check tests |
-| `exact_arith/src/lib.rs:81` | — | Facade re-export |
+| `exact_arith/src/lib.rs:82` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:54` | — | Cross-check via the re-exported name |
 | `exact_kind/src/lib.rs:125,189,192,201` | — | **Production** — rendered in `KindError::Display`; defines `Decimal::MAX`/`MIN`; the range gate in `from_minor` |
 | `exact_kind/tests/checked_arithmetic_test.rs` | throughout | Ceiling-boundary checks |

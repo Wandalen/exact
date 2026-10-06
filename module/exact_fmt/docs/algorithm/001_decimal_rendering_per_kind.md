@@ -11,7 +11,7 @@
 
 The preferred design for this crate states `Display` as "only as a wrapper over `fmt_into` — no independent formatting logic," which would mean this crate owns the trait impl. That is impossible under Rust's orphan rules given the family's dependency direction: `exact_fmt` depends on `exact_kind`, so neither `core::fmt::Display` (a foreign trait) nor `exact_kind::Decimal`/`Qty` (a foreign type) is local to this crate, and the impl is refused outright. Reversing the dependency so `exact_kind` depended on `exact_fmt` instead was rejected as contradicting the family's own topological tier order for no behavioral gain.
 
-`Display` therefore stays on `exact_kind::Decimal`/`Qty`, ported unchanged from the real codebase. This crate's three per-kind functions are a thin layer over that existing impl — the closest satisfiable reading of "no independent formatting logic" available under the constraint above.
+`Display` therefore stays on `exact_kind::Decimal`/`Qty`, ported from the real codebase and then reworked to render without allocating (it trims trailing zeros arithmetically instead of `format!`); `Price`'s `Display` delegates to the `Money` it wraps. This crate's three per-kind functions are a thin layer over that existing impl — the closest satisfiable reading of "no independent formatting logic" available under the constraint above.
 
 ### Per-Kind Rendering
 
@@ -37,7 +37,7 @@ Internally, `fmt_into` drives a private `ByteBufWriter` through `core::fmt::Writ
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:1-25` | Module doc — why `Display` cannot move into this crate, and what stays ported unchanged |
+| `src/lib.rs:1-25` | Module doc — why `Display` cannot move into this crate, and where it stays instead |
 | `src/lib.rs:41` | Imports `Money`, `Price`, `Quantity` from `exact_kind` |
 | `src/lib.rs:43-49` | `FmtError` — the one failure mode, `BufFull` |
 | `src/lib.rs:51-60` | `Display` for `FmtError` |

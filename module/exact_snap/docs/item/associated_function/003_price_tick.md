@@ -36,7 +36,7 @@ pub const fn price( self ) -> Price
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 90-93 | Declaration |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
+| `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
 
 No call site anywhere, production or test — an honest empty finding, and the
 sharpest one in this crate: the accessor exists and is part of the public

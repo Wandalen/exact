@@ -39,7 +39,7 @@ one-unit leak.
 | `src/lib.rs` | 205-215 | Declaration |
 | `src/lib.rs` | 192-200 | Own doc-test |
 | `tests/conservation_test.rs` | throughout | Every test in the file |
-| `exact_arith/src/lib.rs:29` | — | Facade's own module-level doc-test |
+| `exact_arith/src/lib.rs:30` | — | Facade's own module-level doc-test |
 | `exact_arith/tests/facade_test.rs:29` | — | Facade integration test |
 | `cluster_economy/src/market.rs:507,518` | — | **Production** — audits a settlement's cash legs and asset legs separately before accepting it |
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |

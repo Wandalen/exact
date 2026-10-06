@@ -26,9 +26,9 @@ pub const MONEY_SCALE : u32 = 6;
 | `tests/scale_factor_test.rs:3,21` | — | Cross-check |
 | `exact_parse/src/lib.rs:45` | — | **Production** — compile-time consistency assert against `Money::ONE_MINOR` |
 | `exact_bytes/src/lib.rs:48,178,194,205,222,233,247` | — | **Production** — the wire scale byte every `Wire` carries, and the round-trip scale check on every `*_from_wire` |
-| `exact_arith/src/lib.rs:81` | — | Facade re-export |
+| `exact_arith/src/lib.rs:82` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:52,53,54` | — | Direct value check and cross-checks via the re-exported name |
-| `exact_kind/src/lib.rs:57,632,60` | — | **Production** — fixes `Money`/`Price`/`Quantity`'s type-level scale |
+| `exact_kind/src/lib.rs:57,640,60` | — | **Production** — fixes `Money`/`Price`/`Quantity`'s type-level scale |
 
 ## Crate Usage
 

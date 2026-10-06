@@ -31,7 +31,7 @@ pub const fn minor_checked_add( a : Minor, b : Minor ) -> Result< Minor, MinorEr
 | `src/lib.rs` | 238-246 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Ordinary sum and `Backing::MAX`-boundary refusal |
 | `exact_kind/src/lib.rs:248` | — | **Production** — `Decimal::checked_add` |
-| `exact_arith/src/lib.rs:70` | — | Facade re-export only |
+| `exact_arith/src/lib.rs:71` | — | Facade re-export only |
 
 `exact_kind`'s `Decimal::checked_add` delegates here on its stored `Minor`,
 so the overflow check is implemented once, in this crate.

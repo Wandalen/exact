@@ -33,7 +33,7 @@ pub fn money_from_wire( w : Wire ) -> Result< Money, WireError >
 |------|---------|---------|
 | `src/lib.rs` | 188-199 | Declaration |
 | `tests/wire_roundtrip_test.rs` | 16,47,58,78,88,99,110,118,137 | Decoding across 9 of the crate's 14 tests, covering every failure mode and the success path |
-| `exact_arith/src/lib.rs:115` | — | Facade re-export |
+| `exact_arith/src/lib.rs:127` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:42` | — | Decoding in the facade's own end-to-end settlement test |
 
 ## Crate Usage

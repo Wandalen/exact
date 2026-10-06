@@ -31,30 +31,30 @@
 | `Decimal::checked_neg` | fn | `src/lib.rs:294` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
 | `Decimal::parse` | fn | `src/lib.rs:314` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
 | `Decimal`'s `Display` impl | trait impl | `src/lib.rs:373` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty<SCALE>` | struct | `src/lib.rs:412` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::ZERO` | assoc const | `src/lib.rs:420` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::EPSILON` | assoc const | `src/lib.rs:423` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::MAX` | assoc const | `src/lib.rs:426` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::from_decimal` | fn | `src/lib.rs:433` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::from_minor` | fn | `src/lib.rs:448` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::from_int` | fn | `src/lib.rs:462` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::as_decimal` | fn | `src/lib.rs:477` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::minor` | fn | `src/lib.rs:484` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::whole` | fn | `src/lib.rs:491` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::checked_add` | fn | `src/lib.rs:503` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::checked_sub` | fn | `src/lib.rs:517` | [Checked Sub Refuses Below Zero](../algorithm/001_checked_sub_refuses_below_zero.md) |
-| `Qty::checked_mul_int` | fn | `src/lib.rs:532` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::parse` | fn | `src/lib.rs:546` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty`'s `Display` impl | trait impl | `src/lib.rs:594` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price` | struct | `src/lib.rs:632` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::ZERO` | assoc const | `src/lib.rs:640` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::MAX` | assoc const | `src/lib.rs:643` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::from_minor` | fn | `src/lib.rs:650` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::minor` | fn | `src/lib.rs:661` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::checked_add` | fn | `src/lib.rs:671` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::checked_sub` | fn | `src/lib.rs:685` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price::parse` | fn | `src/lib.rs:699` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Price`'s `Display` impl | trait impl | `src/lib.rs:706` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty<SCALE>` | struct | `src/lib.rs:420` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::ZERO` | assoc const | `src/lib.rs:428` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::EPSILON` | assoc const | `src/lib.rs:431` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::MAX` | assoc const | `src/lib.rs:434` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::from_decimal` | fn | `src/lib.rs:441` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::from_minor` | fn | `src/lib.rs:456` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::from_int` | fn | `src/lib.rs:470` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::as_decimal` | fn | `src/lib.rs:485` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::minor` | fn | `src/lib.rs:492` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::whole` | fn | `src/lib.rs:499` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::checked_add` | fn | `src/lib.rs:511` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::checked_sub` | fn | `src/lib.rs:525` | [Checked Sub Refuses Below Zero](../algorithm/001_checked_sub_refuses_below_zero.md) |
+| `Qty::checked_mul_int` | fn | `src/lib.rs:540` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::parse` | fn | `src/lib.rs:554` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty`'s `Display` impl | trait impl | `src/lib.rs:602` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price` | struct | `src/lib.rs:640` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::ZERO` | assoc const | `src/lib.rs:648` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::MAX` | assoc const | `src/lib.rs:651` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::from_minor` | fn | `src/lib.rs:658` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::minor` | fn | `src/lib.rs:669` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::checked_add` | fn | `src/lib.rs:679` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::checked_sub` | fn | `src/lib.rs:693` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price::parse` | fn | `src/lib.rs:707` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Price`'s `Display` impl | trait impl | `src/lib.rs:714` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
 
 `impl core::error::Error for KindError {}` (`src/lib.rs:133`) carries no
 associated item of its own, so it gets no row here — same treatment as every

@@ -71,6 +71,25 @@ fn round_div_reports_overflow_only_when_the_quotient_does_not_fit()
 }
 
 /// The minimum value divides like any other value, as dividend or divisor.
+///
+/// Root Cause: `round_div` handled a negative divisor by negating both
+/// operands first. `i64::MIN` has no positive counterpart, so the negation
+/// failed and `(0, MIN)`, `(1, MIN)`, `(MIN, -2)` and `(MIN, MIN)` returned
+/// `Overflow`, though each quotient fits.
+///
+/// Why Not Caught: the tests covered `MIN / -1`, the one real overflow, and
+/// ordinary values, but no other division with `MIN` on either side.
+///
+/// Fix Applied: one division body, `round_div_wide`, keeps the operands'
+/// signs and reads the rounding direction from the signs of the remainder
+/// and divisor; `round_div` calls it.
+///
+/// Prevention: this test and `round_div_wide_handles_the_minimum_value_on_either_side`
+/// pin each minimum-value case at both widths, in every mode.
+///
+/// Pitfall: two's-complement `MIN` has no positive counterpart —
+/// normalising signs by negation fails exactly at the edge a test grid
+/// rarely reaches.
 #[ test ]
 fn round_div_handles_the_minimum_value_on_either_side()
 {
@@ -142,6 +161,27 @@ fn round_div_wide_divides_a_dividend_wider_than_i64()
 
 /// `round_div_wide` handles `i128`'s minimum value on either side; only
 /// `i128::MIN / -1` overflows.
+///
+/// Root Cause: `round_div_wide` began as a copy of `round_div`'s body at
+/// `i128` width, including its handling of a negative divisor by negating
+/// both operands first. `i128::MIN` has no positive counterpart, so
+/// `(0, MIN)`, `(1, MIN)`, `(MIN, -2)` and `(MIN, MIN)` returned `Overflow`,
+/// though each quotient fits.
+///
+/// Why Not Caught: its first tests covered a dividend wider than `i64` and
+/// a zero divisor, but no division with `i128::MIN` on either side.
+///
+/// Fix Applied: one division body, this function, keeps the operands' signs
+/// and reads the rounding direction from the signs of the remainder and
+/// divisor; `round_div` calls it instead of keeping a second copy.
+///
+/// Prevention: this test pins each minimum-value case in every mode, and
+/// `round_div_handles_the_minimum_value_on_either_side` pins the same cases
+/// at `i64` width through `round_div`.
+///
+/// Pitfall: two's-complement `MIN` has no positive counterpart —
+/// normalising signs by negation fails exactly at the edge a test grid
+/// rarely reaches, and a copied body copies the edge case with it.
 #[ test ]
 fn round_div_wide_handles_the_minimum_value_on_either_side()
 {

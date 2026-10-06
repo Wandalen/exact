@@ -27,7 +27,7 @@ pub fn money_fmt( v : Money ) -> String
 | `src/lib.rs` | 105-108 | Declaration |
 | `tests/fmt_test.rs:11-12` | — | Matches `v.to_string()` directly and a literal `"1.5"` |
 | `tests/fmt_test.rs:89` | — | The smallest negative amount keeps every leading fractional zero |
-| `exact_arith/src/lib.rs:106` | — | Facade re-export |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 ## Crate Usage
 

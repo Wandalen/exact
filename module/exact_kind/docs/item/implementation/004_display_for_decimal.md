@@ -37,6 +37,14 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
     {
       return Ok( () );
     }
+    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+    // into a `String` with `format!` and then trimmed — one heap allocation
+    // per render, against feature 016's non-allocating display. The trailing
+    // zeros are now counted arithmetically and the digits written directly.
+    //
+    // Root cause: `format!` used as a scratch buffer inside `fmt`.
+    // Pitfall: `write!` into the formatter does not allocate but `format!`
+    //   does, and the rendered text is identical — output tests cannot tell.
     let trailing_zeros = ( 1..=SCALE )
     .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
     .count();
@@ -50,7 +58,7 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 373-400 | Declaration |
+| `src/lib.rs` | 373-408 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 

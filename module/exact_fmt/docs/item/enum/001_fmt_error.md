@@ -31,7 +31,7 @@ pub enum FmtError
 | `src/lib.rs` | 57 | Constructed in `Display for FmtError`'s one match arm |
 | `src/lib.rs` | 99 | Constructed in `fmt_into` on a `write!` failure |
 | `tests/fmt_test.rs:34` | — | Asserts `fmt_into` returns exactly `Err( FmtError::BufFull )` on a too-small buffer |
-| `exact_arith/src/lib.rs:106` | — | Facade re-export |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 No production call site anywhere constructs or matches `FmtError` outside
 `exact_fmt` itself — an honest empty finding. `exact_arith` only re-exports

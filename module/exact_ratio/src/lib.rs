@@ -1,10 +1,10 @@
 //! A rational multiplier (`Ratio`) and mode-driven integer division, per kind.
 //!
 //! Tier 2, depending on `exact_kind` for the conserved value types and
-//! `exact_round` for the rounding modes the `div_round`-family functions
-//! take, and for [`exact_round::round_div`] itself — the actual
-//! sign-handling, tie-breaking division logic, shared with `exact_snap`
-//! rather than duplicated here.
+//! `exact_round` for the rounding modes every multiply and `div_round`-family
+//! function takes, and for [`exact_round::round_div`] and its `i128` twin
+//! [`exact_round::round_div_wide`] — the sign-handling, tie-breaking division
+//! logic, shared with `exact_snap` rather than duplicated here.
 //!
 //! Net-new: no real precedent exists for either operation. Every multiply
 //! here widens to `i128` before dividing, per this family's own documented
@@ -139,8 +139,16 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 
 fn mul_ratio_minor( minor : i64, r : Ratio, rounding : Rounding ) -> Result< i64, RatioError >
 {
+  // Fix(exact_ratio_mul_ratio_truncated_in_every_mode): the widened product
+  // was divided with a bare `/`, so `7 × 1/2` gave 3 whatever the caller
+  // wanted; it now divides through `round_div_wide` with the caller's mode.
+  //
+  // Root cause: `i128`'s `/` used as if it were a rounding division.
+  // Pitfall: integer `/` always truncates toward zero — a division whose
+  //   remainder matters has to name its rounding mode.
   let wide = i128::from( minor ) * i128::from( r.n );
-  let divided = exact_round::round_div_wide( wide, i128::from( r.d ), rounding ).map_err( | _ | RatioError::Overflow )?;
+  let divided = exact_round::round_div_wide( wide, i128::from( r.d ), rounding )
+  .map_err( | _ | RatioError::Overflow )?;
   i64::try_from( divided ).map_err( | _ | RatioError::Overflow )
 }
 
@@ -161,8 +169,8 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 /// # Errors
 ///
 /// [`RatioError::Negative`] when a negative-numerator ratio takes the rounded
-/// result below zero — so the mode decides a sub-unit product: `Down` refuses
-/// it, `Up` and `HalfEven` give zero. [`RatioError::Overflow`] on overflow.
+/// result below zero — so for a product above -1 unit the mode decides: `Down`
+/// refuses any, `HalfEven` one below -0.5, `Up` none. [`RatioError::Overflow`] on overflow.
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;

@@ -8,14 +8,25 @@
 //! over `Minor`, and `Backing::MAX`/`Backing::MIN` are ordinary,
 //! directly-reachable inputs.
 
-use exact_minor::{ Backing, MinorError, minor_checked_add, minor_checked_neg, minor_checked_sub, minor_from_i64 };
+use exact_minor::
+{
+  Backing, MinorError, minor_checked_add, minor_checked_neg, minor_checked_sub, minor_from_i64,
+};
 
 /// Ordinary in-range addition and subtraction are exact.
 #[ test ]
 fn in_range_addition_and_subtraction_are_exact()
 {
-  assert_eq!( minor_checked_add( minor_from_i64( 300_000 ), minor_from_i64( 200_000 ) ), Ok( minor_from_i64( 500_000 ) ) );
-  assert_eq!( minor_checked_sub( minor_from_i64( 500_000 ), minor_from_i64( 200_000 ) ), Ok( minor_from_i64( 300_000 ) ) );
+  assert_eq!
+  (
+    minor_checked_add( minor_from_i64( 300_000 ), minor_from_i64( 200_000 ) ),
+    Ok( minor_from_i64( 500_000 ) )
+  );
+  assert_eq!
+  (
+    minor_checked_sub( minor_from_i64( 500_000 ), minor_from_i64( 200_000 ) ),
+    Ok( minor_from_i64( 300_000 ) )
+  );
 }
 
 /// Addition past `Backing::MAX` is refused, not wrapped.
@@ -67,7 +78,11 @@ fn overflow_error_names_the_failed_operation()
 {
   let error = minor_checked_neg( minor_from_i64( Backing::MIN ) ).unwrap_err();
   assert_eq!( error.to_string(), "neg rose above the representable range" );
-  assert_eq!( minor_checked_sub( minor_from_i64( Backing::MIN ), minor_from_i64( 1 ) ).unwrap_err().to_string(), "sub fell below the representable range" );
+  assert_eq!
+  (
+    minor_checked_sub( minor_from_i64( Backing::MIN ), minor_from_i64( 1 ) ).unwrap_err().to_string(),
+    "sub fell below the representable range"
+  );
   let _ : &dyn core::error::Error = &error;
 }
 
@@ -76,6 +91,14 @@ fn overflow_error_names_the_failed_operation()
 #[ test ]
 fn overflow_is_refused_in_the_other_direction()
 {
-  assert_eq!( minor_checked_add( minor_from_i64( Backing::MIN ), minor_from_i64( -1 ) ), Err( MinorError::Underflow { operation : "add" } ) );
-  assert_eq!( minor_checked_sub( minor_from_i64( Backing::MAX ), minor_from_i64( -1 ) ), Err( MinorError::Overflow { operation : "sub" } ) );
+  assert_eq!
+  (
+    minor_checked_add( minor_from_i64( Backing::MIN ), minor_from_i64( -1 ) ),
+    Err( MinorError::Underflow { operation : "add" } )
+  );
+  assert_eq!
+  (
+    minor_checked_sub( minor_from_i64( Backing::MAX ), minor_from_i64( -1 ) ),
+    Err( MinorError::Overflow { operation : "sub" } )
+  );
 }

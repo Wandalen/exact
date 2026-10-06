@@ -27,7 +27,7 @@ pub const fn money_checked_neg( a : Money ) -> Result< Money, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 113 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:51-52` | — | Negation at both signs; double negation round-trips to the original |
-| `exact_arith/src/lib.rs:92` | — | Facade re-export |
+| `exact_arith/src/lib.rs:93` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `money_checked_neg`
 — an honest empty finding. It is also, per the crate's own module doc

@@ -129,8 +129,15 @@ impl Lot
 /// or declared range.
 pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
 {
+  // Fix(exact_snap_negative_tick_reversed_rounding): the price used to be
+  // divided by the signed tick, so for a tick of -5 the count was rounded on
+  // a reversed axis and multiplied back — `Down` snapped up and `Up` down.
   // A tick of -5 marks the same grid as a tick of 5; dividing by the
   // positive spacing keeps `Down` meaning the grid point at or below.
+  //
+  // Root cause: rounding a quotient by a negative divisor flips its direction.
+  // Pitfall: `Down`/`Up` round the quotient toward -∞/+∞; multiplied back by
+  //   a negative spacing, that direction reverses for the value itself.
   let spacing = tick.0.minor().abs();
   let q = exact_round::round_div( price.minor(), spacing, rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
