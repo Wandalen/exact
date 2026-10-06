@@ -5,7 +5,7 @@
 - **Purpose**: State that a `Tick` or `Lot` can never carry a zero-sized grid spacing, so every division this crate drives through `exact_round::round_div` is guaranteed a nonzero divisor before it runs.
 - **Responsibility**: `Tick::new` and `Lot::new`'s zero refusal.
 - **In Scope**: Construction of `Tick` and `Lot`.
-- **Out of Scope**: A negative grid spacing, which is accepted — `round_div` already divides by a negative divisor correctly, and neither the preferred design nor this crate names an error for it; the division itself (→ [`exact_round`](../../../exact_round/readme.md)).
+- **Out of Scope**: A negative grid spacing, which is accepted — a tick of `-5` marks the same grid as a tick of `5`, and `price_snap_tick` divides by the tick's magnitude, so `round_div` never sees a negative divisor; neither the preferred design nor this crate names an error for it; the division itself (→ [`exact_round`](../../../exact_round/readme.md)).
 
 ### Statement
 
@@ -19,7 +19,7 @@ both fields are private, so a `Tick` or `Lot` reaching `price_snap_tick` or
 ### Rationale
 
 `price_snap_tick` and `qty_snap_lot` both divide by the grid spacing
-(`tick.0.minor()`, `lot.0.minor()`) to find which grid point a value is
+(`tick.0.minor().abs()`, `lot.0.minor()`) to find which grid point a value is
 nearest to. A zero divisor reaching `exact_round::round_div` would return
 `RoundError::DivZero` deep inside the snap, surfacing only through this
 crate's defensive-but-unreachable error mapping (to `ZeroTick`/`ZeroLot`) at
