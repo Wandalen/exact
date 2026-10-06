@@ -20,6 +20,6 @@ tier-2 crate, [`exact_snap`](../../exact_snap/readme.md), shares
 
 This crate owns part of [Hard Problem 12](../../../docs/hard_problem/012_hot_path_performance.md)
 (hot-path performance) — every function here is a straight-line widen/divide/
-narrow with no loop or heap type, but no benchmark harness exists anywhere in
-this family to measure that claim against `f64`; see the hard-problem doc for
-the full disclosure.
+narrow with no loop or heap type; its cost against `f64` is measured by
+`exact_arith`'s timing bench (`tests/bench_vs_f64.rs`) and reported in the
+hard-problem doc.
