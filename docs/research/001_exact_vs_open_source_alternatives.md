@@ -50,24 +50,24 @@ Requirements this family's own docs state — seven as numbered hard problems ([
 ## Requirement: No Binary Floats, Exact Decimal Fractions
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/001_float_money_is_wrong.md`
-- No single dedicated feature — the closest is `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/020_reject_non_finite_extra_digits.md` (parse-boundary reinforcement: rejects malformed/over-precise text so float-style parsing never re-enters downstream, but not the core guarantee itself)
-- Actual enforcement mechanism (most precise citation) — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/exact_minor/docs/invariant/001_no_float_in_representation.md` and `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/exact_kind/docs/invariant/001_no_float_in_the_public_constructor_surface.md`
+- Hard problem — `../hard_problem/001_float_money_is_wrong.md`
+- No single dedicated feature — the closest is `../feature/020_reject_non_finite_extra_digits.md` (parse-boundary reinforcement: rejects malformed/over-precise text so float-style parsing never re-enters downstream, but not the core guarantee itself)
+- Actual enforcement mechanism (most precise citation) — `../../module/exact_minor/docs/invariant/001_no_float_in_representation.md` and `../../module/exact_kind/docs/invariant/001_no_float_in_the_public_constructor_surface.md`
 
 **Explanation**: solved territory. `rust_decimal`, `bigdecimal`, `fastnum`, and `primitive_fixed_point_decimal` all avoid floats and represent decimal fractions exactly; this is not a problem unique to `exact`. The `fixed` crate is the one disqualified outright — it is *binary* fixed-point, and its own docs state plainly it cannot represent `0.001` exactly, the same class of error as `f64` for this family's purposes.
 
 ## Requirement: Money/Qty/Price as Distinct, Non-Interchangeable Types
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/003_distinct_kinds.md`
-- Feature — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/003_newtypes_money_qty_price.md`
+- Hard problem — `../hard_problem/003_distinct_kinds.md`
+- Feature — `../feature/003_newtypes_money_qty_price.md`
 
 **Explanation**: unsolved by every decimal crate surveyed, because it isn't a decimal-representation problem; it's a newtype-wrapping problem layered on top of one. Every decimal crate ships exactly one generic numeric type and leaves domain-specific wrapping to the caller. The money-specific crates (`typed-money`, `moneta`, `use-money`) do wrap a decimal in a distinct type, but the axis they distinguish is **currency** (USD vs. EUR), not **domain role** (Money vs. Quantity vs. Price) — a currency-safe `Money` type still lets a quantity and a price of the same currency collide, which is exactly what the hard problem above rules out.
 
 ## Requirement: Cross-Scale Operations Fail to Compile
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/013_scale_mismatch.md`
+- Hard problem — `../hard_problem/013_scale_mismatch.md`
 - No feature — this hard problem's own Design status line states it is "avoided by construction rather than solved by a checked operation," so the proposed `scale_convert`/`ScaleError` surface (feature 019) was never built
 
 **Explanation**: the one requirement where candidates split sharply by representation strategy, checked 2026-10-02. `rust_decimal` stores scale as a runtime field inside its 128-bit struct and silently rescales mismatched operands during arithmetic (confirmed via its own docs.rs page). `fastnum` does the same with a 16-bit exponent carried in each value's own control block — its own addition docs describe operands being aligned by comparing exponents, never rejected. `primitive_fixed_point_decimal`'s `ConstScaleFpdec<Repr, N>` is the opposite: its own docs state `+`/`-` between different `N` values "only perform between same types in same scale... there is no implicitly type or scale conversion," explicitly "for we do not want to add `Balance` type by `Price` type" — independently landing on the same justification the Distinct Kinds requirement above gives for this family's own kind-distinctness. `fixed`'s binary types carry the same property structurally (`I16F16` and `I8F24` are distinct Rust types; mixing needs an explicit conversion). `doubleentry`'s `Amount<P>`, already noted above as compile-time-precision, satisfies this too. **This family's own resolution uses the identical mechanism**: `exact_kind` makes `SCALE` a `const` generic on `Decimal<SCALE>`/`Qty<SCALE>`, so mismatched scales are incompatible Rust types rather than a runtime condition to check — the same const-generic-scale technique `primitive_fixed_point_decimal` already ships.
@@ -75,7 +75,7 @@ Requirements this family's own docs state — seven as numbered hard problems ([
 ## Requirement: Plain `Copy` Bits, No Heap, VM-Snapshot-Safe
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/010_closed_vm_types.md`
+- Hard problem — `../hard_problem/010_closed_vm_types.md`
 - No feature — this hard problem's own Design status line states it is "satisfied by construction... no dedicated crate or decision was needed," so no feature instance exists for it; confirmed independently by a broad `grep` for `copy`/`heap`/`snapshot`/`relocat` across all 22 `feature/*.md` files, which returns no match for this topic
 
 **Explanation**: solved territory, for three of the five fixed-size candidates. `rust_decimal` is a 128-bit `Copy` struct (96-bit mantissa plus sign/scale); `fastnum` and `primitive_fixed_point_decimal` are explicitly stack-only, no-heap, no_std-capable. Only `bigdecimal` fails this, by design — its `Vec<u32>`/`Vec<u64>`-backed mantissa is the price of true arbitrary precision. **This means `exact_minor` + `exact_kind`'s own hand-rolled `Decimal<SCALE>` is not solving a problem existing crates couldn't — `primitive_fixed_point_decimal`'s `ConstScaleFpdec<Repr, SCALE>` is structurally the closest published analog to it.**
@@ -83,32 +83,32 @@ Requirements this family's own docs state — seven as numbered hard problems ([
 ## Requirement: Built-In Zero-Sum Conservation Audit
 
 **Represented in**:
-- No hard problem — this is not one of the 14 numbered hard problems; it comes from the Workstream Charter, which "predates, and sits above" the hard_problem/feature breakdowns (`/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/readme.md` § Workstream Charter)
-- Feature — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/013_sum_assert_zero.md` and `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/014_conservation_error.md`
+- No hard problem — this is not one of the 14 numbered hard problems; it comes from the Workstream Charter, which "predates, and sits above" the hard_problem/feature breakdowns (`../readme.md` § Workstream Charter)
+- Feature — `../feature/013_sum_assert_zero.md` and `../feature/014_conservation_error.md`
 
 **Explanation**: `doubleentry` is the one real analog found, and it is a strong one: in-process, no I/O by design ("a calculation library, not a platform"), exact-integer `Amount<P>` with compile-time precision, and type-state validation that an entry cannot reach storage unbalanced. But it brings a materially heavier abstraction than `exact_conserve` needs — hierarchical accounts, a `Journal`, Merkle-log proofs, period seals — built for persistent bookkeeping across time, not for verifying that one in-memory slice of match-loop legs sums to zero before the function returns. Adopting it would mean either using a small fraction of a much larger library, or shaping this family's matching engine around `doubleentry`'s account/journal model instead of the other way around.
 
 ## Requirement: Dust-Destination Policy
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/006_dust_destination.md`
-- Feature — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/010_remainder_assign_dust_destination.md`
+- Hard problem — `../hard_problem/006_dust_destination.md`
+- Feature — `../feature/010_remainder_assign_dust_destination.md`
 
 **Explanation**: not found anywhere in the survey, and for a structural reason rather than an oversight. Every decimal/fixed-point candidate here — `rust_decimal`, `bigdecimal`, `fastnum`, `primitive_fixed_point_decimal` — provides checked and rounding-mode-aware division; that part of the problem (compute a quotient under a named rounding rule) is already solved ground, same as plain decimal representation. What none of them provide is a *destination* for what the rounding mode doesn't consume: splitting 10 units three ways under any rounding mode still leaves one subunit unaccounted for, and a generic numeric type has no way to know whether that subunit belongs to the first leg, the last leg, or the house — that is a policy choice about *this exchange's* matching rules, not a property of division. `orderbook-rs` (surveyed for the next requirement) is the closest adjacent domain and still doesn't surface this: its validation model rejects malformed quantities rather than splitting them. The gap is real, not a search miss — this is the one requirement a correctly-chosen decimal crate would have left exactly as unsolved as it was before adopting it.
 
 ## Requirement: Tick/Lot Grid-Snapping Policy
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/011_tick_and_lot_snap.md`
-- Feature — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/017_snap_tick_snap_lot.md`
+- Hard problem — `../hard_problem/011_tick_and_lot_snap.md`
+- Feature — `../feature/017_snap_tick_snap_lot.md`
 
 **Explanation**: absent from every *decimal-type* crate surveyed — tick/lot grids are exchange-specific market-structure policy, not something a general-purpose numeric type has any reason to know about. But a closer relative exists outside that category: `orderbook-rs`, an order-book *engine*, does know about tick and lot size — its own docs describe `UpdateQuantity` as "validate-first (projected tick / lot / min-max / representability / risk before touching the level)" and orders that violate the configured tick/lot size receive a typed `InvalidTickSize`/`InvalidLotSize` error. That is a materially different policy from `exact_snap`'s: `orderbook-rs` **rejects** an order that doesn't already land on the grid, where `exact_snap`'s `Tick`/`Lot` **round** a price or quantity onto the nearest valid grid point. Reject-vs-snap is a real design fork, not a wording difference — a matching engine built on reject-only validation pushes the rounding decision back onto the order's own sender, while one built on snap absorbs it internally. `orderbook-rs` also represents price/quantity as raw `u128`/`u64` integers rather than a reusable decimal type, so even where it matches this family's *policy awareness*, it isn't a library this family's own types could depend on — adopting it would mean adopting its whole order-book engine, the same bundling problem found under [Built-In Zero-Sum Conservation Audit](#requirement-built-in-zero-sum-conservation-audit).
 
 ## Requirement: Hot-Path Performance
 
 **Represented in**:
-- Hard problem — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/hard_problem/012_hot_path_performance.md`
-- Feature — `/home/user1/pro/lib/yrd_gamedev/substrate/exact/docs/feature/022_bench_note_vs_f64.md`, built 2026-10-02 at `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/exact_arith/tests/bench_vs_f64.rs`
+- Hard problem — `../hard_problem/012_hot_path_performance.md`
+- Feature — `../feature/022_bench_note_vs_f64.md`, built 2026-10-02 at `../../module/exact_arith/tests/bench_vs_f64.rs`
 
 **Explanation**: this family's own half of the comparison is no longer missing. The hard problem's own Design status records that `exact_add`/`exact_ratio`/`exact_cmp` are thin integer functions with no heap allocation by construction; that claim is now measured, not merely argued. `exact_arith/tests/bench_vs_f64.rs` times add/compare/ratio over 10,000,000 iterations each, directly against both `f64` and `primitive_fixed_point_decimal` (the Tier-0/1 analog identified above), re-measured on an Apple M5, 2026-10-06 (three runs), after `money_mul_ratio` moved from a truncating `/` to `exact_round::round_div_wide` — an `i128` division that rounds per the caller's mode:
 
@@ -128,7 +128,7 @@ Re-run via `cargo test -p exact_arith --test bench_vs_f64 -- --nocapture`; treat
 
 **Represented in**:
 - No hard problem, no feature — neither collection mentions dependency policy at all, confirmed by a broad `grep` for `depend` across every `hard_problem/*.md` and `feature/*.md` file (the only hits were unrelated: a determinism cross-reference and a platform-dependent-JSON note)
-- Verified instead directly against the 16 crates' own manifests: `grep` across every `Cargo.toml` in `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/` turns up zero `[dependencies]` entries outside this family's own `exact_*`/`smoke_*` crates; the only external `[dev-dependencies]` are two test-only crates in `exact_arith` — `primitive_fixed_point_decimal` for the bench's comparison and `assert_no_alloc` for the allocation test's counting allocator — neither of which reaches a consumer
+- Verified instead directly against the 16 crates' own manifests: `grep` across every `Cargo.toml` in `../../module/` turns up zero `[dependencies]` entries outside this family's own `exact_*`/`smoke_*` crates; the only external `[dev-dependencies]` are two test-only crates in `exact_arith` — `primitive_fixed_point_decimal` for the bench's comparison and `assert_no_alloc` for the allocation test's counting allocator — neither of which reaches a consumer
 
 **Explanation**: this is a convention this family follows in practice, not a requirement sourced from the original 15-crate proposal's own hard_problem/feature breakdown, and not a quoted line from the charter either — the charter's "Depends on: nothing in the catalog" is about not depending on another *workstream*, not a crates.io dependency ban. It is nonetheless a real, observed constraint this comparison has to account for, since every candidate surveyed above is an external dependency by definition.
 
