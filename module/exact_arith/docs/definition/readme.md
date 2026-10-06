@@ -91,11 +91,11 @@ behaviour.
 | `price_to_wire` | fn | `../../../exact_bytes/src/lib.rs:231` | — |
 | `qty_from_wire` | fn | `../../../exact_bytes/src/lib.rs:216` | — |
 | `qty_to_wire` | fn | `../../../exact_bytes/src/lib.rs:203` | — |
-| `Lot` | struct | `../../../exact_snap/src/lib.rs:98` | — |
+| `Lot` | struct | `../../../exact_snap/src/lib.rs:104` | — |
 | `SnapError` | enum | `../../../exact_snap/src/lib.rs:29` | — |
 | `Tick` | struct | `../../../exact_snap/src/lib.rs:70` | — |
-| `price_snap_tick` | fn | `../../../exact_snap/src/lib.rs:130` | — |
-| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:154` | — |
+| `price_snap_tick` | fn | `../../../exact_snap/src/lib.rs:136` | — |
+| `qty_snap_lot` | fn | `../../../exact_snap/src/lib.rs:160` | — |
 | `money_cmp` | fn | `../../../exact_cmp/src/lib.rs:36` | — |
 | `money_eq` | fn | `../../../exact_cmp/src/lib.rs:57` | — |
 | `price_cmp` | fn | `../../../exact_cmp/src/lib.rs:50` | — |

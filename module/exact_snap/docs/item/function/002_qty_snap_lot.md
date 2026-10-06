@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:154-160`
+`module/exact_snap/src/lib.rs:160-166`
 
 ```rust
 pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
@@ -28,7 +28,7 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 154-160 | Declaration |
+| `src/lib.rs` | 160-166 | Declaration |
 | `tests/snap_test.rs` | 119,120,130,131 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 

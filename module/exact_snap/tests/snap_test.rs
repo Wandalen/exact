@@ -85,8 +85,8 @@ fn a_negative_price_snaps_down_to_the_lower_grid_point_and_up_to_the_higher()
 /// Why Not Caught: every snap test used a positive tick; `Tick::new` accepts
 /// a negative one, but nothing exercised it.
 ///
-/// Fix Applied: the price is divided by the tick's magnitude
-/// (`tick.0.minor().abs()`), so the sign of the tick no longer matters.
+/// Fix Applied: the price is divided by the tick's magnitude (`Tick::new`
+/// stores it), so the sign of the tick no longer matters.
 ///
 /// Prevention: this test compares a tick of -5 with a tick of 5 on prices
 /// above, below and on the grid under every mode; it fails on the old code.
@@ -146,13 +146,17 @@ fn price_snap_tick_reports_overflow_rounding_up_past_the_ceiling()
   assert_eq!( price_snap_tick( near_ceiling, tick, Rounding::Up ), Err( SnapError::Overflow ) );
 }
 
-/// A tick or lot hands back exactly the size it was built from — a negative
-/// tick included, which `Tick::new` accepts.
+/// A tick or lot hands back the size it was built from; a negative tick is
+/// accepted and kept as its magnitude, so it is the same tick as its
+/// positive counterpart.
 #[ test ]
 fn tick_and_lot_return_the_size_they_were_built_from()
 {
-  let size = Price::from_minor( -5 ).unwrap();
+  let size = Price::from_minor( 5 ).unwrap();
+  let negative = Price::from_minor( -5 ).unwrap();
   assert_eq!( Tick::new( size ).unwrap().price(), size );
+  assert_eq!( Tick::new( negative ).unwrap().price(), size );
+  assert_eq!( Tick::new( negative ).unwrap(), Tick::new( size ).unwrap() );
   let lot = Quantity::from_minor( 3 ).unwrap();
   assert_eq!( Lot::new( lot ).unwrap().qty(), lot );
 }

@@ -71,7 +71,8 @@ pub struct Tick( Price );
 
 impl Tick
 {
-  /// Build a tick size, refusing zero.
+  /// Build a tick size, refusing zero. A negative price is kept as its
+  /// magnitude: a tick of -5 marks the same grid as a tick of 5.
   ///
   /// # Errors
   ///
@@ -82,7 +83,12 @@ impl Tick
     {
       return Err( SnapError::ZeroTick );
     }
-    Ok( Self( price ) )
+    // The price range is symmetric about zero, so the magnitude always fits.
+    match Price::from_minor( price.minor().abs() )
+    {
+      Ok( size ) => Ok( Self( size ) ),
+      Err( _ ) => Err( SnapError::Overflow ),
+    }
   }
 
   /// The tick size as a price.
@@ -132,13 +138,13 @@ pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Res
   // Fix(exact_snap_negative_tick_reversed_rounding): the price used to be
   // divided by the signed tick, so for a tick of -5 the count was rounded on
   // a reversed axis and multiplied back — `Down` snapped up and `Up` down.
-  // A tick of -5 marks the same grid as a tick of 5; dividing by the
-  // positive spacing keeps `Down` meaning the grid point at or below.
+  // A tick of -5 marks the same grid as a tick of 5; `Tick::new` stores its
+  // magnitude, so the spacing is positive and `Down` means at or below.
   //
   // Root cause: rounding a quotient by a negative divisor flips its direction.
   // Pitfall: `Down`/`Up` round the quotient toward -∞/+∞; multiplied back by
   //   a negative spacing, that direction reverses for the value itself.
-  let spacing = tick.0.minor().abs();
+  let spacing = tick.0.minor();
   let q = exact_round::round_div( price.minor(), spacing, rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
   let snapped = q.checked_mul( spacing ).ok_or( SnapError::Overflow )?;

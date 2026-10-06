@@ -26,8 +26,8 @@ pub struct Tick( Price );
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 70 | Declaration |
-| `src/lib.rs` | 72-94 | `impl Tick` (constructor and accessor) |
-| `src/lib.rs` | 130,135,144 | `tick` parameter type and field access in `price_snap_tick` |
+| `src/lib.rs` | 72-100 | `impl Tick` (constructor and accessor) |
+| `src/lib.rs` | 136,147 | `tick` parameter type and field access in `price_snap_tick` |
 | `tests/snap_test.rs` | 6,12,21,33,42,51 | Constructed via `Tick::new` and passed into `price_snap_tick` |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 

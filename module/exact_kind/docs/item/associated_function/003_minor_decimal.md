@@ -29,7 +29,7 @@ pub const fn minor( self ) -> Backing
 | `exact_bytes/src/lib.rs:178,233` | — | `money_to_wire`/`price_to_wire` |
 | `exact_conserve/src/lib.rs:250` | — | `money_sum_assert_zero`'s per-leg accumulation |
 | `exact_dust/src/lib.rs:164,179,205` | — | `money_dust_split`/`_into`/`_remainder` |
-| `exact_snap/src/lib.rs:81,141,143` | — | `Tick::new`'s zero check; `price_snap_tick` (price and tick) |
+| `exact_snap/src/lib.rs:82,87,147-148` | — | `Tick::new`'s zero check and magnitude; `price_snap_tick` (price and tick) |
 | `exact_ratio/src/lib.rs:163,188,208` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
 
 ## Crate Usage
@@ -46,7 +46,7 @@ pub const fn minor( self ) -> Backing
 - **External:** `exact_bytes::money_to_wire` (`:178`), `price_to_wire` (`:233`)
 - **External:** `exact_conserve::money_sum_assert_zero` (`:250`)
 - **External:** `exact_dust::money_dust_split` (`:164`), `money_dust_split_into` (`:179`), `money_dust_remainder` (`:205`)
-- **External:** `exact_snap::Tick::new` (`:81`), `price_snap_tick` (`:141-142`)
+- **External:** `exact_snap::Tick::new` (`:82,87`), `price_snap_tick` (`:147-148`)
 - **External:** `exact_ratio::money_mul_ratio` (`:163`), `price_mul_ratio` (`:187`), `money_div_round` (`:208`)
 
 ## Callee Tree

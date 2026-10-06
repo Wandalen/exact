@@ -25,9 +25,9 @@ different names.
 ## What it does not do
 
 `Tick::new` and `Lot::new` refuse only an exactly-zero grid spacing — a
-negative one is accepted, since a tick of `-5` marks the same grid as a tick
-of `5` and `price_snap_tick` divides by the tick's magnitude, and the
-preferred design names no error for it.
+negative one is accepted and stored as its magnitude, since a tick of `-5`
+marks the same grid as a tick of `5`, and the preferred design names no error
+for it.
 
 ## Responsibility Table
 

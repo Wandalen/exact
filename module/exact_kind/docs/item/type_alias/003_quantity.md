@@ -31,7 +31,7 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `exact_dust/src/lib.rs:215,220,229,243,253` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
 | `exact_add/src/lib.rs:73,83,142` | — | `qty_add`/`qty_sub`/`qty_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported alongside `Money`/`Price` |
-| `exact_snap/src/lib.rs:107,118,154` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |
+| `exact_snap/src/lib.rs:113,124,160` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |
 | `exact_ratio/src/lib.rs:174,177,219` | — | `qty_mul_ratio`/`qty_div_round` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
