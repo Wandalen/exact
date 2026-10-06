@@ -7,7 +7,7 @@
 - **In Scope**: Every kind's in-memory representation.
 - **Out of Scope**: The ECS crate (001) this requirement lets these types live inside — that crate is entirely outside this family.
 
-**Design status**: satisfied by construction in [`exact_kind`](../../module/exact_kind/readme.md) — no dedicated crate or decision was needed. `Decimal<SCALE>` is one `minor: Backing` field and `Qty<SCALE>` is one `value: Decimal<SCALE>` field, both deriving `Copy` with no heap allocation or pointer anywhere in the representation, so a `Money`/`Qty`/`Price` value is already plain relocatable bits — see [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) (its Sources table cites the exact struct definitions).
+**Design status**: satisfied by construction in [`exact_kind`](../../module/exact_kind/readme.md) — no dedicated crate or decision was needed. `Decimal<SCALE>` is one `minor: Minor` field (an `i64`), `Qty<SCALE>` is one `value: Decimal<SCALE>` field and `Price` one `value: Money` field, all deriving `Copy` with no heap allocation or pointer anywhere in the representation, so a `Money`/`Qty`/`Price` value is already plain relocatable bits — see [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) (its Sources table cites the exact struct definitions).
 
 ### Statement
 

@@ -4,7 +4,7 @@
 
 - **Purpose**: State the properties this crate holds regardless of caller behavior, so a consumer can rely on them without re-checking.
 - **Responsibility**: Full accounting of a split's total across its output shares and leftover.
-- **In Scope**: `split_minor`, `fill_minor`, and the three `DustTo` destinations.
+- **In Scope**: `split_minor`, `slot_minor`, `fill_minor`, and the three `DustTo` destinations.
 - **Out of Scope**: Whether a set of outputs sums to zero across a whole ledger (→ `exact_conserve`'s own `docs/`).
 
 ### Overview Table

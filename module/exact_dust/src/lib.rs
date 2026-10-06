@@ -3,7 +3,7 @@
 //! silently vanish into truncation.
 //!
 //! Tier 3, depending on `exact_kind` for the conserved value types and
-//! `exact_round` for [`exact_round::round_div`] — the same sign-normalizing,
+//! `exact_round` for [`exact_round::round_div`] — the same sign-handling,
 //! tie-breaking division `exact_ratio` and `exact_snap` already share,
 //! driven directly here rather than through `exact_ratio`.
 //!
@@ -128,29 +128,27 @@ fn split_minor( total_minor : i64, parts : usize, mode : Rounding ) -> Result< (
   Ok( ( share, leftover ) )
 }
 
-/// Every slot's minor count: `share`, with `leftover` folded into slot 0 when
+/// Slot `i`'s minor count: `share`, with `leftover` folded into slot 0 when
 /// `to` is [`DustTo::First`], and a nonzero `leftover` refused outright when
-/// `to` is [`DustTo::Reject`].
-fn fill_minor( share : i64, leftover : i64, to : DustTo, len : usize ) -> Result< Vec< i64 >, DustError >
+/// `to` is [`DustTo::Reject`]. One slot at a time, so the `_into` variants
+/// need no buffer of their own.
+fn slot_minor( share : i64, leftover : i64, to : DustTo, i : usize ) -> Result< i64, DustError >
 {
   if leftover != 0 && matches!( to, DustTo::Reject )
   {
     return Err( DustError::Remainder );
   }
-  let mut out = Vec::with_capacity( len );
-  for i in 0 .. len
+  if i == 0 && matches!( to, DustTo::First )
   {
-    let minor = if i == 0 && matches!( to, DustTo::First )
-    {
-      share.checked_add( leftover ).ok_or( DustError::Overflow )?
-    }
-    else
-    {
-      share
-    };
-    out.push( minor );
+    return share.checked_add( leftover ).ok_or( DustError::Overflow );
   }
-  Ok( out )
+  Ok( share )
+}
+
+/// Every slot's minor count, per [`slot_minor`].
+fn fill_minor( share : i64, leftover : i64, to : DustTo, len : usize ) -> Result< Vec< i64 >, DustError >
+{
+  ( 0 .. len ).map( | i | slot_minor( share, leftover, to, i ) ).collect()
 }
 
 /// Split a money value into `parts` equal shares, rounding under `mode`,
@@ -179,9 +177,17 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  let minors = fill_minor( share, leftover, to, out.len() )?;
-  for ( slot, minor ) in out.iter_mut().zip( minors )
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
+  for ( i, slot ) in out.iter_mut().enumerate()
   {
+    let minor = slot_minor( share, leftover, to, i )?;
     *slot = Money::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
   }
   Ok( () )
@@ -223,9 +229,17 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
 {
   let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  let minors = fill_minor( share, leftover, to, out.len() )?;
-  for ( slot, minor ) in out.iter_mut().zip( minors )
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
+  for ( i, slot ) in out.iter_mut().enumerate()
   {
+    let minor = slot_minor( share, leftover, to, i )?;
     *slot = Quantity::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
   }
   Ok( () )

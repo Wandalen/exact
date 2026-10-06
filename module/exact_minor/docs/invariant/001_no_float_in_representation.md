@@ -10,12 +10,11 @@
 ### Statement
 
 No float appears in an input or an output position anywhere in this crate.
-`Backing` is `i64`, declared once and re-exported by every other crate in the
-family rather than restated. Every function here — `minor_zero`,
-`minor_is_zero`, `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`,
-`minor_saturating_add`, `minor_saturating_sub` — takes and returns `Backing`
-or a `bool`/`Result` built from it. Nothing here constructs a `Backing` from a
-float or renders one through a float intermediate.
+`Minor` wraps one `i64` (`Backing`). Every function here takes and returns a
+`Minor`, a `bool`, or a `Result` built from one; `minor_from_i64` and
+`minor_to_i64` convert from and to `i64` only. Nothing here constructs a
+`Minor` from a float or renders one through a float intermediate. The same
+holds for `MinorWide` and its `i128`.
 
 ### Rationale
 
@@ -32,9 +31,10 @@ backing type itself.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:20` | `pub type Backing = i64;` — the only integer type ever stored or passed |
-| `src/lib.rs:55-65` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
-| `src/lib.rs:72-128` | Every arithmetic function's signature: `Backing` in, `Backing`/`Result<Backing, MinorError>` out |
+| `src/lib.rs:39` | `pub type Backing = i64;` — the only integer type ever stored or passed |
+| `src/lib.rs:238-248` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
+| `src/lib.rs:51` | `pub struct Minor( Backing );` — the type every non-wide arithmetic function takes and returns (the `i64` conversions and `minor_wide_*` functions take integers and `MinorWide`, never a float) |
+| `src/lib.rs:256-315` | Every arithmetic function's signature: `Minor` in, `Minor`/`Result<Minor, MinorError>` out |
 
 ### Tests
 
@@ -42,3 +42,6 @@ backing type itself.
 |------|--------------|
 | `tests/checked_arithmetic_test.rs` | Exercises every checked function at its range boundary without ever introducing a float |
 | `tests/saturating_arithmetic_test.rs` | Exercises every saturating function the same way |
+| `tests/zero_test.rs` | Exercises `minor_zero`/`minor_is_zero` — integer zero in, `bool` out |
+| `tests/conversion_test.rs` | Exercises `minor_from_i64`/`minor_to_i64` — `i64` in, `i64` back out, both extremes included |
+| `tests/wide_test.rs` | Exercises `MinorWide` and the `minor_wide_*` functions (`i128` feature) — integers only, both `i128` extremes included |

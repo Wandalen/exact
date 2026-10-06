@@ -7,12 +7,10 @@
 - **In Scope**: Preconditions, what it forces, what it excludes, the golden print, and the pass criteria, exactly as proposed.
 - **Out of Scope**: The 10 individual scene steps (→ `../scene/`); the per-crate surface it calls (→ `../type/`).
 
-**Design status**: implemented, but substantially diverged. The real lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), keeps the proposed name and the "headless, one file, no seed" shape, but:
+**Design status**: implemented. The real lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), keeps the proposed name and the "headless, one file, no seed" shape, and its step 6 prints this proposal's golden print line for line, with every pass criterion asserted. It differs in two ways:
 
-- runs 5 steps, not 10 — only 2 of the proposed Scene steps have any real counterpart at all (see `../scene/readme.md`)
-- its central claim is a control arm that runs the exact path and `f64` side by side and **asserts the two disagree** — a different mechanism than this proposal's checked-add-overflow / wire-round-trip / checksum steps
-- its market split folds dust to the first share (`DustTo::First`), not to a sink as proposed here
-- its golden print (real text quoted in `../../module/smoke_exact_market_split/readme.md`) bears no resemblance to the one proposed below — different steps, different literals, a different shape entirely
+- it runs five steps of its own before the scenes — its central claim is a control arm that runs the exact path and `f64` side by side and **asserts the two disagree** — so the golden print below is the tail of a longer output, quoted in full in `../../module/smoke_exact_market_split/readme.md`
+- two lines print a scale-6 number, because `exact_dust` and `exact_bytes` take `Money`, fixed at scale 6: `parts=3.333333,3.333333,3.333333 dust=0.000001` instead of `parts=3.33,3.33,3.33 dust=0.01`, and `wire=10000000` instead of `wire=1000` — while `sum=0` and `extra=1` stay at scale 2 through `Decimal< 2 >`, since `Money` has no selectable scale
 
 ### Preconditions
 

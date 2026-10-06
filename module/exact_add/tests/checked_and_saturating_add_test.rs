@@ -31,8 +31,9 @@ fn qty_add_and_sub_carry_the_non_negative_refusal_through()
   assert!( matches!( qty_sub( held, taken ), Err( KindError::Negative { .. } ) ) );
 }
 
-/// Price arithmetic dispatches the same as money arithmetic — same
-/// underlying type today, per the disclosed `Price == Money` deviation.
+/// Price arithmetic gives the same exact results as money arithmetic — a
+/// `Price` wraps a `Money`, so its own `checked_add`/`checked_sub` do the
+/// same integer work.
 #[ test ]
 fn price_add_and_sub_dispatch_the_same_as_money()
 {
@@ -79,4 +80,60 @@ fn qty_saturating_add_clamps_to_the_declared_ceiling()
   let a = Quantity::from_int( 3 ).unwrap();
   let b = Quantity::from_int( 4 ).unwrap();
   assert_eq!( qty_saturating_add( a, b ), qty_add( a, b ).unwrap() );
+}
+
+/// Every checked addition refuses a sum past the declared ceiling — money,
+/// price and quantity alike — naming the offending minor count.
+#[ test ]
+fn checked_add_refuses_a_sum_past_the_ceiling_for_every_kind()
+{
+  let one = Money::from_minor( 1 ).unwrap();
+  let past = Money::MAX.minor() + 1;
+  assert_eq!( money_add( Money::MAX, one ), Err( KindError::ExceedsCeiling { minor : past } ) );
+  let refused = KindError::ExceedsCeiling { minor : past };
+  assert_eq!( price_add( Price::MAX, Price::from_minor( 1 ).unwrap() ), Err( refused ) );
+  assert_eq!( qty_add( Quantity::MAX, Quantity::EPSILON ), Err( refused ) );
+}
+
+/// Checked subtraction refuses a difference below the negative ceiling, for
+/// the two signed kinds.
+#[ test ]
+fn checked_sub_refuses_a_difference_below_the_negative_ceiling()
+{
+  let one = Money::from_minor( 1 ).unwrap();
+  let below = Money::MIN.minor() - 1;
+  assert_eq!( money_sub( Money::MIN, one ), Err( KindError::ExceedsCeiling { minor : below } ) );
+  let lowest_price = Price::from_minor( Money::MIN.minor() ).unwrap();
+  let one_price = Price::from_minor( 1 ).unwrap();
+  assert_eq!( price_sub( lowest_price, one_price ), Err( KindError::ExceedsCeiling { minor : below } ) );
+}
+
+/// A quantity may be drawn down to exactly zero — the refusal starts one
+/// minor unit below it, and names that unit.
+#[ test ]
+fn qty_sub_reaches_exactly_zero_and_refuses_one_unit_below()
+{
+  let five = Quantity::from_int( 5 ).unwrap();
+  assert_eq!( qty_sub( five, five ).unwrap(), Quantity::ZERO );
+  assert_eq!( qty_sub( Quantity::ZERO, Quantity::EPSILON ), Err( KindError::Negative { minor : -1 } ) );
+}
+
+/// Prices may be negative, and add and subtract across zero exactly.
+#[ test ]
+fn price_add_and_sub_cross_zero_exactly()
+{
+  let minus_one = Price::parse( "-1" ).unwrap();
+  let half = Price::parse( "0.5" ).unwrap();
+  assert_eq!( price_add( minus_one, half ).unwrap(), Price::parse( "-0.5" ).unwrap() );
+  assert_eq!( price_sub( half, Price::parse( "1" ).unwrap() ).unwrap(), Price::parse( "-0.5" ).unwrap() );
+}
+
+/// Negating zero gives zero, and negating either end of the symmetric range
+/// gives the other end.
+#[ test ]
+fn money_checked_neg_maps_zero_to_zero_and_each_end_to_the_other()
+{
+  assert_eq!( money_checked_neg( Money::ZERO ).unwrap(), Money::ZERO );
+  assert_eq!( money_checked_neg( Money::MAX ).unwrap(), Money::MIN );
+  assert_eq!( money_checked_neg( Money::MIN ).unwrap(), Money::MAX );
 }

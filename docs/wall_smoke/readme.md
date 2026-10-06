@@ -7,7 +7,7 @@
 - **In Scope**: Everything Prompt 4's answer states about `smoke_exact_market_split` except the 10 individual scene steps.
 - **Out of Scope**: The 10 individual scene steps themselves (→ `../scene/`); the 15-crate surface the demo exercises (→ `../crate/`, `../type/`).
 
-**Design status**: implemented, but substantially diverged — the real lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), runs 5 steps on a different shape (a parse/render round trip, an exact-vs-`f64` summation control arm, a `Quantity` below-zero refusal, a ledger conservation audit, and a 3-way market split with dust folded to the first share) rather than the 10 proposed here, and prints a different golden text entirely. See the one instance below for the full account.
+**Design status**: implemented — the real lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), keeps the proposed name and shape, and its step 6 prints this proposal's golden print line for line with every pass criterion asserted, after five steps of its own (a parse/render round trip, an exact-vs-`f64` summation control arm, a `Quantity` below-zero refusal, a ledger conservation audit, and a 3-way market split). Two golden lines print a scale-6 number rather than the proposed scale-2 one, because `exact_dust` and `exact_bytes` take `Money`, fixed at scale 6. See the one instance below for the full account.
 
 ### Overview Table
 

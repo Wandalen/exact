@@ -11,11 +11,11 @@ for the full sourced comparison against `rust_decimal`, `bigdecimal`,
 `fastnum`, and others.
 
 ```rust
-use exact_arith::{ Money, Quantity };
+use exact_arith::{ Money, Price, Quantity, Rounding, price_mul_qty };
 
-let price = Money::parse( "1.25" ).unwrap();
-let held = Quantity::from_int( 2 ).unwrap();
-assert_eq!( price.checked_mul_int( held.whole() ).unwrap(), Money::parse( "2.5" ).unwrap() );
+let price = Price::parse( "1.25" ).unwrap();
+let held = Quantity::parse( "2.5" ).unwrap();
+assert_eq!( price_mul_qty( price, held, Rounding::HalfEven ).unwrap(), Money::parse( "3.125" ).unwrap() );
 ```
 
 ## Why no `exact_zero_money`/`exact_zero_qty`/`exact_zero_price`
@@ -44,6 +44,7 @@ any other path under it) from before the cutover commit.
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on all 14 other crates in this family |
 | [`src/lib.rs`](src/lib.rs) | `pub use` of every public item from all 14 leaves — nothing else |
 | [`tests/facade_test.rs`](tests/facade_test.rs) | End-to-end settlement through the facade alone, representative name resolution, and the mechanical "declares nothing" purity test |
+| [`tests/no_alloc_test.rs`](tests/no_alloc_test.rs) | Rendering into a stack buffer and both `*_dust_split_into` functions make no heap allocation, counted by the `assert_no_alloc` dev-dependency's allocator (no `unsafe` in this crate) |
 | [`tests/bench_vs_f64.rs`](tests/bench_vs_f64.rs) | Hard problem 12 / feature 22's proposed add-compare-ratio timing comparison against `f64`, informational only |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Design documentation — feature scope, the facade-purity invariant, module index, workaround (none) |

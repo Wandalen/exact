@@ -11,49 +11,210 @@
 //! on scale (`exact_scale`'s concern) or on which kind of value is being
 //! counted (`exact_kind`'s concern).
 //!
-//! # Disclosed deviations from the preferred design's own type listing
+//! # What it provides
 //!
-//! - **No `Minor` newtype.** The preferred design names a `Minor(i64)`
-//!   struct with `minor_from_i64`/`minor_to_i64` conversions. This crate
-//!   exposes the backing width directly as [`Backing`] instead — a bare
-//!   `pub type Backing = i64` alias — so there is nothing for those
-//!   conversions to convert between, and neither exists.
-//! - **No `MinorWide`.** The preferred design also names a feature-flagged
-//!   `MinorWide(i128)` widening type. Every arithmetic function here already
-//!   returns a `Result` on overflow rather than widening into a larger
-//!   intermediate type, so no concrete call site has ever needed one.
+//! - [`Minor`] — a count of minor units, a type of its own so it cannot be
+//!   mixed up with any other `i64`. In and out via [`minor_from_i64`] and
+//!   [`minor_to_i64`].
+//! - Checked arithmetic that reports [`MinorError::Overflow`] (too big) or
+//!   [`MinorError::Underflow`] (too small), and saturating arithmetic that
+//!   clamps instead.
+//! - `MinorWide` — the same at `i128` width, behind the `i128` feature.
 //!
 //! # Examples
 //!
 //! ```
-//! use exact_minor::{ Backing, minor_checked_add };
+//! use exact_minor::{ minor_checked_add, minor_from_i64, minor_to_i64 };
 //!
-//! let sum : Result< Backing, _ > = minor_checked_add( 300_000, 200_000 );
-//! assert_eq!( sum, Ok( 500_000 ) );
+//! let sum = minor_checked_add( minor_from_i64( 300_000 ), minor_from_i64( 200_000 ) ).unwrap();
+//! assert_eq!( minor_to_i64( sum ), 500_000 );
 //! ```
 
 use core::fmt;
 
 /// The backing integer width for every conserved value in the family.
 ///
-/// Named exactly once, here, so a width change is one edit. Every other crate
-/// in the family re-exports this alias rather than restating `i64`.
+/// Named once, here, as the stored width (the `i64` conversions `minor_from_i64`
+/// and `minor_to_i64` are the raw-integer boundary). Other crates reuse this alias.
 pub type Backing = i64;
+
+/// A count of minor units — the family's base subunit type.
+///
+/// A distinct type rather than a bare `Backing`, so a count of minor units
+/// cannot be confused with any other `i64`. It goes in and out through
+/// [`minor_from_i64`]/[`minor_to_i64`], or `From`/`TryFrom` with `MinorWide`; a bare `i64` is refused:
+///
+/// ```compile_fail
+/// let _ = exact_minor::minor_checked_add( 1, 2 );
+/// ```
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct Minor( Backing );
+
+/// Wrap a raw `i64` as a count of minor units.
+#[ must_use ]
+pub const fn minor_from_i64( v : i64 ) -> Minor
+{
+  Minor( v )
+}
+
+/// The raw `i64` a count of minor units holds.
+#[ must_use ]
+pub const fn minor_to_i64( m : Minor ) -> i64
+{
+  m.0
+}
+
+/// A count of minor units at twice the backing width, for magnitudes past `i64`.
+///
+/// Behind the `i128` feature — a flag on this crate, never a separate crate.
+/// Any [`Minor`] widens into it without loss. Like [`Minor`], its field is
+/// private: it goes in and out through [`minor_wide_from_i128`] and
+/// [`minor_wide_to_i128`], or `From`/`TryFrom` with `Minor`.
+#[ cfg( feature = "i128" ) ]
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct MinorWide( i128 );
+
+/// Wrap a raw `i128` as a wide count of minor units.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_from_i128( v : i128 ) -> MinorWide
+{
+  MinorWide( v )
+}
+
+/// The raw `i128` a wide count of minor units holds.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_to_i128( w : MinorWide ) -> i128
+{
+  w.0
+}
+
+#[ cfg( feature = "i128" ) ]
+impl From< Minor > for MinorWide
+{
+  fn from( m : Minor ) -> Self
+  {
+    Self( i128::from( m.0 ) )
+  }
+}
+
+/// Narrowing back to the backing width, refused when the value does not fit.
+#[ cfg( feature = "i128" ) ]
+impl TryFrom< MinorWide > for Minor
+{
+  type Error = MinorError;
+
+  fn try_from( w : MinorWide ) -> Result< Self, MinorError >
+  {
+    match Backing::try_from( w.0 )
+    {
+      Ok( v ) => Ok( Self( v ) ),
+      Err( _ ) if w.0 > 0 => Err( MinorError::Overflow { operation : "narrow" } ),
+      Err( _ ) => Err( MinorError::Underflow { operation : "narrow" } ),
+    }
+  }
+}
+
+/// Zero, in wide minor units.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_zero() -> MinorWide
+{
+  MinorWide( 0 )
+}
+
+/// Whether a wide count of minor units is exactly zero.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_is_zero( m : MinorWide ) -> bool
+{
+  m.0 == 0
+}
+
+/// Add two wide counts of minor units.
+///
+/// # Errors
+///
+/// [`MinorError::Overflow`] when the sum rises above `i128::MAX`,
+/// [`MinorError::Underflow`] when it falls below `i128::MIN`.
+#[ cfg( feature = "i128" ) ]
+pub const fn minor_wide_checked_add( a : MinorWide, b : MinorWide ) -> Result< MinorWide, MinorError >
+{
+  match a.0.checked_add( b.0 )
+  {
+    Some( sum ) => Ok( MinorWide( sum ) ),
+    None if b.0 > 0 => Err( MinorError::Overflow { operation : "add" } ),
+    None => Err( MinorError::Underflow { operation : "add" } ),
+  }
+}
+
+/// Subtract two wide counts of minor units.
+///
+/// # Errors
+///
+/// [`MinorError::Overflow`] when the difference rises above `i128::MAX`,
+/// [`MinorError::Underflow`] when it falls below `i128::MIN`.
+#[ cfg( feature = "i128" ) ]
+pub const fn minor_wide_checked_sub( a : MinorWide, b : MinorWide ) -> Result< MinorWide, MinorError >
+{
+  match a.0.checked_sub( b.0 )
+  {
+    Some( diff ) => Ok( MinorWide( diff ) ),
+    None if b.0 < 0 => Err( MinorError::Overflow { operation : "sub" } ),
+    None => Err( MinorError::Underflow { operation : "sub" } ),
+  }
+}
+
+/// Negate a wide count of minor units.
+///
+/// # Errors
+///
+/// [`MinorError::Overflow`] on the one value that cannot negate, `i128::MIN`.
+#[ cfg( feature = "i128" ) ]
+pub const fn minor_wide_checked_neg( a : MinorWide ) -> Result< MinorWide, MinorError >
+{
+  match a.0.checked_neg()
+  {
+    Some( neg ) => Ok( MinorWide( neg ) ),
+    None => Err( MinorError::Overflow { operation : "neg" } ),
+  }
+}
+
+/// Add two wide counts of minor units, clamping to `i128`'s bounds rather than failing.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_saturating_add( a : MinorWide, b : MinorWide ) -> MinorWide
+{
+  MinorWide( a.0.saturating_add( b.0 ) )
+}
+
+/// Subtract two wide counts of minor units, clamping to `i128`'s bounds rather than failing.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_saturating_sub( a : MinorWide, b : MinorWide ) -> MinorWide
+{
+  MinorWide( a.0.saturating_sub( b.0 ) )
+}
 
 /// Why a checked operation could not be completed.
 ///
-/// One variant, not a separate overflow/underflow split: `Backing`'s own
-/// `checked_add`/`checked_sub`/`checked_neg` already report both directions
-/// of range failure the same way, and inventing a sign-based distinction
-/// those primitives do not make would be a check with no observable
-/// behaviour behind it.
+/// Two variants, one per direction: a result above the integer type's maximum
+/// is an overflow, below its minimum an underflow — `Backing` for `Minor`,
+/// `i128` for `MinorWide` — so an investigation knows which bound was crossed.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum MinorError
 {
-  /// An operation left the representable range of the backing width.
+  /// The result would have been above the largest value the integer type holds.
   Overflow
   {
-    /// Which operation — `add`, `sub`, `neg`.
+    /// Which operation — `add`, `sub`, `neg`, or `narrow` (`MinorWide` to `Minor`).
+    operation : &'static str,
+  },
+  /// The result would have been below the smallest value the integer type holds.
+  Underflow
+  {
+    /// Which operation — `add`, `sub`, or `narrow` (`MinorWide` to `Minor`).
     operation : &'static str,
   },
 }
@@ -64,7 +225,8 @@ impl fmt::Display for MinorError
   {
     match self
     {
-      Self::Overflow { operation } => write!( f, "{operation} left the representable range" ),
+      Self::Overflow { operation } => write!( f, "{operation} rose above the representable range" ),
+      Self::Underflow { operation } => write!( f, "{operation} fell below the representable range" ),
     }
   }
 }
@@ -73,29 +235,31 @@ impl core::error::Error for MinorError {}
 
 /// Zero, in minor units.
 #[ must_use ]
-pub const fn minor_zero() -> Backing
+pub const fn minor_zero() -> Minor
 {
-  0
+  Minor( 0 )
 }
 
 /// Whether a count of minor units is exactly zero.
 #[ must_use ]
-pub const fn minor_is_zero( m : Backing ) -> bool
+pub const fn minor_is_zero( m : Minor ) -> bool
 {
-  m == 0
+  m.0 == 0
 }
 
 /// Add two counts of minor units.
 ///
 /// # Errors
 ///
-/// [`MinorError::Overflow`] when the sum leaves the backing width.
-pub const fn minor_checked_add( a : Backing, b : Backing ) -> Result< Backing, MinorError >
+/// [`MinorError::Overflow`] when the sum rises above the backing width,
+/// [`MinorError::Underflow`] when it falls below it.
+pub const fn minor_checked_add( a : Minor, b : Minor ) -> Result< Minor, MinorError >
 {
-  match a.checked_add( b )
+  match a.0.checked_add( b.0 )
   {
-    Some( sum ) => Ok( sum ),
-    None => Err( MinorError::Overflow { operation : "add" } ),
+    Some( sum ) => Ok( Minor( sum ) ),
+    None if b.0 > 0 => Err( MinorError::Overflow { operation : "add" } ),
+    None => Err( MinorError::Underflow { operation : "add" } ),
   }
 }
 
@@ -103,13 +267,15 @@ pub const fn minor_checked_add( a : Backing, b : Backing ) -> Result< Backing, M
 ///
 /// # Errors
 ///
-/// [`MinorError::Overflow`] when the difference leaves the backing width.
-pub const fn minor_checked_sub( a : Backing, b : Backing ) -> Result< Backing, MinorError >
+/// [`MinorError::Overflow`] when the difference rises above the backing width,
+/// [`MinorError::Underflow`] when it falls below it.
+pub const fn minor_checked_sub( a : Minor, b : Minor ) -> Result< Minor, MinorError >
 {
-  match a.checked_sub( b )
+  match a.0.checked_sub( b.0 )
   {
-    Some( diff ) => Ok( diff ),
-    None => Err( MinorError::Overflow { operation : "sub" } ),
+    Some( diff ) => Ok( Minor( diff ) ),
+    None if b.0 < 0 => Err( MinorError::Overflow { operation : "sub" } ),
+    None => Err( MinorError::Underflow { operation : "sub" } ),
   }
 }
 
@@ -119,11 +285,11 @@ pub const fn minor_checked_sub( a : Backing, b : Backing ) -> Result< Backing, M
 ///
 /// [`MinorError::Overflow`] on the one backing value that cannot negate,
 /// `Backing::MIN`.
-pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
+pub const fn minor_checked_neg( a : Minor ) -> Result< Minor, MinorError >
 {
-  match a.checked_neg()
+  match a.0.checked_neg()
   {
-    Some( neg ) => Ok( neg ),
+    Some( neg ) => Ok( Minor( neg ) ),
     None => Err( MinorError::Overflow { operation : "neg" } ),
   }
 }
@@ -135,15 +301,15 @@ pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
 /// acceptable answer to range failure — the checked variant stays the
 /// default for call sites that have not.
 #[ must_use ]
-pub const fn minor_saturating_add( a : Backing, b : Backing ) -> Backing
+pub const fn minor_saturating_add( a : Minor, b : Minor ) -> Minor
 {
-  a.saturating_add( b )
+  Minor( a.0.saturating_add( b.0 ) )
 }
 
 /// Subtract two counts of minor units, clamping to the backing width's own
 /// bounds rather than failing.
 #[ must_use ]
-pub const fn minor_saturating_sub( a : Backing, b : Backing ) -> Backing
+pub const fn minor_saturating_sub( a : Minor, b : Minor ) -> Minor
 {
-  a.saturating_sub( b )
+  Minor( a.0.saturating_sub( b.0 ) )
 }

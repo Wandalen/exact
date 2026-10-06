@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:88`
+`module/exact_ratio/src/lib.rs:101`
 
 ```rust
 #[ must_use ]
@@ -24,8 +24,8 @@ pub const fn n( self ) -> i64
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 88 | Declaration |
-| `tests/ratio_and_div_round_test.rs:20` | — | Asserts the normalized numerator after a negative-denominator `ratio_new` call |
+| `src/lib.rs` | 101 | Declaration |
+| `tests/ratio_and_div_round_test.rs:24` | — | Asserts the normalized numerator after a negative-denominator `ratio_new` call |
 
 ## Crate Usage
 

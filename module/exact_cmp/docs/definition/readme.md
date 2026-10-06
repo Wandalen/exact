@@ -11,12 +11,12 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `money_cmp` | fn | `src/lib.rs:24` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
-| `qty_cmp` | fn | `src/lib.rs:31` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
-| `price_cmp` | fn | `src/lib.rs:38` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
-| `money_eq` | fn | `src/lib.rs:45` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
-| `price_min` | fn | `src/lib.rs:52` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
-| `price_max` | fn | `src/lib.rs:59` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `money_cmp` | fn | `src/lib.rs:36` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `qty_cmp` | fn | `src/lib.rs:43` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `price_cmp` | fn | `src/lib.rs:50` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `money_eq` | fn | `src/lib.rs:57` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `price_min` | fn | `src/lib.rs:64` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
+| `price_max` | fn | `src/lib.rs:71` | [No CmpError, Unconditional Ord](../decisions/001_no_cmp_error_unconditional_ord.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

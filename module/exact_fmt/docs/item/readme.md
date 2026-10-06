@@ -27,7 +27,7 @@ carve-out exempts private *functions* specifically (§ Instance Documentation
 Item... defined in this crate's own source tree" scope by visibility for any
 other Kind. See [ByteBufWriter](struct/001_byte_buf_writer.md) for the full
 reasoning. **One function-body-local `use` is deliberately excluded**:
-`fmt_into`'s internal `use core::fmt::Write;` (`src/lib.rs:83`) is not a
+`fmt_into`'s internal `use core::fmt::Write;` (`src/lib.rs:97`) is not a
 top-level Item (§ Item Kind Taxonomy : Stable Item Kinds: "every **top-level**
 Rust Item") — see [fmt_into](function/001_fmt_into.md) for the citation.
 
@@ -80,14 +80,13 @@ Definition/Invocation. No Associated Constant either — `Wire`-style
 
 ### Notable Findings
 
-- **`price_fmt` is untested even by its own defining crate.** `money_fmt` and
-  `qty_fmt` both appear in `tests/fmt_test.rs`; `price_fmt` doesn't — the
-  sharpest gap in this crate, since every other function here is at least
-  exercised by its own test suite even where it has zero external callers.
+- **Every function is exercised by this crate's own tests** —
+  `money_fmt`, `qty_fmt`, `price_fmt` and `fmt_into` all appear in
+  `tests/fmt_test.rs`, even where they have zero external callers.
 - **`fmt_into` is the crate's one genuinely load-bearing export** — every
   other function is a thin `to_string()` wrapper, but `fmt_into` is the
   actual reason the crate exists (non-allocating rendering). It has zero
-  external callers today, but is fully exercised by 3 of its own tests.
+  external callers today, but is fully exercised by 6 of its own tests.
 - **`FmtError`'s `Display` is never rendered anywhere**, mirroring the
   identical finding already recorded for `exact_kind::KindError` and
   `exact_ratio::RatioError` — a pattern across this family: every error type
@@ -95,7 +94,7 @@ Definition/Invocation. No Associated Constant either — `Wire`-style
   formats an error message through it; every consumer matches on the enum
   variant instead.
 - **`exact_arith`'s own facade test never calls into this crate at all** —
-  it re-exports all 4 public items (`src/lib.rs:100`) but exercises none of
+  it re-exports all 4 public items (`exact_arith/src/lib.rs:118`) but exercises none of
   them, the same bypass pattern independently found in `exact_add` and
   `exact_parse`'s catalogs.
 

@@ -32,7 +32,7 @@
 ### Regenerate
 
 ```sh
-cd "$(git rev-parse --show-toplevel)"/module/docs/type
+cd "$(git rev-parse --show-toplevel)"/docs/type
 printf 'instances:              '; ls [0-9][0-9][0-9]_*.md | wc -l
 printf 'rows in Overview Table: '; grep -E '^\| [0-9]{3} \|' readme.md | wc -l
 # instances:              15

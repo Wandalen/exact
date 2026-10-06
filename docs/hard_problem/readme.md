@@ -31,7 +31,7 @@
 ### Regenerate
 
 ```sh
-cd "$(git rev-parse --show-toplevel)"/module/docs/hard_problem
+cd "$(git rev-parse --show-toplevel)"/docs/hard_problem
 printf 'instances:              '; ls [0-9][0-9][0-9]_*.md | wc -l
 printf 'rows in Overview Table: '; grep -E '^\| [0-9]{3} \|' readme.md | wc -l
 # instances:              14

@@ -11,14 +11,14 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:101`
+`module/exact_minor/src/lib.rs:288`
 
 ```rust
-pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
+pub const fn minor_checked_neg( a : Minor ) -> Result< Minor, MinorError >
 {
-  match a.checked_neg()
+  match a.0.checked_neg()
   {
-    Some( neg ) => Ok( neg ),
+    Some( neg ) => Ok( Minor( neg ) ),
     None => Err( MinorError::Overflow { operation : "neg" } ),
   }
 }
@@ -28,24 +28,24 @@ pub const fn minor_checked_neg( a : Backing ) -> Result< Backing, MinorError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 101-108 | Declaration |
+| `src/lib.rs` | 288-295 | Declaration |
 | `tests/checked_arithmetic_test.rs` | throughout | Round-trip negation over `[0, 1, -1, Backing::MAX]`, plus the `Backing::MIN` refusal |
-| `exact_arith/src/lib.rs:67` | — | Facade re-export only |
+| `exact_kind/src/lib.rs:296` | — | **Production** — `Decimal::checked_neg` |
+| `exact_arith/src/lib.rs:72` | — | Facade re-export only |
 
-No file outside `exact_minor` calls `minor_checked_neg` directly —
-`exact_kind`'s `Decimal::checked_neg` calls `i64::checked_neg` directly on
-its own field instead.
+`exact_kind`'s `Decimal::checked_neg` delegates here on its stored `Minor`.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_minor` | `(defining crate)` | Exercised by its own round-trip and boundary tests |
+| `exact_kind` | `src/lib.rs` | **Production** — `Decimal::checked_neg`, behind every `Money`/`Price`/`Quantity` neg |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `exact_kind::Decimal::checked_neg` (`exact_kind/src/lib.rs:296`)
 
 ## Callee Tree
 

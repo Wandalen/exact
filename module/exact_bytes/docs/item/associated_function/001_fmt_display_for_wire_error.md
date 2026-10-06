@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:60-69`
+`module/exact_bytes/src/lib.rs:73-82`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -30,7 +30,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 60-69 | Declaration |
+| `src/lib.rs` | 73-82 | Declaration |
 
 No file anywhere formats a `WireError` value (`{}`, `.to_string()`, `println!`,
 etc.) — every real use of `WireError` is construction or `assert_eq!`/

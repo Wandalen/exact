@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:62`
+`module/exact_minor/src/lib.rs:245`
 
 ```rust
-pub const fn minor_is_zero( m : Backing ) -> bool
+pub const fn minor_is_zero( m : Minor ) -> bool
 {
-  m == 0
+  m.0 == 0
 }
 ```
 
@@ -23,18 +23,19 @@ pub const fn minor_is_zero( m : Backing ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 62 | Declaration |
-| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
+| `src/lib.rs` | 245-248 | Declaration |
+| `tests/zero_test.rs` | throughout | True for zero; false for `±1` and both backing extremes |
+| `exact_arith/src/lib.rs:75` | — | Facade re-export only |
 
-Not called anywhere — the same honest-empty finding as
-[minor_zero](001_minor_zero.md): not in either of this crate's own test
-files, not by `exact_sign` or `exact_kind`, not by `exact_arith`'s tests.
+No production caller — the same finding as
+[minor_zero](001_minor_zero.md): not `exact_sign`, `exact_kind`, or
+`exact_arith`'s tests. Exercised only by this crate's own `tests/zero_test.rs`.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_minor` | `(defining crate)` | Declared; unexercised by its own tests |
+| `exact_minor` | `(defining crate)` | Exercised by its own `tests/zero_test.rs` |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree

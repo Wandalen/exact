@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:51`
+`module/exact_kind/src/lib.rs:41`
 
 ```rust
 use core::fmt;
@@ -23,7 +23,7 @@ use core::fmt;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 123,125,136,138,361,364,384,537,539 | Every `fmt::Display`/`fmt::Formatter`/`fmt::Result` reference in the 3 `Display` impls (`KindError`, `Decimal`, `Qty`) |
+| `src/lib.rs` | 118,120,131,133,373,376,407,602,604 | Every `fmt::Display`/`fmt::Formatter`/`fmt::Result` reference in the 3 `Display` impls (`KindError`, `Decimal`, `Qty`) |
 
 No other file references this declaration — it is private and grants no
 external visibility.

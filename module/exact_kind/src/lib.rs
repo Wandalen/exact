@@ -11,18 +11,6 @@
 //!
 //! # Disclosed deviations from the preferred design's own type listing
 //!
-//! - **`Money` and `Price` are the same type today.** The preferred design
-//!   lists `Money`, `Qty` and `Price` as three independent structs. `Qty`
-//!   earns that independence: its non-negativity refusal is real,
-//!   behaviourally-distinguishing logic worth a separate type. `Price` does
-//!   not yet — it has no real consumer anywhere in this codebase and no
-//!   behaviour that differs from `Money`, so hand-duplicating `Decimal`'s
-//!   entire method surface onto a second wrapper purely to make them
-//!   nominally distinct would be speculative work against the Approach
-//!   Gate's YAGNI check, done before any concrete need demonstrates what
-//!   that distinction should even enforce. `Price` is therefore a plain
-//!   alias of `Decimal< MONEY_SCALE >`, exactly like `Money`, until a real
-//!   consumer's requirement gives the distinction content.
 //! - **No `Scaled` trait.** The preferred design's trait returns a runtime
 //!   `Scale` from a value — a shape built for the runtime `Scale(u8)`
 //!   representation this family's migration plan explicitly rejected in
@@ -44,22 +32,29 @@
 //!
 //! Every checked operation, the parser, the renderer, and the declared
 //! ceiling's headroom relation are ported from `exact_decimal` and
-//! `exact_qty` without behavioural change — only the backing alias and the
-//! scale constants now come from `exact_minor` and `exact_scale` rather
-//! than being declared again here.
+//! `exact_qty` without behavioural change. What they are built on now comes
+//! from the two Tier-0 crates rather than being declared again here: the
+//! stored count is an `exact_minor::Minor`, added, subtracted and negated by
+//! `exact_minor`'s own checked functions, and the scale constants and powers
+//! of ten come from `exact_scale`.
 
 use core::fmt;
-use exact_minor::Backing;
+use exact_minor::
+{
+  Backing,
+  Minor,
+  MinorError,
+  minor_checked_add,
+  minor_checked_neg,
+  minor_checked_sub,
+  minor_from_i64,
+  minor_to_i64,
+  minor_zero,
+};
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
 pub type Money = Decimal< MONEY_SCALE >;
-
-/// A price at the standard money scale.
-///
-/// Identical to [`Money`] today — see the module-level disclosed deviation
-/// on why this is a plain alias rather than a hand-duplicated wrapper.
-pub type Price = Decimal< MONEY_SCALE >;
 
 /// A non-negative quantity at the standard money scale.
 pub type Quantity = Qty< MONEY_SCALE >;
@@ -149,10 +144,30 @@ impl core::error::Error for KindError {}
 /// let b : Decimal< 6 > = Decimal::parse( "0.2" ).unwrap();
 /// assert_eq!( a.checked_add( b ).unwrap(), Decimal::parse( "0.3" ).unwrap() );
 /// ```
+///
+/// Two scales never mix — a scale-6 value plus a scale-2 value does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::Decimal;
+/// let six : Decimal< 6 > = Decimal::from_int( 1 ).unwrap();
+/// let two : Decimal< 2 > = Decimal::from_int( 1 ).unwrap();
+/// let _ = six.checked_add( two );
+/// ```
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
 pub struct Decimal< const SCALE : u32 >
 {
-  minor : Backing,
+  minor : Minor,
+}
+
+/// Report a failure of `exact_minor`'s arithmetic as this crate's own
+/// overflow, keeping the name of the operation that failed.
+const fn kind_overflow( e : MinorError ) -> KindError
+{
+  match e
+  {
+    MinorError::Overflow { operation } | MinorError::Underflow { operation } =>
+      KindError::Overflow { operation },
+  }
 }
 
 impl< const SCALE : u32 > Decimal< SCALE >
@@ -161,20 +176,20 @@ impl< const SCALE : u32 > Decimal< SCALE >
   pub const ONE_MINOR : Backing = pow10( SCALE );
 
   /// Zero — the one infallible constructor, representable at every scale.
-  pub const ZERO : Self = Self { minor : 0 };
+  pub const ZERO : Self = Self { minor : minor_zero() };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = Self { minor : 1 };
+  pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = Self { minor : CEILING_MINOR_UNITS };
+  pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = Self { minor : -CEILING_MINOR_UNITS };
+  pub const MIN : Self = Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) };
 
   /// Build from a count of minor units.
   ///
@@ -187,7 +202,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
     {
       return Err( KindError::ExceedsCeiling { minor } );
     }
-    Ok( Self { minor } )
+    Ok( Self { minor : minor_from_i64( minor ) } )
   }
 
   /// Build from a whole number of units.
@@ -211,14 +226,14 @@ impl< const SCALE : u32 > Decimal< SCALE >
   #[ must_use ]
   pub const fn minor( self ) -> Backing
   {
-    self.minor
+    minor_to_i64( self.minor )
   }
 
   /// The whole-unit part, truncated toward zero.
   #[ must_use ]
   pub const fn whole( self ) -> Backing
   {
-    self.minor / Self::ONE_MINOR
+    self.minor() / Self::ONE_MINOR
   }
 
   /// Add two values of the same scale.
@@ -230,12 +245,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// obtainable through this type's public API.
   pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_add( rhs.minor )
-    else
+    match minor_checked_add( self.minor, rhs.minor )
     {
-      return Err( KindError::Overflow { operation : "add" } );
-    };
-    Self::from_minor( minor )
+      Ok( sum ) => Self::from_minor( minor_to_i64( sum ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Subtract two values of the same scale.
@@ -245,12 +259,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// As [`checked_add`](Self::checked_add).
   pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_sub( rhs.minor )
-    else
+    match minor_checked_sub( self.minor, rhs.minor )
     {
-      return Err( KindError::Overflow { operation : "sub" } );
-    };
-    Self::from_minor( minor )
+      Ok( diff ) => Self::from_minor( minor_to_i64( diff ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Multiply by a dimensionless integer, holding the scale.
@@ -262,7 +275,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// breaches the declared ceiling.
   pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_mul( n )
+    let Some( minor ) = self.minor().checked_mul( n )
     else
     {
       return Err( KindError::Overflow { operation : "mul_int" } );
@@ -280,12 +293,11 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// constructible value's magnitude far below that edge.
   pub const fn checked_neg( self ) -> Result< Self, KindError >
   {
-    let Some( minor ) = self.minor.checked_neg()
-    else
+    match minor_checked_neg( self.minor )
     {
-      return Err( KindError::Overflow { operation : "neg" } );
-    };
-    Self::from_minor( minor )
+      Ok( neg ) => Self::from_minor( minor_to_i64( neg ) ),
+      Err( e ) => Err( kind_overflow( e ) ),
+    }
   }
 
   /// Parse a decimal string exactly, or say why it cannot be.
@@ -364,12 +376,12 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     let unit = Self::ONE_MINOR;
-    let magnitude = self.minor.unsigned_abs();
+    let magnitude = self.minor().unsigned_abs();
     let unit_u = unit.unsigned_abs();
     let whole = magnitude / unit_u;
     let frac = magnitude % unit_u;
 
-    if self.minor < 0
+    if self.minor() < 0
     {
       write!( f, "-" )?;
     }
@@ -379,8 +391,19 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
     {
       return Ok( () );
     }
-    let padded = format!( "{frac:0width$}", width = SCALE as usize );
-    write!( f, ".{}", padded.trim_end_matches( '0' ) )
+    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+    // into a `String` with `format!` and then trimmed — one heap allocation
+    // per render, against feature 016's non-allocating display. The trailing
+    // zeros are now counted arithmetically and the digits written directly.
+    //
+    // Root cause: `format!` used as a scratch buffer inside `fmt`.
+    // Pitfall: `write!` into the formatter does not allocate but `format!`
+    //   does, and the rendered text is identical — output tests cannot tell.
+    let trailing_zeros = ( 1..=SCALE )
+    .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
+    .count();
+    let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
+    write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
   }
 }
 
@@ -534,7 +557,161 @@ impl< const SCALE : u32 > Qty< SCALE >
   }
 }
 
+/// Renders a quantity exactly as its underlying decimal renders.
+///
+/// Arithmetic between a quantity and a money value does not compile: it is a
+/// compile error, not a runtime one — the readme's
+/// "non-interchangeable types" promise, which no runtime test can observe, so
+/// the examples below pin it. (Money against [`Price`] is pinned on `Price`
+/// itself.) Same-kind arithmetic compiles, which proves the failing examples
+/// below fail only because they mix kinds:
+///
+/// ```
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = cash.checked_add( cash );
+/// let _ = shares.checked_add( shares );
+/// ```
+///
+/// Money plus a quantity does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = cash.checked_add( shares );
+/// ```
+///
+/// Nor a quantity plus money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ = shares.checked_add( cash );
+/// ```
+///
+/// Nor a quantity standing in for money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Quantity };
+/// let shares = Quantity::from_int( 1 ).unwrap();
+/// let _ : Money = shares;
+/// ```
 impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
+{
+  fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+  {
+    write!( f, "{}", self.value )
+  }
+}
+
+/// A price at the standard money scale.
+///
+/// A type of its own, so a price cannot stand in for money, or money for a
+/// price. Like [`Money`] it may be negative — a discount. Same-kind
+/// arithmetic compiles:
+///
+/// ```
+/// use exact_kind::Price;
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = price.checked_add( price );
+/// ```
+///
+/// Money plus a price does not compile:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Price };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = cash.checked_add( price );
+/// ```
+///
+/// Nor a price plus money:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, Price };
+/// let cash = Money::from_int( 1 ).unwrap();
+/// let price = Price::parse( "1.25" ).unwrap();
+/// let _ = price.checked_add( cash );
+/// ```
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct Price
+{
+  value : Money,
+}
+
+impl Price
+{
+  /// No price at all.
+  pub const ZERO : Self = Self { value : Money::ZERO };
+
+  /// The largest price this type can hold — exactly the declared ceiling.
+  pub const MAX : Self = Self { value : Money::MAX };
+
+  /// Build from a count of minor units.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::from_minor`].
+  pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
+  {
+    match Money::from_minor( minor )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// The count of minor units this price holds.
+  #[ must_use ]
+  pub const fn minor( self ) -> Backing
+  {
+    self.value.minor()
+  }
+
+  /// Add two prices.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::checked_add`].
+  pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
+  {
+    match self.value.checked_add( rhs.value )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// Subtract two prices.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::checked_sub`].
+  pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
+  {
+    match self.value.checked_sub( rhs.value )
+    {
+      Ok( value ) => Ok( Self { value } ),
+      Err( e ) => Err( e ),
+    }
+  }
+
+  /// Parse a decimal string exactly, or say why it cannot be.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::parse`].
+  pub fn parse( text : &str ) -> Result< Self, KindError >
+  {
+    Ok( Self { value : Money::parse( text )? } )
+  }
+}
+
+/// Renders a price exactly as money of the same amount renders.
+impl fmt::Display for Price
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {

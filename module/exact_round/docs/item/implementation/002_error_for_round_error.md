@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:96`
+`module/exact_round/src/lib.rs:107`
 
 ```rust
 impl core::error::Error for RoundError {}
@@ -20,7 +20,7 @@ impl core::error::Error for RoundError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 96 | Declaration — empty body |
+| `src/lib.rs` | 107 | Declaration — empty body |
 
 ## Crate Usage
 

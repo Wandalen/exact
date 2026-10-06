@@ -7,7 +7,7 @@
 - **In Scope**: `Money`, `Qty`, `Price` as separate structs over the same minor/scale pair.
 - **Out of Scope**: The arithmetic operating on them (→ `exact_add`, `exact_ratio`).
 
-**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md), with two real deviations. `Money` and `Price` are the same type today — both a plain alias of `Decimal<MONEY_SCALE>` — not three independent structs; `Price` has no consumer anywhere that needs it distinguished from `Money` yet. And the shared shape is one generic `Decimal<const SCALE: u32>` carrying scale as a compile-time parameter rather than a runtime field each struct holds separately; `Quantity` is the one genuinely distinct newtype, wrapping `Decimal` and refusing negative values. See [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) and [its non-negativity decision](../../module/exact_kind/docs/decisions/001_non_negativity_enforced_at_construction.md) for the full account.
+**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md), with one real deviation: the shared shape is one generic `Decimal<const SCALE: u32>` carrying scale as a compile-time parameter rather than a runtime field each struct holds separately. On top of it, `Money` is `Decimal<MONEY_SCALE>`, `Quantity` wraps `Decimal` and refuses negative values, and `Price` wraps a `Money` — three distinct newtypes, so mixing any two is a compile error, pinned by `compile_fail` doctests. See [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) and [its non-negativity decision](../../module/exact_kind/docs/decisions/001_non_negativity_enforced_at_construction.md) for the full account.
 
 ### Statement
 

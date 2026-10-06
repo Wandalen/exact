@@ -7,7 +7,7 @@
 - **In Scope**: The two-call comparison and its pass criterion.
 - **Out of Scope**: The family-wide determinism requirement this step demonstrates (→ `../hard_problem/007_determinism.md`, built by a parallel collection).
 
-**Design status**: not implemented anywhere in the real family, and not exercised by the demo lane — no crate in `module/` computes a checksum of minors; "checksum" appears only in the archived proposal source and this corpus. The real family demonstrates determinism differently: [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) asserts its exact arm and an `f64` control arm *disagree* on the same computation (not that two exact calls agree), and [`exact_cmp`](../../module/exact_cmp/readme.md) provides the family's epsilon-free `Eq`/`Ord` (→ [`../hard_problem/007_determinism.md`](../hard_problem/007_determinism.md)).
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) — `checksum` folds every minor-unit value the scenes produced through FNV-1a, the scenes are run twice, and the two checksums are asserted equal; the lane prints `a=0x… b=0x…` and `ok`. The checksum lives in the lane itself, not in a family crate — no crate in `module/` computes one. `tests/lane_test.rs`'s `the_checksum_is_stable_across_calls_and_changes_with_any_value` also proves it changes when any value changes.
 
 ### Procedure
 

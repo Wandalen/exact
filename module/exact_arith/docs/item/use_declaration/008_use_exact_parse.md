@@ -10,7 +10,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:98`
+`module/exact_arith/src/lib.rs:116`
 
 ```rust
 pub use exact_parse::{ money_from_str, price_from_str, qty_from_str };
@@ -20,7 +20,7 @@ pub use exact_parse::{ money_from_str, price_from_str, qty_from_str };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 98 | Declaration |
+| `src/lib.rs` | 116 | Declaration |
 
 Confirmed via a full-workspace grep: not one of these 3 names is imported
 or called through `exact_arith` anywhere, including this crate's own test

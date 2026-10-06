@@ -7,7 +7,7 @@
 - **In Scope**: The rejected input and expected error variant.
 - **Out of Scope**: `exact_parse`'s general design (→ `../crate/009_exact_parse.md`, `../type/009_exact_parse_types.md`).
 
-**Design status**: not exercised by the demo lane — every `Money::parse` call in [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) uses a valid literal and `.expect`s success; no rejection path runs. The underlying capability is real but renamed: there is no `ParseError` — parsing returns `exact_kind::KindError` directly, and this step's `ExtraDigits` is `KindError::ExcessPrecision` (→ [`exact_parse`](../../module/exact_parse/readme.md), [`type/009_exact_parse_types.md`](../type/009_exact_parse_types.md)).
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — `Decimal::< 2 >::parse("1.234")` is asserted to fail, and the lane prints `extra=1`. The error is renamed: there is no `ParseError` — parsing returns `exact_kind::KindError` directly, and this step's `ExtraDigits` is `KindError::ExcessPrecision` (→ [`exact_parse`](../../module/exact_parse/readme.md), [`type/009_exact_parse_types.md`](../type/009_exact_parse_types.md)).
 
 ### Procedure
 

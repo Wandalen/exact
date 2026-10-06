@@ -2,57 +2,62 @@
 
 ### Scope
 
-- **Purpose**: State exactly how `round_div` computes a rounded quotient and when it fails, so a caller can predict both the result and the overflow/zero-divisor edge cases without reading the implementation.
-- **Responsibility**: `round_div` — the sign normalization, truncating divide, and mode-driven remainder adjustment it performs — and the two failure modes `RoundError` reports.
+- **Purpose**: State exactly how `round_div` and `round_div_wide` compute a rounded quotient and when they fail, so a caller can predict both the result and the overflow/zero-divisor edge cases without reading the implementation.
+- **Responsibility**: `round_div_wide` — the truncating divide and the mode-driven step toward the exact quotient — and `round_div`, its `i64` form; and the two failure modes `RoundError` reports.
 - **In Scope**: The procedure's steps, the correctness argument for each mode's adjustment, and both `RoundError` variants.
 - **Out of Scope**: Which mode applies when a caller chooses none (→ [Half-Even As The Default](../decisions/001_half_even_as_the_unbiased_default.md)); why this function lives in `exact_round` rather than in its consumers (→ [`round_div` Owned By `exact_round`](../decisions/002_round_div_owned_by_exact_round.md)); the meaning of each `Rounding` variant itself (→ [Rounding Mode](../type/001_rounding_mode.md)).
 
 ### Procedure
 
+`round_div` widens both `i64` operands to `i128`, runs the steps below
+through `round_div_wide`, and narrows the result back — reporting
+`RoundError::Overflow` when it does not fit an `i64`, which only
+`i64::MIN / -1` reaches. `round_div_wide` holds the rounding rules, once:
+
 1. Refuse a zero divisor outright — `RoundError::DivZero`.
-2. Normalize a negative divisor: if `d < 0`, negate both `n` and `d`
-   (`checked_neg`, surfacing `RoundError::Overflow` if either negation
-   overflows — only reachable when `n` or `d` is `i64::MIN`, whose negation
-   has no representable value). Every later step sees only a positive
-   divisor.
-3. Truncating divide: `q = n / d`, `r = n % d` (Rust's own semantics — `r`
-   carries the sign of `n`).
-4. If `r == 0` the division was exact; return `q` unchanged for every mode —
+2. Truncating divide, with the operands' own signs: `q = n / d` (via
+   `checked_div`, surfacing `RoundError::Overflow` only for
+   `i128::MIN / -1`, the one quotient with no representable value) and
+   `r = n % d` (Rust's own semantics — `r` carries the sign of `n`).
+3. If `r == 0` the division was exact; return `q` unchanged for every mode —
    no mode can disagree about a result with no remainder.
-5. Otherwise adjust `q` by the chosen mode:
-   - **`Down`**: if `r < 0`, subtract 1 from `q` (`checked_sub`) to round
-     toward negative infinity; otherwise `q` is already the floor.
-   - **`Up`**: if `r > 0`, add 1 to `q` (`checked_add`) to round toward
-     positive infinity; otherwise `q` is already the ceiling.
-   - **`HalfEven`**: widen `r`'s magnitude and double it
-     (`r.unsigned_abs() as i128 * 2`), compare against `d` widened to
-     `i128`:
-     - strictly less than `d` — the remainder is under half the divisor;
-       keep `q`.
-     - strictly greater than `d`, or exactly equal to `d` with `q` odd —
-       round away from zero (subtract 1 if `n < 0`, else add 1).
-     - exactly equal to `d` with `q` already even — an exact tie landing on
-       the even neighbour already; keep `q`.
+4. Otherwise the exact quotient lies strictly between `q` and its neighbour
+   one step further from zero: below `q` when `r` and `d` differ in sign,
+   above it otherwise.
+5. Decide, by the chosen mode, whether to step toward the exact quotient:
+   - **`Down`**: step when it is below `q` — the floor.
+   - **`Up`**: step when it is above `q` — the ceiling.
+   - **`HalfEven`**: compare twice `|r|` with `|d|`, both as `u128`:
+     - less — the remainder is under half the divisor; keep `q`.
+     - greater, or equal with `q` odd — step.
+     - equal with `q` already even — an exact tie landing on the even
+       neighbour already; keep `q`.
+6. Step: `q - 1` when the exact quotient is below `q`, `q + 1` otherwise.
+   This never overflows: a nonzero remainder needs `|d| >= 2`, so
+   `|q| <= |n| / 2`.
 
-   Every `checked_sub`/`checked_add` above surfaces `RoundError::Overflow` on
-   failure — only reachable when the adjustment would carry `q` one past
-   `i64::MIN` or `i64::MAX`.
+### Why The Operands Keep Their Signs
 
-### Why The Tie Comparison Widens To `i128`
+Making the divisor positive first — negating both operands when `d < 0` —
+would let every later step see one sign case, but negating the type's
+minimum value has no representable result. `0 / MIN`, `1 / MIN` and
+`MIN / -2` would then fail although each quotient fits. Comparing the signs
+of `r` and `d` (step 4) tells the same direction without negating anything,
+so a minimum-value operand rounds like any other.
 
-A truncating divide's remainder always satisfies `|r| < |d|`, so doubling
-`r`'s magnitude can reach just under `2 * i64::MAX` — past what `i64` holds
-when `d` is itself close to `i64::MAX`. Widening both `r.unsigned_abs()` and
-`d` to `i128` before doubling and comparing means the tie check itself can
-never overflow, regardless of how close `n` and `d` are to the `i64` bounds
-that `RoundError::Overflow` exists to guard elsewhere in this same function.
+### Why The Tie Comparison Uses `u128`
+
+A truncating divide's remainder always satisfies `|r| < |d| <= 2^127`, so
+twice `r`'s magnitude can reach just under `2^128` — past what `i128` holds,
+but within `u128`. Taking `unsigned_abs()` of both and doubling in `u128`
+means the tie check itself can never overflow.
 
 ### Failure Modes
 
-`RoundError` reports the two ways `round_div` can fail: `DivZero` (a zero
-divisor) and `Overflow` (normalizing `i64::MIN`, or adjusting a quotient
-already at `i64::MIN`/`i64::MAX` by one — both only reachable at those two
-exact values). It implements `Display` (a one-line message per variant) and
+`RoundError` reports the two ways a rounded division can fail: `DivZero` (a
+zero divisor) and `Overflow` (the quotient does not fit the integer type —
+only `MIN / -1`, for `round_div` at `i64` and `round_div_wide` at `i128`).
+It implements `Display` (a one-line message per variant) and
 `core::error::Error`, so it composes with `?` and any call site expecting
 `dyn Error`.
 
@@ -60,13 +65,14 @@ exact values). It implements `Display` (a one-line message per variant) and
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:73-96` | `RoundError`, its `Display` impl, and its `Error` impl |
-| `src/lib.rs:98-124` | `round_div`'s doc comment, the zero-divisor refusal, and negative-divisor normalization |
-| `src/lib.rs:126-131` | The truncating divide and the exact-division shortcut |
-| `src/lib.rs:133-186` | Mode dispatch — `Down`, `Up`, `HalfEven` |
+| `src/lib.rs:84-107` | `RoundError`, its `Display` impl, and its `Error` impl |
+| `src/lib.rs:109-126` | `round_div` — widen, divide through `round_div_wide`, narrow back |
+| `src/lib.rs:128-145` | `round_div_wide`'s doc comment and the zero-divisor refusal |
+| `src/lib.rs:155-161` | The truncating divide and the exact-division shortcut |
+| `src/lib.rs:163-183` | The direction of the exact quotient, the mode decision — `Down`, `Up`, `HalfEven` — and the step |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/round_div_test.rs` | `round_div_refuses_a_zero_divisor`, `round_div_normalizes_a_negative_divisor` (refusal and normalization); `down_rounds_toward_negative_infinity`, `up_rounds_toward_positive_infinity`, `half_even_rounds_an_exact_tie_to_even`, `half_even_rounds_a_non_tie_to_the_nearest_neighbour` (mode dispatch); `an_exact_division_agrees_across_every_rounding_mode` (the exact-division shortcut) |
+| `tests/round_div_test.rs` | `round_div_refuses_a_zero_divisor`, `a_negative_divisor_rounds_like_negating_both_operands` (refusal and sign handling); `down_rounds_toward_negative_infinity`, `up_rounds_toward_positive_infinity`, `half_even_rounds_an_exact_tie_to_even`, `half_even_rounds_a_non_tie_to_the_nearest_neighbour` (mode dispatch); `an_exact_division_agrees_across_every_rounding_mode` (the exact-division shortcut); `every_mode_matches_its_definition_on_a_grid` (every mode against its definition); `round_div_reports_overflow_only_when_the_quotient_does_not_fit`, `round_div_handles_the_minimum_value_on_either_side`, `round_div_wide_handles_the_minimum_value_on_either_side` (the minimum value and the one overflow) |

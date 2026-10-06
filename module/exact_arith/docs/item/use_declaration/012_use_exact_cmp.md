@@ -10,7 +10,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:119`
+`module/exact_arith/src/lib.rs:137`
 
 ```rust
 pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_cmp };
@@ -20,7 +20,7 @@ pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_c
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 119 | Declaration |
+| `src/lib.rs` | 137 | Declaration |
 
 Confirmed via a full-workspace grep: not one of these 6 names is imported
 or called through `exact_arith` anywhere, including this crate's own test

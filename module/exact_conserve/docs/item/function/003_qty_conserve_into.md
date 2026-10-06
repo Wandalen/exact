@@ -26,7 +26,7 @@ pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, 
 |------|---------|---------|
 | `src/lib.rs` | 234-237 | Declaration |
 | `tests/conservation_test.rs:137-143` | — | `try_fold` usage |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `exact_arith/src/lib.rs:141` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.
@@ -44,5 +44,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:55`)
+- **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:73`)
 - `kind_error_to_conservation_error` (`src/lib.rs:134`, private — no Item Instance of its own)

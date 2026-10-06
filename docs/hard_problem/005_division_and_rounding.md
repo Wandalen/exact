@@ -7,7 +7,7 @@
 - **In Scope**: Fee and split arithmetic.
 - **Out of Scope**: The rounding enum itself (→ `../feature/008_rounding_mode_enum.md`).
 
-**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md) (the `Rounding` enum: `Down`/`Up`/`HalfEven`) and [`exact_ratio`](../../module/exact_ratio/readme.md) (`money_div_round`/`qty_div_round`, taking `mode` as a required argument). One real deviation: the documented default is `HalfEven`, not `Down` as originally proposed, chosen as the one mode with no directional bias over repeated roundings — see [`exact_round`'s own decision](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for the full account.
+**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md) (the `Rounding` enum: `Down`/`Up`/`HalfEven`) and [`exact_ratio`](../../module/exact_ratio/readme.md) (`money_div_round`/`qty_div_round` and every `*_mul_ratio`, each taking the mode as a required argument). One real deviation: the documented default is `HalfEven`, not `Down` as originally proposed, chosen as the one mode with no directional bias over repeated roundings — see [`exact_round`'s own decision](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for the full account.
 
 ### Statement
 

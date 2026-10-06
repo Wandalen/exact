@@ -11,15 +11,15 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `money_add` | fn | `src/lib.rs:35` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `money_sub` | fn | `src/lib.rs:45` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `qty_add` | fn | `src/lib.rs:55` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `qty_sub` | fn | `src/lib.rs:65` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `price_add` | fn | `src/lib.rs:75` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `price_sub` | fn | `src/lib.rs:85` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `money_checked_neg` | fn | `src/lib.rs:95` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
-| `money_saturating_add` | fn | `src/lib.rs:110` | — |
-| `qty_saturating_add` | fn | `src/lib.rs:124` | — |
+| `money_add` | fn | `src/lib.rs:53` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `money_sub` | fn | `src/lib.rs:63` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `qty_add` | fn | `src/lib.rs:73` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `qty_sub` | fn | `src/lib.rs:83` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `price_add` | fn | `src/lib.rs:93` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `price_sub` | fn | `src/lib.rs:103` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `money_checked_neg` | fn | `src/lib.rs:113` | [Reuse `KindError` Directly, No Wrapper Type](../decisions/001_reuse_kinderror_no_wrapper_type.md) |
+| `money_saturating_add` | fn | `src/lib.rs:128` | — |
+| `qty_saturating_add` | fn | `src/lib.rs:142` | — |
 
 `money_saturating_add` and `qty_saturating_add` carry their own clamp-direction
 correctness argument in their doc comments rather than a dedicated doc

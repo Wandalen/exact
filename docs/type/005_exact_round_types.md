@@ -7,7 +7,7 @@
 - **In Scope**: The enum and functions this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/005_exact_round.md`).
 
-**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md). `Rounding { Down, Up, HalfEven }` and `rounding_name` match this proposal exactly. `rounding_default` deviates in its return value — it returns `HalfEven`, not `Down` as specified here — see [Half-Even As The Default](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for why. This proposal's "no errors defined" is now false: the real crate adds `RoundError { DivZero, Overflow }` for `round_div`, a rounding-division function this proposal never named for this crate — see [`round_div` Owned By `exact_round`](../../module/exact_round/docs/decisions/002_round_div_owned_by_exact_round.md) and [Rounding Mode](../../module/exact_round/docs/type/001_rounding_mode.md).
+**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md). `Rounding { Down, Up, HalfEven }` and `rounding_name` match this proposal exactly. `rounding_default` deviates in its return value — it returns `HalfEven`, not `Down` as specified here — see [Half-Even As The Default](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for why. Beyond this listing, the crate also owns `round_div`/`round_div_wide` and `RoundError`, the one shared rounding division `exact_ratio`, `exact_snap` and `exact_dust` call — see [ADR-002](../../module/exact_round/docs/decisions/002_round_div_owned_by_exact_round.md).
 
 ### Enums
 

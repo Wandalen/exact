@@ -24,7 +24,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:50-54`
+`module/exact_fmt/src/lib.rs:64-68`
 
 ```rust
 struct ByteBufWriter< 'a >
@@ -38,9 +38,9 @@ struct ByteBufWriter< 'a >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 50-54 | Declaration |
-| `src/lib.rs` | 56-69 | `impl core::fmt::Write for ByteBufWriter< '_ >` |
-| `src/lib.rs` | 84 | Constructed inside `fmt_into` |
+| `src/lib.rs` | 64-68 | Declaration |
+| `src/lib.rs` | 70-83 | `impl core::fmt::Write for ByteBufWriter< '_ >` |
+| `src/lib.rs` | 98 | Constructed inside `fmt_into` |
 
 Private to `exact_fmt` — cannot appear in any other crate's source by
 construction (not exported, no `pub` on the struct or its fields).

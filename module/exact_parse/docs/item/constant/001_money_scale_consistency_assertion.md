@@ -7,7 +7,7 @@ A cross-crate consistency guard between `exact_kind` and `exact_scale`:
 crates now, connected only by a shared numeric literal at each definition
 site. This assertion fails the build the moment they drift apart, rather
 than waiting for a parse to silently use the wrong scale (module comment,
-`src/lib.rs:31-35`). An anonymous (`_`-named) compile-time assertion, same
+`src/lib.rs:40-44`). An anonymous (`_`-named) compile-time assertion, same
 pattern as `exact_scale`'s own
 [range budget assertion](../../../../exact_scale/docs/item/constant/005_range_budget_assertion.md).
 
@@ -17,7 +17,7 @@ Constant (§ Item Kind Taxonomy : Stable Item Kinds #9)
 
 ## Definition
 
-`module/exact_parse/src/lib.rs:36`
+`module/exact_parse/src/lib.rs:45`
 
 ```rust
 const _ : () = assert!( Money::ONE_MINOR == exact_scale::pow10( exact_scale::MONEY_SCALE ) );
@@ -27,7 +27,7 @@ const _ : () = assert!( Money::ONE_MINOR == exact_scale::pow10( exact_scale::MON
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 36 | Declaration — evaluated once, at compile time; has no runtime call sites by construction |
+| `src/lib.rs` | 45 | Declaration — evaluated once, at compile time; has no runtime call sites by construction |
 
 Not referenceable from any other file — it is anonymous (`_`) and private,
 existing solely for its compile-time side effect. Grep-confirmed: no other

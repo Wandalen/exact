@@ -22,9 +22,9 @@ single-concern crates instead of the original 3
 
 - **Exact types for everything conserved.** Fixed-point decimal types for
   money and commodity quantities, with no rounding drift in their
-  representation — met. `exact_kind::Decimal<SCALE>` (aliased `Money`/`Price`)
-  and `exact_kind::Qty<SCALE>` (aliased `Quantity`) store one `Backing` field
-  (`i64`, from `exact_minor`) and never pass through a float, including in
+  representation — met. `exact_kind::Decimal<SCALE>` (aliased `Money`, and
+  wrapped by `Price`) and `exact_kind::Qty<SCALE>` (aliased `Quantity`) store
+  one `exact_minor::Minor` (an `i64`) and never pass through a float, including in
   their parser's grammar, which explicitly refuses `"1e6"`/`"NaN"`/`"inf"`
   rather than rounding them
   (→ [`exact_minor`: No Float In Representation](../../../exact_minor/docs/invariant/001_no_float_in_representation.md),
@@ -76,11 +76,12 @@ for the budget arithmetic these constants had to close, and still do).
 
 - Float interop for conserved values — still true for this facade and all 14
   leaves it re-exports: no lossy constructor, no `as f64` escape hatch, and
-  `Display` is the one sanctioned float-free rendering path. `f64` appears
-  exactly once in the whole family, deliberately, as the required-to-disagree
-  control arm in a different crate
-  (→ [`smoke_exact_market_split`](../../../smoke_exact_market_split/readme.md)'s
-  own `f64 appears in this crate and in no other crate of the family`).
+  `Display` is the one sanctioned float-free rendering path. `f64` appears in
+  exactly one library source in the whole family, deliberately, as the
+  required-to-disagree control arm in a different crate
+  (→ [`smoke_exact_market_split`](../../../smoke_exact_market_split/readme.md)),
+  and otherwise only in this crate's own timing bench, a test
+  (`tests/bench_vs_f64.rs`).
 - General-purpose bignum or computer-algebra ambitions — still true; no such
   code exists anywhere in the 14 leaves or this facade.
 - Game-side pricing, currency design, and market content — still true, a

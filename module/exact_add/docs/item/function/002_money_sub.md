@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_add/src/lib.rs:45`
+`module/exact_add/src/lib.rs:63`
 
 ```rust
 pub const fn money_sub( a : Money, b : Money ) -> Result< Money, KindError >
@@ -24,9 +24,9 @@ pub const fn money_sub( a : Money, b : Money ) -> Result< Money, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 45 | Declaration |
+| `src/lib.rs` | 63 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:19` | — | Round-trips `money_add`'s own result back to the original operand |
-| `exact_arith/src/lib.rs:88` | — | Facade re-export |
+| `exact_arith/src/lib.rs:95` | — | Facade re-export |
 
 No production (non-test) file outside `exact_add` calls `money_sub` — an
 honest empty finding. `exact_conserve`, the crate's one production

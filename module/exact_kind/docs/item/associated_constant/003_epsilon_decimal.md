@@ -10,19 +10,19 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:167`
+`module/exact_kind/src/lib.rs:182`
 
 ```rust
-pub const EPSILON : Self = Self { minor : 1 };
+pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 167,408 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
+| `src/lib.rs` | 182,431 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Boundary-adjacent values (`MAX.checked_add(EPSILON)` etc.) |
-| `exact_add/tests/checked_and_saturating_add_test.rs:59,60,61` | — | Saturation-boundary test inputs |
+| `exact_add/tests/checked_and_saturating_add_test.rs:60,61,62` | — | Saturation-boundary test inputs |
 | `exact_conserve/tests/conservation_test.rs:133` | — | Overflow-boundary test input |
 
 No production (non-test) file outside `exact_kind` uses `Decimal::EPSILON` —

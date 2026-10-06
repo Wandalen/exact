@@ -10,7 +10,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:83-94`
+`module/exact_arith/src/lib.rs:90-101`
 
 ```rust
 pub use exact_add::
@@ -31,7 +31,7 @@ pub use exact_add::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 83-94 | Declaration |
+| `src/lib.rs` | 90-101 | Declaration |
 
 Confirmed via a full-workspace grep: not one of these 9 names is imported
 or called through `exact_arith` anywhere, including this crate's own test

@@ -7,7 +7,7 @@
 - **In Scope**: `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio`.
 - **Out of Scope**: Dust handling after the split (→ `exact_dust`).
 
-**Design status**: implemented in [`exact_ratio`](../../module/exact_ratio/readme.md) as specified for the function surface — `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` all take an explicit `Ratio` (built via `ratio_new`) and return a checked `Result`. `RatioError` deviates: it drops the proposal's `ScaleMismatch`/`BadRounding` (both unreachable under this family's compile-time scale and closed `Rounding` enum) and adds `Negative`, the one real failure — a `Qty` result going below zero — the proposal's listing missed. See [`exact_ratio`'s own decision](../../module/exact_ratio/docs/decisions/001_ratio_error_without_scale_mismatch_or_bad_rounding.md) for the full account.
+**Design status**: implemented in [`exact_ratio`](../../module/exact_ratio/readme.md) as specified for the function surface — `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` all take an explicit `Ratio` (built via `ratio_new`) and the caller's `Rounding` mode, widen to `i128` before dividing, and return a checked `Result`. `RatioError` deviates: it drops the proposal's `ScaleMismatch`/`BadRounding` (both unreachable under this family's compile-time scale and closed `Rounding` enum) and adds `Negative`, the one real failure — a `Qty` result going below zero — the proposal's listing missed. See [`exact_ratio`'s own decision](../../module/exact_ratio/docs/decisions/001_ratio_error_without_scale_mismatch_or_bad_rounding.md) for the full account.
 
 ### Statement
 

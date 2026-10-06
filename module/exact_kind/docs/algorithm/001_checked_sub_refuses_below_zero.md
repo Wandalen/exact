@@ -28,9 +28,9 @@ against a physical count.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:497-509` | `Qty::checked_sub` — delegates to `Decimal::checked_sub` then `Self::from_decimal` |
-| `src/lib.rs:73-121` | `KindError` — `Negative` distinguished from `Overflow`/`ExceedsCeiling` |
-| `src/lib.rs:413-425` | `Qty::from_decimal` — the choke point `checked_sub` routes through |
+| `src/lib.rs:520-532` | `Qty::checked_sub` — delegates to `Decimal::checked_sub` then `Self::from_decimal` |
+| `src/lib.rs:68-116` | `KindError` — `Negative` distinguished from `Overflow`/`ExceedsCeiling` |
+| `src/lib.rs:436-448` | `Qty::from_decimal` — the choke point `checked_sub` routes through |
 
 ### Tests
 

@@ -2,8 +2,8 @@
 
 ## Representation
 
-Re-exports `exact_ratio`'s `Ratio` type, its error enum, and all 6 of its
-multiply/divide functions.
+Re-exports `exact_ratio`'s `Ratio` type, its error enum, and all 7 of its
+multiply/divide functions, `price_mul_qty` included.
 
 ## Kind
 
@@ -11,26 +11,39 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:96`
+`module/exact_arith/src/lib.rs:103-114`
 
 ```rust
-pub use exact_ratio::{ Ratio, RatioError, money_div_round, money_mul_ratio, price_mul_ratio, qty_div_round, qty_mul_ratio, ratio_new };
+pub use exact_ratio::
+{
+  Ratio,
+  RatioError,
+  money_div_round,
+  money_mul_ratio,
+  price_mul_qty,
+  price_mul_ratio,
+  qty_div_round,
+  qty_mul_ratio,
+  ratio_new,
+};
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 96 | Declaration |
+| `src/lib.rs` | 103-114 | Declaration |
+| `src/lib.rs` | 23,28-29 | Module doc example — `price_mul_qty` |
+| `tests/facade_test.rs` | 9,25 | `price_mul_qty`, through the facade |
 
-Confirmed via a full-workspace grep: not one of these 7 names is imported
-or called through `exact_arith` anywhere, including this crate's own test
-suite — matching `exact_ratio`'s own catalog finding that `price_mul_ratio`/
-`qty_div_round` have zero callers even within `module/` itself; at
-the facade layer, the same now holds for all 7 names in this block.
+Through `exact_arith`, only `price_mul_qty` is used — by this crate's own
+doc example and facade test. The other 8 names are not imported or called
+through the facade anywhere, matching `exact_ratio`'s own catalog finding
+that `price_mul_ratio`/`qty_div_round` have zero callers even within
+`module/` itself.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_arith` | `(defining crate)` | Declared only — not exercised by this crate's own tests |
+| `exact_arith` | `(defining crate)` | `price_mul_qty` exercised by its doc example and facade test; the rest declared only |

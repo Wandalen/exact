@@ -3,8 +3,8 @@
 ## Representation
 
 Why a rounded division could not be completed: `DivZero` (a zero divisor),
-`Overflow` (normalizing a negative divisor or adjusting the quotient by one
-overflowed — only reachable at `i64::MIN`/`i64::MAX`).
+`Overflow` (the quotient does not fit the integer type — only reachable
+dividing the type's minimum value by `-1`).
 
 ## Kind
 
@@ -12,12 +12,15 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:75`
+`module/exact_round/src/lib.rs:86`
 
 ```rust
 pub enum RoundError
 {
+  /// A zero divisor was supplied.
   DivZero,
+  /// The quotient does not fit the integer type — only reachable dividing
+  /// the type's minimum value by `-1`.
   Overflow,
 }
 ```
@@ -26,15 +29,15 @@ pub enum RoundError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 75,90,91,109,113,114,117,118,139,151,172,177 | Return/constructed variant throughout `round_div` and its `Display` impl |
-| `tests/round_div_test.rs` | throughout | `DivZero` refusal check |
-| `exact_dust/src/lib.rs:99,100` | — | **Production** — mapped to `DustError::EmptyParts`/`DustError::Overflow` in `round_error_to_dust_error` |
-| `exact_snap/src/lib.rs:51,52` | — | **Production** — mapped to a zero-rounding fallback / `SnapError::Overflow` |
-| `exact_ratio/src/lib.rs:175,176` | — | **Production** — mapped to `RatioError::DivZero`/`RatioError::Overflow` |
+| `src/lib.rs` | 86,101,102,118,123,140,144,156 | Return/constructed variant in `round_div` and `round_div_wide`, and its `Display` impl |
+| `tests/round_div_test.rs` | throughout | `DivZero` refusal, the one `Overflow` (`MIN / -1`), and both messages |
+| `exact_dust/src/lib.rs:112,113` | — | **Production** — mapped to `DustError::EmptyParts`/`DustError::Overflow` in `round_error_to_dust_error` |
+| `exact_snap/src/lib.rs:63,64` | — | **Production** — mapped to a zero-rounding fallback / `SnapError::Overflow` |
+| `exact_ratio/src/lib.rs:195,196` | — | **Production** — mapped to `RatioError::DivZero`/`RatioError::Overflow` |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_round` | `(defining crate)` | `round_div`'s sole error type |
+| `exact_round` | `(defining crate)` | The sole error type of `round_div` and `round_div_wide` |
 | `exact_dust`, `exact_snap`, `exact_ratio` | `src/lib.rs` | **Production** — each maps `RoundError` into its own local error type via explicit `match`, never a `From` impl |

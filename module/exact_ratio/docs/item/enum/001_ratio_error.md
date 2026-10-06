@@ -22,7 +22,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:38`
+`module/exact_ratio/src/lib.rs:51`
 
 ```rust
 pub enum RatioError
@@ -40,11 +40,11 @@ pub enum RatioError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 38,52,65,67,71-72,112,116,120-121,127,131,140,153,165,171,175-176,186,199 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
-| `tests/ratio_and_div_round_test.rs` | 12,50,114 | `DivZero` and `Negative` asserted directly |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `src/lib.rs` | 51,65,78,80,84-85,125,129,133-134,140,150-152,161,174,185,191,195-196,206,219,235 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
+| `tests/ratio_and_div_round_test.rs` | 16,58,64-67,131,305,315,317,336-339 | `DivZero` and `Negative` asserted directly, and every variant's message |
+| `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
-Doc-comment mentions (lines 16,23,109,138,150-151,184,196-197, all `///`/`//!`
+Doc-comment mentions (lines 16,23,122,151,163-164,196,208-209,225, all `///`/`//!`
 prose) are excluded above — they do not resolve to the declaration.
 
 ## Crate Usage

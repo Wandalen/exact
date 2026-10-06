@@ -30,13 +30,13 @@ pub const fn is_balanced( &self ) -> bool
 | `src/lib.rs` | 179 | Called from `Display for Report`'s own `fmt` |
 | `src/lib.rs` | 196 | `verify`'s own doc-test (a real `cargo test --doc` execution, not just a mention) |
 | `tests/conservation_test.rs` | throughout | Nearly every test's final assertion |
-| `exact_arith/src/lib.rs:26` | — | Facade's own module-level doc-test |
+| `exact_arith/src/lib.rs:30` | — | Facade's own module-level doc-test |
 | `exact_arith/tests/facade_test.rs:30` | — | Facade's own integration test |
 | `cluster_economy/src/market.rs:508,519` | — | **Production** — gates whether a settlement's cash/asset legs are accepted |
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |
 | `exchange_core/tests/submission_test.rs:258` | — | Integration test |
 | `smoke_exchange_core/src/lib.rs:107` | — | Demo-lane settlement check |
-| `smoke_exact_market_split/src/lib.rs:189,194`, `tests/lane_test.rs:61,64` | — | Demo-lane ledger checks |
+| `smoke_exact_market_split/src/lib.rs:309,314`, `tests/lane_test.rs:64,67` | — | Demo-lane ledger checks |
 
 **The crate's most heavily used method by far, and corrects an error in
 this file's own first draft** — an earlier pass wrongly reported this as an

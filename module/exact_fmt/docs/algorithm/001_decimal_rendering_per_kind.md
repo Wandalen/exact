@@ -11,7 +11,7 @@
 
 The preferred design for this crate states `Display` as "only as a wrapper over `fmt_into` — no independent formatting logic," which would mean this crate owns the trait impl. That is impossible under Rust's orphan rules given the family's dependency direction: `exact_fmt` depends on `exact_kind`, so neither `core::fmt::Display` (a foreign trait) nor `exact_kind::Decimal`/`Qty` (a foreign type) is local to this crate, and the impl is refused outright. Reversing the dependency so `exact_kind` depended on `exact_fmt` instead was rejected as contradicting the family's own topological tier order for no behavioral gain.
 
-`Display` therefore stays on `exact_kind::Decimal`/`Qty`, ported unchanged from the real codebase. This crate's three per-kind functions are a thin layer over that existing impl — the closest satisfiable reading of "no independent formatting logic" available under the constraint above.
+`Display` therefore stays on `exact_kind::Decimal`/`Qty`, ported from the real codebase and then reworked to render without allocating (it trims trailing zeros arithmetically instead of `format!`); `Price`'s `Display` delegates to the `Money` it wraps. This crate's three per-kind functions are a thin layer over that existing impl — the closest satisfiable reading of "no independent formatting logic" available under the constraint above.
 
 ### Per-Kind Rendering
 
@@ -19,7 +19,7 @@ The preferred design for this crate states `Display` as "only as a wrapper over 
 |----------|---------|-----------|
 | `money_fmt` | `Money` (`exact_kind::Decimal<MONEY_SCALE>`) | `v.to_string()`, which calls `Decimal`'s `Display` impl |
 | `qty_fmt` | `Quantity` (`exact_kind::Qty<MONEY_SCALE>`) | `v.to_string()`, which calls `Qty`'s `Display` impl — itself a pass-through to the inner `Decimal`'s |
-| `price_fmt` | `Price` (`exact_kind::Decimal<MONEY_SCALE>`) | Identical to `money_fmt` — `Price` is `Money` under `exact_kind`'s disclosed deviation |
+| `price_fmt` | `Price` (`exact_kind`'s struct wrapping a `Money`) | Same rendering as `money_fmt` — `Price`'s `Display` renders the wrapped `Money` |
 
 All three allocate a `String` and can never fail: `Display` for `Decimal`/`Qty` has no error path — trailing fractional zeros are trimmed, the sign is printed only when negative, and a zero-`SCALE` value prints no `.` at all.
 
@@ -37,17 +37,17 @@ Internally, `fmt_into` drives a private `ByteBufWriter` through `core::fmt::Writ
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:1-25` | Module doc — why `Display` cannot move into this crate, and what stays ported unchanged |
-| `src/lib.rs:27` | Imports `Money`, `Price`, `Quantity` from `exact_kind` |
-| `src/lib.rs:29-35` | `FmtError` — the one failure mode, `BufFull` |
-| `src/lib.rs:37-46` | `Display` for `FmtError` |
-| `src/lib.rs:48` | `core::error::Error` for `FmtError` |
-| `src/lib.rs:50-54` | `ByteBufWriter` — the private buffer-backed `core::fmt::Write` target |
-| `src/lib.rs:56-69` | `ByteBufWriter::write_str` — the atomic per-fragment capacity check |
-| `src/lib.rs:71-87` | `fmt_into` — doc comment states the no-allocation rationale (lines 71-72, 74), implementation at 81-87 |
-| `src/lib.rs:89-94` | `money_fmt` |
-| `src/lib.rs:96-101` | `qty_fmt` |
-| `src/lib.rs:103-108` | `price_fmt` |
+| `src/lib.rs:1-25` | Module doc — why `Display` cannot move into this crate, and where it stays instead |
+| `src/lib.rs:41` | Imports `Money`, `Price`, `Quantity` from `exact_kind` |
+| `src/lib.rs:43-49` | `FmtError` — the one failure mode, `BufFull` |
+| `src/lib.rs:51-60` | `Display` for `FmtError` |
+| `src/lib.rs:62` | `core::error::Error` for `FmtError` |
+| `src/lib.rs:64-68` | `ByteBufWriter` — the private buffer-backed `core::fmt::Write` target |
+| `src/lib.rs:70-83` | `ByteBufWriter::write_str` — the atomic per-fragment capacity check |
+| `src/lib.rs:85-101` | `fmt_into` — doc comment states the no-allocation rationale (lines 71-72, 74), implementation at 81-87 |
+| `src/lib.rs:103-108` | `money_fmt` |
+| `src/lib.rs:110-115` | `qty_fmt` |
+| `src/lib.rs:117-122` | `price_fmt` |
 
 ### Tests
 

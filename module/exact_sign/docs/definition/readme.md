@@ -11,11 +11,11 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `Sign` | enum | `src/lib.rs:16` | [Sign Classification](../type/001_sign_classification.md) |
-| `sign_of` | fn | `src/lib.rs:30` | [Sign Classification](../type/001_sign_classification.md) |
-| `is_negative` | fn | `src/lib.rs:48` | [Sign Classification](../type/001_sign_classification.md) |
-| `is_zero` | fn | `src/lib.rs:55` | [Sign Classification](../type/001_sign_classification.md) |
-| `sign_neg_allowed` | fn | `src/lib.rs:69` | [Negative-Admission As A Policy Function](../decisions/001_negative_admission_as_a_policy_function.md) |
+| `Sign` | enum | `src/lib.rs:25` | [Sign Classification](../type/001_sign_classification.md) |
+| `sign_of` | fn | `src/lib.rs:39` | [Sign Classification](../type/001_sign_classification.md) |
+| `sign_is_negative` | fn | `src/lib.rs:57` | [Sign Classification](../type/001_sign_classification.md) |
+| `sign_is_zero` | fn | `src/lib.rs:64` | [Sign Classification](../type/001_sign_classification.md) |
+| `sign_neg_allowed` | fn | `src/lib.rs:78` | [Negative-Admission As A Policy Function](../decisions/001_negative_admission_as_a_policy_function.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

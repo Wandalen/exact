@@ -3,7 +3,8 @@
 ## Representation
 
 `Tick`'s own constructor and field accessor: refuse a zero-sized grid at
-construction, then expose it back out as a plain `Price`.
+construction and store a negative one as its magnitude, then expose it back
+out as a plain `Price`.
 
 ## Kind
 
@@ -11,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:60-82`
+`module/exact_snap/src/lib.rs:72-100`
 
 ```rust
 impl Tick
@@ -22,7 +23,12 @@ impl Tick
     {
       return Err( SnapError::ZeroTick );
     }
-    Ok( Self( price ) )
+    // The price range is symmetric about zero, so the magnitude always fits.
+    match Price::from_minor( price.minor().abs() )
+    {
+      Ok( size ) => Ok( Self( size ) ),
+      Err( _ ) => Err( SnapError::Overflow ),
+    }
   }
 
   #[ must_use ]
@@ -37,7 +43,7 @@ impl Tick
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 60-82 | Declaration |
+| `src/lib.rs` | 72-100 | Declaration |
 
 ## Crate Usage
 

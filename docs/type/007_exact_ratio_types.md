@@ -7,7 +7,7 @@
 - **In Scope**: The struct, functions, and error enum this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/007_exact_ratio.md`).
 
-**Design status**: implemented in [`exact_ratio`](../../module/exact_ratio/readme.md). The `Ratio { n, d }` struct and all six functions (`ratio_new`, `money`/`qty`/`price_mul_ratio`, `money`/`qty_div_round`) match this proposal's names exactly. `RatioError` diverges — it carries `DivZero`, `Overflow`, and `Negative { minor }`, dropping `ScaleMismatch` and `BadRounding` (both unreachable under this family's compile-time `SCALE` and closed `Rounding` enum) and adding `Negative` for a real failure case this proposal's listing missed — see [`exact_ratio`'s decision](../../module/exact_ratio/docs/decisions/001_ratio_error_without_scale_mismatch_or_bad_rounding.md) for the full account.
+**Design status**: implemented in [`exact_ratio`](../../module/exact_ratio/readme.md). The `Ratio { n, d }` struct and all six functions (`ratio_new`, `money`/`qty`/`price_mul_ratio`, `money`/`qty_div_round`) match this proposal's names exactly; every multiply and divide takes the caller's `Rounding` mode as an argument, and one function beyond this listing, `price_mul_qty` (price × quantity → money), computes a trade's cost. `RatioError` diverges — it carries `DivZero`, `Overflow`, and `Negative { minor }`, dropping `ScaleMismatch` and `BadRounding` (both unreachable under this family's compile-time `SCALE` and closed `Rounding` enum) and adding `Negative` for a real failure case this proposal's listing missed — see [`exact_ratio`'s decision](../../module/exact_ratio/docs/decisions/001_ratio_error_without_scale_mismatch_or_bad_rounding.md) for the full account.
 
 ### Structs
 

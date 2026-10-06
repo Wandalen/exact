@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:63`
+`module/exact_round/src/lib.rs:74`
 
 ```rust
 pub const fn rounding_name( rounding : Rounding ) -> &'static str
@@ -30,9 +30,9 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 63 | Declaration |
+| `src/lib.rs` | 74 | Declaration |
 | `tests/rounding_mode_test.rs:14-17` | — | All 3 names checked |
-| `exact_arith/src/lib.rs:77` | — | Facade re-export |
+| `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any downstream
 consumer — calls `rounding_name` outside its own direct-mapping test. An

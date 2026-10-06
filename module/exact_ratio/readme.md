@@ -10,7 +10,7 @@ use exact_round::Rounding;
 
 let half = ratio_new( 1, 2 ).unwrap();
 let v = Money::parse( "10" ).unwrap();
-assert_eq!( money_mul_ratio( v, half ).unwrap(), Money::parse( "5" ).unwrap() );
+assert_eq!( money_mul_ratio( v, half, Rounding::HalfEven ).unwrap(), Money::parse( "5" ).unwrap() );
 assert_eq!( money_div_round( v, 4, Rounding::HalfEven ).unwrap(), Money::parse( "2.5" ).unwrap() );
 ```
 
@@ -35,7 +35,7 @@ are unreachable rather than merely unbuilt.
 | File | Responsibility |
 |------|----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_round` |
-| [`src/lib.rs`](src/lib.rs) | `Ratio`, `ratio_new`, `*_mul_ratio`, `*_div_round`, `RatioError` |
+| [`src/lib.rs`](src/lib.rs) | `Ratio`, `ratio_new`, `*_mul_ratio`, `*_div_round`, `price_mul_qty`, `RatioError` |
 | [`tests/ratio_and_div_round_test.rs`](tests/ratio_and_div_round_test.rs) | Normalization, the widened multiply, and every rounding mode at both signs |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Design documentation — the `Ratio` type, the widened-multiply algorithm, error-shape decisions, module index, workaround (none) |

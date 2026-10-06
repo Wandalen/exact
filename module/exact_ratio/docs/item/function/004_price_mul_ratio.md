@@ -2,16 +2,14 @@
 
 ## Representation
 
-Multiply a price by `n / d`. Its own doc comment states the error behavior
-is "as `money_mul_ratio`" — `Price` is `Money` under `exact_kind`'s disclosed
-same-type-today deviation, so this function is byte-for-byte the same body
-as [money_mul_ratio](002_money_mul_ratio.md) with the type swapped.
+Multiply a price by `n / d`, rounding the result per `rounding`. Its own doc comment states the error behavior
+is "as `money_mul_ratio`" — the body is the same as
+[money_mul_ratio](002_money_mul_ratio.md) with `Price` in place of `Money`.
 
-**Untested.** Verified via grep (`grep -rn price_mul_ratio` across the whole
-`module/` tree): the only matches are this declaration and the
-`exact_arith` facade re-export. Neither `exact_ratio`'s own test suite nor
-any other crate calls it — an honest empty finding, not an omission. This
-mirrors `exact_ratio`'s own module doc comment's disclosure
+**No production caller.** Verified via grep (`grep -rn price_mul_ratio`
+across the whole `module/` tree): outside this crate's own tests, the only
+matches are this declaration and the `exact_arith` facade re-export — no
+other crate calls it. This mirrors `exact_ratio`'s own module doc comment's disclosure
 (`exact_dust/src/lib.rs:25-26`) that the sibling crate `exact_dust`
 deliberately ships no `price_dust_split` for the same reason: "splitting a
 *price* into equal shares has no natural reading and no consumer anywhere in
@@ -23,12 +21,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:165`
+`module/exact_ratio/src/lib.rs:185`
 
 ```rust
-pub fn price_mul_ratio( v : Price, r : Ratio ) -> Result< Price, RatioError >
+pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
@@ -37,27 +35,25 @@ pub fn price_mul_ratio( v : Price, r : Ratio ) -> Result< Price, RatioError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 165-169 | Declaration |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
-
-No test file anywhere calls `price_mul_ratio`.
+| `src/lib.rs` | 185-189 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 231,246 | Every mode at both signs, and refusal past the ceiling |
+| `exact_arith/src/lib.rs:110` | — | Facade re-export |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_ratio` | `(defining crate)` | Declared, but not exercised by any test of its own |
+| `exact_ratio` | `(defining crate)` | Exercised by its own tests |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external, production or test — an honest
-empty tree. The sharpest finding in this crate: the function is public,
-re-exported, and documented, but has zero verified exercise anywhere in the
-workspace today.
+No production caller, intra-crate or external — an honest empty tree. Every
+call site is in `exact_ratio`'s own tests, which are out of scope for this
+tree (production call-graph only); `exact_arith` only re-exports the name.
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:127`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:67`, private — no Item Instance of its own)
-- **External:** `exact_kind::Decimal::minor` (via the `Price` alias), `exact_kind::Decimal::from_minor`
+- `mul_ratio_minor` (`src/lib.rs:140`, private — no Item Instance of its own)
+- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
+- **External:** `exact_kind::Price::minor`, `exact_kind::Price::from_minor` (each delegating to `Decimal`'s)

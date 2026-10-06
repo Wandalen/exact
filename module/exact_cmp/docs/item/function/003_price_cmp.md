@@ -3,8 +3,8 @@
 ## Representation
 
 Compare two price values, dispatching to `Price`'s own derived `Ord`.
-`Price` is `Money` under `exact_kind`'s disclosed deviation, so this takes
-the identical path as [money_cmp](001_money_cmp.md) through a distinct name.
+`Price`'s `Ord` compares the `Money` it wraps, so this orders prices exactly
+as [money_cmp](001_money_cmp.md) orders money.
 
 ## Kind
 
@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_cmp/src/lib.rs:38`
+`module/exact_cmp/src/lib.rs:50`
 
 ```rust
 #[ must_use ]
@@ -26,9 +26,9 @@ pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 38 | Declaration |
+| `src/lib.rs` | 50 | Declaration |
 | `tests/cmp_test.rs` | 29 | Less ordering, alongside the sibling `qty_cmp` check in the same test |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:137` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -40,11 +40,11 @@ pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`src/lib.rs:119`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:137`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'price_cmp(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Decimal::cmp` (via `a.cmp( &b )`, `Price` being an alias for `Decimal< SCALE >`)
+- **External:** `exact_kind::Price`'s derived `Ord::cmp` (via `a.cmp( &b )`), comparing the wrapped `Money`

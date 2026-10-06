@@ -15,7 +15,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:63-73`
+`module/exact_dust/src/lib.rs:76-86`
 
 ```rust
 /// Why a split could not be computed.
@@ -35,11 +35,11 @@ pub enum DustError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 65-73 | Declaration |
-| `src/lib.rs` | 75-86 | `Display` match arms |
-| `src/lib.rs` | 99,109,113,114,125,132,156,172,202,216 | Constructed across `round_error_to_dust_error`, `split_minor`, `fill_minor` (all private — no Item Instance of their own), and the 4 split/split-into functions' `.map_err` closures |
-| `tests/dust_split_test.rs:54,71,121` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `src/lib.rs` | 78-86 | Declaration |
+| `src/lib.rs` | 88-99 | `Display` match arms |
+| `src/lib.rs` | 112-113,122,124,126-127,139,143,167,191,220,243 | Constructed across `round_error_to_dust_error`, `split_minor`, `slot_minor` (all private — no Item Instance of their own), and the 4 split/split-into functions' `.map_err` closures |
+| `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
+| `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No production call site anywhere constructs or matches `DustError` outside
 `exact_dust` itself — an honest empty finding; `exact_arith` only re-exports

@@ -11,7 +11,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:411`
+`module/exact_kind/src/lib.rs:434`
 
 ```rust
 pub const MAX : Self = Self { value : Decimal::MAX };
@@ -21,10 +21,10 @@ pub const MAX : Self = Self { value : Decimal::MAX };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 411 | Declaration |
+| `src/lib.rs` | 434 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Ceiling-boundary checks |
-| `exact_add/src/lib.rs:129` | — | **Production** — `qty_saturating_add`'s clamp target |
-| `exact_add/tests/checked_and_saturating_add_test.rs:77` | — | Saturation test |
+| `exact_add/src/lib.rs:147` | — | **Production** — `qty_saturating_add`'s clamp target |
+| `exact_add/tests/checked_and_saturating_add_test.rs:78` | — | Saturation test |
 
 ## Crate Usage
 

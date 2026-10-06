@@ -2,7 +2,7 @@
 
 ## Representation
 
-Multiply a money value by `n / d`. Widens to `i128` before dividing, so an
+Multiply a money value by `n / d`, rounding the result per `rounding`. Widens to `i128` before dividing, so an
 intermediate product that would overflow `i64` still succeeds as long as the
 final result fits.
 
@@ -12,12 +12,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:140`
+`module/exact_ratio/src/lib.rs:161`
 
 ```rust
-pub fn money_mul_ratio( v : Money, r : Ratio ) -> Result< Money, RatioError >
+pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
@@ -26,9 +26,9 @@ pub fn money_mul_ratio( v : Money, r : Ratio ) -> Result< Money, RatioError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 140-144 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 30,40 | One-half exact multiply; an intermediate-overflow survival case |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `src/lib.rs` | 161-165 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 34,44,54,166,255,266 | One-half exact multiply; an intermediate-overflow survival case; refusal past the ceiling; every mode at both signs; a negative ratio rounding toward the named infinity; a zero ratio giving zero |
+| `exact_arith/src/lib.rs:108` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -46,6 +46,6 @@ across `substrate/` and `module/`).
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:127`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:67`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:140`, private — no Item Instance of its own)
+- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Money::minor`, `exact_kind::Money::from_minor`

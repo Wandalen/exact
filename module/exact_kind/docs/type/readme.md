@@ -11,7 +11,7 @@
 
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
-| 001 | [Conserved Value Type Family](001_conserved_value_type_family.md) | `Decimal`/`Qty` and the `Money`/`Price`/`Quantity` aliases built from them | 🔄 |
+| 001 | [Conserved Value Type Family](001_conserved_value_type_family.md) | `Decimal`/`Qty`/`Price` and the `Money`/`Quantity` aliases built from them | 🔄 |
 
 ### Regenerate
 

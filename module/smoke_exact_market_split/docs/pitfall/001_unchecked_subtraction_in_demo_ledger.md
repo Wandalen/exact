@@ -66,11 +66,11 @@ ever existed for it.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:93-115` | `ledger()`'s inline `Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow)` comment: root cause, pitfall, and the `checked_sub` fix, in place and unchanged from the predecessor lane |
+| `src/lib.rs:101-123` | `ledger()`'s inline `Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow)` comment: root cause, pitfall, and the `checked_sub` fix, in place and unchanged from the predecessor lane |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/lane_test.rs:75-117` | `a_leak_minor_that_would_overflow_the_seller_posting_panics_instead_of_wrapping` — the regression test, carried forward intact with its full 5-section fix documentation (Root Cause, Why Not Caught, Fix Applied, Prevention, Pitfall) in its own doc comment; drives `ledger` with `leak_minor: i64::MIN` and asserts the documented panic message, via `#[ should_panic( expected = "..." ) ]` |
+| `tests/lane_test.rs:78-120` | `a_leak_minor_that_would_overflow_the_seller_posting_panics_instead_of_wrapping` — the regression test, carried forward intact with its full 5-section fix documentation (Root Cause, Why Not Caught, Fix Applied, Prevention, Pitfall) in its own doc comment; drives `ledger` with `leak_minor: i64::MIN` and asserts the documented panic message, via `#[ should_panic( expected = "..." ) ]` |
 | `tests/lane_test.rs` | Also exercises `ledger()` via `run()` at the two realistic `leak_minor` values (`0`, `1`), through `the_lane_runs_end_to_end` and `the_audit_separates_a_balanced_log_from_a_one_unit_leak` — neither reproduces the overflow itself, which requires the unrealistic input only the regression test above supplies |

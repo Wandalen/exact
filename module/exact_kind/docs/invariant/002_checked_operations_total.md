@@ -40,11 +40,11 @@ vice versa.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:73-121` | `KindError` — all five variants |
-| `src/lib.rs:184-191` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
-| `src/lib.rs:231-289` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
-| `src/lib.rs:302-358` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
-| `src/lib.rs:488-524` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
+| `src/lib.rs:68-116` | `KindError` — all five variants |
+| `src/lib.rs:199-206` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
+| `src/lib.rs:246-301` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
+| `src/lib.rs:314-370` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
+| `src/lib.rs:511-547` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
 
 ### Tests
 

@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:98-101`
+`module/exact_fmt/src/lib.rs:112-115`
 
 ```rust
 pub fn qty_fmt( v : Quantity ) -> String
@@ -23,9 +23,10 @@ pub fn qty_fmt( v : Quantity ) -> String
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 98-101 | Declaration |
+| `src/lib.rs` | 112-115 | Declaration |
 | `tests/fmt_test.rs:15` | — | Matches a literal `"3"` |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `tests/fmt_test.rs:81` | — | A fraction trimmed, and zero as plain `0` |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 ## Crate Usage
 

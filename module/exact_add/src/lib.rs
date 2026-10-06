@@ -89,7 +89,7 @@ pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 ///
 /// # Errors
 ///
-/// See [`exact_kind::Decimal::checked_add`].
+/// See [`exact_kind::Price::checked_add`].
 pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
 {
   a.checked_add( b )
@@ -99,7 +99,7 @@ pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
 ///
 /// # Errors
 ///
-/// See [`exact_kind::Decimal::checked_sub`].
+/// See [`exact_kind::Price::checked_sub`].
 pub const fn price_sub( a : Price, b : Price ) -> Result< Price, KindError >
 {
   a.checked_sub( b )
@@ -130,7 +130,7 @@ pub const fn money_saturating_add( a : Money, b : Money ) -> Money
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => if exact_sign::is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
+    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
   }
 }
 

@@ -7,7 +7,7 @@
 - **In Scope**: The split inputs, mode, and the parts-plus-dust conservation check.
 - **Out of Scope**: `exact_dust`'s general design (→ `../crate/008_exact_dust.md`, `../type/008_exact_dust_types.md`).
 
-**Design status**: implemented, but the demo lane exercises a different `DustTo` variant and different literals — step 5 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) calls the real [`money_dust_split`](../../module/exact_dust/readme.md)`(fill, parts, Rounding::Down, DustTo::First)` on `"100.000001"` into 3 parts (dust folded into the first share, not reported separately), not this step's `"10.00"`-into-3 / `DustTo::Sink` / separate-dust-line scenario. `DustTo::Sink` is itself real and unchanged by name (→ [`type/008_exact_dust_types.md`](../type/008_exact_dust_types.md)) — just not the variant this particular demo run uses.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — `10` is split 3 ways under `Rounding::Down` with `DustTo::Sink` via [`money_dust_split`](../../module/exact_dust/readme.md), the held-back dust read with `money_dust_remainder`, and parts plus dust asserted equal to the total. It runs on `Money`, fixed at scale 6, because `exact_dust` takes `Money`/`Quantity` only — so the lane prints `parts=3.333333,3.333333,3.333333 dust=0.000001`, the scale-6 spelling of this step's scale-2 `3.33`/`0.01`. Step 5 separately splits a fill with `DustTo::First`.
 
 ### Procedure
 

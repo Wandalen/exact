@@ -64,7 +64,7 @@ disclosed deviation), which is why Implementation and Enum are both absent.
   `money_max`, `qty_min`, or `qty_max` — the gap is the crate's actual shipped
   surface, not a missed catalog entry.
 - **Every one of the 6 functions has an honest empty Caller Tree.** All 6 are
-  re-exported by `exact_arith` (`src/lib.rs:119`) but never called by the
+  re-exported by `exact_arith` (`exact_arith/src/lib.rs:137`) but never called by the
   facade's own test or by any other crate in `substrate/` or `module/` —
   confirmed via `grep -rn '<fn>(' --include='*.rs'` across the full
   workspace for each function individually. Every call site that exists

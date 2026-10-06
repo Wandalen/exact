@@ -11,12 +11,12 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `FmtError` | enum | `src/lib.rs:31` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `FmtError`'s `Display` impl | trait impl | `src/lib.rs:37` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `FmtError`'s `Error` impl | trait impl | `src/lib.rs:48` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `fmt_into` | fn | `src/lib.rs:81` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `money_fmt` | fn | `src/lib.rs:91` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `qty_fmt` | fn | `src/lib.rs:98` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
-| `price_fmt` | fn | `src/lib.rs:105` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `FmtError` | enum | `src/lib.rs:45` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `FmtError`'s `Display` impl | trait impl | `src/lib.rs:51` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `FmtError`'s `Error` impl | trait impl | `src/lib.rs:62` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `fmt_into` | fn | `src/lib.rs:95` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `money_fmt` | fn | `src/lib.rs:105` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `qty_fmt` | fn | `src/lib.rs:112` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
+| `price_fmt` | fn | `src/lib.rs:119` | [Decimal Rendering Per Kind](../algorithm/001_decimal_rendering_per_kind.md) |
 
-`Money`, `Price` and `Quantity` appear in these functions' signatures but are declared and documented in `exact_kind`, not here — this crate imports them (`src/lib.rs:27`) without re-exporting them under its own path. `ByteBufWriter` and its `core::fmt::Write` impl (`src/lib.rs:50-69`) are private (no `pub` keyword) and are not part of this crate's public surface, so they are omitted here too — see the algorithm doc for their role.
+`Money`, `Price` and `Quantity` appear in these functions' signatures but are declared and documented in `exact_kind`, not here — this crate imports them (`src/lib.rs:41`) without re-exporting them under its own path. `ByteBufWriter` and its `core::fmt::Write` impl (`src/lib.rs:64-83`) are private (no `pub` keyword) and are not part of this crate's public surface, so they are omitted here too — see the algorithm doc for their role.

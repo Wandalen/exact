@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:53`
+`module/exact_kind/src/lib.rs:54`
 
 ```rust
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
@@ -23,7 +23,7 @@ use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 53,56,62,65,130,161,174,177,186 | `MONEY_SCALE` fixes the three type aliases (56,62,65); `CEILING_MINOR_UNITS` bounds `from_minor`'s range check (186), renders in `KindError::Display` (130), and defines `Decimal::MAX`/`MIN` (174,177); `pow10` computes `ONE_MINOR` (161) |
+| `src/lib.rs` | 54,57,640,60,125,176,189,192,201 | `MONEY_SCALE` fixes the three type aliases (56,62,65); `CEILING_MINOR_UNITS` bounds `from_minor`'s range check (186), renders in `KindError::Display` (130), and defines `Decimal::MAX`/`MIN` (174,177); `pow10` computes `ONE_MINOR` (161) |
 
 No external file references this `use` declaration directly — other crates
 depending on `exact_scale` import it independently.

@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:91-94`
+`module/exact_fmt/src/lib.rs:105-108`
 
 ```rust
 pub fn money_fmt( v : Money ) -> String
@@ -24,9 +24,10 @@ pub fn money_fmt( v : Money ) -> String
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 91-94 | Declaration |
+| `src/lib.rs` | 105-108 | Declaration |
 | `tests/fmt_test.rs:11-12` | — | Matches `v.to_string()` directly and a literal `"1.5"` |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `tests/fmt_test.rs:89` | — | The smallest negative amount keeps every leading fractional zero |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
 ## Crate Usage
 

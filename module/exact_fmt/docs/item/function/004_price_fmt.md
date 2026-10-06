@@ -3,8 +3,7 @@
 ## Representation
 
 Render a price value to an owned `String`, through `Price`'s own `Display`
-impl (`Price` being `Money` under `exact_kind`'s disclosed "same type today"
-deviation).
+impl, which renders the `Money` it wraps.
 
 ## Kind
 
@@ -12,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:105-108`
+`module/exact_fmt/src/lib.rs:119-122`
 
 ```rust
 pub fn price_fmt( v : Price ) -> String
@@ -25,29 +24,26 @@ pub fn price_fmt( v : Price ) -> String
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 105-108 | Declaration |
-| `exact_arith/src/lib.rs:100` | — | Facade re-export |
+| `src/lib.rs` | 119-122 | Declaration |
+| `tests/fmt_test.rs:48` | — | A positive and a negative price render exactly |
+| `exact_arith/src/lib.rs:118` | — | Facade re-export |
 
-No test file anywhere calls `price_fmt` — not even this crate's own
-`tests/fmt_test.rs`, which imports and exercises `money_fmt`/`qty_fmt` but
-not this one (confirmed: its `use` statement at line 3 names `FmtError`,
-`fmt_into`, `money_fmt`, `qty_fmt` only). The sharpest finding in this crate:
-a public function with zero callers, intra-crate or external, that isn't
-even reached by its own defining crate's test suite.
+No caller outside this crate's own tests.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_fmt` | `(defining crate)` | Declared only — not exercised by this crate's own tests |
+| `exact_fmt` | `(defining crate)` | Exercised by its own tests |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree, and the
-only function in this crate untested even by its own defining crate.
+No production caller, intra-crate or external — an honest empty tree. Every
+call site is in `exact_fmt`'s own tests; `exact_arith` only re-exports the
+name.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Decimal::to_string` (via the blanket `ToString`
-  impl every `Display` type gets; `Price` is an alias for `Decimal< SCALE >`)
+- **External:** `exact_kind::Price::to_string` (via the blanket `ToString`
+  impl every `Display` type gets; `Price`'s `Display` renders the wrapped `Money`)

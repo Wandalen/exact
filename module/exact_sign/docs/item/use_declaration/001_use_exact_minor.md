@@ -10,7 +10,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_sign/src/lib.rs:12`
+`module/exact_sign/src/lib.rs:21`
 
 ```rust
 use exact_minor::Backing;
@@ -20,7 +20,7 @@ use exact_minor::Backing;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 12,30,48,55,69 | Parameter type of every function in this crate |
+| `src/lib.rs` | 21,39,57,64,78 | Parameter type of every function in this crate |
 
 ## Crate Usage
 

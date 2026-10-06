@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:14`
+`module/exact_minor/src/lib.rs:33`
 
 ```rust
 use core::fmt;
@@ -23,7 +23,7 @@ use core::fmt;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 40,42 | `MinorError`'s `Display` impl header and `fmt`'s own signature |
+| `src/lib.rs` | 222,224 | `MinorError`'s `Display` impl header and `fmt`'s own signature |
 
 No other file references this declaration — it is private and grants no
 external visibility.

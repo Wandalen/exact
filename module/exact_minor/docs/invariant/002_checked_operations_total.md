@@ -9,15 +9,12 @@
 
 ### Statement
 
-Every checked function in this crate returns the mathematically exact result
-or `Err(MinorError::Overflow { operation })` — never a silently wrapped value,
-and never a panic for any input `Backing` can represent. `minor_checked_add`
-and `minor_checked_sub` delegate to `Backing::checked_add`/`checked_sub`,
-which already report both directions of range failure identically, so
-`MinorError` carries one variant rather than inventing a sign-based split with
-no observable behaviour behind it. `minor_checked_neg` is total except at the
-one backing value whose negation cannot be represented, `Backing::MIN` —
-reported the same way, not as a special case.
+Every checked function in this crate returns the mathematically exact result,
+or `Err(MinorError::Overflow { operation })` when it would be above the backing
+width, or `Err(MinorError::Underflow { operation })` when it would be below it —
+never a silently wrapped value, and never a panic. `minor_checked_neg` fails
+only on `Backing::MIN`, whose negation is above the width, so it is always
+`Overflow`.
 
 The saturating pair, `minor_saturating_add`/`minor_saturating_sub`, is the
 crate's other total contract: every input still produces a `Backing` with no
@@ -42,13 +39,13 @@ never a default either way.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:29-38` | `MinorError` — one `Overflow { operation }` variant, naming which of `add`/`sub`/`neg` failed |
-| `src/lib.rs:72-108` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
-| `src/lib.rs:117-128` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
+| `src/lib.rs:206` | `MinorError` — `Overflow` and `Underflow`, each naming the operation that failed |
+| `src/lib.rs:256-295` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
+| `src/lib.rs:304-315` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/checked_arithmetic_test.rs` | Refusal at `Backing::MAX`/`Backing::MIN`, and totality of negation except at `Backing::MIN` |
-| `tests/saturating_arithmetic_test.rs` | Clamping at the same boundaries, confirmed to match checked arithmetic everywhere in range |
+| `tests/checked_arithmetic_test.rs` | Refusal past `Backing::MAX` and `Backing::MIN` in both directions (`MAX + 1`, `MIN + -1`, `MIN - 1`, `MAX - -1`), totality of negation except at `Backing::MIN`, and the error's rendered text |
+| `tests/saturating_arithmetic_test.rs` | Clamping at the same boundaries in both directions, always to the bound the result crossed; matches checked arithmetic in range |

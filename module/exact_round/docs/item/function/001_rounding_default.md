@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:53`
+`module/exact_round/src/lib.rs:64`
 
 ```rust
 pub const fn rounding_default() -> Rounding
@@ -25,9 +25,9 @@ pub const fn rounding_default() -> Rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 53 | Declaration |
-| `tests/rounding_mode_test.rs:8` | — | Confirms the default is `HalfEven` |
-| `exact_arith/src/lib.rs:77` | — | Facade re-export |
+| `src/lib.rs` | 64 | Declaration |
+| `tests/rounding_mode_test.rs:9` | — | Confirms the default is `HalfEven` |
+| `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any of its 4
 downstream consumers — calls `rounding_default()` to actually obtain a

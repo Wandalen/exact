@@ -18,7 +18,7 @@
 //! code, so it does not touch the zero-external-dependency convention that
 //! research doc already notes was a choice, not a forced hand.
 
-use exact_arith::{ money_cmp, money_mul_ratio, ratio_new, Money };
+use exact_arith::{ money_cmp, money_mul_ratio, ratio_new, Money, Rounding };
 use primitive_fixed_point_decimal::{ fpdec, ConstScaleFpdec };
 use std::hint::black_box;
 use std::time::{ Duration, Instant };
@@ -57,7 +57,10 @@ fn add_compare_ratio_vs_f64()
   let f64_cmp = time_it( || { black_box( black_box( fa ).partial_cmp( &black_box( fb ) ) ); } );
 
   let ratio = ratio_new( 3, 4 ).unwrap();
-  let exact_ratio = time_it( || { black_box( money_mul_ratio( black_box( a ), black_box( ratio ) ).unwrap() ); } );
+  let exact_ratio = time_it( ||
+  {
+    black_box( money_mul_ratio( black_box( a ), black_box( ratio ), Rounding::HalfEven ).unwrap() );
+  } );
   let f64_ratio = time_it( || { black_box( black_box( fa ) * black_box( 0.75_f64 ) ); } );
 
   println!( "\n=== exact vs f64, {ITERS} iterations each (ns/op) ===" );
@@ -90,7 +93,10 @@ fn add_compare_ratio_vs_primitive_fixed_point_decimal()
 
   let ratio = ratio_new( 3, 4 ).unwrap();
   let p_ratio : PfpdMoney = fpdec!( 0.75 );
-  let exact_ratio = time_it( || { black_box( money_mul_ratio( black_box( a ), black_box( ratio ) ).unwrap() ); } );
+  let exact_ratio = time_it( ||
+  {
+    black_box( money_mul_ratio( black_box( a ), black_box( ratio ), Rounding::HalfEven ).unwrap() );
+  } );
   let pfpd_ratio = time_it( || { let r : PfpdMoney = black_box( pa ) * black_box( p_ratio ); black_box( r ); } );
 
   println!( "\n=== exact vs primitive_fixed_point_decimal (ConstScaleFpdec<i64,6>), {ITERS} iterations each (ns/op) ===" );

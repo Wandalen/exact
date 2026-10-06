@@ -7,7 +7,7 @@
 - **In Scope**: The default `i64` width and the optional `i128` widening.
 - **Out of Scope**: Scale and kind, which are separate proposed crates (`exact_scale`, `exact_kind`).
 
-**Design status**: implemented in [`exact_minor`](../../module/exact_minor/readme.md) for the `i64` default — the backing width this feature names is exactly `exact_minor::Backing = i64`. The `i128` half does not exist: no feature flag is declared, and no `i128` reference appears anywhere in the crate (verified against its `Cargo.toml` and `src/lib.rs`) — see [`exact_minor` Types](../type/001_exact_minor_types.md) for the full account of the dropped `MinorWide`.
+**Design status**: implemented as specified in [`exact_minor`](../../module/exact_minor/readme.md) — `Minor` wraps an `i64` by default, and `MinorWide` wraps an `i128` behind the crate's `i128` feature (`cargo build --features i128`), not a separate crate.
 
 ### Statement
 

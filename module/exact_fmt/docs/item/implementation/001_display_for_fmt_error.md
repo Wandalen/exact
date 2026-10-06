@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:37-46`
+`module/exact_fmt/src/lib.rs:51-60`
 
 ```rust
 impl core::fmt::Display for FmtError
@@ -29,7 +29,7 @@ impl core::fmt::Display for FmtError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 37-46 | Declaration |
+| `src/lib.rs` | 51-60 | Declaration |
 
 ## Crate Usage
 

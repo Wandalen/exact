@@ -6,8 +6,9 @@ Design documentation for `exact_arith`, as typed doc definitions.
 |------|-----------------|
 | `feature/` | Version scope — what this facade's re-export surface commits to, and which of the family's original exit criteria now hold |
 | `invariant/` | The facade's own restraint: it declares nothing of its own |
-| `definition/` | Module Index — every one of the 93 publicly re-exported items, in one place |
+| `definition/` | Module Index — every one of the 98 publicly re-exported items, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 Tier 4 of the family: the single dependency every consumer takes instead of
 the other 14 crates individually. This crate's own contract — re-export

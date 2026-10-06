@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:539`
+`module/exact_kind/src/lib.rs:604`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -23,9 +23,9 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 539-542 | Declaration |
+| `src/lib.rs` | 604-607 | Declaration |
 | `tests/non_negative_test.rs:50` | — | Compared against the inner decimal's own rendering, via `.to_string()` |
-| `exact_fmt/src/lib.rs:100` | — | `qty_fmt`'s `v.to_string()` |
+| `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |
 
 ## Crate Usage
 
@@ -36,10 +36,10 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 ## Caller Tree
 
-- **External:** `exact_fmt::qty_fmt` (`exact_fmt/src/lib.rs:100`) — via `v.to_string()`
+- **External:** `exact_fmt::qty_fmt` (`exact_fmt/src/lib.rs:114`) — via `v.to_string()`
 
 No intra-crate caller.
 
 ## Callee Tree
 
-- [Display::fmt for Decimal](021_fmt_display_for_decimal.md) (`src/lib.rs:541`, via `write!( f, "{}", self.value )`)
+- [Display::fmt for Decimal](021_fmt_display_for_decimal.md) (`src/lib.rs:606`, via `write!( f, "{}", self.value )`)

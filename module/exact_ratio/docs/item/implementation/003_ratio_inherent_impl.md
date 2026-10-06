@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:84`
+`module/exact_ratio/src/lib.rs:97`
 
 ```rust
 impl Ratio
@@ -26,7 +26,7 @@ impl Ratio
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 84-99 | Declaration — the block spans both `Ratio` accessor members |
+| `src/lib.rs` | 97-112 | Declaration — the block spans both `Ratio` accessor members |
 
 ## Crate Usage
 

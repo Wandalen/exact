@@ -42,7 +42,7 @@ pub enum ConservationError
 | `cluster_economy/src/error.rs:19,79-81` | — | **Production** — wrapped into `MarketError::Audit` via a `From` impl |
 | `cluster_economy/tests/economy_test.rs:493,549,559` | — | Constructed directly and downcast-matched |
 | `exact_arith/tests/facade_test.rs:61` | — | Asserts `Overflow`'s rendered message |
-| `exact_arith/src/lib.rs:123` | — | Facade re-export |
+| `exact_arith/src/lib.rs:141` | — | Facade re-export |
 
 **Real production consumer outside this crate's own tier**:
 `cluster_economy` wraps this error type into its own domain error enum — the

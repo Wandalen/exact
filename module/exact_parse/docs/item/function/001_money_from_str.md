@@ -11,7 +11,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_parse/src/lib.rs:43`
+`module/exact_parse/src/lib.rs:52`
 
 ```rust
 pub fn money_from_str( text : &str ) -> Result< Money, KindError >
@@ -24,9 +24,9 @@ pub fn money_from_str( text : &str ) -> Result< Money, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 43 | Declaration |
-| `tests/from_str_test.rs:12,28` | — | Exact round-trip through `"1.23"`; malformed-text rejection loop (as a function-pointer array element, not a direct call at that line — the actual call is via the `parser` variable at line 30) |
-| `exact_arith/src/lib.rs:98` | — | Facade re-export |
+| `src/lib.rs` | 52 | Declaration |
+| `tests/from_str_test.rs:12,28-29` | — | Exact round-trip through `"1.23"`; malformed text (`"NaN"`, `""`) refused, each by a direct call |
+| `exact_arith/src/lib.rs:116` | — | Facade re-export |
 
 ## Crate Usage
 

@@ -6,8 +6,8 @@
 
 use exact_arith::
 {
-  money_dust_split, money_from_wire, money_to_wire, round_div, verify, ConservationError, DustTo,
-  Entry, KindError, Money, Quantity, Report, Rounding, Sign, sign_of, CEILING_MINOR_UNITS,
+  money_dust_split, money_from_wire, money_to_wire, price_mul_qty, round_div, verify, ConservationError,
+  DustTo, Entry, KindError, Money, Price, Quantity, Report, Rounding, Sign, sign_of, CEILING_MINOR_UNITS,
   CEILING_WHOLE_UNITS, MONEY_SCALE, pow10,
 };
 
@@ -19,10 +19,10 @@ use exact_arith::
 #[ test ]
 fn a_settlement_runs_end_to_end_through_the_facade_alone()
 {
-  let price = Money::parse( "1.25" ).unwrap();
+  let price = Price::parse( "1.25" ).unwrap();
   let filled = Quantity::from_int( 4 ).unwrap();
 
-  let notional = price.checked_mul_int( filled.whole() ).unwrap();
+  let notional = price_mul_qty( price, filled, Rounding::HalfEven ).unwrap();
   assert_eq!( notional, Money::parse( "5" ).unwrap() );
 
   let log = [ Entry::new( "buyer", -notional.minor() ), Entry::new( "seller", notional.minor() ) ];

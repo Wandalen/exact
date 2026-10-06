@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:502`
+`module/exact_kind/src/lib.rs:525`
 
 ```rust
 pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
@@ -29,9 +29,9 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 502 | Declaration |
+| `src/lib.rs` | 525 | Declaration |
 | `tests/non_negative_test.rs` | throughout | The primary invariant test — `rhs > self` refusal, exact-zero success |
-| `exact_add/src/lib.rs:67` | — | `qty_sub`'s entire body |
+| `exact_add/src/lib.rs:85` | — | `qty_sub`'s entire body |
 
 ## Crate Usage
 
@@ -42,11 +42,11 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_add::qty_sub` (`exact_add/src/lib.rs:67`)
+- **External:** `exact_add::qty_sub` (`exact_add/src/lib.rs:85`)
 
 No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::checked_sub](006_checked_sub_decimal.md) (`src/lib.rs:504`)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:506`)
+- [Decimal::checked_sub](006_checked_sub_decimal.md) (`src/lib.rs:527`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:529`)

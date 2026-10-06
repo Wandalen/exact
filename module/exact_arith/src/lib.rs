@@ -18,11 +18,15 @@
 //! facade this crate replaces, including its own mechanical purity test.
 //!
 //! ```
-//! use exact_arith::{ money_dust_split, DustTo, Entry, Money, Quantity, Rounding, verify };
+//! use exact_arith::
+//! {
+//!   money_dust_split, price_mul_qty, DustTo, Entry, Money, Price, Quantity, Rounding, verify,
+//! };
 //!
-//! let price = Money::parse( "1.25" ).unwrap();
-//! let held = Quantity::from_int( 2 ).unwrap();
-//! assert_eq!( price.checked_mul_int( held.whole() ).unwrap(), Money::parse( "2.5" ).unwrap() );
+//! let price = Price::parse( "1.25" ).unwrap();
+//! let held = Quantity::parse( "2.5" ).unwrap();
+//! let cost = price_mul_qty( price, held, Rounding::HalfEven ).unwrap();
+//! assert_eq!( cost, Money::parse( "3.125" ).unwrap() );
 //! assert!( verify( &[ Entry::new( "a", 5 ), Entry::new( "b", -5 ) ] ).unwrap().is_balanced() );
 //!
 //! let total = Money::from_minor( 11 ).unwrap();
@@ -62,21 +66,24 @@
 pub use exact_minor::
 {
   Backing,
+  Minor,
   MinorError,
   minor_checked_add,
   minor_checked_neg,
   minor_checked_sub,
+  minor_from_i64,
   minor_is_zero,
   minor_saturating_add,
   minor_saturating_sub,
+  minor_to_i64,
   minor_zero,
 };
 
 pub use exact_scale::{ CEILING_MINOR_UNITS, CEILING_WHOLE_UNITS, HEADROOM_FACTOR, MONEY_SCALE, pow10 };
 
-pub use exact_round::{ Rounding, RoundError, round_div, rounding_default, rounding_name };
+pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding_default, rounding_name };
 
-pub use exact_sign::{ Sign, is_negative, is_zero, sign_neg_allowed, sign_of };
+pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
 
 pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
 
@@ -93,7 +100,18 @@ pub use exact_add::
   qty_sub,
 };
 
-pub use exact_ratio::{ Ratio, RatioError, money_div_round, money_mul_ratio, price_mul_ratio, qty_div_round, qty_mul_ratio, ratio_new };
+pub use exact_ratio::
+{
+  Ratio,
+  RatioError,
+  money_div_round,
+  money_mul_ratio,
+  price_mul_qty,
+  price_mul_ratio,
+  qty_div_round,
+  qty_mul_ratio,
+  ratio_new,
+};
 
 pub use exact_parse::{ money_from_str, price_from_str, qty_from_str };
 

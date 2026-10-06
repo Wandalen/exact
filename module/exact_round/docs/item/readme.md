@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_round`'s
-own source tree — 8 instances across 4 Item Kinds, all in `src/lib.rs` (this
+own source tree — 9 instances across 4 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the 4 crates
@@ -34,17 +34,17 @@ fresh specification (module doc comment, `src/lib.rs:9-12`).
 | Kind | Directory | Instances |
 |------|-----------|-----------|
 | Enum | `enum/` | 2 |
-| Function | `function/` | 3 |
+| Function | `function/` | 4 |
 | Implementation | `implementation/` | 2 |
 | Associated Function/Method | `associated_function/` | 1 |
-| **Total** | | **8** |
+| **Total** | | **9** |
 
 11 of the 15 taxonomy Kinds are absent: Use Declaration, Module, Extern Crate
 Declaration, Type Alias, Struct, Union, Constant, Static, Trait, External
 Block, Macro Definition/Invocation, Associated Constant/Type. `exact_round`
 has no dependencies (Tier 0), so it needs no `use` declarations for anything
 beyond its own items, and declares no data-carrying struct or constant of its
-own — everything it exposes is policy logic (2 enums, 3 functions, their
+own — everything it exposes is policy logic (2 enums, 4 functions, their
 error-rendering machinery).
 
 ### Overview Table
@@ -56,26 +56,30 @@ error-rendering machinery).
 | function/001 | rounding_default | Function | 🔄 |
 | function/002 | rounding_name | Function | 🔄 |
 | function/003 | round_div | Function | 🔄 |
+| function/004 | round_div_wide | Function | 🔄 |
 | implementation/001 | Display for RoundError | Implementation | 🔄 |
 | implementation/002 | Error for RoundError | Implementation | 🔄 |
 | associated_function/001 | Display::fmt for RoundError | Associated Function/Method | 🔄 |
 
 ### Notable Findings
 
-- **`round_div` is the crate's one load-bearing export**: real production
-  callers in all 3 of `exact_dust`, `exact_snap`, and `exact_ratio` — the
-  single shared rounding-division primitive the migration plan's own module
-  doc comment explains was deliberately centralized here to avoid
-  duplicating sign-handling/tie-breaking logic three times.
+- **`round_div` and `round_div_wide` are the crate's load-bearing exports**:
+  `round_div` has real production callers in all 3 of `exact_dust`,
+  `exact_snap`, and `exact_ratio`, and `round_div_wide` in `exact_ratio`'s
+  ratio multiplies — the shared rounding division the module doc comment
+  explains was deliberately centralized here to avoid duplicating
+  sign-handling/tie-breaking logic three times. The rounding rules
+  themselves live once, in `round_div_wide`; `round_div` widens into it.
 - **`rounding_default` and `rounding_name` are each unused outside their own
   tests** — both are re-exported through `exact_arith`'s facade, but no
   production or test file anywhere in the 15-crate family actually calls
   either one. Every call site that needs `HalfEven` currently writes the
   variant literally rather than calling `rounding_default()`. A real,
   individually grep-verified gap, not an omission.
-- **`RoundError`'s `Display` is never rendered anywhere** — every consumer
-  (`exact_dust`, `exact_snap`, `exact_ratio`) maps it into its own local
-  error type via `match`, never by formatting the message. Same pattern as
+- **`RoundError`'s `Display` is rendered only by this crate's own tests**,
+  which pin both messages — every consumer (`exact_dust`, `exact_snap`,
+  `exact_ratio`) maps it into its own local error type via `match`, never by
+  formatting the message. Same pattern as
   [`exact_kind::KindError`](../../../exact_kind/docs/item/enum/001_kind_error.md).
 
 ### Regenerate
@@ -83,5 +87,5 @@ error-rendering machinery).
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_round/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 8
+# → 9
 ```

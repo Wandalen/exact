@@ -10,23 +10,24 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:164`
+`module/exact_kind/src/lib.rs:179`
 
 ```rust
-pub const ZERO : Self = Self { minor : 0 };
+pub const ZERO : Self = Self { minor : minor_zero() };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 164,405 | Declaration; `Qty::ZERO`'s own definition wraps this value |
+| `src/lib.rs` | 179,428 | Declaration; `Qty::ZERO`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Accumulator seed, boundary comparisons |
-| `exact_dust/tests/dust_split_test.rs:80` | — | Array-fill seed `[ Money::ZERO; 4 ]` |
-| `exact_arith/src/lib.rs:38,42` (doc) | — | Facade doc comment naming it as part of the re-exported surface |
+| `exact_dust/tests/dust_split_test.rs:84` | — | Array-fill seed `[ Money::ZERO; 4 ]` |
+| `exact_arith/src/lib.rs:42,46` (doc) | — | Facade doc comment naming it as part of the re-exported surface |
 | `exact_arith/tests/facade_test.rs:39` | — | `try_fold` accumulator seed |
-| `smoke_exact_market_split/src/lib.rs:58,206` | — | **Production** — accumulator seed in the ledger's running total and the recombination check |
-| `smoke_exact_market_split/tests/lane_test.rs:128` | — | `try_fold` accumulator seed |
+| `exact_arith/tests/no_alloc_test.rs:68` | — | Array-fill seed `[ Money::ZERO; 4 ]` |
+| `smoke_exact_market_split/src/lib.rs:66,328` | — | **Production** — accumulator seed in the ledger's running total and the recombination check |
+| `smoke_exact_market_split/tests/lane_test.rs:131` | — | `try_fold` accumulator seed |
 
 ## Crate Usage
 

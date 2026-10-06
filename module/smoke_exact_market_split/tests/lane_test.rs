@@ -1,8 +1,8 @@
-//! The lane's five steps, driven without the binary.
+//! The lane's six steps, driven without the binary.
 //!
 //! Ported from `smoke_exact_arithmetic/tests/lane_test.rs` — the first four
 //! tests carry forward unchanged except for the import path; the fifth is
-//! new, covering step 5's market split.
+//! new, covering step 5's market split; the last two cover step 6's scenes.
 //!
 //! The lane is its own test — every claim it prints is an assertion — but
 //! that only holds while something runs it. No test suite can reach a bare
@@ -12,8 +12,11 @@
 //!
 //! [`run`]: smoke_exact_market_split::run
 
-use exact_arith::{ Money, verify };
-use smoke_exact_market_split::{ REPEATS, exact_tenths, float_tenths, ledger, market_split, run };
+use exact_arith::{ Decimal, Money, Price, Quantity, verify };
+use smoke_exact_market_split::
+{
+  REPEATS, checksum, exact_tenths, float_tenths, golden, ledger, market_split, run,
+};
 
 /// Ten tenths added exactly are exactly one.
 ///
@@ -133,4 +136,34 @@ fn the_market_split_recombines_to_the_original_fill()
   // entirely on the first share — the other two are exactly equal.
   assert_eq!( shares[ 1 ], shares[ 2 ] );
   assert!( shares[ 0 ] > shares[ 1 ], "the first share must absorb the remainder" );
+}
+
+/// Step 6 — every scene of `docs/scene/` lands on its golden value. Scenes
+/// 003 and 009 run on `Money`, whose scale is 6, so their values are the
+/// scale-6 spelling of the proposed `3.33`/`0.01` and `1000`.
+#[ test ]
+fn the_scenes_land_on_their_golden_values()
+{
+  let g = golden();
+  assert_eq!( g.sum, Decimal::< 2 >::ZERO, "scene 002: 10.00 + 3.33 - 13.33" );
+  assert_eq!( g.parts, vec![ Money::from_minor( 3_333_333 ).unwrap(); 3 ], "scene 003: the parts" );
+  assert_eq!( g.dust_minor, 1, "scene 003: the dust" );
+  assert_eq!( g.tick, Price::parse( "1.25" ).unwrap(), "scene 004" );
+  assert_eq!( g.lot, Quantity::from_int( 9 ).unwrap(), "scene 005" );
+  assert!( g.extra, "scene 006" );
+  assert!( g.overflow, "scene 008" );
+  assert_eq!( g.wire_minor, 10_000_000, "scene 009" );
+}
+
+/// Scene 010 — two runs produce the same checksum, and the checksum is not a
+/// constant: one minor unit of difference changes it.
+#[ test ]
+fn the_checksum_is_stable_across_calls_and_changes_with_any_value()
+{
+  let g = golden();
+  assert_eq!( checksum( &g ), checksum( &golden() ) );
+
+  let mut changed = g.clone();
+  changed.dust_minor += 1;
+  assert_ne!( checksum( &g ), checksum( &changed ) );
 }

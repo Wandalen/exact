@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:75-86`
+`module/exact_dust/src/lib.rs:88-99`
 
 ```rust
 impl core::fmt::Display for DustError
@@ -31,7 +31,7 @@ impl core::fmt::Display for DustError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 75-86 | Declaration |
+| `src/lib.rs` | 88-99 | Declaration |
 
 ## Crate Usage
 

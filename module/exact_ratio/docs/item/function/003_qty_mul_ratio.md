@@ -2,7 +2,7 @@
 
 ## Representation
 
-Multiply a quantity by `n / d`. Unlike `money_mul_ratio`, a negative-numerator
+Multiply a quantity by `n / d`, rounding the result per `rounding`. Unlike `money_mul_ratio`, a negative-numerator
 ratio can legitimately take the result below zero — `Quantity` refuses that,
 surfacing `RatioError::Negative` rather than wrapping or silently clamping.
 
@@ -12,12 +12,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:153`
+`module/exact_ratio/src/lib.rs:174`
 
 ```rust
-pub fn qty_mul_ratio( v : Quantity, r : Ratio ) -> Result< Quantity, RatioError >
+pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
-  let minor = mul_ratio_minor( v.minor(), r )?;
+  let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
@@ -26,9 +26,9 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio ) -> Result< Quantity, RatioError 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 153-157 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 50 | Negative-numerator ratio refused as `RatioError::Negative` |
-| `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `src/lib.rs` | 174-178 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 60-67,279,349 | Negative-numerator ratio refused as `RatioError::Negative`; every mode at both signs; a negative product within one minor unit of zero decided by the mode, and a whole-unit one refused in every mode |
+| `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -45,6 +45,6 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:127`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:67`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:140`, private — no Item Instance of its own)
+- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Quantity::minor`, `exact_kind::Quantity::from_minor`

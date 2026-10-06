@@ -2,11 +2,8 @@
 
 ## Representation
 
-Why a checked operation could not be completed. One variant, not a separate
-overflow/underflow split: `Backing`'s own `checked_add`/`checked_sub`/
-`checked_neg` already report both directions of range failure the same way,
-and a sign-based distinction those primitives do not make would be a check
-with no observable behaviour behind it.
+Why a checked operation could not be completed — `Overflow` when the result
+would be above the backing width, `Underflow` when it would be below it.
 
 ## Kind
 
@@ -14,12 +11,23 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:30`
+`module/exact_minor/src/lib.rs:206`
 
 ```rust
 pub enum MinorError
 {
-  Overflow { operation : &'static str },
+  /// The result would have been above the largest value the backing width holds.
+  Overflow
+  {
+    /// Which operation — `add`, `sub`, `neg`.
+    operation : &'static str,
+  },
+  /// The result would have been below the smallest value the backing width holds.
+  Underflow
+  {
+    /// Which operation — `add`, `sub`.
+    operation : &'static str,
+  },
 }
 ```
 
@@ -27,15 +35,14 @@ pub enum MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 30,40,44-47,51,72-78,86-92,101-107 | Return type / constructed variant of all 3 checked functions, and both trait impls it carries |
+| `src/lib.rs` | 106,108,113-114,142,147-148,159,164-165,175,180,206,222,234,256,261-262,272,277-278,288,293 | Return type / constructed variant of all 6 checked functions (3 `minor_*`, 3 `minor_wide_*` behind the `i128` feature) and of `TryFrom< MinorWide > for Minor`, and both trait impls it carries |
 | `tests/checked_arithmetic_test.rs` | throughout | Matched by equality against the exact variant and `operation` string |
-| `exact_arith/src/lib.rs:65` | — | Facade re-export only |
+| `tests/wide_test.rs` | 7,43-62,88-107,109-113 | The same, for the `i128` narrowing and `minor_wide_*` functions |
+| `exact_arith/src/lib.rs:70` | — | Facade re-export only |
 
-No file outside `exact_minor` and the facade re-export constructs, matches,
-or renders a `MinorError` — an honest gap: neither `exact_sign` nor
-`exact_kind` (the crate's only two real dependents) ever receives one, since
-neither calls any of the 3 checked functions this error type is returned
-from (see each function's own Caller Tree).
+`exact_kind` receives one from the 3 checked functions and matches it in its
+private `kind_overflow` (`exact_kind/src/lib.rs:164-171`), turning both variants into
+`KindError::Overflow`; nothing else outside this crate does.
 
 ## Crate Usage
 

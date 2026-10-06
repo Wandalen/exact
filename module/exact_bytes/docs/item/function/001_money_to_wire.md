@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:163-166`
+`module/exact_bytes/src/lib.rs:176-179`
 
 ```rust
 pub fn money_to_wire( v : Money ) -> Wire
@@ -23,9 +23,9 @@ pub fn money_to_wire( v : Money ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 163-166 | Declaration |
-| `tests/wire_roundtrip_test.rs` | 14,43,54,65,76 | Encoding across 5 of the crate's 8 tests |
-| `exact_arith/src/lib.rs:110` | — | Facade re-export |
+| `src/lib.rs` | 176-179 | Declaration |
+| `tests/wire_roundtrip_test.rs` | 14,43,54,65,76,109,128,146 | Encoding across 8 of the crate's 14 tests |
+| `exact_arith/src/lib.rs:128` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed in the facade's own end-to-end settlement test |
 
 ## Crate Usage
@@ -46,4 +46,4 @@ found).
 
 ## Callee Tree
 
-- **External:** `exact_kind::Money::minor` (`v.minor()`, `src/lib.rs:165`)
+- **External:** `exact_kind::Money::minor` (`v.minor()`, `src/lib.rs:178`)

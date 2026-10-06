@@ -5,7 +5,7 @@
 - **Purpose**: State the properties this crate holds regardless of caller behavior, so a consumer can rely on them without re-checking.
 - **Responsibility**: Determinism and bounded correction of `round_div`'s result.
 - **In Scope**: `round_div`'s arithmetic types and its distance from the true quotient.
-- **Out of Scope**: Why `HalfEven` is the unbiased default (→ `../decisions/`), and the tie-breaking procedure itself (→ `../algorithm/`).
+- **Out of Scope**: Which mode is the default (→ `rounding_default`; see `../decisions/` for its history), and the tie-breaking procedure itself (→ `../algorithm/`).
 
 ### Overview Table
 

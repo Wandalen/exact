@@ -51,3 +51,39 @@ fn price_min_and_max_pick_the_lesser_and_greater_value()
   assert_eq!( price_max( low, high ), high );
   assert_eq!( price_max( high, low ), high );
 }
+
+/// Negative values order below zero and by magnitude below it — `-2` is
+/// less than `-1` — at every kind that can hold one.
+#[ test ]
+fn negative_values_order_below_zero_and_by_value()
+{
+  let minus_two = Money::from_minor( -2 ).unwrap();
+  let minus_one = Money::from_minor( -1 ).unwrap();
+  assert_eq!( money_cmp( minus_two, minus_one ), Ordering::Less );
+  assert_eq!( money_cmp( minus_one, Money::ZERO ), Ordering::Less );
+
+  let discount = Price::from_minor( -1 ).unwrap();
+  assert_eq!( price_cmp( discount, Price::ZERO ), Ordering::Less );
+  assert_eq!( price_min( discount, Price::ZERO ), discount );
+  assert_eq!( price_max( discount, Price::ZERO ), Price::ZERO );
+}
+
+/// Quantity ordering returns all three answers, not only `Less`.
+#[ test ]
+fn qty_cmp_returns_greater_and_equal_as_well()
+{
+  let small = Quantity::from_int( 1 ).unwrap();
+  let big = Quantity::from_int( 2 ).unwrap();
+  assert_eq!( qty_cmp( big, small ), Ordering::Greater );
+  assert_eq!( qty_cmp( small, small ), Ordering::Equal );
+}
+
+/// Equality and ordering always agree, at the ends of the range too.
+#[ test ]
+fn money_eq_agrees_with_money_cmp_at_the_ends_of_the_range()
+{
+  for ( a, b ) in [ ( Money::MAX, Money::MAX ), ( Money::MIN, Money::MAX ), ( Money::MIN, Money::MIN ) ]
+  {
+    assert_eq!( money_eq( a, b ), money_cmp( a, b ) == Ordering::Equal );
+  }
+}

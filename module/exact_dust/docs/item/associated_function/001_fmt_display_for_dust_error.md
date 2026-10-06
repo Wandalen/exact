@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:77-85`
+`module/exact_dust/src/lib.rs:90-98`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -28,13 +28,13 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 77-85 | Declaration |
+| `src/lib.rs` | 90-98 | Declaration |
 
 No file anywhere formats a `DustError` value — confirmed via a workspace-wide
 search for `to_string`/`format!`/`Display` near `DustError`, which returns
 nothing beyond the impl declaration itself. An honest empty finding: every
 real consumer compares `DustError` by `PartialEq` or discards it via
-`.expect(...)` (`smoke_exact_market_split/src/lib.rs:134`), never by
+`.expect(...)` (`smoke_exact_market_split/src/lib.rs:142`), never by
 rendering the message — the same pattern already recorded for
 `KindError`/`RatioError`/`SnapError`/`FmtError` across this family.
 

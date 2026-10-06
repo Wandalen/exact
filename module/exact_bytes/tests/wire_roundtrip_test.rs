@@ -98,3 +98,53 @@ fn a_decoded_negative_value_is_refused_only_for_a_non_negative_kind()
   let money_negative = Wire::new( -1, 6, KIND_MONEY );
   assert!( money_from_wire( money_negative ).is_ok() );
 }
+
+/// A negative price survives the wire, and a price decoder refuses a record
+/// written as another kind — in both directions.
+#[ test ]
+fn a_negative_price_round_trips_and_kinds_never_cross_decoders()
+{
+  let v = Price::parse( "-0.05" ).unwrap();
+  assert_eq!( price_from_wire( price_to_wire( v ) ).unwrap(), v );
+  assert_eq!( price_from_wire( money_to_wire( Money::parse( "1" ).unwrap() ) ), Err( WireError::BadKind ) );
+  assert_eq!( money_from_wire( price_to_wire( v ) ), Err( WireError::BadKind ) );
+}
+
+/// A kind byte no kind uses is refused by every decoder.
+#[ test ]
+fn an_unknown_kind_byte_is_refused_by_every_decoder()
+{
+  let unknown = Wire::new( 0, 6, 7 );
+  assert_eq!( money_from_wire( unknown ), Err( WireError::BadKind ) );
+  assert_eq!( qty_from_wire( unknown ), Err( WireError::BadKind ) );
+  assert_eq!( price_from_wire( unknown ), Err( WireError::BadKind ) );
+}
+
+/// An encoded record carries the value's minor count, the family's scale,
+/// and its kind — the three fields a decoder checks.
+#[ test ]
+fn an_encoded_record_carries_minor_scale_and_kind()
+{
+  let wire = money_to_wire( Money::parse( "1.5" ).unwrap() );
+  assert_eq!( ( wire.minor(), wire.scale(), wire.kind() ), ( 1_500_000, 6, KIND_MONEY ) );
+}
+
+/// A decoded count one unit below the negative ceiling is refused too.
+#[ test ]
+fn a_decoded_value_below_the_negative_ceiling_is_refused_as_overflow()
+{
+  let below = Wire::new( Money::MIN.minor() - 1, 6, KIND_MONEY );
+  assert_eq!( money_from_wire( below ), Err( WireError::Overflow ) );
+}
+
+/// An empty slice is truncated; a longer one decodes its first record and
+/// ignores the rest — only a shorter slice is refused.
+#[ test ]
+fn an_empty_slice_is_truncated_and_a_longer_one_decodes_its_first_record()
+{
+  assert_eq!( Wire::from_bytes( &[] ), Err( WireError::Truncated ) );
+  let wire = money_to_wire( Money::parse( "2" ).unwrap() );
+  let mut longer = wire.to_bytes().to_vec();
+  longer.push( 0xff );
+  assert_eq!( Wire::from_bytes( &longer ).unwrap(), wire );
+}

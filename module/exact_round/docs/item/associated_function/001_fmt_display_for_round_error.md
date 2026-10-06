@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:86`
+`module/exact_round/src/lib.rs:97`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -20,7 +20,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   match self
   {
     Self::DivZero => write!( f, "a zero divisor was supplied" ),
-    Self::Overflow => write!( f, "adjusting the quotient for the chosen rounding mode overflowed" ),
+    Self::Overflow => write!( f, "the quotient does not fit the integer type" ),
   }
 }
 ```
@@ -29,21 +29,22 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 86-93 | Declaration |
+| `src/lib.rs` | 97-104 | Declaration |
+| `tests/round_div_test.rs` | 204,211 | Both messages, via `.to_string()` |
 
-No file anywhere calls this method — an honest empty finding (confirmed via
-grep), matching [RoundError](../enum/002_round_error.md)'s own File Usage
-note.
+No production file calls this method — every downstream crate maps
+`RoundError` by `match`, never by rendering it (see
+[RoundError](../enum/002_round_error.md)'s Crate Usage).
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_round` | `(defining crate)` | Declared here; never invoked |
+| `exact_round` | `(defining crate)` | Declared here; invoked only by its own tests |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **Test-only:** `the_overflow_message_names_the_real_cause`, `the_div_zero_message_names_the_zero_divisor` (`tests/round_div_test.rs:204,211`)
 
 ## Callee Tree
 

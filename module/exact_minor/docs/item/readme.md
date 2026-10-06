@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_minor`'s
-own source tree — 13 instances across 6 Item Kinds, all in `src/lib.rs` (this
+own source tree — 17 instances across 7 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the 3 crates
@@ -33,19 +33,18 @@ saturating arithmetic over it, with no scale or kind attached.
 |------|-----------|-----------|
 | Use Declaration | `use_declaration/` | 1 |
 | Type Alias | `type_alias/` | 1 |
+| Struct | `struct/` | 2 |
 | Enum | `enum/` | 1 |
 | Implementation | `implementation/` | 2 |
-| Function | `function/` | 7 |
+| Function | `function/` | 9 |
 | Associated Function/Method | `associated_function/` | 1 |
-| **Total** | | **13** |
+| **Total** | | **17** |
 
-Nine of the 15 taxonomy Kinds are absent from this crate: Module, Extern
-Crate Declaration, Struct, Union, Static, Trait, External Block, Macro
-Definition/Invocation, Associated Constant/Type. Each was checked for
-systematically against `src/lib.rs` (the crate's only source file) — none
-declares any instance of these. Notably absent: Struct — unlike every other
-Tier-0/1 crate in the family, `exact_minor` has no struct of its own; it
-operates entirely on the bare `Backing` alias and free functions.
+The `i128`-only items — the two conversions between `Minor` and `MinorWide`,
+and the nine `minor_wide_*` functions that mirror `Minor`'s, including the
+`minor_wide_from_i128`/`minor_wide_to_i128` pair — are listed in
+the [module index](../definition/readme.md) rather than given a page each,
+since each one repeats a `Minor` item at `i128` width.
 
 ### Overview Table
 
@@ -53,6 +52,8 @@ operates entirely on the bare `Backing` alias and free functions.
 |----|------|------|--------|
 | use_declaration/001 | use core::fmt | Use Declaration | 🔄 |
 | type_alias/001 | Backing | Type Alias | 🔄 |
+| struct/001 | Minor | Struct | 🔄 |
+| struct/002 | MinorWide | Struct | 🔄 |
 | enum/001 | MinorError | Enum | 🔄 |
 | implementation/001 | Display for MinorError | Implementation | 🔄 |
 | implementation/002 | Error for MinorError | Implementation | 🔄 |
@@ -63,33 +64,34 @@ operates entirely on the bare `Backing` alias and free functions.
 | function/005 | minor_checked_neg | Function | 🔄 |
 | function/006 | minor_saturating_add | Function | 🔄 |
 | function/007 | minor_saturating_sub | Function | 🔄 |
+| function/008 | minor_from_i64 | Function | 🔄 |
+| function/009 | minor_to_i64 | Function | 🔄 |
 | associated_function/001 | Display::fmt for MinorError | Associated Function/Method | 🔄 |
 
 ### Notable Findings
 
-- **The entire functional API has zero external callers.** Of the 7 free
-  functions plus the `Display` method, none is called by `exact_sign` or
-  `exact_kind` — the crate's only two real (non-facade) dependents. Both
-  consumers import only the `Backing` type alias and reimplement checked
-  arithmetic inline on `i64` directly, rather than delegating here.
-  `exact_arith`'s facade re-exports every item but calls none of them either
-  (pure `pub use`). This is the most pervasive honest-empty-tree finding in
-  the family so far — grep-verified per function, not assumed.
-- **`minor_zero` and `minor_is_zero` are untested even by this crate's own
-  test suite** — the only 2 items in the entire catalog with zero callers
-  anywhere, including their own defining crate's tests.
+- **`exact_kind` is the one production caller.** `Decimal` stores a `Minor`
+  and calls `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`,
+  `minor_zero`, `minor_from_i64` and `minor_to_i64`, matching `MinorError`
+  in its private `kind_overflow`. `exact_sign` imports only `Backing`.
+  `minor_is_zero`, the two saturating functions, `MinorError`'s `Display` and
+  the `i128`-gated `MinorWide` have no production caller;
+  `exact_arith`'s facade re-exports but calls nothing (pure `pub use`).
+- **Every item is now exercised by this crate's own suite.** Until
+  2026-10-02, `minor_zero`, `minor_is_zero`, and `MinorError`'s `Display`/
+  `Error` impls had no caller anywhere, this crate's own tests included;
+  `tests/zero_test.rs` and `tests/checked_arithmetic_test.rs`'s
+  `overflow_error_names_the_failed_operation` now cover them.
 - **The saturating functions' absence of external callers has an
   architectural reason, not an oversight**: `exact_add`'s saturating
   arithmetic clamps to the *declared ceiling* (`Money::MAX`/`MIN`), a
   different clamp target than these functions' raw `Backing::MAX`/`MIN` — so
   `exact_add` correctly does not call them.
-- **No struct in this crate** — unique among the family's Tier 0/1 crates
-  read so far; `exact_minor` operates entirely on the bare `Backing` alias.
 
 ### Regenerate
 
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_minor/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 13
+# → 17
 ```

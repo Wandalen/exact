@@ -10,7 +10,7 @@
 ### Statement
 
 For every split, `total_minor == share * parts + leftover` holds by
-construction (`split_minor`, `src/lib.rs:105-116`: `leftover` is computed as
+construction (`split_minor`, `src/lib.rs:118-129`: `leftover` is computed as
 `total_minor.checked_sub(allocated)`, never estimated). What differs per
 `DustTo` is only where `leftover` ends up, never whether it is preserved:
 
@@ -51,9 +51,9 @@ not destroyed.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:105-116` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
-| `src/lib.rs:118-141` | `fill_minor` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
-| `src/lib.rs:184-188` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
+| `src/lib.rs:118-129` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
+| `src/lib.rs:131-152` | `slot_minor`/`fill_minor` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
+| `src/lib.rs:203-207` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
 
 ### Tests
 

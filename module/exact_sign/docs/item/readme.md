@@ -49,23 +49,21 @@ despite the crate having an enum.
 | use_declaration/001 | use exact_minor::Backing | Use Declaration | 🔄 |
 | enum/001 | Sign | Enum | 🔄 |
 | function/001 | sign_of | Function | 🔄 |
-| function/002 | is_negative | Function | 🔄 |
-| function/003 | is_zero | Function | 🔄 |
+| function/002 | sign_is_negative | Function | 🔄 |
+| function/003 | sign_is_zero | Function | 🔄 |
 | function/004 | sign_neg_allowed | Function | 🔄 |
 
 ### Notable Findings
 
-- **`sign_neg_allowed` is documented as wired into `exact_kind` but is not.**
-  Its own doc comment claims `exact_kind` calls it once per kind at
-  construction; `exact_kind` has no dependency on `exact_sign` at all, and
-  enforces non-negativity directly instead. `exact_kind`'s own decisions doc
-  already discloses this gap accurately — see
-  [sign_neg_allowed](function/004_sign_neg_allowed.md) for the full
-  cross-check. The function has zero callers anywhere in the workspace.
-- **`is_zero` also has zero external callers** — `exact_minor` solves the
+- **`sign_neg_allowed` has no caller yet.** Its doc comment says so:
+  `exact_kind` has no dependency on `exact_sign` and enforces non-negativity
+  directly instead, and `exact_add` uses only `sign_is_negative`. See
+  [sign_neg_allowed](function/004_sign_neg_allowed.md) for the cross-check.
+  The function has zero callers anywhere in the workspace.
+- **`sign_is_zero` also has zero external callers** — `exact_minor` solves the
   same question independently (`minor_is_zero`) rather than depending on this
   sibling Tier-1 crate.
-- **`is_negative` is the crate's one load-bearing export**: `exact_add`'s
+- **`sign_is_negative` is the crate's one load-bearing export**: `exact_add`'s
   `money_saturating_add` calls it in production to pick a clamp direction.
 
 ### Regenerate

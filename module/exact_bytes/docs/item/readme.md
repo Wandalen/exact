@@ -19,11 +19,11 @@ amount cannot be decoded back into a specific kind without an external
 convention recording which kind and scale it was written at (module doc
 comment, `src/lib.rs:7-13`).
 
-One private top-level function, `kind_error_to_wire_error` (`src/lib.rs:75`),
+One private top-level function, `kind_error_to_wire_error` (`src/lib.rs:88`),
 is excluded from this catalog per `item_des.rulebook.md`'s own Caller Tree
 Content rule (private/`pub(crate)`/`pub(super)` helpers get no Item Instance
 of their own) — it still appears as a real hop, cited as a plain
-`src/lib.rs:75`, in the 3 `*_from_wire` functions' Callee Trees.
+`src/lib.rs:88`, in the 3 `*_from_wire` functions' Callee Trees.
 
 ### Type Declaration
 

@@ -26,21 +26,26 @@ biased default would leak or manufacture value on every unrounded remainder,
 silently, in one direction, forever, which is exactly what a conserved-value
 family cannot afford.
 
-## Why `round_div` lives here, not in its two consumers
+## Why `round_div` lives here, not in its consumers
 
-Both `exact_ratio` and `exact_snap` need "divide an integer by another,
-applying a rounding mode to the remainder," and both already depend on this
-crate for `Rounding` itself. Rather than let each hand-write its own copy of
-the same sign-normalization and tie-breaking logic, this crate owns it once,
-where both consumers already have an edge — avoiding the duplication without
-adding either of them a new dependency.
+`exact_ratio`, `exact_snap` and `exact_dust` need "divide an integer by
+another, applying a rounding mode to the remainder," and they already depend
+on this crate for `Rounding` itself. Rather than let each hand-write its own
+copy of the same sign-handling and tie-breaking logic, this crate owns it
+once, where every consumer already has an edge — avoiding the duplication
+without adding any of them a new dependency.
+
+`round_div_wide` is that division over `i128` and holds the rounding rules
+themselves; `round_div` widens its `i64` operands into it and narrows the
+result back. `exact_ratio` calls `round_div_wide` directly for a ratio
+multiply, whose product of two `i64` values no `i64` can hold.
 
 ## Responsibility Table
 
 | File | Responsibility |
 |------|----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — zero workspace dependencies, by design as a tier-0 root |
-| [`src/lib.rs`](src/lib.rs) | `Rounding`, `rounding_default`, `rounding_name`, `round_div`, `RoundError` |
+| [`src/lib.rs`](src/lib.rs) | `Rounding`, `rounding_default`, `rounding_name`, `round_div`, `round_div_wide`, `RoundError` |
 | [`tests/rounding_mode_test.rs`](tests/rounding_mode_test.rs) | The default policy, stable names, and value semantics |
 | [`tests/round_div_test.rs`](tests/round_div_test.rs) | `round_div` under every rounding mode, at both signs |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |

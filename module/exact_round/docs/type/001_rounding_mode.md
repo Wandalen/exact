@@ -29,8 +29,8 @@ parses a rounding mode back out of a log line.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:24-43` | The `Rounding` enum, its doc comment, and its three variants |
-| `src/lib.rs:58-71` | `rounding_name` — the stable-name accessor |
+| `src/lib.rs:35-54` | The `Rounding` enum, its doc comment, and its three variants |
+| `src/lib.rs:69-82` | `rounding_name` — the stable-name accessor |
 
 ### Tests
 

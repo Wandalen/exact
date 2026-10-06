@@ -7,7 +7,7 @@
 - **In Scope**: `Money`, `Qty`, `Price`.
 - **Out of Scope**: The newtypes themselves (→ `../feature/003_newtypes_money_qty_price.md`).
 
-**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md), with one real deviation — `Money` and `Price` are the same type today (`Decimal<MONEY_SCALE>`), not two independent structs; `Price` has no consumer anywhere that needs it distinguished from `Money` yet. `Quantity` is the genuinely distinct kind, wrapping `Decimal` and refusing negative values. See [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) and [its non-negativity decision](../../module/exact_kind/docs/decisions/001_non_negativity_enforced_at_construction.md) for the full account.
+**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md), holding as stated. `Money` (`Decimal<MONEY_SCALE>`), `Quantity` (`Qty<MONEY_SCALE>`, refusing negative values) and `Price` (a struct wrapping a `Money`) are three distinct types, so mixing any two is a compile error, pinned by `compile_fail` doctests. See [`exact_kind`'s own type doc](../../module/exact_kind/docs/type/001_conserved_value_type_family.md) and [its non-negativity decision](../../module/exact_kind/docs/decisions/001_non_negativity_enforced_at_construction.md) for the full account.
 
 ### Statement
 

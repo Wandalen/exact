@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:75`
+`module/exact_arith/src/lib.rs:82`
 
 ```rust
 pub use exact_scale::{ CEILING_MINOR_UNITS, CEILING_WHOLE_UNITS, HEADROOM_FACTOR, MONEY_SCALE, pow10 };
@@ -21,14 +21,14 @@ pub use exact_scale::{ CEILING_MINOR_UNITS, CEILING_WHOLE_UNITS, HEADROOM_FACTOR
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 75 | Declaration |
+| `src/lib.rs` | 82 | Declaration |
 | `tests/facade_test.rs:10-11,52-54` | — | `MONEY_SCALE`, `pow10`, `CEILING_MINOR_UNITS`, `CEILING_WHOLE_UNITS` all asserted against each other |
 | `exchange_types/src/lib.rs:35` | — | **Production** — `MONEY_SCALE`, `pow10` |
 | `exchange_escrow/tests/reservation_test.rs:8` | — | `CEILING_WHOLE_UNITS` |
 
 `HEADROOM_FACTOR` has no confirmed caller anywhere through this facade,
 intra-crate or external — re-exported per the module doc comment's disclosed
-"generous precedent" (`src/lib.rs:54-60`) rather than because a consumer
+"generous precedent" (`src/lib.rs:58-64`) rather than because a consumer
 needs it today.
 
 ## Crate Usage

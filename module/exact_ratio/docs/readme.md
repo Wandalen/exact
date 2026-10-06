@@ -10,6 +10,7 @@ Design documentation for `exact_ratio`, as typed doc definitions.
 | `decisions/` | Why `RatioError` departs from the preferred design's own listing |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
+| `item/` | One page per declaration, with every file and crate that uses it |
 
 Tier 2 of the family: multiplies and divides the conserved value types
 [`exact_kind`](../../exact_kind/readme.md) declares, using the rounding
@@ -19,6 +20,6 @@ tier-2 crate, [`exact_snap`](../../exact_snap/readme.md), shares
 
 This crate owns part of [Hard Problem 12](../../../docs/hard_problem/012_hot_path_performance.md)
 (hot-path performance) — every function here is a straight-line widen/divide/
-narrow with no loop or heap type, but no benchmark harness exists anywhere in
-this family to measure that claim against `f64`; see the hard-problem doc for
-the full disclosure.
+narrow with no loop or heap type; its cost against `f64` is measured by
+`exact_arith`'s timing bench (`tests/bench_vs_f64.rs`) and reported in the
+hard-problem doc.

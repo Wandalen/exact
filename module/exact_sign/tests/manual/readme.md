@@ -16,10 +16,8 @@ actually has runnable examples.
 cargo test -p exact_sign --doc
 ```
 
-Expected: 0 doctests run today — this crate's rustdoc has no `# Examples`
-section yet, so there is nothing for `cargo test --doc` to execute. That is
-the honest baseline, not a failure; the check exists so a future doc example
-silently failing to run (for example a `` ```rust,ignore `` typo) would be
+Expected: 1 doctest — the `# Examples` block in `src/lib.rs`'s module doc.
+The check exists so a doc example silently failing to run (for example a `` ```rust,ignore `` typo) would be
 caught by comparing against this record.
 
 ## Run Record
@@ -27,3 +25,4 @@ caught by comparing against this record.
 | Date | By | Result | Notes |
 |------|-----|--------|-------|
 | 2026-10-02 | claude | M1 pass | 0 doctests ran, matching the 0 found in this crate's rustdoc — confirmed via the workspace-wide `cargo test --doc --workspace` baseline. |
+| 2026-10-03 | claude | M1 pass | 1 doctest ran (the module doc example), matching the 1 found in this crate's rustdoc. |

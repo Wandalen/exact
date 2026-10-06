@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:55`
+`module/exact_minor/src/lib.rs:238`
 
 ```rust
-pub const fn minor_zero() -> Backing
+pub const fn minor_zero() -> Minor
 {
-  0
+  Minor( 0 )
 }
 ```
 
@@ -23,26 +23,22 @@ pub const fn minor_zero() -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 55 | Declaration |
-| `exact_arith/src/lib.rs:69` | — | Facade re-export only |
-
-Not called anywhere — not in `exact_minor`'s own test suite (neither
-`checked_arithmetic_test.rs` nor `saturating_arithmetic_test.rs` references
-it), not by `exact_sign` or `exact_kind`, and not exercised by
-`exact_arith`'s own tests either.
+| `src/lib.rs` | 238-241 | Declaration |
+| `tests/zero_test.rs` | throughout | Equality with `0`, and `minor_is_zero` on it |
+| `exact_kind/src/lib.rs:179` | — | `Decimal::ZERO` |
+| `exact_arith/src/lib.rs:79` | — | Facade re-export |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_minor` | `(defining crate)` | Declared; unexercised by its own tests |
+| `exact_minor` | `(defining crate)` | Exercised by its own `tests/zero_test.rs` |
+| `exact_kind` | `src/lib.rs` | **Production** — `Decimal::ZERO`'s stored count |
 | `exact_arith` | `src/lib.rs` | Re-export only |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree, not an
-omission. Both of this crate's own test files were checked directly; neither
-calls it.
+- **External:** `exact_kind::Decimal::ZERO` (`exact_kind/src/lib.rs:179`)
 
 ## Callee Tree
 

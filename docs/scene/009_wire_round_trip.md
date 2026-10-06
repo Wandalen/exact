@@ -7,7 +7,7 @@
 - **In Scope**: The round-trip input and the exact minor value it must reproduce.
 - **Out of Scope**: `exact_bytes`'s general design (→ `../crate/011_exact_bytes.md`, `../type/011_exact_bytes_types.md`).
 
-**Design status**: not exercised by the demo lane — [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) never encodes to or decodes from `Wire`. The functions are real and match this proposal's names exactly, [`money_to_wire`/`money_from_wire`](../../module/exact_bytes/readme.md) in `exact_bytes`, with `WireError` adding two variants beyond this proposal's three (→ [`type/011_exact_bytes_types.md`](../type/011_exact_bytes_types.md)) — just not demoed in this lane.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — `10` is encoded with [`money_to_wire`](../../module/exact_bytes/readme.md), decoded with `money_from_wire`, and asserted equal to the original. It runs on `Money`, fixed at scale 6, because `exact_bytes` takes `Money`/`Quantity`/`Price` only — so the lane prints `wire=10000000`, the scale-6 minor count of `10`, where this step's scale-2 encoding printed `1000`. `WireError` adds two variants beyond this proposal's three (→ [`type/011_exact_bytes_types.md`](../type/011_exact_bytes_types.md)).
 
 ### Procedure
 

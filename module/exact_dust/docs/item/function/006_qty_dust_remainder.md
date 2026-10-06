@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:226-230`
+`module/exact_dust/src/lib.rs:253-257`
 
 ```rust
 pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) -> Result< i64, DustError >
@@ -26,9 +26,9 @@ pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) ->
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 226-230 | Declaration |
-| `tests/dust_split_test.rs:131` | — | Confirms the held-back amount matches the `Money` case's figure (identical minor-unit arithmetic) |
-| `exact_arith/src/lib.rs:121` | — | Facade re-export |
+| `src/lib.rs` | 253-257 | Declaration |
+| `tests/dust_split_test.rs:162` | — | Confirms the held-back amount matches the `Money` case's figure (identical minor-unit arithmetic) |
+| `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.
@@ -46,10 +46,10 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:228`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:112`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:255`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:228`)
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:255`)
 
 No call to `fill_minor`, the same structural omission as
 `money_dust_remainder`'s Callee Tree.

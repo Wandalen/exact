@@ -13,7 +13,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:462`
+`module/exact_kind/src/lib.rs:485`
 
 ```rust
 pub const fn as_decimal( self ) -> Decimal< SCALE >
@@ -26,7 +26,7 @@ pub const fn as_decimal( self ) -> Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 462 | Declaration |
+| `src/lib.rs` | 485 | Declaration |
 | `tests/non_negative_test.rs:149` | — | Extracts the inner decimal to negate it (testing that negating a non-negative-derived `Qty`'s decimal and re-wrapping correctly fails) |
 
 No file outside `exact_kind` calls `Qty::as_decimal` — an honest empty

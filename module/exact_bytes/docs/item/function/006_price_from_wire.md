@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:228-239`
+`module/exact_bytes/src/lib.rs:241-252`
 
 ```rust
 pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
@@ -31,9 +31,9 @@ pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 228-239 | Declaration |
+| `src/lib.rs` | 241-252 | Declaration |
 | `tests/wire_roundtrip_test.rs:36` | — | Decoding in the price round-trip test |
-| `exact_arith/src/lib.rs:111` | — | Facade re-export |
+| `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 `exact_arith`'s own facade test does not call this function.
 
@@ -50,5 +50,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `kind_error_to_wire_error` (`src/lib.rs:75`, private — no Item Instance of its own)
-- **External:** `exact_kind::Price::from_minor` (`src/lib.rs:238`)
+- `kind_error_to_wire_error` (`src/lib.rs:88`, private — no Item Instance of its own)
+- **External:** `exact_kind::Price::from_minor` (`src/lib.rs:251`)

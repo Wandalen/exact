@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_fmt/src/lib.rs:48`
+`module/exact_fmt/src/lib.rs:62`
 
 ```rust
 impl core::error::Error for FmtError {}
@@ -22,7 +22,7 @@ impl core::error::Error for FmtError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 48 | Declaration |
+| `src/lib.rs` | 62 | Declaration |
 
 No file anywhere calls a method on this impl — it declares none of its own,
 taking every `Error` method at its default. An honest empty finding; the

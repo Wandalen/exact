@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_cmp/src/lib.rs:59`
+`module/exact_cmp/src/lib.rs:71`
 
 ```rust
 #[ must_use ]
@@ -26,9 +26,9 @@ pub fn price_max( a : Price, b : Price ) -> Price
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 59 | Declaration |
+| `src/lib.rs` | 71 | Declaration |
 | `tests/cmp_test.rs` | 51-52 | Both argument orderings, same expected result |
-| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/src/lib.rs:137` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -40,7 +40,7 @@ pub fn price_max( a : Price, b : Price ) -> Price
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`src/lib.rs:119`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:137`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'price_max(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.

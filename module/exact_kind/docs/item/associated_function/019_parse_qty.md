@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:531`
+`module/exact_kind/src/lib.rs:554`
 
 ```rust
 pub fn parse( text : &str ) -> Result< Self, KindError >
@@ -25,9 +25,9 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 531 | Declaration |
+| `src/lib.rs` | 554 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative-string refusal, `"-0.0"` edge case |
-| `exact_parse/src/lib.rs:53,55` | — | `qty_from_str`'s entire body |
+| `exact_parse/src/lib.rs:62,64` | — | `qty_from_str`'s entire body |
 
 ## Crate Usage
 
@@ -38,11 +38,11 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_parse::qty_from_str` (`exact_parse/src/lib.rs:55`)
+- **External:** `exact_parse::qty_from_str` (`exact_parse/src/lib.rs:64`)
 
 No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:533`, via the `?` operator)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:533`)
+- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:556`, via the `?` operator)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:556`)

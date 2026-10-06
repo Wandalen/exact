@@ -25,7 +25,7 @@ None of this crate's three functions narrow or widen that grammar — dispatch a
 |----------|---------------|------|
 | `money_from_str` | `Money::parse` (`exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — direct pass-through |
 | `qty_from_str` | `Quantity::parse` (`exact_kind::Qty<MONEY_SCALE>::parse`) | Refuses a negative result with `KindError::Negative` |
-| `price_from_str` | `Price::parse` (`exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — `Price` is `Money` under `exact_kind`'s disclosed deviation |
+| `price_from_str` | `Price::parse` (delegating to `exact_kind::Decimal<MONEY_SCALE>::parse`) | Nothing — a negative price is allowed, like money |
 
 Every input either produces the exact value it spells, or a `KindError`: `Malformed` (grammar violation), `ExcessPrecision` (more fractional digits than the type's scale), `Overflow` (the integer or scaled magnitude leaves the backing width), `ExceedsCeiling` (a value inside the backing width but past the declared ceiling), or — `qty_from_str` only — `Negative` (a well-formed, in-range value that is still below zero). `NaN`, `inf`, exponent forms, and digit separators are all rejected as `Malformed`, same as at the `exact_kind` layer this crate dispatches to.
 
@@ -35,7 +35,7 @@ The preferred design for this crate specifies its own `ParseError { Empty, BadCh
 
 ### Cross-Crate Scale Consistency Guard
 
-`src/lib.rs:36` asserts `Money::ONE_MINOR == exact_scale::pow10(exact_scale::MONEY_SCALE)` at compile time. `exact_kind::Money`'s scale and `exact_scale::MONEY_SCALE` are declared in two different crates, connected only by each definition site independently choosing the same numeral; this assertion fails the build the moment the two drift apart, rather than waiting for a parse to silently use the wrong scale.
+`src/lib.rs:45` asserts `Money::ONE_MINOR == exact_scale::pow10(exact_scale::MONEY_SCALE)` at compile time. `exact_kind::Money`'s scale and `exact_scale::MONEY_SCALE` are declared in two different crates, connected only by each definition site independently choosing the same numeral; this assertion fails the build the moment the two drift apart, rather than waiting for a parse to silently use the wrong scale.
 
 ### Round-Trip Property
 
@@ -46,11 +46,11 @@ The preferred design for this crate specifies its own `ParseError { Empty, BadCh
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:1-27` | Module doc — disclosed deviations: no `ParseError`, no standalone `parse_reject_extra_digits` |
-| `src/lib.rs:29` | Imports `KindError`, `Money`, `Price`, `Quantity` from `exact_kind` |
-| `src/lib.rs:31-36` | The cross-crate scale consistency guard (compile-time assertion) |
-| `src/lib.rs:38-46` | `money_from_str` |
-| `src/lib.rs:48-56` | `qty_from_str` |
-| `src/lib.rs:58-67` | `price_from_str` |
+| `src/lib.rs:38` | Imports `KindError`, `Money`, `Price`, `Quantity` from `exact_kind` |
+| `src/lib.rs:40-45` | The cross-crate scale consistency guard (compile-time assertion) |
+| `src/lib.rs:47-55` | `money_from_str` |
+| `src/lib.rs:57-65` | `qty_from_str` |
+| `src/lib.rs:67-75` | `price_from_str` |
 
 ### Tests
 

@@ -12,7 +12,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:16-25`
+`module/exact_snap/src/lib.rs:28-37`
 
 ```rust
 /// Why a tick/lot could not be constructed, or a snap could not complete.
@@ -32,13 +32,13 @@ pub enum SnapError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 17-25 | Declaration |
-| `src/lib.rs` | 33-35 | Matched in `Display for SnapError` |
-| `src/lib.rs` | 71,99 | Constructed in `Tick::new`/`Lot::new` on a zero-sized grid |
-| `src/lib.rs` | 42-53 | `round_error_to_snap_error`'s return type and both constructed arms |
-| `src/lib.rs` | 121,122,135,136 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
+| `src/lib.rs` | 29-37 | Declaration |
+| `src/lib.rs` | 45-47 | Matched in `Display for SnapError` |
+| `src/lib.rs` | 84,117 | Constructed in `Tick::new`/`Lot::new` on a zero-sized grid |
+| `src/lib.rs` | 54-65 | `round_error_to_snap_error`'s return type and both constructed arms |
+| `src/lib.rs` | 149,150,163,164 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
 | `tests/snap_test.rs:12-13` | — | Asserts `Tick::new`/`Lot::new` reject a zero grid with the matching variant |
-| `exact_arith/src/lib.rs:117` | — | Facade re-export |
+| `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 ## Crate Usage
 

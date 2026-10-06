@@ -41,8 +41,8 @@ states as the reason the facade exists at all.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:1-60` | The module doc comment: states the no-logic contract and discloses the one near-miss (the three declined zero-constructor wrappers) |
-| `src/lib.rs:62-123` | Every `pub use` block — the entire non-comment body of the crate |
+| `src/lib.rs:1-64` | The module doc comment: states the no-logic contract and discloses the one near-miss (the three declined zero-constructor wrappers) |
+| `src/lib.rs:66-141` | Every `pub use` block — the entire non-comment body of the crate |
 
 ### Tests
 

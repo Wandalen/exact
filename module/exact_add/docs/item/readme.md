@@ -84,7 +84,7 @@ neither an Enum nor any Associated Item Kind.
   runs end-to-end through the facade alone" test calls `Money`/`Quantity`
   methods (`checked_add`, `checked_sub`) directly rather than any of
   `exact_add`'s re-exported free functions — confirmed by grep across that
-  test file. The facade re-exports all 9 names (`src/lib.rs:85-93`) and a
+  test file. The facade re-exports all 9 names (`src/lib.rs:103-111`) and a
   separate re-export-resolution test touches a representative name from
   every other tier, but none of `exact_add`'s.
 - **Zero intra-crate call edges.** Every one of the 9 functions is a single

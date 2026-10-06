@@ -7,7 +7,7 @@
 - **In Scope**: The boundary input and expected error, not a wrapped value.
 - **Out of Scope**: `exact_add`'s general design (→ `../crate/006_exact_add.md`, `../type/006_exact_add_types.md`).
 
-**Design status**: not exercised by the demo lane — every `checked_add` call in [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) stays far below the ceiling and `.expect`s success; no overflow path runs. The underlying capability is real but renamed: there is no `AddError` — `checked_add` returns `exact_kind::KindError` directly, and this step's overflow-not-wrap case is `KindError::Overflow { operation }` (→ [`exact_add`](../../module/exact_add/readme.md), [`type/006_exact_add_types.md`](../type/006_exact_add_types.md)).
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — `minor_checked_add` of [`exact_minor`](../../module/exact_minor/readme.md) adds `1` to `i64::MAX` and the refusal is asserted; the lane prints `overflow=1`. The add runs on the raw `Minor`, because a `Money` cannot hold `i64::MAX` at all — its declared ceiling refuses far below it. The error is renamed: there is no `AddError` — the refusal is `MinorError::Overflow`.
 
 ### Procedure
 
