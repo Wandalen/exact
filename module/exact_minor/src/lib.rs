@@ -67,10 +67,28 @@ pub const fn minor_to_i64( m : Minor ) -> i64
 /// A count of minor units at twice the backing width, for magnitudes past `i64`.
 ///
 /// Behind the `i128` feature — a flag on this crate, never a separate crate.
-/// Any [`Minor`] widens into it without loss.
+/// Any [`Minor`] widens into it without loss. Like [`Minor`], its field is
+/// private: it goes in and out through [`minor_wide_from_i128`] and
+/// [`minor_wide_to_i128`], or `From`/`TryFrom` with `Minor`.
 #[ cfg( feature = "i128" ) ]
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct MinorWide( pub i128 );
+pub struct MinorWide( i128 );
+
+/// Wrap a raw `i128` as a wide count of minor units.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_from_i128( v : i128 ) -> MinorWide
+{
+  MinorWide( v )
+}
+
+/// The raw `i128` a wide count of minor units holds.
+#[ cfg( feature = "i128" ) ]
+#[ must_use ]
+pub const fn minor_wide_to_i128( w : MinorWide ) -> i128
+{
+  w.0
+}
 
 #[ cfg( feature = "i128" ) ]
 impl From< Minor > for MinorWide

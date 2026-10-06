@@ -7,7 +7,7 @@
 - **In Scope**: Structs, functions, and the error enum this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/001_exact_minor.md`).
 
-**Design status**: implemented as specified in [`exact_minor`](../../module/exact_minor/readme.md) — `Minor(i64)` with `minor_from_i64`/`minor_to_i64`, `MinorWide(i128)` behind the `i128` feature, every checked and saturating function on `Minor`, and `MinorError { Overflow, Underflow }`. `MinorError`'s variants also carry the name of the failed operation. Beyond this listing, `MinorWide` has the same arithmetic as `Minor` (`minor_wide_*`) and converts back with `Minor::try_from`.
+**Design status**: implemented as specified in [`exact_minor`](../../module/exact_minor/readme.md) — `Minor(i64)` with `minor_from_i64`/`minor_to_i64`, `MinorWide(i128)` behind the `i128` feature, every checked and saturating function on `Minor`, and `MinorError { Overflow, Underflow }`. `MinorError`'s variants also carry the name of the failed operation. Beyond this listing, `MinorWide` has the same arithmetic as `Minor` (`minor_wide_*`) and converts back with `Minor::try_from`; like `Minor`, its field is private, with `minor_wide_from_i128`/`minor_wide_to_i128` as the raw-integer way in and out, mirroring `minor_from_i64`/`minor_to_i64`.
 
 ### Structs
 

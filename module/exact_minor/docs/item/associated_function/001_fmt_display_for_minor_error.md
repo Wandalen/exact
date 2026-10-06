@@ -14,7 +14,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:206`
+`module/exact_minor/src/lib.rs:224`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -31,7 +31,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 206-213 | Declaration |
+| `src/lib.rs` | 224-231 | Declaration |
 | `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Via `.to_string()` |
 
 No production code anywhere in the workspace calls this method explicitly or

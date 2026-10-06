@@ -15,32 +15,34 @@
 | `Minor` | struct | `src/lib.rs:51` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
 | `minor_from_i64` | fn | `src/lib.rs:55` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
 | `minor_to_i64` | fn | `src/lib.rs:62` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
-| `MinorError` | enum | `src/lib.rs:188` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `MinorError`'s `Display` impl | trait impl | `src/lib.rs:204` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `minor_zero` | fn | `src/lib.rs:220` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
-| `minor_is_zero` | fn | `src/lib.rs:227` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
-| `minor_checked_add` | fn | `src/lib.rs:238` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `minor_checked_sub` | fn | `src/lib.rs:254` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `minor_checked_neg` | fn | `src/lib.rs:270` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `minor_saturating_add` | fn | `src/lib.rs:286` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
-| `minor_saturating_sub` | fn | `src/lib.rs:294` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `MinorError` | enum | `src/lib.rs:206` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `MinorError`'s `Display` impl | trait impl | `src/lib.rs:222` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `minor_zero` | fn | `src/lib.rs:238` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
+| `minor_is_zero` | fn | `src/lib.rs:245` | [No Float In Representation](../invariant/001_no_float_in_representation.md) |
+| `minor_checked_add` | fn | `src/lib.rs:256` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `minor_checked_sub` | fn | `src/lib.rs:272` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `minor_checked_neg` | fn | `src/lib.rs:288` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `minor_saturating_add` | fn | `src/lib.rs:304` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
+| `minor_saturating_sub` | fn | `src/lib.rs:312` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
 
 Only with `--features i128`:
 
 | Item | Kind | Declared |
 |------|------|----------|
-| `MinorWide` | struct | `src/lib.rs:73` |
-| `From< Minor > for MinorWide` | trait impl | `src/lib.rs:76` |
-| `TryFrom< MinorWide > for Minor` | trait impl | `src/lib.rs:86` |
-| `minor_wide_zero` | fn | `src/lib.rs:104` |
-| `minor_wide_is_zero` | fn | `src/lib.rs:112` |
-| `minor_wide_checked_add` | fn | `src/lib.rs:124` |
-| `minor_wide_checked_sub` | fn | `src/lib.rs:141` |
-| `minor_wide_checked_neg` | fn | `src/lib.rs:157` |
-| `minor_wide_saturating_add` | fn | `src/lib.rs:169` |
-| `minor_wide_saturating_sub` | fn | `src/lib.rs:177` |
+| `MinorWide` | struct | `src/lib.rs:75` |
+| `minor_wide_from_i128` | fn | `src/lib.rs:80` |
+| `minor_wide_to_i128` | fn | `src/lib.rs:88` |
+| `From< Minor > for MinorWide` | trait impl | `src/lib.rs:94` |
+| `TryFrom< MinorWide > for Minor` | trait impl | `src/lib.rs:104` |
+| `minor_wide_zero` | fn | `src/lib.rs:122` |
+| `minor_wide_is_zero` | fn | `src/lib.rs:130` |
+| `minor_wide_checked_add` | fn | `src/lib.rs:142` |
+| `minor_wide_checked_sub` | fn | `src/lib.rs:159` |
+| `minor_wide_checked_neg` | fn | `src/lib.rs:175` |
+| `minor_wide_saturating_add` | fn | `src/lib.rs:187` |
+| `minor_wide_saturating_sub` | fn | `src/lib.rs:195` |
 
-`impl core::error::Error for MinorError {}` (`src/lib.rs:216`) carries no
+`impl core::error::Error for MinorError {}` (`src/lib.rs:234`) carries no
 associated item of its own, so it gets no row here — same treatment as every
 other marker trait impl in this family's `definition/` indexes.
 

@@ -32,9 +32,9 @@ backing type itself.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:39` | `pub type Backing = i64;` — the only integer type ever stored or passed |
-| `src/lib.rs:220-230` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
+| `src/lib.rs:238-248` | `minor_zero`, `minor_is_zero` — the two constructors/predicates with no range-checking of their own |
 | `src/lib.rs:51` | `pub struct Minor( Backing );` — the type every non-wide arithmetic function takes and returns (the `i64` conversions and `minor_wide_*` functions take integers and `MinorWide`, never a float) |
-| `src/lib.rs:238-297` | Every arithmetic function's signature: `Minor` in, `Minor`/`Result<Minor, MinorError>` out |
+| `src/lib.rs:256-315` | Every arithmetic function's signature: `Minor` in, `Minor`/`Result<Minor, MinorError>` out |
 
 ### Tests
 

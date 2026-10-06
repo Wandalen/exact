@@ -23,7 +23,7 @@ use core::fmt;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 204,206 | `MinorError`'s `Display` impl header and `fmt`'s own signature |
+| `src/lib.rs` | 222,224 | `MinorError`'s `Display` impl header and `fmt`'s own signature |
 
 No other file references this declaration — it is private and grants no
 external visibility.

@@ -10,6 +10,7 @@ use exact_minor::
   minor_wide_checked_add,
   minor_wide_checked_neg,
   minor_wide_checked_sub,
+  minor_wide_from_i128,
   minor_wide_is_zero,
   minor_wide_saturating_add,
   minor_wide_saturating_sub,
@@ -22,7 +23,7 @@ fn widening_a_minor_keeps_its_value()
 {
   for value in [ 0, 1, -1, Backing::MAX, Backing::MIN ]
   {
-    assert_eq!( MinorWide::from( minor_from_i64( value ) ), MinorWide( i128::from( value ) ) );
+    assert_eq!( MinorWide::from( minor_from_i64( value ) ), minor_wide_from_i128( i128::from( value ) ) );
   }
 }
 
@@ -30,7 +31,7 @@ fn widening_a_minor_keeps_its_value()
 #[ test ]
 fn minor_wide_holds_values_past_i64()
 {
-  let past_max = MinorWide( i128::from( Backing::MAX ) + 1 );
+  let past_max = minor_wide_from_i128( i128::from( Backing::MAX ) + 1 );
   assert!( past_max > MinorWide::from( minor_from_i64( Backing::MAX ) ) );
 }
 
@@ -41,22 +42,22 @@ fn narrowing_back_to_minor_refuses_what_does_not_fit()
 {
   assert_eq!
   (
-    Minor::try_from( MinorWide( i128::from( Backing::MAX ) ) ),
+    Minor::try_from( minor_wide_from_i128( i128::from( Backing::MAX ) ) ),
     Ok( minor_from_i64( Backing::MAX ) )
   );
   assert_eq!
   (
-    Minor::try_from( MinorWide( i128::from( Backing::MIN ) ) ),
+    Minor::try_from( minor_wide_from_i128( i128::from( Backing::MIN ) ) ),
     Ok( minor_from_i64( Backing::MIN ) )
   );
   assert_eq!
   (
-    Minor::try_from( MinorWide( i128::from( Backing::MAX ) + 1 ) ),
+    Minor::try_from( minor_wide_from_i128( i128::from( Backing::MAX ) + 1 ) ),
     Err( MinorError::Overflow { operation : "narrow" } )
   );
   assert_eq!
   (
-    Minor::try_from( MinorWide( i128::from( Backing::MIN ) - 1 ) ),
+    Minor::try_from( minor_wide_from_i128( i128::from( Backing::MIN ) - 1 ) ),
     Err( MinorError::Underflow { operation : "narrow" } )
   );
 }
@@ -68,7 +69,7 @@ fn only_wide_zero_is_zero()
   assert!( minor_wide_is_zero( minor_wide_zero() ) );
   for value in [ 1, -1, i128::MAX, i128::MIN ]
   {
-    assert!( !minor_wide_is_zero( MinorWide( value ) ), "{value} was reported as zero" );
+    assert!( !minor_wide_is_zero( minor_wide_from_i128( value ) ), "{value} was reported as zero" );
   }
 }
 
@@ -77,33 +78,37 @@ fn only_wide_zero_is_zero()
 fn wide_checked_arithmetic_refuses_both_directions()
 {
   // a sum no `i64` could hold, computed exactly
-  let big = MinorWide( i128::from( Backing::MAX ) );
-  assert_eq!( minor_wide_checked_add( big, big ), Ok( MinorWide( i128::from( Backing::MAX ) * 2 ) ) );
+  let big = minor_wide_from_i128( i128::from( Backing::MAX ) );
+  assert_eq!
+  (
+    minor_wide_checked_add( big, big ),
+    Ok( minor_wide_from_i128( i128::from( Backing::MAX ) * 2 ) )
+  );
 
   assert_eq!
   (
-    minor_wide_checked_add( MinorWide( i128::MAX ), MinorWide( 1 ) ),
+    minor_wide_checked_add( minor_wide_from_i128( i128::MAX ), minor_wide_from_i128( 1 ) ),
     Err( MinorError::Overflow { operation : "add" } )
   );
   assert_eq!
   (
-    minor_wide_checked_add( MinorWide( i128::MIN ), MinorWide( -1 ) ),
+    minor_wide_checked_add( minor_wide_from_i128( i128::MIN ), minor_wide_from_i128( -1 ) ),
     Err( MinorError::Underflow { operation : "add" } )
   );
   assert_eq!
   (
-    minor_wide_checked_sub( MinorWide( i128::MIN ), MinorWide( 1 ) ),
+    minor_wide_checked_sub( minor_wide_from_i128( i128::MIN ), minor_wide_from_i128( 1 ) ),
     Err( MinorError::Underflow { operation : "sub" } )
   );
   assert_eq!
   (
-    minor_wide_checked_sub( MinorWide( i128::MAX ), MinorWide( -1 ) ),
+    minor_wide_checked_sub( minor_wide_from_i128( i128::MAX ), minor_wide_from_i128( -1 ) ),
     Err( MinorError::Overflow { operation : "sub" } )
   );
-  assert_eq!( minor_wide_checked_neg( MinorWide( 5 ) ), Ok( MinorWide( -5 ) ) );
+  assert_eq!( minor_wide_checked_neg( minor_wide_from_i128( 5 ) ), Ok( minor_wide_from_i128( -5 ) ) );
   assert_eq!
   (
-    minor_wide_checked_neg( MinorWide( i128::MIN ) ),
+    minor_wide_checked_neg( minor_wide_from_i128( i128::MIN ) ),
     Err( MinorError::Overflow { operation : "neg" } )
   );
 }
@@ -112,10 +117,26 @@ fn wide_checked_arithmetic_refuses_both_directions()
 #[ test ]
 fn wide_saturating_arithmetic_clamps_to_the_crossed_bound()
 {
-  assert_eq!( minor_wide_saturating_add( MinorWide( i128::MAX ), MinorWide( 1 ) ), MinorWide( i128::MAX ) );
-  assert_eq!( minor_wide_saturating_add( MinorWide( i128::MIN ), MinorWide( -1 ) ), MinorWide( i128::MIN ) );
-  assert_eq!( minor_wide_saturating_sub( MinorWide( i128::MIN ), MinorWide( 1 ) ), MinorWide( i128::MIN ) );
-  assert_eq!( minor_wide_saturating_sub( MinorWide( i128::MAX ), MinorWide( -1 ) ), MinorWide( i128::MAX ) );
+  assert_eq!
+  (
+    minor_wide_saturating_add( minor_wide_from_i128( i128::MAX ), minor_wide_from_i128( 1 ) ),
+    minor_wide_from_i128( i128::MAX )
+  );
+  assert_eq!
+  (
+    minor_wide_saturating_add( minor_wide_from_i128( i128::MIN ), minor_wide_from_i128( -1 ) ),
+    minor_wide_from_i128( i128::MIN )
+  );
+  assert_eq!
+  (
+    minor_wide_saturating_sub( minor_wide_from_i128( i128::MIN ), minor_wide_from_i128( 1 ) ),
+    minor_wide_from_i128( i128::MIN )
+  );
+  assert_eq!
+  (
+    minor_wide_saturating_sub( minor_wide_from_i128( i128::MAX ), minor_wide_from_i128( -1 ) ),
+    minor_wide_from_i128( i128::MAX )
+  );
 }
 
 /// Inside the range, wide checked subtraction is exact and saturating
@@ -123,9 +144,17 @@ fn wide_saturating_arithmetic_clamps_to_the_crossed_bound()
 #[ test ]
 fn wide_arithmetic_in_range_is_exact_and_unclamped()
 {
-  let past_i64 = MinorWide( i128::from( i64::MAX ) + 10 );
-  let max_i64 = MinorWide( i128::from( i64::MAX ) );
-  assert_eq!( minor_wide_checked_sub( past_i64, MinorWide( 10 ) ), Ok( max_i64 ) );
-  assert_eq!( minor_wide_saturating_add( MinorWide( -5 ), MinorWide( 3 ) ), MinorWide( -2 ) );
-  assert_eq!( minor_wide_saturating_sub( MinorWide( -5 ), MinorWide( 3 ) ), MinorWide( -8 ) );
+  let past_i64 = minor_wide_from_i128( i128::from( i64::MAX ) + 10 );
+  let max_i64 = minor_wide_from_i128( i128::from( i64::MAX ) );
+  assert_eq!( minor_wide_checked_sub( past_i64, minor_wide_from_i128( 10 ) ), Ok( max_i64 ) );
+  assert_eq!
+  (
+    minor_wide_saturating_add( minor_wide_from_i128( -5 ), minor_wide_from_i128( 3 ) ),
+    minor_wide_from_i128( -2 )
+  );
+  assert_eq!
+  (
+    minor_wide_saturating_sub( minor_wide_from_i128( -5 ), minor_wide_from_i128( 3 ) ),
+    minor_wide_from_i128( -8 )
+  );
 }

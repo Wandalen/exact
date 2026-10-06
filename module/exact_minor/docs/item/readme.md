@@ -41,7 +41,8 @@ saturating arithmetic over it, with no scale or kind attached.
 | **Total** | | **17** |
 
 The `i128`-only items — the two conversions between `Minor` and `MinorWide`,
-and the seven `minor_wide_*` functions that mirror `Minor`'s — are listed in
+and the nine `minor_wide_*` functions that mirror `Minor`'s, including the
+`minor_wide_from_i128`/`minor_wide_to_i128` pair — are listed in
 the [module index](../definition/readme.md) rather than given a page each,
 since each one repeats a `Minor` item at `i128` width.
 

@@ -36,7 +36,8 @@ count of minor units with no decimal point and no sign rule attached to it.
 - **`Minor`** wraps the backing `i64` (`Backing`). Use `minor_from_i64` /
   `minor_to_i64` to go in and out; a bare `i64` is refused by the compiler.
 - **`MinorWide`** wraps an `i128`, only with `--features i128`. A `Minor`
-  widens into it with `MinorWide::from`, and comes back with `Minor::try_from`.
+  widens into it with `MinorWide::from`, and comes back with `Minor::try_from`;
+  a raw `i128` goes in with `minor_wide_from_i128` and out with `minor_wide_to_i128`.
   It has the same arithmetic, prefixed `minor_wide_`.
 - **`MinorError`** says which way an operation failed: `Overflow` (too big)
   or `Underflow` (too small).

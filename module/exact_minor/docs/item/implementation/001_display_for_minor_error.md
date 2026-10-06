@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:204`
+`module/exact_minor/src/lib.rs:222`
 
 ```rust
 impl fmt::Display for MinorError
@@ -31,7 +31,7 @@ impl fmt::Display for MinorError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 204-214 | Declaration |
+| `src/lib.rs` | 222-232 | Declaration |
 | `tests/checked_arithmetic_test.rs` | `overflow_error_names_the_failed_operation` | Exact rendered text of a `neg` overflow and a `sub` underflow |
 
 No production code anywhere in the workspace renders a `MinorError` via

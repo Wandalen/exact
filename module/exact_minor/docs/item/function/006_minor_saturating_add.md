@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:286`
+`module/exact_minor/src/lib.rs:304`
 
 ```rust
 pub const fn minor_saturating_add( a : Minor, b : Minor ) -> Minor
@@ -25,7 +25,7 @@ pub const fn minor_saturating_add( a : Minor, b : Minor ) -> Minor
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 286-289 | Declaration |
+| `src/lib.rs` | 304-307 | Declaration |
 | `tests/saturating_arithmetic_test.rs` | throughout | In-range match with checked addition; clamping past `Backing::MAX` |
 | `exact_arith/src/lib.rs:76` | — | Facade re-export only |
 

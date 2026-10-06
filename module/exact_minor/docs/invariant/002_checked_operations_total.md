@@ -39,9 +39,9 @@ never a default either way.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:188` | `MinorError` — `Overflow` and `Underflow`, each naming the operation that failed |
-| `src/lib.rs:238-277` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
-| `src/lib.rs:286-297` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
+| `src/lib.rs:206` | `MinorError` — `Overflow` and `Underflow`, each naming the operation that failed |
+| `src/lib.rs:256-295` | `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg` |
+| `src/lib.rs:304-315` | `minor_saturating_add`, `minor_saturating_sub` — the clamping counterpart |
 
 ### Tests
 

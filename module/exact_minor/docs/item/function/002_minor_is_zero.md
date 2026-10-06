@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_minor/src/lib.rs:227`
+`module/exact_minor/src/lib.rs:245`
 
 ```rust
 pub const fn minor_is_zero( m : Minor ) -> bool
@@ -23,7 +23,7 @@ pub const fn minor_is_zero( m : Minor ) -> bool
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 227-230 | Declaration |
+| `src/lib.rs` | 245-248 | Declaration |
 | `tests/zero_test.rs` | throughout | True for zero; false for `±1` and both backing extremes |
 | `exact_arith/src/lib.rs:75` | — | Facade re-export only |
 
