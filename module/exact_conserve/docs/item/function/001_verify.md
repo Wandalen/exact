@@ -45,7 +45,7 @@ one-unit leak.
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |
 | `exchange_core/tests/submission_test.rs:257` | — | Integration test |
 | `smoke_exchange_core/src/lib.rs:105` | — | Demo-lane settlement audit |
-| `smoke_exact_market_split/src/lib.rs:287,292`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test) |
+| `smoke_exact_market_split/src/lib.rs:308,313`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test) |
 
 Confirmed via a full-workspace grep (not limited to `exact_conserve`'s direct
 `Cargo.toml` dependents) — the same wider sweep that corrected this

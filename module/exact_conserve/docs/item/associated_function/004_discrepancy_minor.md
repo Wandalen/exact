@@ -29,7 +29,7 @@ pub const fn discrepancy_minor( &self ) -> i128
 | `src/lib.rs` | 199 | `verify`'s own doc-test |
 | `tests/conservation_test.rs:31,53,56,69,90` | — | Asserts the exact signed leftover in 5 distinct scenarios |
 | `exchange_core/tests/submission_test.rs:259` | — | Integration test |
-| `smoke_exact_market_split/src/lib.rs:298`, `tests/lane_test.rs:68` | — | Demo-lane leak-magnitude assertion |
+| `smoke_exact_market_split/src/lib.rs:319`, `tests/lane_test.rs:68` | — | Demo-lane leak-magnitude assertion |
 
 Confirmed via grep across the full workspace (not only `exact_conserve`'s
 direct dependents): no production call site in `cluster_economy` or

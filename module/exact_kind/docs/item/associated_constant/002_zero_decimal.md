@@ -26,7 +26,7 @@ pub const ZERO : Self = Self { minor : minor_zero() };
 | `exact_arith/src/lib.rs:42,46` (doc) | — | Facade doc comment naming it as part of the re-exported surface |
 | `exact_arith/tests/facade_test.rs:39` | — | `try_fold` accumulator seed |
 | `exact_arith/tests/no_alloc_test.rs:68` | — | Array-fill seed `[ Money::ZERO; 4 ]` |
-| `smoke_exact_market_split/src/lib.rs:66,305` | — | **Production** — accumulator seed in the ledger's running total and the recombination check |
+| `smoke_exact_market_split/src/lib.rs:66,328` | — | **Production** — accumulator seed in the ledger's running total and the recombination check |
 | `smoke_exact_market_split/tests/lane_test.rs:131` | — | `try_fold` accumulator seed |
 
 ## Crate Usage

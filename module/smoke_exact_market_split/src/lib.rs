@@ -247,14 +247,30 @@ pub fn run()
   println!( "smoke_exact_market_split — this family's slice, one process" );
   println!();
 
-  // ---- Step 1: parse and round-trip, through the exact decimal type -------
+  step_1_parse_round_trip();
+  let exact = step_2_exact_and_control_arms();
+  step_3_quantity_refuses_below_zero();
+  step_4_audit( exact );
+  step_5_market_split();
+  step_6_golden_print();
 
+  println!();
+  println!( "VERDICT: reached — exact arithmetic holds across the full facade," );
+  println!( "         the floating-point control arm does not, and a market split conserves." );
+}
+
+/// Step 1: parse and round-trip, through the exact decimal type.
+fn step_1_parse_round_trip()
+{
   let tenth = Money::parse( "0.1" ).expect( "0.1 parses" );
   assert_eq!( tenth.to_string(), "0.1", "render must be the inverse of parse" );
   println!( "  parse/render   0.1 -> {tenth} (round-trips exactly)" );
+}
 
-  // ---- Step 2: the exact arm and the control arm, on the same sum ----------
-
+/// Step 2: the exact arm and the control arm, on the same sum. Returns the
+/// exact sum, which step 4's ledger posts.
+fn step_2_exact_and_control_arms() -> Money
+{
   let exact = exact_tenths();
   let control = float_tenths();
   let expected = Money::parse( "1.0" ).expect( "1.0 parses" );
@@ -272,18 +288,23 @@ pub fn run()
   println!( "  exact arm      0.1 x {REPEATS} = {exact}" );
   println!( "  control arm    0.1 x {REPEATS} = {control:.17} (f64, wrong by construction)" );
   println!( "  the arms disagree, which is what makes this lane a test" );
+  exact
+}
 
-  // ---- Step 3: the quantity type refuses to go below zero ------------------
-
+/// Step 3: the quantity type refuses to go below zero.
+fn step_3_quantity_refuses_below_zero()
+{
   let held = Quantity::from_int( 3 ).expect( "3 units is representable" );
   let taken = Quantity::from_int( 5 ).expect( "5 units is representable" );
   let short = held.checked_sub( taken );
   assert!( short.is_err(), "withdrawing more than is held must be refused" );
   println!();
   println!( "  quantity       hold {held}, withdraw {taken} -> {}", short.unwrap_err() );
+}
 
-  // ---- Step 4: the auditor over a plain log ---------------------------------
-
+/// Step 4: the auditor over a plain log, balanced and then leaking one minor unit.
+fn step_4_audit( exact : Money )
+{
   let balanced = verify( &ledger( exact, 0 ) ).expect( "a two-posting log cannot overflow i128" );
   assert!( balanced.is_balanced(), "a log with matching postings must balance" );
   println!();
@@ -297,9 +318,11 @@ pub fn run()
   // it.
   assert_eq!( leaky.discrepancy_minor(), -1, "the discrepancy must be named, not just flagged" );
   println!( "  audit, leaky   {leaky}" );
+}
 
-  // ---- Step 5: a market fill split among three accounts, dust and all ------
-
+/// Step 5: a market fill split among three accounts, dust and all.
+fn step_5_market_split()
+{
   let fill = Money::parse( "100.000001" ).expect( "parses" );
   let shares = market_split( fill, 3 );
   let recombined = shares.iter().copied().try_fold( Money::ZERO, | a, b | a.checked_add( b ) )
@@ -311,9 +334,12 @@ pub fn run()
     "  market split   {fill} into 3 -> [{}, {}, {}] (recombines exactly)",
     shares[ 0 ], shares[ 1 ], shares[ 2 ],
   );
+}
 
-  // ---- Step 6: the proposed lane's scenes, in its golden-print shape --------
-
+/// Step 6: the proposed lane's scenes, in its golden-print shape, with two
+/// runs' checksums compared.
+fn step_6_golden_print()
+{
   let g = golden();
   println!();
   println!( "  sum={}", g.sum );
@@ -326,10 +352,4 @@ pub fn run()
   assert_eq!( a, b, "two runs must produce the same checksum" );
   println!( "  a=0x{a:016x} b=0x{b:016x}" );
   println!( "  ok" );
-
-  // ---- Verdict -------------------------------------------------------------
-
-  println!();
-  println!( "VERDICT: reached — exact arithmetic holds across the full facade," );
-  println!( "         the floating-point control arm does not, and a market split conserves." );
 }
