@@ -168,9 +168,9 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 ///
 /// # Errors
 ///
-/// [`RatioError::Negative`] when a negative-numerator ratio takes the rounded
-/// result below zero — so for a product above -1 unit the mode decides: `Down`
-/// refuses any, `HalfEven` one below -0.5, `Up` none. [`RatioError::Overflow`] on overflow.
+/// [`RatioError::Negative`] when a negative-numerator ratio takes the rounded result below zero.
+/// At or below -1 minor unit every mode refuses it; within one minor unit of zero the mode decides:
+/// `Down` refuses, `HalfEven` only past half a minor unit, `Up` never. [`RatioError::Overflow`] on overflow.
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;

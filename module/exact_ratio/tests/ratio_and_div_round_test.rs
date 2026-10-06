@@ -341,10 +341,10 @@ fn every_ratio_error_renders_its_cause()
   );
 }
 
-/// A negative ratio on a quantity is refused only when the chosen mode rounds
-/// the product below zero: one minor unit × -1/3 is -0.33…, which `Down`
-/// floors to -1 (refused) and `Up`/`HalfEven` take to 0 (accepted); two units
-/// give -0.66…, past half a unit, so `HalfEven` rounds to -1 and refuses it.
+/// A negative ratio on a quantity is refused whenever the rounded product is below zero; the mode
+/// decides only within one minor unit of zero. One minor unit × -1/3 is -0.33… of a minor unit, which
+/// `Down` floors to -1 (refused) and `Up`/`HalfEven` take to 0; two minor units give -0.66…, past half
+/// of one, so `HalfEven` refuses too. A whole-unit product (1.5 units × -1/3) is refused in every mode.
 #[ test ]
 fn qty_mul_ratio_by_a_sub_unit_negative_product_depends_on_the_mode()
 {
@@ -356,4 +356,10 @@ fn qty_mul_ratio_by_a_sub_unit_negative_product_depends_on_the_mode()
   let two = Quantity::from_minor( 2 ).unwrap();
   let refused = Err( RatioError::Negative { minor : -1 } );
   assert_eq!( qty_mul_ratio( two, neg_third, Rounding::HalfEven ), refused );
+  let one_and_a_half = Quantity::parse( "1.5" ).unwrap();
+  let whole_refused = Err( RatioError::Negative { minor : -500_000 } );
+  for mode in [ Rounding::Down, Rounding::HalfEven, Rounding::Up ]
+  {
+    assert_eq!( qty_mul_ratio( one_and_a_half, neg_third, mode ), whole_refused );
+  }
 }
