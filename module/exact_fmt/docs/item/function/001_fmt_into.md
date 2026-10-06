@@ -44,21 +44,22 @@ own; it brings the `Write` trait's `write_fmt` method into scope for the
 | `tests/fmt_test.rs:73` | — | `BufFull` when the buffer runs out partway, after an earlier piece fit |
 | `tests/fmt_test.rs:96` | — | `BufFull` on a zero-length buffer |
 | `exact_arith/src/lib.rs:118` | — | Facade re-export |
+| `exact_arith/tests/no_alloc_test.rs:51,53-54,57` | — | Renders every kind into a stack buffer, checked to make no heap allocation |
 
 No production call site anywhere outside this crate's own tests — an honest
-empty finding. `exact_arith` only re-exports the name; its own test suite
-does not call `fmt_into`.
+empty finding. `exact_arith`'s `tests/no_alloc_test.rs` calls it through the
+re-export to count allocations.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_fmt` | `(defining crate)` | Exercised by all 3 of this crate's own tests |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/no_alloc_test.rs` | Re-export; its allocation test calls it |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `exact_arith`'s own test, `no_alloc_test.rs:51,53-54,57` (test-context, via the re-exported name)
 
 ## Callee Tree
 

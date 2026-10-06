@@ -46,20 +46,22 @@ so no heap allocation, and a refusal on slot 0 leaves `out` untouched.
 | `tests/dust_split_test.rs:94` | — | Writes the same shares as the allocating `qty_dust_split` — under `Up`, where slot 0 absorbs a negative leftover |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/tests/no_alloc_test.rs:73` | — | Test-only call checking the split makes no heap allocation |
 
-No call site outside this crate's own tests — not `exact_arith`'s crate-doc
-example or test suite, not `smoke_exact_market_split`.
+No production call site outside this crate — not `exact_arith`'s crate-doc
+example, not `smoke_exact_market_split`; only `exact_arith`'s
+`tests/no_alloc_test.rs` calls it, to count allocations.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_dust` | `(defining crate)` | Exercised by its own tests — parity with `qty_dust_split`, and the empty buffer |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/no_alloc_test.rs` | Re-export; its allocation test calls it |
 
 ## Caller Tree
 
-No caller outside this crate's own tests.
+- **External:** `exact_arith`'s own test, `no_alloc_test.rs:73` (test-context, via the re-exported name)
 
 ## Callee Tree
 

@@ -44,6 +44,7 @@ any other path under it) from before the cutover commit.
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on all 14 other crates in this family |
 | [`src/lib.rs`](src/lib.rs) | `pub use` of every public item from all 14 leaves — nothing else |
 | [`tests/facade_test.rs`](tests/facade_test.rs) | End-to-end settlement through the facade alone, representative name resolution, and the mechanical "declares nothing" purity test |
+| [`tests/no_alloc_test.rs`](tests/no_alloc_test.rs) | Rendering into a stack buffer and both `*_dust_split_into` functions make no heap allocation, counted by the `assert_no_alloc` dev-dependency's allocator (no `unsafe` in this crate) |
 | [`tests/bench_vs_f64.rs`](tests/bench_vs_f64.rs) | Hard problem 12 / feature 22's proposed add-compare-ratio timing comparison against `f64`, informational only |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Design documentation — feature scope, the facade-purity invariant, module index, workaround (none) |

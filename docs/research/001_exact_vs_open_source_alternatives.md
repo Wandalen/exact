@@ -128,7 +128,7 @@ Re-run via `cargo test -p exact_arith --test bench_vs_f64 -- --nocapture`; treat
 
 **Represented in**:
 - No hard problem, no feature — neither collection mentions dependency policy at all, confirmed by a broad `grep` for `depend` across every `hard_problem/*.md` and `feature/*.md` file (the only hits were unrelated: a determinism cross-reference and a platform-dependent-JSON note)
-- Verified instead directly against the 16 crates' own manifests: `grep` across every `Cargo.toml` in `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/` turns up zero `[dependencies]` or `[dev-dependencies]` entries outside this family's own `exact_*`/`smoke_*` crates
+- Verified instead directly against the 16 crates' own manifests: `grep` across every `Cargo.toml` in `/home/user1/pro/lib/yrd_gamedev/substrate/exact/module/` turns up zero `[dependencies]` entries outside this family's own `exact_*`/`smoke_*` crates; the only external `[dev-dependencies]` are two test-only crates in `exact_arith` — `primitive_fixed_point_decimal` for the bench's comparison and `assert_no_alloc` for the allocation test's counting allocator — neither of which reaches a consumer
 
 **Explanation**: this is a convention this family follows in practice, not a requirement sourced from the original 15-crate proposal's own hard_problem/feature breakdown, and not a quoted line from the charter either — the charter's "Depends on: nothing in the catalog" is about not depending on another *workstream*, not a crates.io dependency ban. It is nonetheless a real, observed constraint this comparison has to account for, since every candidate surveyed above is an external dependency by definition.
 

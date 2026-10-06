@@ -50,21 +50,22 @@ anything is written.
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
 | `tests/dust_split_test.rs:181` | — | `DustTo::Sink` leaves every slot at the plain share |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/tests/no_alloc_test.rs:72` | — | Test-only call checking the split makes no heap allocation |
 
-No call site anywhere outside this crate's own tests. `exact_arith` only
-re-exports the name; neither its crate-doc example nor its test suite calls
-this variant (both exercise `money_dust_split` instead).
+No production call site anywhere outside this crate. `exact_arith`'s
+crate-doc example exercises `money_dust_split` instead; its
+`tests/no_alloc_test.rs` calls this variant to count allocations.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_dust` | `(defining crate)` | Exercised by its own tests — parity with `money_dust_split`, refusal, empty and `Sink` buffers |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/no_alloc_test.rs` | Re-export; its allocation test calls it |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `exact_arith`'s own test, `no_alloc_test.rs:72` (test-context, via the re-exported name)
 
 ## Callee Tree
 
