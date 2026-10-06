@@ -27,7 +27,7 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< 
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 174-178 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 54 | Negative-numerator ratio refused as `RatioError::Negative` |
+| `tests/ratio_and_div_round_test.rs` | 60-67,279,349 | Negative-numerator ratio refused as `RatioError::Negative`; every mode at both signs; a negative product within one minor unit of zero decided by the mode, and a whole-unit one refused in every mode |
 | `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
