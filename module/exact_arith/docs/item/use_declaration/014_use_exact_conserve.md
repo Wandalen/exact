@@ -29,7 +29,7 @@ pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into,
 | `exchange_core/tests/submission_test.rs:257-258` | — | Integration test — `verify`/`is_balanced` |
 | `cluster_economy/tests/economy_test.rs:255-264` | — | Reconciliation assertions |
 | `smoke_exchange_core/src/lib.rs:105,107` | — | Demo-lane settlement audit |
-| `smoke_exact_market_split/src/lib.rs:127-128,308-309,313-314`, `tests/lane_test.rs:60-61,63-64` | — | Demo-lane ledger checks, including the ported `bug_reproducer` regression test |
+| `smoke_exact_market_split/src/lib.rs:127-128,308-309,313-314`, `tests/lane_test.rs:63-64,66-67` | — | Demo-lane ledger checks, including the ported `bug_reproducer` regression test |
 
 **`Entry`, `Report`, `verify`, and `ConservationError` are the facade's most
 heavily downstream-used re-export block** — per `exact_conserve`'s own

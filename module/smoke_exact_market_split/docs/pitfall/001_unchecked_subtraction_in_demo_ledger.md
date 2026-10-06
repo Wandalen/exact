@@ -66,7 +66,7 @@ ever existed for it.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:93-115` | `ledger()`'s inline `Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow)` comment: root cause, pitfall, and the `checked_sub` fix, in place and unchanged from the predecessor lane |
+| `src/lib.rs:101-123` | `ledger()`'s inline `Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow)` comment: root cause, pitfall, and the `checked_sub` fix, in place and unchanged from the predecessor lane |
 
 ### Tests
 

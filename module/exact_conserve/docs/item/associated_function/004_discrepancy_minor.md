@@ -49,7 +49,7 @@ methods, not an oversight in this catalog.
 ## Caller Tree
 
 - **External:** `exchange_core`'s own integration test (`tests/submission_test.rs:259`)
-- **External:** `smoke_exact_market_split`'s own demo-lane code and test (`src/lib.rs:199`, `tests/lane_test.rs:68`)
+- **External:** `smoke_exact_market_split`'s own demo-lane code and test (`src/lib.rs:319`, `tests/lane_test.rs:68`)
 
 No intra-crate caller, and no confirmed production (non-test, non-demo-lane)
 caller — narrower reach than its sibling `is_balanced`, which `cluster_economy`

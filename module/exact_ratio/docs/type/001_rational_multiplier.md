@@ -34,7 +34,7 @@ failure to the first multiply or divide that uses it.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:89-112` | The `Ratio` struct and its `n()`/`d()` accessors |
-| `src/lib.rs:101-138` | `ratio_new` — refusal and normalization |
+| `src/lib.rs:114-138` | `ratio_new` — refusal and normalization |
 
 ### Tests
 

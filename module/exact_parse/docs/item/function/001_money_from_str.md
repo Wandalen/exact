@@ -25,7 +25,7 @@ pub fn money_from_str( text : &str ) -> Result< Money, KindError >
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 52 | Declaration |
-| `tests/from_str_test.rs:12,28` | — | Exact round-trip through `"1.23"`; malformed-text rejection loop (as a function-pointer array element, not a direct call at that line — the actual call is via the `parser` variable at line 30) |
+| `tests/from_str_test.rs:12,28-29` | — | Exact round-trip through `"1.23"`; malformed text (`"NaN"`, `""`) refused, each by a direct call |
 | `exact_arith/src/lib.rs:116` | — | Facade re-export |
 
 ## Crate Usage
