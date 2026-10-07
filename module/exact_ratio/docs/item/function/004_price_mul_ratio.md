@@ -36,7 +36,7 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 185-189 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 231,246 | Every mode at both signs, and refusal past the ceiling |
+| `tests/ratio_and_div_round_test.rs` | 231,246 | `Down`/`Up`/`HalfEven` at both signs, and refusal past the ceiling |
 | `exact_arith/src/lib.rs:110` | — | Facade re-export |
 
 ## Crate Usage

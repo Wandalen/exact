@@ -33,7 +33,7 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 219-223 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 292,302,312 | Every mode, a zero divisor, and a negative divisor — refused unless the result rounds to zero |
+| `tests/ratio_and_div_round_test.rs` | 292,302,312 | `Down`/`Up`/`HalfEven`, a zero divisor, and a negative divisor — refused unless the result rounds to zero |
 | `exact_arith/src/lib.rs:111` | — | Facade re-export |
 
 ## Crate Usage

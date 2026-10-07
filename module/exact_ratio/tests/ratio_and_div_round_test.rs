@@ -1,5 +1,5 @@
-//! `Ratio` construction and normalization, the widened multiply, and every
-//! rounding mode `div_round` supports.
+//! `Ratio` construction and normalization, the widened multiply, and `div_round`
+//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all seven.
 
 use exact_kind::{ Money, Price, Quantity };
 use exact_ratio::
@@ -136,7 +136,7 @@ fn div_round_refuses_a_zero_divisor()
 fn an_exact_division_agrees_across_every_rounding_mode()
 {
   let eight = Money::from_minor( 8 ).unwrap();
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( money_div_round( eight, 4, mode ).unwrap().minor(), 2 );
   }
@@ -156,7 +156,7 @@ fn an_exact_division_agrees_across_every_rounding_mode()
 /// Fix Applied: the three `*_mul_ratio` functions take a `Rounding`, and
 /// `mul_ratio_minor` divides through `exact_round::round_div_wide` with it.
 ///
-/// Prevention: this test pins every mode on a positive and a negative
+/// Prevention: this test pins `Down`, `Up` and `HalfEven` on a positive and a negative
 /// half-unit product, and `price_mul_ratio_rounds_per_the_callers_mode_at_both_signs`
 /// and `qty_mul_ratio_rounds_per_the_callers_mode` below repeat it for the other kinds.
 ///
@@ -267,7 +267,7 @@ fn mul_ratio_by_zero_is_zero()
 {
   let zero = ratio_new( 0, 5 ).unwrap();
   let v = Money::from_minor( -7 ).unwrap();
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( money_mul_ratio( v, zero, mode ).unwrap(), Money::ZERO );
   }
@@ -343,23 +343,49 @@ fn every_ratio_error_renders_its_cause()
 
 /// A negative ratio on a quantity is refused whenever the rounded product is below zero; the mode
 /// decides only within one minor unit of zero. One minor unit × -1/3 is -0.33… of a minor unit, which
-/// `Down` floors to -1 (refused) and `Up`/`HalfEven` take to 0; two minor units give -0.66…, past half
-/// of one, so `HalfEven` refuses too. A whole-unit product (1.5 units × -1/3) is refused in every mode.
+/// only `Down` and `AwayFromZero` take to -1 (refused); one minor unit × -1/2 is an exact tie, which
+/// `HalfUp` takes to -1 too; two minor units × -1/3 give -0.66…, past half of one, which only `Up` and
+/// `TowardZero` still take to 0. A whole-unit product (1.5 units × -1/3) is refused in every mode.
 #[ test ]
 fn qty_mul_ratio_by_a_sub_unit_negative_product_depends_on_the_mode()
 {
-  let one = Quantity::from_minor( 1 ).unwrap();
-  let neg_third = ratio_new( -1, 3 ).unwrap();
-  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::Down ), Err( RatioError::Negative { minor : -1 } ) );
-  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::Up ).unwrap(), Quantity::ZERO );
-  assert_eq!( qty_mul_ratio( one, neg_third, Rounding::HalfEven ).unwrap(), Quantity::ZERO );
-  let two = Quantity::from_minor( 2 ).unwrap();
+  use Rounding::*;
   let refused = Err( RatioError::Negative { minor : -1 } );
-  assert_eq!( qty_mul_ratio( two, neg_third, Rounding::HalfEven ), refused );
+  let zero = Ok( Quantity::ZERO );
+  let modes = [ Down, AwayFromZero, HalfEven, HalfDown, HalfUp, Up, TowardZero ];
+  //  minor, n, d,   Down,    AwayFromZero, HalfEven, HalfDown, HalfUp,  Up,   TowardZero
+  let cases =
+  [
+    ( 1, -1, 3, [ refused, refused, zero,    zero,    zero,    zero, zero ] ), // -0.33
+    ( 1, -1, 2, [ refused, refused, zero,    zero,    refused, zero, zero ] ), // -0.5, a tie
+    ( 2, -1, 3, [ refused, refused, refused, refused, refused, zero, zero ] ), // -0.67
+  ];
+  for ( minor, n, d, expected ) in cases
+  {
+    let v = Quantity::from_minor( minor ).unwrap();
+    let r = ratio_new( n, d ).unwrap();
+    for ( mode, want ) in modes.into_iter().zip( expected )
+    {
+      assert_eq!( qty_mul_ratio( v, r, mode ), want, "{minor} minor × {n}/{d} under {mode:?}" );
+    }
+  }
   let one_and_a_half = Quantity::parse( "1.5" ).unwrap();
+  let neg_third = ratio_new( -1, 3 ).unwrap();
   let whole_refused = Err( RatioError::Negative { minor : -500_000 } );
-  for mode in [ Rounding::Down, Rounding::HalfEven, Rounding::Up ]
+  for mode in EVERY_MODE
   {
     assert_eq!( qty_mul_ratio( one_and_a_half, neg_third, mode ), whole_refused );
   }
 }
+
+/// Every rounding mode, for the tests that must hold under each of them.
+const EVERY_MODE : [ Rounding; 7 ] =
+[
+  Rounding::Down,
+  Rounding::Up,
+  Rounding::HalfEven,
+  Rounding::TowardZero,
+  Rounding::AwayFromZero,
+  Rounding::HalfUp,
+  Rounding::HalfDown,
+];

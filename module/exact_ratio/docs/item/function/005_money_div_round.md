@@ -27,7 +27,7 @@ pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Mon
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 206-210 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 82-83,92-93,102,106,110,119,123,131,141 | Every rounding mode (`Down`/`Up`/`HalfEven`), both signs, tie and non-tie remainders, zero-divisor refusal, and exact-division agreement across modes — by far the most heavily tested function in this crate |
+| `tests/ratio_and_div_round_test.rs` | 82-83,92-93,102,106,110,119,123,131,141 | `Down`/`Up`/`HalfEven`, both signs, tie and non-tie remainders, zero-divisor refusal, and exact-division agreement across all seven modes — by far the most heavily tested function in this crate |
 | `exact_arith/src/lib.rs:107` | — | Facade re-export |
 
 ## Crate Usage

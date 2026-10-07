@@ -2,7 +2,7 @@
 
 ## Representation
 
-Brings in the three-variant rounding-mode enum that every multiply
+Brings in the seven-variant rounding-mode enum that every multiply
 (`*_mul_ratio`, `price_mul_qty`, and the private `mul_ratio_minor` they share)
 and every `*_div_round` function (and the private `div_round_minor` they
 share) takes as a parameter. The multiplies thread it through to

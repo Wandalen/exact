@@ -1,5 +1,5 @@
 //! Tick/lot construction, and snapping a price or quantity onto the grid
-//! under every rounding mode.
+//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all seven.
 
 use exact_kind::{ Price, Quantity };
 use exact_round::Rounding;
@@ -20,7 +20,7 @@ fn a_value_already_on_the_grid_is_unchanged_at_every_rounding_mode()
 {
   let tick = Tick::new( Price::from_minor( 5 ).unwrap() ).unwrap();
   let on_grid = Price::from_minor( 15 ).unwrap();
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( price_snap_tick( on_grid, tick, mode ).unwrap(), on_grid );
   }
@@ -89,7 +89,7 @@ fn a_negative_price_snaps_down_to_the_lower_grid_point_and_up_to_the_higher()
 /// stores it), so the sign of the tick no longer matters.
 ///
 /// Prevention: this test compares a tick of -5 with a tick of 5 on prices
-/// above, below and on the grid under every mode; it fails on the old code.
+/// above, below and on the grid under all seven modes; it fails on the old code.
 ///
 /// Pitfall: `Down`/`Up` round a quotient toward -∞/+∞; multiplied back by a
 /// negative divisor, that direction reverses for the value itself.
@@ -101,7 +101,7 @@ fn a_negative_tick_snaps_exactly_like_its_positive_counterpart()
   for v in [ 17, -17, 15, 0 ]
   {
     let price = Price::from_minor( v ).unwrap();
-    for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+    for mode in EVERY_MODE
     {
       assert_eq!( price_snap_tick( price, negative, mode ), price_snap_tick( price, positive, mode ) );
     }
@@ -182,3 +182,15 @@ fn qty_snap_lot_reports_overflow_rounding_up_past_the_ceiling()
   let lot = Lot::new( Quantity::from_minor( 7 ).unwrap() ).unwrap();
   assert_eq!( qty_snap_lot( near_ceiling, lot, Rounding::Up ), Err( SnapError::Overflow ) );
 }
+
+/// Every rounding mode, for the tests that must hold under each of them.
+const EVERY_MODE : [ Rounding; 7 ] =
+[
+  Rounding::Down,
+  Rounding::Up,
+  Rounding::HalfEven,
+  Rounding::TowardZero,
+  Rounding::AwayFromZero,
+  Rounding::HalfUp,
+  Rounding::HalfDown,
+];

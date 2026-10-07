@@ -11,7 +11,7 @@ produced). Deliberately narrower than the preferred design's own listing,
 which also names `ScaleMismatch` and `BadRounding`: `ScaleMismatch` is
 unreachable because two different `SCALE` values are two different Rust
 types, caught at compile time; `BadRounding` is unreachable because
-`exact_round::Rounding` is a closed three-variant enum with no invalid value
+`exact_round::Rounding` is a closed seven-variant enum with no invalid value
 constructible through the public API. `Negative` is this crate's own addition
 in their place, for the one real failure the doc's listing missed (module doc
 comment, `src/lib.rs:14-25`).
