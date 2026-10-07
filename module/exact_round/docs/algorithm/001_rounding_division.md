@@ -32,6 +32,13 @@ through `round_div_wide`, and narrows the result back — reporting
      - greater, or equal with `q` odd — step.
      - equal with `q` already even — an exact tie landing on the even
        neighbour already; keep `q`.
+   - **`TowardZero`**: never step — `q` is already truncated toward zero.
+   - **`AwayFromZero`**: always step — the neighbour is the one further
+     from zero.
+   - **`HalfUp`**: compare twice `|r|` with `|d|` as `HalfEven` does; step
+     when it is greater or equal — an exact tie goes away from zero.
+   - **`HalfDown`**: compare twice `|r|` with `|d|` as `HalfEven` does; step
+     only when it is greater — an exact tie stays at `q`, toward zero.
 6. Step: `q - 1` when the exact quotient is below `q`, `q + 1` otherwise.
    This never overflows: a nonzero remainder needs `|d| >= 2`, so
    `|q| <= |n| / 2`.
