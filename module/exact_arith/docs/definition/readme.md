@@ -38,11 +38,11 @@ behaviour.
 | `MONEY_SCALE` | const | `../../../exact_scale/src/lib.rs:37` | — |
 | `pow10` | fn | `../../../exact_scale/src/lib.rs:64` | — |
 | `Rounding` | enum | `../../../exact_round/src/lib.rs:38` | — |
-| `RoundError` | enum | `../../../exact_round/src/lib.rs:86` | — |
-| `round_div` | fn | `../../../exact_round/src/lib.rs:118` | — |
-| `round_div_wide` | fn | `../../../exact_round/src/lib.rs:140` | — |
-| `rounding_default` | fn | `../../../exact_round/src/lib.rs:64` | — |
-| `rounding_name` | fn | `../../../exact_round/src/lib.rs:74` | — |
+| `RoundError` | enum | `../../../exact_round/src/lib.rs:104` | — |
+| `round_div` | fn | `../../../exact_round/src/lib.rs:136` | — |
+| `round_div_wide` | fn | `../../../exact_round/src/lib.rs:158` | — |
+| `rounding_default` | fn | `../../../exact_round/src/lib.rs:78` | — |
+| `rounding_name` | fn | `../../../exact_round/src/lib.rs:88` | — |
 | `Sign` | enum | `../../../exact_sign/src/lib.rs:25` | — |
 | `sign_is_negative` | fn | `../../../exact_sign/src/lib.rs:57` | — |
 | `sign_is_zero` | fn | `../../../exact_sign/src/lib.rs:64` | — |

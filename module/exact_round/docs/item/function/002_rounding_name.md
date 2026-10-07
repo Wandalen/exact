@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:74`
+`module/exact_round/src/lib.rs:88`
 
 ```rust
 pub const fn rounding_name( rounding : Rounding ) -> &'static str
@@ -22,6 +22,10 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
     Rounding::Down => "down",
     Rounding::Up => "up",
     Rounding::HalfEven => "half_even",
+    Rounding::TowardZero => "toward_zero",
+    Rounding::AwayFromZero => "away_from_zero",
+    Rounding::HalfUp => "half_up",
+    Rounding::HalfDown => "half_down",
   }
 }
 ```
@@ -30,8 +34,8 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 74 | Declaration |
-| `tests/rounding_mode_test.rs:14-17` | — | All 3 names checked |
+| `src/lib.rs` | 88 | Declaration |
+| `tests/rounding_mode_test.rs:14-23` | — | All 7 names checked |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any downstream

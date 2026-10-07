@@ -4,7 +4,7 @@ Design documentation for `exact_round`, as typed doc definitions.
 
 | Directory | Responsibility |
 |------|-----------------|
-| `type/` | `Rounding`'s three variants and its stable-name accessor |
+| `type/` | `Rounding`'s seven variants and its stable-name accessor |
 | `invariant/` | No float ever appears, and the result never diverges from the true quotient by more than one unit |
 | `algorithm/` | The mode-driven division `round_div` and `round_div_wide` perform |
 | `decisions/` | Why `HalfEven` departs from the preferred design's planned default, and why `round_div` lives here |

@@ -18,7 +18,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:118`
+`module/exact_round/src/lib.rs:136`
 
 ```rust
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
@@ -36,7 +36,7 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 118-126 | Declaration |
+| `src/lib.rs` | 136-144 | Declaration |
 | `tests/round_div_test.rs` | throughout | Every rounding mode, both signs, the zero divisor, the minimum value as either operand, and a grid checked against each mode's definition |
 | `exact_dust/src/lib.rs:125` | — | **Production** — `split_minor`'s per-share division |
 | `exact_snap/src/lib.rs:149,162` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
@@ -61,4 +61,4 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [round_div_wide](004_round_div_wide.md) (`src/lib.rs:120`) — the rounding itself, over the widened operands
+- [round_div_wide](004_round_div_wide.md) (`src/lib.rs:138`) — the rounding itself, over the widened operands

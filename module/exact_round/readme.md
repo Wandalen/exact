@@ -21,7 +21,7 @@ became load-bearing once [`exact_ratio`](../exact_ratio/readme.md)'s
 were built in a later tier.
 
 `HalfEven` is the chosen default, not `Down` or `Up`, because it is the only
-one of the three with no directional bias over a long run of roundings — a
+rounding mode with no directional bias over a long run of roundings — a
 biased default would leak or manufacture value on every unrounded remainder,
 silently, in one direction, forever, which is exactly what a conserved-value
 family cannot afford.

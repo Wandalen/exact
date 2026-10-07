@@ -2,7 +2,7 @@
 
 use exact_round::{ Rounding, rounding_default, rounding_name };
 
-/// The family's default is `HalfEven`, the only unbiased mode of the three.
+/// The family's default is `HalfEven`, the only unbiased mode.
 #[ test ]
 fn the_default_rounding_mode_is_half_even()
 {
@@ -16,6 +16,10 @@ fn every_rounding_mode_has_a_stable_name()
   assert_eq!( rounding_name( Rounding::Down ), "down" );
   assert_eq!( rounding_name( Rounding::Up ), "up" );
   assert_eq!( rounding_name( Rounding::HalfEven ), "half_even" );
+  assert_eq!( rounding_name( Rounding::TowardZero ), "toward_zero" );
+  assert_eq!( rounding_name( Rounding::AwayFromZero ), "away_from_zero" );
+  assert_eq!( rounding_name( Rounding::HalfUp ), "half_up" );
+  assert_eq!( rounding_name( Rounding::HalfDown ), "half_down" );
 }
 
 /// `Rounding` is a plain, comparable, copyable enum — a policy value, not a

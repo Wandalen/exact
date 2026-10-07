@@ -3,7 +3,7 @@
 ## Representation
 
 The family's default rounding policy where a call site states none.
-`HalfEven` — the only one of the three with no directional bias over a long
+`HalfEven` — the only rounding mode with no directional bias over a long
 run, the property a conserved-value family needs most.
 
 ## Kind
@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:64`
+`module/exact_round/src/lib.rs:78`
 
 ```rust
 pub const fn rounding_default() -> Rounding
@@ -25,7 +25,7 @@ pub const fn rounding_default() -> Rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 64 | Declaration |
+| `src/lib.rs` | 78 | Declaration |
 | `tests/rounding_mode_test.rs:9` | — | Confirms the default is `HalfEven` |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 

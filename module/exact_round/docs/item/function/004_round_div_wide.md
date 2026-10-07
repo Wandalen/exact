@@ -10,8 +10,8 @@ signs: a truncating division gives `q`, and the rounding direction comes from
 the signs of the remainder and the divisor, so a minimum-value operand rounds
 like any other. `Overflow` is reported only for `i128::MIN / -1`, the one
 quotient no `i128` holds; the final one-step adjustment cannot overflow,
-because a nonzero remainder needs `|d| >= 2`. `HalfEven`'s tie detection
-doubles the remainder in `u128`, because twice a remainder just below
+because a nonzero remainder needs `|d| >= 2`. The tie detection the three
+`Half*` modes share doubles the remainder in `u128`, because twice a remainder just below
 `i128::MAX` would not fit `i128`.
 
 ## Kind
@@ -20,7 +20,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:140`
+`module/exact_round/src/lib.rs:158`
 
 ```rust
 pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result< i128, RoundError >
@@ -49,17 +49,21 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
   // The exact quotient lies strictly between `q` and its neighbour one step
   // further from zero: below `q` when the remainder and divisor differ in sign.
   let exact_is_below = ( r < 0 ) != ( d < 0 );
+  // How the remainder compares with half the divisor, without fractions.
+  // `u128`: twice a remainder just below `i128::MAX` would not fit `i128`.
+  let twice_r = r.unsigned_abs() * 2;
+  let d_abs = d.unsigned_abs();
+  // `q` was truncated toward zero, so stepping toward the exact quotient
+  // always moves one step away from zero.
   let step_toward_exact = match rounding
   {
     Rounding::Down => exact_is_below,
     Rounding::Up => !exact_is_below,
-    Rounding::HalfEven =>
-    {
-      // `u128`: twice a remainder just below `i128::MAX` would not fit `i128`.
-      let twice_r = r.unsigned_abs() * 2;
-      let d_abs = d.unsigned_abs();
-      twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 )
-    }
+    Rounding::TowardZero => false,
+    Rounding::AwayFromZero => true,
+    Rounding::HalfEven => twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 ),
+    Rounding::HalfUp => twice_r >= d_abs,
+    Rounding::HalfDown => twice_r > d_abs,
   };
   if !step_toward_exact
   {
@@ -74,9 +78,9 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 140-184 | Declaration |
-| `src/lib.rs` | 120 | `round_div`'s call, with widened operands |
-| `tests/round_div_test.rs` | 4,140,152-159,190-196 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
+| `src/lib.rs` | 158-206 | Declaration |
+| `src/lib.rs` | 138 | `round_div`'s call, with widened operands |
+| `tests/round_div_test.rs` | 4,155,196-203,234-240 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
 | `exact_ratio/src/lib.rs:150-151` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
@@ -90,7 +94,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 
 ## Caller Tree
 
-- [round_div](003_round_div.md) (`src/lib.rs:120`)
+- [round_div](003_round_div.md) (`src/lib.rs:138`)
 - **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:150-151`)
 
 ## Callee Tree
