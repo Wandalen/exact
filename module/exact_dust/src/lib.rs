@@ -57,7 +57,7 @@
 //! assert_eq!( shares[ 1 ], Money::from_minor( 2 ).unwrap() );
 //! ```
 
-use exact_kind::{ Money, Quantity };
+use exact_kind::{ KindError, Money, Quantity };
 use exact_round::{ RoundError, Rounding };
 
 /// Where the remainder of an equal split goes.
@@ -145,10 +145,51 @@ fn slot_minor( share : i64, leftover : i64, to : DustTo, i : usize ) -> Result< 
   Ok( share )
 }
 
-/// Every slot's minor count, per [`slot_minor`].
-fn fill_minor( share : i64, leftover : i64, to : DustTo, len : usize ) -> Result< Vec< i64 >, DustError >
+/// Every slot of a `parts`-way split of `total_minor`, each built by `make` —
+/// the one body behind [`money_dust_split`] and [`qty_dust_split`], which
+/// differ only in the kind `make` builds.
+fn split_with< T >
+(
+  total_minor : i64,
+  parts : usize,
+  mode : Rounding,
+  to : DustTo,
+  make : fn( i64 ) -> Result< T, KindError >,
+) -> Result< Vec< T >, DustError >
 {
-  ( 0 .. len ).map( | i | slot_minor( share, leftover, to, i ) ).collect()
+  let ( share, leftover ) = split_minor( total_minor, parts, mode )?;
+  ( 0 .. parts )
+  .map( | i | make( slot_minor( share, leftover, to, i )? ).map_err( | _ | DustError::Overflow ) )
+  .collect()
+}
+
+/// [`split_with`] written into `out` instead of a new `Vec`; `out.len()` is
+/// the part count — the one body behind [`money_dust_split_into`] and
+/// [`qty_dust_split_into`].
+fn split_into_with< T >
+(
+  total_minor : i64,
+  mode : Rounding,
+  to : DustTo,
+  out : &mut [ T ],
+  make : fn( i64 ) -> Result< T, KindError >,
+) -> Result< (), DustError >
+{
+  let ( share, leftover ) = split_minor( total_minor, out.len(), mode )?;
+  // Fix(exact_dust_split_into_allocated): every slot's count used to be
+  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
+  // heap allocation per call, against type/008's "does not allocate". Each
+  // slot is now computed in place by `slot_minor`.
+  //
+  // Root cause: the `_into` variant reused the allocating `_split` helper.
+  // Pitfall: a helper shared by an allocating and a non-allocating variant
+  //   gives both the allocation, and the output is the same either way.
+  for ( i, slot ) in out.iter_mut().enumerate()
+  {
+    let minor = slot_minor( share, leftover, to, i )?;
+    *slot = make( minor ).map_err( | _ | DustError::Overflow )?;
+  }
+  Ok( () )
 }
 
 /// Split a money value into `parts` equal shares, rounding under `mode`,
@@ -161,11 +202,7 @@ fn fill_minor( share : i64, leftover : i64, to : DustTo, len : usize ) -> Result
 /// [`DustError::Overflow`] on overflow or ceiling breach.
 pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), parts, mode )?;
-  fill_minor( share, leftover, to, parts )?
-  .into_iter()
-  .map( | minor | Money::from_minor( minor ).map_err( | _ | DustError::Overflow ) )
-  .collect()
+  split_with( total.minor(), parts, mode, to, Money::from_minor )
 }
 
 /// Non-allocating variant of [`money_dust_split`] — writes into `out` instead
@@ -176,21 +213,7 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 /// As [`money_dust_split`].
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  // Fix(exact_dust_split_into_allocated): every slot's count used to be
-  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
-  // heap allocation per call, against type/008's "does not allocate". Each
-  // slot is now computed in place by `slot_minor`.
-  //
-  // Root cause: the `_into` variant reused the allocating `_split` helper.
-  // Pitfall: a helper shared by an allocating and a non-allocating variant
-  //   gives both the allocation, and the output is the same either way.
-  for ( i, slot ) in out.iter_mut().enumerate()
-  {
-    let minor = slot_minor( share, leftover, to, i )?;
-    *slot = Money::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
-  }
-  Ok( () )
+  split_into_with( total.minor(), mode, to, out, Money::from_minor )
 }
 
 /// The remainder a [`money_dust_split`] of `total` into `parts` under `mode`
@@ -214,11 +237,7 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 /// As [`money_dust_split`].
 pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), parts, mode )?;
-  fill_minor( share, leftover, to, parts )?
-  .into_iter()
-  .map( | minor | Quantity::from_minor( minor ).map_err( | _ | DustError::Overflow ) )
-  .collect()
+  split_with( total.minor(), parts, mode, to, Quantity::from_minor )
 }
 
 /// Non-allocating variant of [`qty_dust_split`].
@@ -228,21 +247,7 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 /// As [`money_dust_split_into`].
 pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  // Fix(exact_dust_split_into_allocated): every slot's count used to be
-  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
-  // heap allocation per call, against type/008's "does not allocate". Each
-  // slot is now computed in place by `slot_minor`.
-  //
-  // Root cause: the `_into` variant reused the allocating `_split` helper.
-  // Pitfall: a helper shared by an allocating and a non-allocating variant
-  //   gives both the allocation, and the output is the same either way.
-  for ( i, slot ) in out.iter_mut().enumerate()
-  {
-    let minor = slot_minor( share, leftover, to, i )?;
-    *slot = Quantity::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
-  }
-  Ok( () )
+  split_into_with( total.minor(), mode, to, out, Quantity::from_minor )
 }
 
 /// The remainder a [`qty_dust_split`] would hold back.

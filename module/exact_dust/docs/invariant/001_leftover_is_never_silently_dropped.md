@@ -52,8 +52,8 @@ not destroyed.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:118-129` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
-| `src/lib.rs:131-152` | `slot_minor`/`fill_minor` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
-| `src/lib.rs:203-207` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
+| `src/lib.rs:131-193` | `slot_minor`, used by `split_with`/`split_into_with` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
+| `src/lib.rs:219-230` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
 
 ### Tests
 

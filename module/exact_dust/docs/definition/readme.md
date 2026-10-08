@@ -14,12 +14,12 @@
 | `DustTo` | enum | `src/lib.rs:65` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 | `DustError` | enum | `src/lib.rs:78` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
 | `DustError`'s `Display` impl | trait impl | `src/lib.rs:88` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
-| `money_dust_split` | fn | `src/lib.rs:162` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_split_into` | fn | `src/lib.rs:177` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_remainder` | fn | `src/lib.rs:203` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split` | fn | `src/lib.rs:215` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split_into` | fn | `src/lib.rs:229` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_remainder` | fn | `src/lib.rs:253` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_split` | fn | `src/lib.rs:203` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_split_into` | fn | `src/lib.rs:214` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_remainder` | fn | `src/lib.rs:226` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split` | fn | `src/lib.rs:238` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split_into` | fn | `src/lib.rs:248` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_remainder` | fn | `src/lib.rs:258` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 
 `impl core::error::Error for DustError {}` (`src/lib.rs:101`) carries no associated item of its own, so it gets no row here — same treatment as every other marker trait impl in this family's `definition/` indexes.
 

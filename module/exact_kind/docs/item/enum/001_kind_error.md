@@ -45,6 +45,7 @@ pub enum KindError
 | `exact_parse/src/lib.rs:38,52-74` | — | `use` import; return type of all 3 `*_from_str` functions |
 | `exact_bytes/src/lib.rs:39,96-98` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
 | `exact_conserve/src/lib.rs:77` | — | `use` import |
+| `exact_dust/src/lib.rs:60,157,175` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
 | `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
 | `exact_ratio/src/lib.rs:46,84-86` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
@@ -57,4 +58,5 @@ pub enum KindError
 | `exact_parse`, `exact_add` | `src/lib.rs` | Direct return type — these crates' own errors are `KindError`, not a wrapping type |
 | `exact_bytes`, `exact_ratio` | `src/lib.rs` | Mapped into a crate-local error type (`WireError`, `RatioError`) via an explicit match, not a `From` impl |
 | `exact_conserve` | `src/lib.rs` | Imported; used in error-path construction |
+| `exact_dust` | `src/lib.rs` | Imported; names the `make` constructor's error type, every value folded into `DustError::Overflow` |
 | `exact_arith` | `src/lib.rs` | Re-export only |

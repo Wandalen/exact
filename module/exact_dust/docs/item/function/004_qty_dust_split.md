@@ -15,24 +15,24 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:215-222`
+`module/exact_dust/src/lib.rs:238-241`
 
 ```rust
 pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), parts, mode )?;
-  fill_minor( share, leftover, to, parts )?
-  .into_iter()
-  .map( | minor | Quantity::from_minor( minor ).map_err( | _ | DustError::Overflow ) )
-  .collect()
+  split_with( total.minor(), parts, mode, to, Quantity::from_minor )
 }
 ```
+
+The body is the private `split_with` (`src/lib.rs:148-164`), shared with
+[money_dust_split](001_money_dust_split.md): this function only supplies the
+total's minor count and `Quantity::from_minor` to build each slot.
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 215-222 | Declaration |
+| `src/lib.rs` | 238-241 | Declaration |
 | `tests/dust_split_test.rs:97,136,152` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
@@ -54,9 +54,9 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:217`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
-  - **External:** `exact_round::round_div`
-- `fill_minor` (`src/lib.rs:218`, private — no Item Instance of its own)
-  - `slot_minor` (`src/lib.rs:151`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:217`), `exact_kind::Quantity::from_minor` (`src/lib.rs:220`)
+- `split_with` (`src/lib.rs:240`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:160`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+    - **External:** `exact_round::round_div`
+  - `slot_minor` (`src/lib.rs:162`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:240`), `exact_kind::Quantity::from_minor` (`src/lib.rs:240`, passed to `split_with` as `make`, called at `162`)

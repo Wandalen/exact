@@ -17,13 +17,15 @@ the preferred design's own `exact_kind, exact_ratio` listing, matching
 `exact_snap`'s identical precedent for reaching `round_div` without an
 unused dependency on `exact_ratio`'s rational-multiplier surface.
 
-**Four private top-level functions are real call-graph hops, cataloged
+**Five private top-level functions are real call-graph hops, cataloged
 nowhere of their own** (`item_des.rulebook.md` § Instance Documentation :
 Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:103`),
-`split_minor` (`118`), `slot_minor` (`135`), and `fill_minor` (`149`).
-`split_minor` is called by all 6 public functions; `slot_minor` by the 2
-`*_split_into` functions directly and by `fill_minor`; `fill_minor` only by
-the 2 `*_split` functions — never by the 2 `*_remainder` functions — each function's own
+`split_minor` (`118`), `slot_minor` (`135`), and the generic `split_with`
+(`151`) and `split_into_with` (`169`), each taking the kind's `from_minor`
+as `make`. `split_minor` is called by the 2 `*_remainder` functions directly
+and by both generic helpers; `slot_minor` by both generic helpers;
+`split_with` only by the 2 `*_split` functions and `split_into_with` only by
+the 2 `*_split_into` functions — never by the 2 `*_remainder` functions — each function's own
 Callee Tree reflects this exactly rather than repeating one copy-pasted
 shape across all 6.
 

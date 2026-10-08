@@ -12,28 +12,18 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:177-194`
+`module/exact_dust/src/lib.rs:214-217`
 
 ```rust
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  // Fix(exact_dust_split_into_allocated): every slot's count used to be
-  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
-  // heap allocation per call, against type/008's "does not allocate". Each
-  // slot is now computed in place by `slot_minor`.
-  //
-  // Root cause: the `_into` variant reused the allocating `_split` helper.
-  // Pitfall: a helper shared by an allocating and a non-allocating variant
-  //   gives both the allocation, and the output is the same either way.
-  for ( i, slot ) in out.iter_mut().enumerate()
-  {
-    let minor = slot_minor( share, leftover, to, i )?;
-    *slot = Money::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
-  }
-  Ok( () )
+  split_into_with( total.minor(), mode, to, out, Money::from_minor )
 }
 ```
+
+The body is the private `split_into_with` (`src/lib.rs:166-193`), shared
+with [qty_dust_split_into](005_qty_dust_split_into.md); the `Fix(exact_dust_split_into_allocated)` comment lives
+there, above the per-slot loop.
 
 Each slot's value is computed by `slot_minor` and written straight into
 `out` — no intermediate `Vec`, so the call makes no heap allocation. Under
@@ -44,7 +34,7 @@ anything is written.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 177-194 | Declaration |
+| `src/lib.rs` | 214-217 | Declaration |
 | `tests/dust_split_test.rs:80` | — | Writes the same shares as the allocating `money_dust_split` |
 | `tests/dust_split_test.rs:106` | — | `DustTo::Reject` refuses before writing — the buffer keeps what it held |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
@@ -69,8 +59,9 @@ crate-doc example exercises `money_dust_split` instead; its
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:179`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
-  - **External:** `exact_round::round_div`
-- `slot_minor` (`src/lib.rs:190`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:179`), `exact_kind::Money::from_minor` (`src/lib.rs:191`)
+- `split_into_with` (`src/lib.rs:216`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:178`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+    - **External:** `exact_round::round_div`
+  - `slot_minor` (`src/lib.rs:189`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:216`), `exact_kind::Money::from_minor` (`src/lib.rs:216`, passed to `split_into_with` as `make`, called at `190`)
