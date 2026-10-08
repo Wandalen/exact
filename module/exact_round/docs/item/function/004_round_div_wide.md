@@ -81,7 +81,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 | `src/lib.rs` | 158-206 | Declaration |
 | `src/lib.rs` | 138 | `round_div`'s call, with widened operands |
 | `tests/round_div_test.rs` | 4,155,196-203,234-240 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
-| `exact_ratio/src/lib.rs:150-151` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
+| `exact_ratio/src/lib.rs:151-152` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 ## Crate Usage
@@ -95,7 +95,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 ## Caller Tree
 
 - [round_div](003_round_div.md) (`src/lib.rs:138`)
-- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:150-151`)
+- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:151-152`)
 
 ## Callee Tree
 

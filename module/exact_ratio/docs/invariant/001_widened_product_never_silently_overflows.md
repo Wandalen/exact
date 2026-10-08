@@ -9,7 +9,7 @@
 
 ### Statement
 
-`mul_ratio_minor` (`src/lib.rs:140-153`) widens both operands to `i128`
+`mul_ratio_minor` (`src/lib.rs:141-154`) widens both operands to `i128`
 before multiplying, so the product itself — `minor * r.n`, computed before
 any division narrows it — can never silently wrap: `i128` holds the full
 product of any two `i64` values with room to spare. The result is narrowed
@@ -36,9 +36,9 @@ arithmetic got there safely.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:140-153` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
-| `src/lib.rs:161-190` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
-| `src/lib.rs:225-241` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
+| `src/lib.rs:141-154` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
+| `src/lib.rs:162-191` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
+| `src/lib.rs:226-242` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
 | `../algorithm/001_widened_multiply_before_narrow.md` | The full procedure this invariant is a property of |
 
 ### Tests

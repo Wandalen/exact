@@ -82,7 +82,8 @@ fn kind_error_to_ratio_error( e : KindError ) -> RatioError
   match e
   {
     KindError::Negative { minor } => RatioError::Negative { minor },
-    _ => RatioError::Overflow,
+    KindError::Overflow { .. } | KindError::ExceedsCeiling { .. }
+    | KindError::ExcessPrecision { .. } | KindError::Malformed { .. } => RatioError::Overflow,
   }
 }
 

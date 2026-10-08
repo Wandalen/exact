@@ -46,7 +46,7 @@ pub enum KindError
 | `exact_bytes/src/lib.rs:39,96-98` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
 | `exact_conserve/src/lib.rs:77` | — | `use` import |
 | `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
-| `exact_ratio/src/lib.rs:46,84` | — | `use` import; mapped to `RatioError::Negative` in `kind_error_to_ratio_error` |
+| `exact_ratio/src/lib.rs:46,84-86` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage

@@ -40,7 +40,7 @@ pub enum RatioError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 51,65,78,80,84-85,125,129,133-134,140,150-152,161,174,185,191,195-196,206,219,235 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
+| `src/lib.rs` | 51,65,78,80,84-86,126,130,134-135,141,151-153,162,175,186,192,196-197,207,220,236 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; every fallible function's `Result` error type |
 | `tests/ratio_and_div_round_test.rs` | 16,58,64-67,131,305,315,317,336-339 | `DivZero` and `Negative` asserted directly, and every variant's message |
 | `exact_arith/src/lib.rs:106` | — | Facade re-export |
 

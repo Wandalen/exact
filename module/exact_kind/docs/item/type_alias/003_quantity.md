@@ -32,7 +32,7 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `exact_add/src/lib.rs:73,83,142` | — | `qty_add`/`qty_sub`/`qty_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported alongside `Money`/`Price` |
 | `exact_snap/src/lib.rs:113,124,160` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |
-| `exact_ratio/src/lib.rs:174,177,219` | — | `qty_mul_ratio`/`qty_div_round` |
+| `exact_ratio/src/lib.rs:175,178,220` | — | `qty_mul_ratio`/`qty_div_round` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage

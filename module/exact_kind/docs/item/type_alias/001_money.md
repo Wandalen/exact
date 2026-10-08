@@ -33,7 +33,7 @@ pub type Money = Decimal< MONEY_SCALE >;
 | `exact_dust/src/lib.rs:162,167,177,191,203` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_add/src/lib.rs:53,63,113,128` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported (`use exact_kind::{ Money, .. }`); re-exported `Display`/derived `Ord` exercised through it |
-| `exact_ratio/src/lib.rs:161,164,206,209` | — | `money_mul_ratio`/`money_div_round` |
+| `exact_ratio/src/lib.rs:162,165,207,210` | — | `money_mul_ratio`/`money_div_round` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export (`pub use exact_kind::{ .., Money, .. }`) |
 
 ## Crate Usage
