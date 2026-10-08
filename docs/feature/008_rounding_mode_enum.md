@@ -7,7 +7,7 @@
 - **In Scope**: `Down`, `Up`, `HalfEven` variants and a documented default.
 - **Out of Scope**: The decimal type the mode applies to (`exact_round` has no dependents on a decimal type itself — it's consumed by `exact_ratio`/`exact_snap`).
 
-**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md) — the `Rounding` enum's three proposed variants (`Down`, `Up`, `HalfEven`) match this proposal, and it adds four beyond it: `TowardZero`, `AwayFromZero`, `HalfUp`, `HalfDown`. The documented default deviates: `rounding_default()` returns `HalfEven`, not `Down` as originally planned, chosen because it is the one mode with no directional bias over a long run of roundings — see [`exact_round`'s own decision](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for the full account. Every division and snap function takes the mode as a required argument.
+**Design status**: implemented in [`exact_round`](../../module/exact_round/readme.md) — the `Rounding` enum's three proposed variants (`Down`, `Up`, `HalfEven`) match this proposal, and it adds four beyond it: `TowardZero`, `AwayFromZero`, `HalfUp`, `HalfDown` — see [`exact_round`'s ADR-003](../../module/exact_round/docs/decisions/003_four_more_rounding_modes.md) for why. The documented default deviates: `rounding_default()` returns `HalfEven`, not `Down` as originally planned, chosen because it is the one mode with no directional bias over a long run of roundings — see [`exact_round`'s own decision](../../module/exact_round/docs/decisions/001_half_even_as_the_unbiased_default.md) for the full account. Every division and snap function takes the mode as a required argument.
 
 ### Statement
 
