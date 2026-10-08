@@ -3,24 +3,24 @@ name = "exact_arith"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
-description = "Tier 4 facade over the 14-crate value substrate — re-exports only, no new policy"
-publish = false
+repository.workspace = true
+description = "Facade crate re-exporting the full exact fixed-point money and quantity arithmetic family from one place"
 
 [dependencies]
-exact_add = { path = "../exact_add" }
-exact_bytes = { path = "../exact_bytes" }
-exact_cmp = { path = "../exact_cmp" }
-exact_conserve = { path = "../exact_conserve" }
-exact_dust = { path = "../exact_dust" }
-exact_fmt = { path = "../exact_fmt" }
-exact_kind = { path = "../exact_kind" }
-exact_minor = { path = "../exact_minor" }
-exact_parse = { path = "../exact_parse" }
-exact_ratio = { path = "../exact_ratio" }
-exact_round = { path = "../exact_round" }
-exact_scale = { path = "../exact_scale" }
-exact_sign = { path = "../exact_sign" }
-exact_snap = { path = "../exact_snap" }
+exact_add = { path = "../exact_add", version = "0.1.0" }
+exact_bytes = { path = "../exact_bytes", version = "0.1.0" }
+exact_cmp = { path = "../exact_cmp", version = "0.1.0" }
+exact_conserve = { path = "../exact_conserve", version = "0.1.0" }
+exact_dust = { path = "../exact_dust", version = "0.1.0" }
+exact_fmt = { path = "../exact_fmt", version = "0.1.0" }
+exact_kind = { path = "../exact_kind", version = "0.1.0" }
+exact_minor = { path = "../exact_minor", version = "0.1.0" }
+exact_parse = { path = "../exact_parse", version = "0.1.0" }
+exact_ratio = { path = "../exact_ratio", version = "0.1.0" }
+exact_round = { path = "../exact_round", version = "0.1.0" }
+exact_scale = { path = "../exact_scale", version = "0.1.0" }
+exact_sign = { path = "../exact_sign", version = "0.1.0" }
+exact_snap = { path = "../exact_snap", version = "0.1.0" }
 
 [dev-dependencies]
 primitive_fixed_point_decimal = "0.9"

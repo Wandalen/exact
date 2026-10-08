@@ -3,12 +3,12 @@ name = "exact_dust"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
-description = "Equal-parts splitting with an explicit remainder destination — tier 3, depends on exact_kind and exact_round"
-publish = false
+repository.workspace = true
+description = "Split a fixed-point value into equal parts with an explicit leftover-remainder destination"
 
 [dependencies]
-exact_kind = { path = "../exact_kind" }
-exact_round = { path = "../exact_round" }
+exact_kind = { path = "../exact_kind", version = "0.1.0" }
+exact_round = { path = "../exact_round", version = "0.1.0" }
 
 [lints]
 workspace = true

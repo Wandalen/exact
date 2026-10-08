@@ -3,11 +3,11 @@ name = "exact_fmt"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
-description = "Formatting per kind and a buffer-writing primitive — tier 2, depends on exact_kind"
-publish = false
+repository.workspace = true
+description = "Display formatting and a no-allocation buffer-writing primitive for exact's fixed-point value types"
 
 [dependencies]
-exact_kind = { path = "../exact_kind" }
+exact_kind = { path = "../exact_kind", version = "0.1.0" }
 
 [lints]
 workspace = true

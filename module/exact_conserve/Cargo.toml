@@ -3,12 +3,12 @@ name = "exact_conserve"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
-description = "Conservation auditing: a plain-log verifier plus a typed per-kind convenience layer — tier 3, depends on exact_add and exact_kind"
-publish = false
+repository.workspace = true
+description = "Conservation auditing — verify a batch of postings nets to zero — for exact's fixed-point value types"
 
 [dependencies]
-exact_add = { path = "../exact_add" }
-exact_kind = { path = "../exact_kind" }
+exact_add = { path = "../exact_add", version = "0.1.0" }
+exact_kind = { path = "../exact_kind", version = "0.1.0" }
 
 [lints]
 workspace = true

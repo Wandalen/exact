@@ -3,12 +3,12 @@ name = "exact_kind"
 version = "0.1.0"
 edition.workspace = true
 license.workspace = true
-description = "The conserved value type family — Money, Qty, Price — tier 1, depends on exact_minor and exact_scale"
-publish = false
+repository.workspace = true
+description = "Money, Qty, and Price — the conserved fixed-point value types at the core of the exact family"
 
 [dependencies]
-exact_minor = { path = "../exact_minor" }
-exact_scale = { path = "../exact_scale" }
+exact_minor = { path = "../exact_minor", version = "0.1.0" }
+exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]
 workspace = true
