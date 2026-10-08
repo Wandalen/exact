@@ -31,9 +31,9 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 199,222,250,264,283,298,369,458 | Range gate inside `from_int`, `checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`, `parse`, and `Qty::from_minor` |
 | `tests/checked_arithmetic_test.rs` | throughout | Direct construction at and past boundaries |
-| `exact_bytes/src/lib.rs:198,251` | — | `money_from_wire`/`price_from_wire` |
+| `exact_bytes/src/lib.rs:212,251` | — | `money_from_wire`/`price_from_wire` |
 | `exact_dust/src/lib.rs:167,191` | — | `money_dust_split`/`money_dust_split_into` |
-| `exact_ratio/src/lib.rs:164,188,209,240` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round`, `price_mul_qty` |
+| `exact_ratio/src/lib.rs:165,189,210,241` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round`, `price_mul_qty` |
 
 ## Crate Usage
 
@@ -51,9 +51,9 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 - [Decimal::checked_neg](008_checked_neg_decimal.md) (`src/lib.rs:298`)
 - [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:369`)
 - [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:458`)
-- **External:** `exact_bytes::money_from_wire` (`exact_bytes/src/lib.rs:198`), `exact_bytes::price_from_wire` (`:251`)
+- **External:** `exact_bytes::money_from_wire` (`exact_bytes/src/lib.rs:212`), `exact_bytes::price_from_wire` (`:251`)
 - **External:** `exact_dust::money_dust_split` (`exact_dust/src/lib.rs:167`), `money_dust_split_into` (`:191`)
-- **External:** `exact_ratio::money_mul_ratio` (`exact_ratio/src/lib.rs:164`), `price_mul_ratio` (`:188`), `money_div_round` (`:209`), `price_mul_qty` (`:240`)
+- **External:** `exact_ratio::money_mul_ratio` (`exact_ratio/src/lib.rs:165`), `price_mul_ratio` (`:189`), `money_div_round` (`:210`), `price_mul_qty` (`:241`)
 
 This function is, by call count, the single most-relied-upon item in the
 whole crate — every one of the other 5 constructors/operations on `Decimal`

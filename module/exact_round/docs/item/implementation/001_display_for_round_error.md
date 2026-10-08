@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:95`
+`module/exact_round/src/lib.rs:113`
 
 ```rust
 impl core::fmt::Display for RoundError
@@ -31,9 +31,9 @@ impl core::fmt::Display for RoundError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 95-105 | Declaration |
+| `src/lib.rs` | 113-123 | Declaration |
 
-Rendered only by this crate's own tests (`tests/round_div_test.rs:204,211`,
+Rendered only by this crate's own tests (`tests/round_div_test.rs:248,255`,
 via `.to_string()`), which pin both messages. Every downstream crate maps
 `RoundError` into its own local error type by `match` reconstruction, never
 by rendering the message (see [RoundError](../enum/002_round_error.md)'s

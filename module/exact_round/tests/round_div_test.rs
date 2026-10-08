@@ -54,7 +54,7 @@ fn half_even_rounds_a_non_tie_to_the_nearest_neighbour()
 #[ test ]
 fn an_exact_division_agrees_across_every_rounding_mode()
 {
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( round_div( 8, 4, mode ).unwrap(), 2 );
   }
@@ -64,7 +64,7 @@ fn an_exact_division_agrees_across_every_rounding_mode()
 #[ test ]
 fn round_div_reports_overflow_only_when_the_quotient_does_not_fit()
 {
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( round_div( i64::MIN, -1, mode ), Err( RoundError::Overflow ) );
   }
@@ -93,7 +93,7 @@ fn round_div_reports_overflow_only_when_the_quotient_does_not_fit()
 #[ test ]
 fn round_div_handles_the_minimum_value_on_either_side()
 {
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( round_div( 0, i64::MIN, mode ), Ok( 0 ) );
     assert_eq!( round_div( i64::MIN, -2, mode ), Ok( 1 << 62 ) );
@@ -115,7 +115,9 @@ fn half_even_rounds_below_half_toward_the_nearer_neighbour()
 
 /// Every mode matches its definition on a grid of small operands, both signs:
 /// `Down` is the largest integer at most `n / d`, `Up` the smallest at least
-/// `n / d`, and `HalfEven` the nearest, a tie going to the even one.
+/// `n / d`, `TowardZero` and `AwayFromZero` whichever of those two is nearer
+/// to and farther from zero, and the three `Half*` modes the nearest, a tie
+/// going to the even one, away from zero, or toward zero.
 #[ test ]
 fn every_mode_matches_its_definition_on_a_grid()
 {
@@ -127,19 +129,61 @@ fn every_mode_matches_its_definition_on_a_grid()
       let down = ( -61..=61 ).filter( | &k | at_most( k ) ).max().unwrap();
       let up = if down * d == n { down } else { down + 1 };
       let distance = | k : i64 | ( n - k * d ).abs();
-      let half_even = match distance( down ).cmp( &distance( up ) )
+      // `down` and `up` straddle `n / d`: at or above zero `down` is nearer zero, below it `up` is.
+      let toward_zero = if down >= 0 { down } else { up };
+      let away_from_zero = if down >= 0 { up } else { down };
+      let nearest = | tie : i64 | match distance( down ).cmp( &distance( up ) )
       {
         core::cmp::Ordering::Less => down,
         core::cmp::Ordering::Greater => up,
-        core::cmp::Ordering::Equal => if down % 2 == 0 { down } else { up },
+        core::cmp::Ordering::Equal => tie,
       };
-      let expected = [ ( Rounding::Down, down ), ( Rounding::Up, up ), ( Rounding::HalfEven, half_even ) ];
+      let half_even = nearest( if down % 2 == 0 { down } else { up } );
+      let expected =
+      [
+        ( Rounding::Down, down ),
+        ( Rounding::Up, up ),
+        ( Rounding::HalfEven, half_even ),
+        ( Rounding::TowardZero, toward_zero ),
+        ( Rounding::AwayFromZero, away_from_zero ),
+        ( Rounding::HalfUp, nearest( away_from_zero ) ),
+        ( Rounding::HalfDown, nearest( toward_zero ) ),
+      ];
       for ( mode, want ) in expected
       {
         assert_eq!( round_div( n, d, mode ), Ok( want ), "{n} / {d}, {mode:?}" );
         let wide = round_div_wide( i128::from( n ), i128::from( d ), mode );
         assert_eq!( wide, Ok( i128::from( want ) ), "wide {n} / {d}, {mode:?}" );
       }
+    }
+  }
+}
+
+/// Every mode on positive and negative quotients, off a tie and on one, with
+/// the expected values worked by hand.
+#[ test ]
+fn every_mode_rounds_as_named()
+{
+  use Rounding::*;
+  let modes = [ TowardZero, AwayFromZero, Down, Up, HalfEven, HalfUp, HalfDown ];
+  //  n,  d,   TowardZero, AwayFromZero, Down, Up, HalfEven, HalfUp, HalfDown
+  let cases : [ ( i64, i64, [ i64; 7 ] ); 9 ] =
+  [
+    (  7,  2, [  3,  4,  3,  4,  4,  4,  3 ] ), //  3.5
+    ( -7,  2, [ -3, -4, -4, -3, -4, -4, -3 ] ), // -3.5
+    (  7, -2, [ -3, -4, -4, -3, -4, -4, -3 ] ), // -3.5, negative divisor
+    (  5,  2, [  2,  3,  2,  3,  2,  3,  2 ] ), //  2.5
+    ( -5,  2, [ -2, -3, -3, -2, -2, -3, -2 ] ), // -2.5
+    (  7,  3, [  2,  3,  2,  3,  2,  2,  2 ] ), //  2.33
+    ( -8,  3, [ -2, -3, -3, -2, -3, -3, -3 ] ), // -2.67
+    ( -1,  3, [  0, -1, -1,  0,  0,  0,  0 ] ), // -0.33
+    (  6,  2, [  3,  3,  3,  3,  3,  3,  3 ] ), //  exact
+  ];
+  for ( n, d, expected ) in cases
+  {
+    for ( mode, want ) in modes.into_iter().zip( expected )
+    {
+      assert_eq!( round_div( n, d, mode ), Ok( want ), "{n} / {d} under {mode:?}" );
     }
   }
 }
@@ -185,7 +229,7 @@ fn round_div_wide_divides_a_dividend_wider_than_i64()
 #[ test ]
 fn round_div_wide_handles_the_minimum_value_on_either_side()
 {
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( round_div_wide( 0, i128::MIN, mode ), Ok( 0 ) );
     assert_eq!( round_div_wide( i128::MIN, -2, mode ), Ok( 1 << 126 ) );
@@ -210,3 +254,15 @@ fn the_div_zero_message_names_the_zero_divisor()
 {
   assert_eq!( RoundError::DivZero.to_string(), "a zero divisor was supplied" );
 }
+
+/// Every rounding mode, for the tests that must hold under each of them.
+const EVERY_MODE : [ Rounding; 7 ] =
+[
+  Rounding::Down,
+  Rounding::Up,
+  Rounding::HalfEven,
+  Rounding::TowardZero,
+  Rounding::AwayFromZero,
+  Rounding::HalfUp,
+  Rounding::HalfDown,
+];

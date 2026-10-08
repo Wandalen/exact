@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:174`
+`module/exact_ratio/src/lib.rs:175`
 
 ```rust
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
@@ -26,8 +26,8 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 174-178 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 60-67,279,349 | Negative-numerator ratio refused as `RatioError::Negative`; every mode at both signs; a negative product within one minor unit of zero decided by the mode, and a whole-unit one refused in every mode |
+| `src/lib.rs` | 175-179 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 60-67,279,350 | Negative-numerator ratio refused as `RatioError::Negative`; `Down`/`Up`/`HalfEven` at both signs; a negative product within one minor unit of zero decided by each of the seven modes, and a whole-unit one refused in every mode |
 | `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
@@ -45,6 +45,6 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:140`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:141`, private — no Item Instance of its own)
 - `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
 - **External:** `exact_kind::Quantity::minor`, `exact_kind::Quantity::from_minor`

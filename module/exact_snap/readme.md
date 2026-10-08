@@ -35,7 +35,7 @@ for it.
 |------|----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_round` |
 | [`src/lib.rs`](src/lib.rs) | `Tick`, `Lot`, `price_snap_tick`, `qty_snap_lot`, `SnapError` |
-| [`tests/snap_test.rs`](tests/snap_test.rs) | Construction refusal, on-grid identity, and every rounding mode |
+| [`tests/snap_test.rs`](tests/snap_test.rs) | Construction refusal, `Down`/`Up`/`HalfEven` snapping, and on-grid identity and negative ticks under all seven modes |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/workaround/`](docs/workaround/readme.md) | External constraints this crate absorbs — none |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

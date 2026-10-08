@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:71-84`
+`module/exact_bytes/src/lib.rs:75-88`
 
 ```rust
 impl core::fmt::Display for WireError
@@ -33,7 +33,7 @@ impl core::fmt::Display for WireError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 71-84 | Declaration |
+| `src/lib.rs` | 75-88 | Declaration |
 
 ## Crate Usage
 

@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:203-206`
+`module/exact_bytes/src/lib.rs:217-220`
 
 ```rust
 pub fn qty_to_wire( v : Quantity ) -> Wire
 {
-  Wire { minor : v.minor(), scale : exact_scale::MONEY_SCALE as u8, kind : KIND_QTY }
+  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_QTY }
 }
 ```
 
@@ -23,7 +23,7 @@ pub fn qty_to_wire( v : Quantity ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 203-206 | Declaration |
+| `src/lib.rs` | 217-220 | Declaration |
 | `tests/wire_roundtrip_test.rs:24,46` | — | Encoding in the quantity round-trip test and the cross-kind-rejection test |
 | `exact_arith/src/lib.rs:132` | — | Facade re-export |
 
@@ -46,4 +46,4 @@ test-only exception even in the facade's own test suite (contrast
 
 ## Callee Tree
 
-- **External:** `exact_kind::Quantity::minor` (`v.minor()`, `src/lib.rs:205`)
+- **External:** `exact_kind::Quantity::minor` (`v.minor()`, `src/lib.rs:219`)

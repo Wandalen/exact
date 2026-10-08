@@ -3,9 +3,10 @@
 ## Representation
 
 A cross-crate compile-time guard: `Wire` stores `scale` as a single `u8`
-(`src/lib.rs:103`), so this assertion fails the build the moment
+(`src/lib.rs:124`), so this assertion fails the build the moment
 `exact_scale::MONEY_SCALE` would no longer fit in that byte, rather than
-letting `to_bytes`/`from_bytes` silently truncate or misinterpret it. An
+letting the one cast that fills it, `SCALE_BYTE` (`src/lib.rs:52`), silently
+truncate it. An
 anonymous (`_`-named) compile-time assertion, the same pattern
 `exact_scale/docs/item/constant/005_range_budget_assertion.md` and
 `exact_parse`'s own cross-crate consistency assertion already use.

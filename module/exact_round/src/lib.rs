@@ -51,11 +51,25 @@ pub enum Rounding
   /// rounded values, where biasing toward even cancels on average because
   /// ties land on an even last digit and an odd one equally often.
   HalfEven,
+
+  /// Round toward zero — truncation: `2.7` to `2`, `-2.7` to `-2`.
+  TowardZero,
+
+  /// Round away from zero: `2.1` to `3`, `-2.1` to `-3`.
+  AwayFromZero,
+
+  /// Round to the nearest grid point; on an exact tie, round away from
+  /// zero: `2.5` to `3`, `-2.5` to `-3`.
+  HalfUp,
+
+  /// Round to the nearest grid point; on an exact tie, round toward zero:
+  /// `2.5` to `2`, `-2.5` to `-2`.
+  HalfDown,
 }
 
 /// The family's default rounding policy where a call site states none.
 ///
-/// `HalfEven` is the default because it is the only one of the three with
+/// `HalfEven` is the default because it is the only one of these modes with
 /// no directional bias over a long run of roundings — the property a
 /// conserved-value family needs most, since a biased default would leak or
 /// manufacture value on every unrounded remainder, silently, in one
@@ -78,6 +92,10 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
     Rounding::Down => "down",
     Rounding::Up => "up",
     Rounding::HalfEven => "half_even",
+    Rounding::TowardZero => "toward_zero",
+    Rounding::AwayFromZero => "away_from_zero",
+    Rounding::HalfUp => "half_up",
+    Rounding::HalfDown => "half_down",
   }
 }
 
@@ -163,17 +181,21 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
   // The exact quotient lies strictly between `q` and its neighbour one step
   // further from zero: below `q` when the remainder and divisor differ in sign.
   let exact_is_below = ( r < 0 ) != ( d < 0 );
+  // How the remainder compares with half the divisor, without fractions.
+  // `u128`: twice a remainder just below `i128::MAX` would not fit `i128`.
+  let twice_r = r.unsigned_abs() * 2;
+  let d_abs = d.unsigned_abs();
+  // `q` was truncated toward zero, so stepping toward the exact quotient
+  // always moves one step away from zero.
   let step_toward_exact = match rounding
   {
     Rounding::Down => exact_is_below,
     Rounding::Up => !exact_is_below,
-    Rounding::HalfEven =>
-    {
-      // `u128`: twice a remainder just below `i128::MAX` would not fit `i128`.
-      let twice_r = r.unsigned_abs() * 2;
-      let d_abs = d.unsigned_abs();
-      twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 )
-    }
+    Rounding::TowardZero => false,
+    Rounding::AwayFromZero => true,
+    Rounding::HalfEven => twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 ),
+    Rounding::HalfUp => twice_r >= d_abs,
+    Rounding::HalfDown => twice_r > d_abs,
   };
   if !step_toward_exact
   {

@@ -10,19 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:241-252`
+`module/exact_bytes/src/lib.rs:248-252`
 
 ```rust
 pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
 {
-  if w.kind != KIND_PRICE
-  {
-    return Err( WireError::BadKind );
-  }
-  if w.scale != exact_scale::MONEY_SCALE as u8
-  {
-    return Err( WireError::BadScale );
-  }
+  check_header( w, KIND_PRICE )?;
   Price::from_minor( w.minor ).map_err( kind_error_to_wire_error )
 }
 ```
@@ -31,7 +24,7 @@ pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 241-252 | Declaration |
+| `src/lib.rs` | 248-252 | Declaration |
 | `tests/wire_roundtrip_test.rs:36` | — | Decoding in the price round-trip test |
 | `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
@@ -50,5 +43,6 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `kind_error_to_wire_error` (`src/lib.rs:88`, private — no Item Instance of its own)
+- `check_header` (`src/lib.rs:105`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
+- `kind_error_to_wire_error` (`src/lib.rs:92`, private — no Item Instance of its own)
 - **External:** `exact_kind::Price::from_minor` (`src/lib.rs:251`)

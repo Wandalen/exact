@@ -202,8 +202,20 @@ fn a_negative_total_splits_and_still_recombines_exactly()
 fn a_single_part_receives_the_whole_total()
 {
   let total = Money::from_minor( 11 ).unwrap();
-  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven ]
+  for mode in EVERY_MODE
   {
     assert_eq!( money_dust_split( total, 1, mode, DustTo::Reject ).unwrap(), vec![ total ] );
   }
 }
+
+/// Every rounding mode, for the tests that must hold under each of them.
+const EVERY_MODE : [ Rounding; 7 ] =
+[
+  Rounding::Down,
+  Rounding::Up,
+  Rounding::HalfEven,
+  Rounding::TowardZero,
+  Rounding::AwayFromZero,
+  Rounding::HalfUp,
+  Rounding::HalfDown,
+];

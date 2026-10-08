@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:231-234`
+`module/exact_bytes/src/lib.rs:238-241`
 
 ```rust
 pub fn price_to_wire( v : Price ) -> Wire
 {
-  Wire { minor : v.minor(), scale : exact_scale::MONEY_SCALE as u8, kind : KIND_PRICE }
+  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_PRICE }
 }
 ```
 
@@ -23,7 +23,7 @@ pub fn price_to_wire( v : Price ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 231-234 | Declaration |
+| `src/lib.rs` | 238-241 | Declaration |
 | `tests/wire_roundtrip_test.rs:34` | — | Encoding in the price round-trip test |
 | `exact_arith/src/lib.rs:130` | — | Facade re-export |
 
@@ -43,4 +43,4 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Price::minor` (`v.minor()`, `src/lib.rs:233`)
+- **External:** `exact_kind::Price::minor` (`v.minor()`, `src/lib.rs:240`)

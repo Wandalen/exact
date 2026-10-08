@@ -3,9 +3,11 @@
 ## Representation
 
 How a value that falls between two representable grid points is placed onto
-one of them. Three variants: `Down` (floor), `Up` (ceiling), `HalfEven`
-(nearest, ties to even — the only one of the three with no directional bias
-over a long run, which is why it is the family's default). Net-new: no real
+one of them. Seven variants: `Down` (floor), `Up` (ceiling), `HalfEven`
+(nearest, ties to even — the only one with no directional bias over a long
+run, which is why it is the family's default), `TowardZero` (truncation),
+`AwayFromZero`, `HalfUp` (nearest, ties away from zero) and `HalfDown`
+(nearest, ties toward zero). Net-new: no real
 crate in the family's prior 5-crate shape offered more than one implicit
 rounding behaviour, so this is written fresh against the preferred design's
 own spec, not ported.
@@ -35,6 +37,20 @@ pub enum Rounding
   /// rounded values, where biasing toward even cancels on average because
   /// ties land on an even last digit and an odd one equally often.
   HalfEven,
+
+  /// Round toward zero — truncation: `2.7` to `2`, `-2.7` to `-2`.
+  TowardZero,
+
+  /// Round away from zero: `2.1` to `3`, `-2.1` to `-3`.
+  AwayFromZero,
+
+  /// Round to the nearest grid point; on an exact tie, round away from
+  /// zero: `2.5` to `3`, `-2.5` to `-3`.
+  HalfUp,
+
+  /// Round to the nearest grid point; on an exact tie, round toward zero:
+  /// `2.5` to `2`, `-2.5` to `-2`.
+  HalfDown,
 }
 ```
 
@@ -42,8 +58,8 @@ pub enum Rounding
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 38,64,66,74,76,78,79,80,118,140,166,168,169,170 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div_wide`; parameter of `round_div` and `round_div_wide` |
-| `tests/rounding_mode_test.rs`, `tests/round_div_test.rs` | throughout | Every variant exercised directly |
+| `src/lib.rs` | 38,78,80,88,90,92-98,136,158,190,192-198 | Return type of `rounding_default`; match subject/arms in `rounding_name` and `round_div_wide`; parameter of `round_div` and `round_div_wide` |
+| `tests/rounding_mode_test.rs`, `tests/round_div_test.rs` | throughout | Every variant exercised directly, against hand-worked values and against each mode's definition on a grid |
 | `exact_dust/src/lib.rs` (via `Rounding` parameter on every `money_dust_*`/`qty_dust_*` function) | — | **Production** — the rounding-mode parameter threaded through every dust-split function |
 | `exact_snap/src/lib.rs` (via `rounding` parameter on `price_snap_tick`/`qty_snap_lot`) | — | **Production** |
 | `exact_ratio/src/lib.rs` (via `rounding` parameter on `money_div_round`/`qty_div_round`, every `*_mul_ratio`, and `price_mul_qty`) | — | **Production** |

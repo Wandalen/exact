@@ -49,11 +49,11 @@ caller.
 | `tests/parse_render_test.rs` | 10,127-134 | A price may be negative and renders back exactly |
 | `tests/price_test.rs` | throughout | Constants, range, exact arithmetic, parse/render and ordering of `Price` as its own kind |
 | `exact_add/src/lib.rs:46,93,103` | — | `price_add`/`price_sub` |
-| `exact_bytes/src/lib.rs:39,231,241,251` | — | `price_to_wire`/`price_from_wire` |
+| `exact_bytes/src/lib.rs:39,238,248,251` | — | `price_to_wire`/`price_from_wire` |
 | `exact_cmp/src/lib.rs:32,50,64,71` | — | `price_cmp`/`price_min`/`price_max` |
 | `exact_fmt/src/lib.rs:41,119` | — | `price_fmt` |
 | `exact_parse/src/lib.rs:38,72,74` | — | `price_from_str` |
-| `exact_ratio/src/lib.rs:46,185,188,235` | — | `price_mul_ratio`, `price_mul_qty` |
+| `exact_ratio/src/lib.rs:46,186,189,236` | — | `price_mul_ratio`, `price_mul_qty` |
 | `exact_snap/src/lib.rs:24,70,80,87,96,136,151` | — | `Tick`, `Tick::new`'s stored magnitude, `price_snap_tick` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 

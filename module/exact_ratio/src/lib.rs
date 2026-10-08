@@ -17,7 +17,7 @@
 //!   `ScaleMismatch` is unreachable for the same reason every other crate in
 //!   this family already drops it — two different `SCALE` values are two
 //!   different Rust types, caught at compile time. `BadRounding` is
-//!   likewise unreachable: [`exact_round::Rounding`] is a closed three-variant
+//!   likewise unreachable: [`exact_round::Rounding`] is a closed seven-variant
 //!   enum, and every value of it is already a valid rounding mode — there is
 //!   no way to construct an invalid one through the public API for this
 //!   error to report. In its place, `RatioError::Negative` carries the one
@@ -82,7 +82,8 @@ fn kind_error_to_ratio_error( e : KindError ) -> RatioError
   match e
   {
     KindError::Negative { minor } => RatioError::Negative { minor },
-    _ => RatioError::Overflow,
+    KindError::Overflow { .. } | KindError::ExceedsCeiling { .. }
+    | KindError::ExcessPrecision { .. } | KindError::Malformed { .. } => RatioError::Overflow,
   }
 }
 
@@ -168,9 +169,9 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 ///
 /// # Errors
 ///
-/// [`RatioError::Negative`] when a negative-numerator ratio takes the rounded result below zero.
-/// At or below -1 minor unit every mode refuses it; within one minor unit of zero the mode decides:
-/// `Down` refuses, `HalfEven` only past half a minor unit, `Up` never. [`RatioError::Overflow`] on overflow.
+/// [`RatioError::Negative`] when a negative-numerator ratio rounds the result below zero: at or below
+/// -1 minor unit in every mode; within one of zero, `Down`/`AwayFromZero` always, `HalfEven`/`HalfDown`
+/// past half a minor unit, `HalfUp` at half, `Up`/`TowardZero` never. [`RatioError::Overflow`] on overflow.
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;

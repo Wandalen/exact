@@ -32,6 +32,13 @@ through `round_div_wide`, and narrows the result back — reporting
      - greater, or equal with `q` odd — step.
      - equal with `q` already even — an exact tie landing on the even
        neighbour already; keep `q`.
+   - **`TowardZero`**: never step — `q` is already truncated toward zero.
+   - **`AwayFromZero`**: always step — the neighbour is the one further
+     from zero.
+   - **`HalfUp`**: compare twice `|r|` with `|d|` as `HalfEven` does; step
+     when it is greater or equal — an exact tie goes away from zero.
+   - **`HalfDown`**: compare twice `|r|` with `|d|` as `HalfEven` does; step
+     only when it is greater — an exact tie stays at `q`, toward zero.
 6. Step: `q - 1` when the exact quotient is below `q`, `q + 1` otherwise.
    This never overflows: a nonzero remainder needs `|d| >= 2`, so
    `|q| <= |n| / 2`.
@@ -65,14 +72,14 @@ It implements `Display` (a one-line message per variant) and
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:84-107` | `RoundError`, its `Display` impl, and its `Error` impl |
-| `src/lib.rs:109-126` | `round_div` — widen, divide through `round_div_wide`, narrow back |
-| `src/lib.rs:128-145` | `round_div_wide`'s doc comment and the zero-divisor refusal |
-| `src/lib.rs:155-161` | The truncating divide and the exact-division shortcut |
-| `src/lib.rs:163-183` | The direction of the exact quotient, the mode decision — `Down`, `Up`, `HalfEven` — and the step |
+| `src/lib.rs:102-125` | `RoundError`, its `Display` impl, and its `Error` impl |
+| `src/lib.rs:127-144` | `round_div` — widen, divide through `round_div_wide`, narrow back |
+| `src/lib.rs:146-163` | `round_div_wide`'s doc comment and the zero-divisor refusal |
+| `src/lib.rs:173-179` | The truncating divide and the exact-division shortcut |
+| `src/lib.rs:181-205` | The direction of the exact quotient, the mode decision for each of the seven modes, and the step |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/round_div_test.rs` | `round_div_refuses_a_zero_divisor`, `a_negative_divisor_rounds_like_negating_both_operands` (refusal and sign handling); `down_rounds_toward_negative_infinity`, `up_rounds_toward_positive_infinity`, `half_even_rounds_an_exact_tie_to_even`, `half_even_rounds_a_non_tie_to_the_nearest_neighbour` (mode dispatch); `an_exact_division_agrees_across_every_rounding_mode` (the exact-division shortcut); `every_mode_matches_its_definition_on_a_grid` (every mode against its definition); `round_div_reports_overflow_only_when_the_quotient_does_not_fit`, `round_div_handles_the_minimum_value_on_either_side`, `round_div_wide_handles_the_minimum_value_on_either_side` (the minimum value and the one overflow) |
+| `tests/round_div_test.rs` | `round_div_refuses_a_zero_divisor`, `a_negative_divisor_rounds_like_negating_both_operands` (refusal and sign handling); `down_rounds_toward_negative_infinity`, `up_rounds_toward_positive_infinity`, `half_even_rounds_an_exact_tie_to_even`, `half_even_rounds_a_non_tie_to_the_nearest_neighbour` (mode dispatch); `an_exact_division_agrees_across_every_rounding_mode` (the exact-division shortcut); `every_mode_matches_its_definition_on_a_grid` (every mode against its definition); `every_mode_rounds_as_named` (every mode against hand-worked values, ties and non-ties at both signs); `round_div_reports_overflow_only_when_the_quotient_does_not_fit`, `round_div_handles_the_minimum_value_on_either_side`, `round_div_wide_handles_the_minimum_value_on_either_side` (the minimum value and the one overflow) |
