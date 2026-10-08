@@ -15,7 +15,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:119-125`
+`module/exact_bytes/src/lib.rs:120-126`
 
 ```rust
 /// A fixed-width wire encoding for one conserved value: its minor-unit
@@ -33,9 +33,9 @@ pub struct Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 120-125 | Declaration |
-| `src/lib.rs` | 127-192 | `impl Wire` — all 6 methods plus `ENCODED_LEN` |
-| `src/lib.rs` | 198,208,218,229,239,247 | Constructed or taken as a parameter by all 6 to/from-wire functions |
+| `src/lib.rs` | 121-126 | Declaration |
+| `src/lib.rs` | 128-193 | `impl Wire` — all 6 methods plus `ENCODED_LEN` |
+| `src/lib.rs` | 199,209,219,230,240,248 | Constructed or taken as a parameter by all 6 to/from-wire functions |
 | `tests/wire_roundtrip_test.rs` | 14-98 (throughout) | Constructed via every to-wire function and via `Wire::new`/`Wire::from_bytes` directly |
 | `exact_arith/src/lib.rs:125` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed via `money_to_wire` in the facade's own end-to-end test |

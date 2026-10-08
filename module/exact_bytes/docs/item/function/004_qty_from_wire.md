@@ -10,7 +10,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:229-233`
+`module/exact_bytes/src/lib.rs:230-234`
 
 ```rust
 pub fn qty_from_wire( w : Wire ) -> Result< Quantity, WireError >
@@ -24,7 +24,7 @@ pub fn qty_from_wire( w : Wire ) -> Result< Quantity, WireError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 229-233 | Declaration |
+| `src/lib.rs` | 230-234 | Declaration |
 | `tests/wire_roundtrip_test.rs:26,44,96` | — | Decoding in the quantity round-trip, cross-kind-rejection, and negative-value tests |
 | `exact_arith/src/lib.rs:131` | — | Facade re-export |
 
@@ -45,6 +45,6 @@ test-only exception even in the facade's own test suite.
 
 ## Callee Tree
 
-- `check_header` (`src/lib.rs:104`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
+- `check_header` (`src/lib.rs:105`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
 - `kind_error_to_wire_error` (`src/lib.rs:92`, private — no Item Instance of its own)
-- **External:** `exact_kind::Quantity::from_minor` (`src/lib.rs:232`)
+- **External:** `exact_kind::Quantity::from_minor` (`src/lib.rs:233`)

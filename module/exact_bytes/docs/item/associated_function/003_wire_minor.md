@@ -6,7 +6,7 @@ The minor-unit count carried.
 
 **Never actually called — a verified discrepancy worth stating plainly.**
 All three `*_from_wire` functions read `w.minor` as a direct private-field
-access (`src/lib.rs:211,232,250`) rather than through this accessor, since
+access (`src/lib.rs:212,233,251`) rather than through this accessor, since
 they live in the same module and have that privilege. No test calls it
 either — the test suite only ever asserts on `.kind()` (see
 [Wire::kind](005_wire_kind.md)) or on the round-tripped `Money`/`Quantity`/
@@ -21,7 +21,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:147-150`
+`module/exact_bytes/src/lib.rs:148-151`
 
 ```rust
 pub const fn minor( self ) -> i64
@@ -34,7 +34,7 @@ pub const fn minor( self ) -> i64
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 147-150 | Declaration |
+| `src/lib.rs` | 148-151 | Declaration |
 
 No file anywhere calls this method — an honest empty finding, and the
 sharpest one on this type: a public accessor that exists, compiles, and is

@@ -20,7 +20,7 @@ convention recording which kind and scale it was written at (module doc
 comment, `src/lib.rs:7-13`).
 
 Two private top-level functions, `kind_error_to_wire_error` (`src/lib.rs:92`)
-and `check_header` (`src/lib.rs:104`),
+and `check_header` (`src/lib.rs:105`),
 is excluded from this catalog per `item_des.rulebook.md`'s own Caller Tree
 Content rule (private/`pub(crate)`/`pub(super)` helpers get no Item Instance
 of their own) — it still appears as a real hop, cited as a plain

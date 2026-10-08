@@ -3,7 +3,7 @@
 ## Representation
 
 A cross-crate compile-time guard: `Wire` stores `scale` as a single `u8`
-(`src/lib.rs:123`), so this assertion fails the build the moment
+(`src/lib.rs:124`), so this assertion fails the build the moment
 `exact_scale::MONEY_SCALE` would no longer fit in that byte, rather than
 letting the one cast that fills it, `SCALE_BYTE` (`src/lib.rs:52`), silently
 truncate it. An

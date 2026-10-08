@@ -13,7 +13,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:140-143`
+`module/exact_bytes/src/lib.rs:141-144`
 
 ```rust
 pub const fn new( minor : i64, scale : u8, kind : u8 ) -> Self
@@ -26,7 +26,7 @@ pub const fn new( minor : i64, scale : u8, kind : u8 ) -> Self
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 140-143 | Declaration |
+| `src/lib.rs` | 141-144 | Declaration |
 | `tests/wire_roundtrip_test.rs` | 87,95,98 | Constructing a `Wire` directly to exercise overflow/negative decode failure modes |
 
 No production function in `exact_bytes` calls `Wire::new` — `money_to_wire`/

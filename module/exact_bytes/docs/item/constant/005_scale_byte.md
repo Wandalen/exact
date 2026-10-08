@@ -3,7 +3,7 @@
 ## Representation
 
 The scale every kind is written at, as the single byte a `Wire` record stores
-in its `scale` field (`src/lib.rs:123`). It holds the crate's one
+in its `scale` field (`src/lib.rs:124`). It holds the crate's one
 `exact_scale::MONEY_SCALE as u8` cast, so the three `*_to_wire` functions
 write it and `check_header` compares a decoded record against it, rather than
 each repeating the cast. The cast cannot truncate: the compile-time assertion
@@ -30,8 +30,8 @@ const SCALE_BYTE : u8 = exact_scale::MONEY_SCALE as u8;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 52 | Declaration |
-| `src/lib.rs` | 110 | `check_header`'s scale check, shared by the three `*_from_wire` functions |
-| `src/lib.rs` | 198, 218, 239 | The `scale` byte `money_to_wire`, `qty_to_wire` and `price_to_wire` write |
+| `src/lib.rs` | 111 | `check_header`'s scale check, shared by the three `*_from_wire` functions |
+| `src/lib.rs` | 199, 219, 240 | The `scale` byte `money_to_wire`, `qty_to_wire` and `price_to_wire` write |
 
 No test names it directly — it is private; `tests/wire_roundtrip_test.rs`
 checks its value through a record (`an_encoded_record_carries_minor_scale_and_kind`

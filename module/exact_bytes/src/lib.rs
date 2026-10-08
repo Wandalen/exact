@@ -94,7 +94,8 @@ fn kind_error_to_wire_error( e : KindError ) -> WireError
   match e
   {
     KindError::Negative { minor } => WireError::Negative { minor },
-    _ => WireError::Overflow,
+    KindError::Overflow { .. } | KindError::ExceedsCeiling { .. }
+    | KindError::ExcessPrecision { .. } | KindError::Malformed { .. } => WireError::Overflow,
   }
 }
 
