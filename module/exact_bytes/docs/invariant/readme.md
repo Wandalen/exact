@@ -4,7 +4,7 @@
 
 - **Purpose**: State the properties this crate holds regardless of caller behavior, so a consumer can rely on them without re-checking.
 - **Responsibility**: Compile-time safety of the scale byte's width.
-- **In Scope**: The `exact_scale::MONEY_SCALE as u8` cast every `*_to_wire` function performs.
+- **In Scope**: The one `exact_scale::MONEY_SCALE as u8` cast, `SCALE_BYTE`, that every `*_to_wire` function writes and every `*_from_wire` function checks against.
 - **Out of Scope**: Decode-time validation of a `scale` byte against the expected scale (→ `../format/`, which documents the full round-trip and refusal guarantee).
 
 ### Overview Table

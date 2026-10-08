@@ -4,15 +4,16 @@
 
 - **Purpose**: State that the wire record's one-byte `scale` field can never silently wrap a scale value too large to fit it, so an encoded `scale` byte can always be trusted to equal the real scale it was written at.
 - **Responsibility**: The compile-time assertion that `exact_scale::MONEY_SCALE` fits in a `u8`.
-- **In Scope**: The `as u8` cast every `*_to_wire` function performs on `exact_scale::MONEY_SCALE`.
+- **In Scope**: The one `as u8` cast of `exact_scale::MONEY_SCALE`, `SCALE_BYTE`, which every `*_to_wire` function writes and `check_header` compares on every `*_from_wire`.
 - **Out of Scope**: What a decoder does with a `scale` byte once decoded — comparing it against the expected scale and refusing a mismatch (→ `../format/001_wire_record_encoding.md`'s "Round-Trip Guarantee" section, which this invariant's guarantee is a precondition for, not a restatement of).
 
 ### Statement
 
 `src/lib.rs:48` declares `const _ : () = assert!( exact_scale::MONEY_SCALE <=
-u8::MAX as u32 );`. Every `*_to_wire` function casts `exact_scale::MONEY_SCALE`
-(a `u32`) down to the record's one-byte `scale` field via `as u8`. An `as`
-cast from a wider integer to a narrower one truncates silently rather than
+u8::MAX as u32 );`. `SCALE_BYTE` (`src/lib.rs:52`) casts `exact_scale::MONEY_SCALE`
+(a `u32`) down to the record's one-byte `scale` field via `as u8`, once; every
+`*_to_wire` function writes it and every `*_from_wire` function checks against
+it. An `as` cast from a wider integer to a narrower one truncates silently rather than
 erroring when the value does not fit — this assertion is what rules that out
 at compile time, before any cast runs, rather than leaving it to be noticed
 only if a future scale change happened to also produce a decode-time symptom.
@@ -37,7 +38,9 @@ of constants.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:48` | The compile-time assertion itself |
-| `src/lib.rs:176-179, 203-206, 231-234` | The three `*_to_wire` functions performing the `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
+| `src/lib.rs:50-52` | `SCALE_BYTE` — the one `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
+| `src/lib.rs:198, 218, 239` | The three `*_to_wire` functions writing `SCALE_BYTE` into a record |
+| `src/lib.rs:104-115` | `check_header` — comparing a decoded record's `scale` byte against `SCALE_BYTE` |
 
 ### Tests
 

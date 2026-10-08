@@ -30,7 +30,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 |------|---------|---------|
 | `src/lib.rs` | 456 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative/ceiling-breach checks |
-| `exact_bytes/src/lib.rs:226` | — | `qty_from_wire` |
+| `exact_bytes/src/lib.rs:232` | — | `qty_from_wire` |
 | `exact_dust/src/lib.rs:220,243` | — | `qty_dust_split`/`qty_dust_split_into` |
 | `exact_ratio/src/lib.rs:177,222` | — | `qty_mul_ratio`/`qty_div_round` |
 
@@ -43,7 +43,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- **External:** `exact_bytes::qty_from_wire` (`exact_bytes/src/lib.rs:226`)
+- **External:** `exact_bytes::qty_from_wire` (`exact_bytes/src/lib.rs:232`)
 - **External:** `exact_dust::qty_dust_split` (`exact_dust/src/lib.rs:220`), `qty_dust_split_into` (`:243`)
 - **External:** `exact_ratio::qty_mul_ratio` (`exact_ratio/src/lib.rs:177`), `qty_div_round` (`:222`)
 

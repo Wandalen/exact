@@ -25,7 +25,7 @@ pub const fn minor( self ) -> Backing
 |------|---------|---------|
 | `src/lib.rs` | 492 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Minor-count assertions |
-| `exact_bytes/src/lib.rs:205` | — | `qty_to_wire` |
+| `exact_bytes/src/lib.rs:218` | — | `qty_to_wire` |
 | `exact_conserve/src/lib.rs:278` | — | `qty_sum_assert_zero`'s per-leg accumulation |
 | `exact_dust/src/lib.rs:217,231,255` | — | `qty_dust_split`/`_into`/`_remainder` |
 | `exact_snap/src/lib.rs:115,162,164` | — | `Lot::new`'s zero check; `qty_snap_lot` (qty and lot) |
@@ -42,7 +42,7 @@ pub const fn minor( self ) -> Backing
 
 No intra-crate caller.
 
-- **External:** `exact_bytes::qty_to_wire` (`:205`)
+- **External:** `exact_bytes::qty_to_wire` (`:218`)
 - **External:** `exact_conserve::qty_sum_assert_zero` (`:278`)
 - **External:** `exact_dust::qty_dust_split` (`:217`), `qty_dust_split_into` (`:231`), `qty_dust_remainder` (`:255`)
 - **External:** `exact_snap::Lot::new` (`:115`), `qty_snap_lot` (`:162,164`)

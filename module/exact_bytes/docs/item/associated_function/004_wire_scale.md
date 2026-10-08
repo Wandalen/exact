@@ -5,8 +5,9 @@
 The scale this value was written at.
 
 **Never actually called — the same verified discrepancy as `Wire::minor`.**
-All three `*_from_wire` functions read `w.scale` as a direct private-field
-access (`src/lib.rs:194,222,247`) rather than through this accessor. No test
+`check_header`, which all three `*_from_wire` functions call, reads `w.scale`
+as a direct private-field access (`src/lib.rs:110`) rather than through this
+accessor. No test
 calls it either — `tests/wire_roundtrip_test.rs`'s one scale-mismatch test
 (`a_mismatched_scale_byte_is_refused`, line 52) tampers the raw byte array
 directly (`bytes[ 8 ] = 9`) rather than reading a `Wire`'s `.scale()` back.
@@ -19,7 +20,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:134-137`
+`module/exact_bytes/src/lib.rs:154-157`
 
 ```rust
 pub const fn scale( self ) -> u8
@@ -32,7 +33,7 @@ pub const fn scale( self ) -> u8
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 134-137 | Declaration |
+| `src/lib.rs` | 154-157 | Declaration |
 
 No file anywhere calls this method — an honest empty finding, identical in
 shape to [Wire::minor](003_wire_minor.md): declared, exported, never called.

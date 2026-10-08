@@ -26,7 +26,7 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `src/lib.rs` | 60,415-416 | Declaration; struct-doc-comment doctest on `Qty` |
 | `tests/non_negative_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `exact_parse/src/lib.rs:62,64` | — | `qty_from_str` |
-| `exact_bytes/src/lib.rs:203,205,216,226` | — | `qty_to_wire`/`qty_from_wire` |
+| `exact_bytes/src/lib.rs:216,218,229,232` | — | `qty_to_wire`/`qty_from_wire` |
 | `exact_conserve/src/lib.rs:234,273` | — | `qty_conserve_into`/`qty_sum_assert_zero` |
 | `exact_dust/src/lib.rs:215,220,229,243,253` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
 | `exact_add/src/lib.rs:73,83,142` | — | `qty_add`/`qty_sub`/`qty_saturating_add` |

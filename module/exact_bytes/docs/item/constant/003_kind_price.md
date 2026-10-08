@@ -21,8 +21,8 @@ pub const KIND_PRICE : u8 = 2;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 46 | Declaration |
-| `src/lib.rs` | 233 | `price_to_wire`'s encoded discriminator |
-| `src/lib.rs` | 243 | `price_from_wire`'s expected-discriminator check |
+| `src/lib.rs` | 239 | `price_to_wire`'s encoded discriminator |
+| `src/lib.rs` | 249 | `price_from_wire`'s expected discriminator, passed to `check_header` |
 | `tests/wire_roundtrip_test.rs:35` | — | Asserting the round-tripped discriminator |
 | `exact_arith/src/lib.rs:123` | — | Facade re-export |
 

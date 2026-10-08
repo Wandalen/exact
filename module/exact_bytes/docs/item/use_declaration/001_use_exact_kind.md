@@ -24,8 +24,8 @@ use exact_kind::{ KindError, Money, Price, Quantity };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 39 | Declaration |
-| `src/lib.rs` | 88 | `KindError` as `kind_error_to_wire_error`'s parameter type |
-| `src/lib.rs` | 176,188,198,203,216,226,231,241,251 | `Money`/`Quantity`/`Price` across the 6 to/from-wire functions |
+| `src/lib.rs` | 92 | `KindError` as `kind_error_to_wire_error`'s parameter type |
+| `src/lib.rs` | 196,208,211,216,229,232,237,247,250 | `Money`/`Quantity`/`Price` across the 6 to/from-wire functions |
 
 ## Crate Usage
 

@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_bytes`'s
-own source tree — 24 instances across 8 Item Kinds, all in `src/lib.rs`
+own source tree — 25 instances across 8 Item Kinds, all in `src/lib.rs`
 (this crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the one crate
@@ -19,11 +19,12 @@ amount cannot be decoded back into a specific kind without an external
 convention recording which kind and scale it was written at (module doc
 comment, `src/lib.rs:7-13`).
 
-One private top-level function, `kind_error_to_wire_error` (`src/lib.rs:88`),
+Two private top-level functions, `kind_error_to_wire_error` (`src/lib.rs:92`)
+and `check_header` (`src/lib.rs:104`),
 is excluded from this catalog per `item_des.rulebook.md`'s own Caller Tree
 Content rule (private/`pub(crate)`/`pub(super)` helpers get no Item Instance
 of their own) — it still appears as a real hop, cited as a plain
-`src/lib.rs:88`, in the 3 `*_from_wire` functions' Callee Trees.
+`src/lib.rs:92`, in the 3 `*_from_wire` functions' Callee Trees.
 
 ### Type Declaration
 
@@ -36,7 +37,7 @@ of their own) — it still appears as a real hop, cited as a plain
   - [ ] Does every instance declare exactly one Kind from the closed 15+3 taxonomy?
   - [ ] Are File Usage and Crate Usage exhaustively grep-verified against the actual workspace, not assumed (OT012)?
   - [ ] Do Function/Associated Function instances carry both Caller Tree and Callee Tree (OT006)?
-  - [ ] Is the one private helper function correctly excluded from its own instance while still appearing as a real Callee Tree hop?
+  - [ ] Are the two private helper functions correctly excluded from its own instance while still appearing as a real Callee Tree hop?
   - [ ] Was a same-text, unrelated identifier (e.g. a string literal) correctly excluded as a collision rather than counted as usage (OT012)?
 
 ### Kind Distribution
@@ -67,6 +68,7 @@ absent, since `Wire`'s impl declares no associated type).
 | constant/002 | KIND_QTY | Constant | 🔄 |
 | constant/003 | KIND_PRICE | Constant | 🔄 |
 | constant/004 | const _ (MONEY_SCALE fits u8 assertion) | Constant | 🔄 |
+| constant/005 | SCALE_BYTE | Constant | 🔄 |
 | enum/001 | WireError | Enum | 🔄 |
 | struct/001 | Wire | Struct | 🔄 |
 | implementation/001 | Display for WireError | Implementation | 🔄 |
@@ -89,7 +91,7 @@ absent, since `Wire`'s impl declares no associated type).
 
 ### Notable Findings
 
-- **Two of `Wire`'s three field accessors are never called anywhere, not even by this crate's own tests.** [`Wire::minor`](associated_function/003_wire_minor.md) and [`Wire::scale`](associated_function/004_wire_scale.md) are both fully honest-empty: every real consumer, including the 3 `*_from_wire` functions, reads the private field directly instead (same-module privilege), and the test suite only asserts `.kind()` or the round-tripped value as a whole. [`Wire::kind`](associated_function/005_wire_kind.md) is the one accessor actually exercised — by tests only, never in production.
+- **Two of `Wire`'s three field accessors are never called anywhere, not even by this crate's own tests.** [`Wire::minor`](associated_function/003_wire_minor.md) and [`Wire::scale`](associated_function/004_wire_scale.md) are both fully honest-empty: every real consumer, including `check_header` and the 3 `*_from_wire` functions, reads the private field directly instead (same-module privilege), and the test suite only asserts `.kind()` or the round-tripped value as a whole. [`Wire::kind`](associated_function/005_wire_kind.md) is the one accessor actually exercised — by tests only, never in production.
 - **Only the Money roundtrip is exercised at the facade level.** `exact_arith/tests/facade_test.rs` constructs and decodes a `Wire` via `money_to_wire`/`money_from_wire` in its own end-to-end settlement test — but never calls `qty_to_wire`/`qty_from_wire`/`price_to_wire`/`price_from_wire`, which the facade only re-exports. This is the opposite pattern from most sibling crates (where the facade test bypasses the re-exported functions entirely); here it partially exercises them.
 - **`WireError`'s `Display` is never rendered anywhere**, mirroring the identical finding already recorded for `exact_kind::KindError` and `exact_ratio::RatioError` — every real use of the error type is construction or pattern matching, never formatting.
 - **A genuine identifier collision was found and excluded**: `substrate/demiurg/demiurg_schema/tests/match_test.rs` uses the string literal `"Wire"` as an unrelated component name, with no dependency on `exact_bytes` — confirmed via `Cargo.toml` and excluded per OT012's collision-disambiguation rule, not counted as usage.
@@ -99,5 +101,5 @@ absent, since `Wire`'s impl declares no associated type).
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_bytes/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 24
+# → 25
 ```

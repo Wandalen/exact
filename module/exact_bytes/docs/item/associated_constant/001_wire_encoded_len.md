@@ -11,7 +11,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:111`
+`module/exact_bytes/src/lib.rs:131`
 
 ```rust
 pub const ENCODED_LEN : usize = 10;
@@ -21,8 +21,8 @@ pub const ENCODED_LEN : usize = 10;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 111 | Declaration |
-| `src/lib.rs` | 148,164 | Array size in `to_bytes`'s return type; slice-length check in `from_bytes` |
+| `src/lib.rs` | 131 | Declaration |
+| `src/lib.rs` | 168,184 | Array size in `to_bytes`'s return type; slice-length check in `from_bytes` |
 | `tests/wire_roundtrip_test.rs:67` | — | Constructing a slice one byte shorter than the encoded length, to exercise `WireError::Truncated` |
 
 ## Crate Usage
