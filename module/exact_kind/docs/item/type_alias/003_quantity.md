@@ -28,7 +28,7 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `exact_parse/src/lib.rs:62,64` | — | `qty_from_str` |
 | `exact_bytes/src/lib.rs:217,219,230,233` | — | `qty_to_wire`/`qty_from_wire` |
 | `exact_conserve/src/lib.rs:234,273` | — | `qty_conserve_into`/`qty_sum_assert_zero` |
-| `exact_dust/src/lib.rs:215,220,229,243,253` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
+| `exact_dust/src/lib.rs:238,240,248,250,258` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
 | `exact_add/src/lib.rs:73,83,142` | — | `qty_add`/`qty_sub`/`qty_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported alongside `Money`/`Price` |
 | `exact_snap/src/lib.rs:113,124,160` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |

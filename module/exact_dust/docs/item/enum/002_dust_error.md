@@ -37,7 +37,7 @@ pub enum DustError
 |------|---------|---------|
 | `src/lib.rs` | 78-86 | Declaration |
 | `src/lib.rs` | 88-99 | `Display` match arms |
-| `src/lib.rs` | 112-113,122,124,126-127,139,143,167,191,220,243 | Constructed across `round_error_to_dust_error`, `split_minor`, `slot_minor` (all private — no Item Instance of their own), and the 4 split/split-into functions' `.map_err` closures |
+| `src/lib.rs` | 112-113,122,124,126-127,139,143,162,190 | Constructed across `round_error_to_dust_error`, `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own) |
 | `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 

@@ -1,8 +1,10 @@
-# 001: use exact_kind::{ Money, Quantity }
+# 001: use exact_kind::{ KindError, Money, Quantity }
 
 ## Representation
 
-Brings the two conserved-value types this crate splits into scope.
+Brings the two conserved-value types this crate splits into scope, and
+`KindError`, the error type of the `from_minor` constructor the generic
+helpers take as `make`.
 
 ## Kind
 
@@ -13,7 +15,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_dust/src/lib.rs:60`
 
 ```rust
-use exact_kind::{ Money, Quantity };
+use exact_kind::{ KindError, Money, Quantity };
 ```
 
 ## File Usage
@@ -21,16 +23,15 @@ use exact_kind::{ Money, Quantity };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 60 | Declaration |
-| `src/lib.rs` | 162,177,203,215,229,253 | `Money`/`Quantity` parameter and return types on the 6 public split/remainder functions |
+| `src/lib.rs` | 157,175 | `KindError` in the `make : fn( i64 ) -> Result< T, KindError >` parameter of `split_with` and `split_into_with` (private) |
+| `src/lib.rs` | 203,205,214,216,226,238,240,248,250,258 | `Money`/`Quantity` parameter and return types on the 6 public split/remainder functions, and `Money::from_minor`/`Quantity::from_minor` passed as `make` |
 
-Does not import `KindError` — unlike `exact_add`/`exact_parse`/`exact_ratio`,
-this crate never receives a `KindError` directly; it maps overflow/negative
-outcomes through its own `DustError` instead, discarding the specific
-`exact_kind` error at the `.map_err(|_| DustError::Overflow)` boundary
-(`src/lib.rs:167,191,221,243`).
+`KindError` is named only in the type of `make`; no `KindError` value
+leaves this crate. Every one is folded into `DustError::Overflow` at the
+`.map_err(|_| DustError::Overflow)` boundary (`src/lib.rs:162,190`).
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_dust` | `(defining crate)` | Parameter/return types for all 6 public functions |
+| `exact_dust` | `(defining crate)` | Parameter/return types for all 6 public functions; `KindError` in the generic helpers' `make` type |
