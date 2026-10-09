@@ -79,7 +79,8 @@ pub enum DustError
 {
   /// Zero parts were requested.
   EmptyParts,
-  /// [`DustTo::Reject`] was asked and the split did not divide evenly.
+  /// The split did not divide evenly and [`DustTo::Reject`] or
+  /// [`Rounding::Exact`] was asked.
   Remainder,
   /// An operation left the representable or declared range.
   Overflow,
@@ -92,7 +93,7 @@ impl core::fmt::Display for DustError
     match self
     {
       Self::EmptyParts => write!( f, "cannot split into zero parts" ),
-      Self::Remainder => write!( f, "the split left a remainder and DustTo::Reject was requested" ),
+      Self::Remainder => write!( f, "a remainder that DustTo::Reject or Rounding::Exact refuses" ),
       Self::Overflow => write!( f, "left the representable or declared range" ),
     }
   }
@@ -111,6 +112,9 @@ fn round_error_to_dust_error( e : RoundError ) -> DustError
     // `exact_kind::Decimal::checked_neg` already uses.
     RoundError::DivZero => DustError::EmptyParts,
     RoundError::Overflow => DustError::Overflow,
+    // `Rounding::Exact` refuses a share with a remainder — the same fact
+    // `DustTo::Reject` reports, so it is reported the same way.
+    RoundError::Inexact => DustError::Remainder,
   }
 }
 
@@ -198,8 +202,8 @@ fn split_into_with< T >
 /// # Errors
 ///
 /// [`DustError::EmptyParts`] when `parts` is zero. [`DustError::Remainder`]
-/// when [`DustTo::Reject`] was asked and the split did not divide evenly.
-/// [`DustError::Overflow`] on overflow or ceiling breach.
+/// when [`DustTo::Reject`] or [`Rounding::Exact`] was asked and the split did
+/// not divide evenly. [`DustError::Overflow`] on overflow or ceiling breach.
 pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
 {
   split_with( total.minor(), parts, mode, to, Money::from_minor )
@@ -221,8 +225,9 @@ pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out :
 ///
 /// # Errors
 ///
-/// As [`money_dust_split`], excluding [`DustError::Remainder`] — this
-/// function only reports the remainder, never refuses one.
+/// As [`money_dust_split`]. [`DustError::Remainder`] only under
+/// [`Rounding::Exact`] — this function reports the remainder, and refuses one
+/// only when the mode itself forbids it.
 pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> Result< i64, DustError >
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
