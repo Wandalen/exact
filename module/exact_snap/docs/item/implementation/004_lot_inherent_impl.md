@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:106-128`
+`module/exact_snap/src/lib.rs:110-132`
 
 ```rust
 impl Lot
@@ -39,7 +39,7 @@ impl Lot
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 106-128 | Declaration |
+| `src/lib.rs` | 110-132 | Declaration |
 
 ## Crate Usage
 

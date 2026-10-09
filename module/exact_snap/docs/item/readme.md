@@ -42,7 +42,7 @@ snapping itself (module doc comment, `src/lib.rs:9-10`).
 9 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration, Type
 Alias, Union, Constant, Static, Trait, External Block, Macro
 Definition/Invocation. One private free function, `round_error_to_snap_error`
-(`src/lib.rs:54`), is deliberately excluded from this count — a
+(`src/lib.rs:57`), is deliberately excluded from this count — a
 private/`pub(crate)`/`pub(super)` function gets no Item Instance of its own
 (`item_des.rulebook.md` line 243), but it IS a real call-graph hop and
 appears as a plain `file:line` citation in both [price_snap_tick](function/001_price_snap_tick.md)'s
@@ -94,7 +94,7 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
 - **The `RoundError::DivZero` arm `round_error_to_snap_error` maps is
   currently unreachable** through this crate's own public API (`Tick::new`/
   `Lot::new` already refuse a zero-sized grid before any division happens) —
-  the function's own comment (`src/lib.rs:58-62`) discloses this, calling it
+  the function's own comment (`src/lib.rs:61-65`) discloses this, calling it
   the same defensive-but-unreachable pattern `exact_kind::Decimal::checked_neg`
   already uses.
 - **One identifier collision correctly excluded per OT012**: `demiurg_log`

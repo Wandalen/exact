@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:238-241`
+`module/exact_dust/src/lib.rs:243-246`
 
 ```rust
 pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
@@ -24,7 +24,7 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 }
 ```
 
-The body is the private `split_with` (`src/lib.rs:148-164`), shared with
+The body is the private `split_with` (`src/lib.rs:152-168`), shared with
 [money_dust_split](001_money_dust_split.md): this function only supplies the
 total's minor count and `Quantity::from_minor` to build each slot.
 
@@ -32,7 +32,7 @@ total's minor count and `Quantity::from_minor` to build each slot.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 238-241 | Declaration |
+| `src/lib.rs` | 243-246 | Declaration |
 | `tests/dust_split_test.rs:97,136,152` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
@@ -54,9 +54,9 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_with` (`src/lib.rs:240`, private — no Item Instance of its own)
-  - `split_minor` (`src/lib.rs:160`, private — no Item Instance of its own)
-    - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_with` (`src/lib.rs:245`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:164`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
     - **External:** `exact_round::round_div`
-  - `slot_minor` (`src/lib.rs:162`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:240`), `exact_kind::Quantity::from_minor` (`src/lib.rs:240`, passed to `split_with` as `make`, called at `162`)
+  - `slot_minor` (`src/lib.rs:166`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:245`), `exact_kind::Quantity::from_minor` (`src/lib.rs:245`, passed to `split_with` as `make`, called at `162`)

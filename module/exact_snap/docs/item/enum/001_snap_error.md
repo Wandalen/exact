@@ -2,9 +2,11 @@
 
 ## Representation
 
-Why a tick/lot could not be constructed, or a snap could not complete. Three
-variants: a zero-sized grid for either kind, refused at construction, and a
-post-snap range breach.
+Why a tick/lot could not be constructed, or a snap could not complete. Four
+variants: a zero-sized grid for either kind, refused at construction, a
+post-snap range breach, and `OffGrid` — under `Rounding::Exact`, a value not
+already on the grid, refused rather than snapped (mapped from
+`exact_round::RoundError::Inexact`).
 
 ## Kind
 
@@ -12,7 +14,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:28-37`
+`module/exact_snap/src/lib.rs:28-39`
 
 ```rust
 /// Why a tick/lot could not be constructed, or a snap could not complete.
@@ -25,6 +27,8 @@ pub enum SnapError
   ZeroLot,
   /// The snapped result left the representable or declared range.
   Overflow,
+  /// The value is not on the grid and [`Rounding::Exact`] was asked.
+  OffGrid,
 }
 ```
 
@@ -32,11 +36,11 @@ pub enum SnapError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 29-37 | Declaration |
-| `src/lib.rs` | 45-47 | Matched in `Display for SnapError` |
-| `src/lib.rs` | 84,117 | Constructed in `Tick::new`/`Lot::new` on a zero-sized grid |
-| `src/lib.rs` | 54-65 | `round_error_to_snap_error`'s return type and both constructed arms |
-| `src/lib.rs` | 149,150,163,164 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
+| `src/lib.rs` | 29-39 | Declaration |
+| `src/lib.rs` | 47-50 | Matched in `Display for SnapError` |
+| `src/lib.rs` | 88,121 | Constructed in `Tick::new`/`Lot::new` on a zero-sized grid |
+| `src/lib.rs` | 57-69 | `round_error_to_snap_error`'s return type and its constructed arms (`Overflow`, `OffGrid`) |
+| `src/lib.rs` | 154,155,169,170 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
 | `tests/snap_test.rs:12-13` | — | Asserts `Tick::new`/`Lot::new` reject a zero grid with the matching variant |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 

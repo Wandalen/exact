@@ -7,7 +7,9 @@ itself a ratio — its minor-unit count over one whole unit — so this reuses
 `mul_ratio_minor`'s widened multiply and rounded divide with the quantity as
 the ratio, and a fractional quantity counts in full. It replaces the pattern
 `price.checked_mul_int( qty.whole() )`, which silently drops the quantity's
-fractional part (`1.25 × 4.5` came out as `5`, not `5.625`).
+fractional part (`1.25 × 4.5` came out as `5`, not `5.625`). Under
+`Rounding::Exact` a cost that does not land on the money scale is refused as
+`RatioError::Inexact` — a settlement amount that is never rounded.
 
 ## Kind
 
@@ -15,7 +17,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:236`
+`module/exact_ratio/src/lib.rs:253`
 
 ```rust
 pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Result< Money, RatioError >
@@ -31,7 +33,7 @@ pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Re
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 236-242 | Declaration |
+| `src/lib.rs` | 253-259 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 182,191,203,324 | A fractional quantity; a cost finer than one minor unit under `Down`/`Up`/`HalfEven`; a cost past the ceiling; a negative price and a zero quantity |
 | `exact_arith/src/lib.rs:109` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:25` | — | The settlement test's notional, through the facade |
@@ -53,7 +55,8 @@ No production caller inside this repository yet.
 
 - [ratio_new](001_ratio_new.md) — the quantity as a ratio over one whole unit
 - `mul_ratio_minor` (private — no Item Instance of its own) — widen, multiply, round, narrow
-- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own) — maps a refused cost to `RatioError`
-- **External:** `exact_kind::Qty::minor` and `exact_kind::Price::minor` — the raw counts of both inputs (`src/lib.rs:239-240`)
-- **External:** `exact_kind::Decimal::ONE_MINOR` (as `Money::ONE_MINOR`) — one whole quantity in minor units (`src/lib.rs:239`)
+  - `round_error_to_ratio_error` (`src/lib.rs:119`, private — no Item Instance of its own) — `Inexact` under `Rounding::Exact`
+- `kind_error_to_ratio_error` (`src/lib.rs:84`, private — no Item Instance of its own) — maps a refused cost to `RatioError`
+- **External:** `exact_kind::Qty::minor` and `exact_kind::Price::minor` — the raw counts of both inputs (`src/lib.rs:256-257`)
+- **External:** `exact_kind::Decimal::ONE_MINOR` (as `Money::ONE_MINOR`) — one whole quantity in minor units (`src/lib.rs:256`)
 - **External:** `exact_kind::Decimal::from_minor` — the declared-ceiling check on the cost

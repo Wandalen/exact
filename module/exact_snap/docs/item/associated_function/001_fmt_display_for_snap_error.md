@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:41-49`
+`module/exact_snap/src/lib.rs:43-52`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -20,6 +20,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
     Self::ZeroTick => write!( f, "a zero-sized tick was supplied" ),
     Self::ZeroLot => write!( f, "a zero-sized lot was supplied" ),
     Self::Overflow => write!( f, "the snapped result left the representable or declared range" ),
+    Self::OffGrid => write!( f, "the value is not on the grid and Rounding::Exact was requested" ),
   }
 }
 ```
@@ -28,7 +29,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 41-49 | Declaration |
+| `src/lib.rs` | 43-52 | Declaration |
 
 No file anywhere formats a `SnapError` value (`{}`, `to_string()`, etc.) —
 verified against `tests/snap_test.rs`, which checks variants via `assert_eq!`

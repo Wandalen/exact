@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:214-217`
+`module/exact_dust/src/lib.rs:218-221`
 
 ```rust
 pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
@@ -21,7 +21,7 @@ pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out :
 }
 ```
 
-The body is the private `split_into_with` (`src/lib.rs:166-193`), shared
+The body is the private `split_into_with` (`src/lib.rs:170-197`), shared
 with [qty_dust_split_into](005_qty_dust_split_into.md); the `Fix(exact_dust_split_into_allocated)` comment lives
 there, above the per-slot loop.
 
@@ -34,7 +34,7 @@ anything is written.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 214-217 | Declaration |
+| `src/lib.rs` | 218-221 | Declaration |
 | `tests/dust_split_test.rs:80` | — | Writes the same shares as the allocating `money_dust_split` |
 | `tests/dust_split_test.rs:106` | — | `DustTo::Reject` refuses before writing — the buffer keeps what it held |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
@@ -59,9 +59,9 @@ crate-doc example exercises `money_dust_split` instead; its
 
 ## Callee Tree
 
-- `split_into_with` (`src/lib.rs:216`, private — no Item Instance of its own)
-  - `split_minor` (`src/lib.rs:178`, private — no Item Instance of its own)
-    - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_into_with` (`src/lib.rs:220`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:182`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
     - **External:** `exact_round::round_div`
-  - `slot_minor` (`src/lib.rs:189`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:216`), `exact_kind::Money::from_minor` (`src/lib.rs:216`, passed to `split_into_with` as `make`, called at `190`)
+  - `slot_minor` (`src/lib.rs:193`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:220`), `exact_kind::Money::from_minor` (`src/lib.rs:220`, passed to `split_into_with` as `make`, called at `190`)

@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:52`
+`module/exact_snap/src/lib.rs:55`
 
 ```rust
 impl core::error::Error for SnapError {}
@@ -22,7 +22,7 @@ impl core::error::Error for SnapError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 52 | Declaration |
+| `src/lib.rs` | 55 | Declaration |
 
 No file anywhere calls a method on this impl — it declares none of its own,
 taking every `Error` method at its default. An honest empty finding; the

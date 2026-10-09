@@ -9,11 +9,11 @@
 
 ### Statement
 
-`round_div` (`src/lib.rs:136-144`) and `round_div_wide`
-(`src/lib.rs:158-206`) compute exclusively in `i64`/`i128`/`u128` integer
+`round_div` (`src/lib.rs:147-155`) and `round_div_wide`
+(`src/lib.rs:171-220`) compute exclusively in `i64`/`i128`/`u128` integer
 arithmetic — no `f32`/`f64` appears anywhere in either body, including the
 `HalfEven` tie-detection branch, which compares doubled magnitudes as `u128`
-integers rather than a float ratio (`src/lib.rs:184-187,196-198`). The result never
+integers rather than a float ratio (`src/lib.rs:197-200,209-211`). The result never
 differs from the true, infinite-precision quotient `n / d` by one unit or
 more: it is either the truncated quotient `q` unchanged or `q` moved by
 exactly one (`q - 1` or `q + 1`, never any other amount), and only when the
@@ -37,9 +37,9 @@ either the truncated quotient or its immediate neighbor, never further.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:136-179` | `round_div`'s widening into `round_div_wide`, and the truncated quotient/remainder it rounds from |
-| `src/lib.rs:181-205` | The seven `Rounding` branches deciding a step, and the step itself — at most one unit |
-| `src/lib.rs:184-187,196-198` | The `Half*` modes' tie detection — a `u128` integer comparison, no float |
+| `src/lib.rs:147-192` | `round_div`'s widening into `round_div_wide`, and the truncated quotient/remainder it rounds from |
+| `src/lib.rs:194-219` | The eight `Rounding` branches deciding a step — `Exact` refusing instead — and the step itself, at most one unit |
+| `src/lib.rs:197-200,209-211` | The `Half*` modes' tie detection — a `u128` integer comparison, no float |
 
 ### Tests
 

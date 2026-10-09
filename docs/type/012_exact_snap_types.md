@@ -7,7 +7,7 @@
 - **In Scope**: The structs, functions, and error enum this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/012_exact_snap.md`).
 
-**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md). `Tick`/`Lot` and `SnapError`'s three variants match as specified; the proposed third function `snap_mode` does not exist separately — `Rounding` (from `exact_round`) is instead a parameter directly on [`price_snap_tick`/`qty_snap_lot`](../../module/exact_snap/src/lib.rs), not a standalone mode-setting call. `Tick::new`/`Lot::new` refuse a zero-sized grid spacing (`SnapError::ZeroTick`/`ZeroLot`) but deliberately accept a negative one — see [`exact_snap`'s own invariant doc](../../module/exact_snap/docs/invariant/001_grid_spacing_never_zero.md) for why no variant exists for that case.
+**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md). `Tick`/`Lot` and `SnapError`'s three variants match as specified, and `SnapError` adds a fourth, `OffGrid` — under `Rounding::Exact`, a value not already on the grid is refused rather than snapped ([`exact_round`'s ADR-004](../../module/exact_round/docs/decisions/004_exact_refuses_a_remainder.md)); the proposed third function `snap_mode` does not exist separately — `Rounding` (from `exact_round`) is instead a parameter directly on [`price_snap_tick`/`qty_snap_lot`](../../module/exact_snap/src/lib.rs), not a standalone mode-setting call. `Tick::new`/`Lot::new` refuse a zero-sized grid spacing (`SnapError::ZeroTick`/`ZeroLot`) but deliberately accept a negative one — see [`exact_snap`'s own invariant doc](../../module/exact_snap/docs/invariant/001_grid_spacing_never_zero.md) for why no variant exists for that case.
 
 ### Structs
 

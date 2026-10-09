@@ -22,7 +22,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:96-99`
+`module/exact_snap/src/lib.rs:100-103`
 
 ```rust
 #[ must_use ]
@@ -36,7 +36,7 @@ pub const fn price( self ) -> Price
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 96-99 | Declaration |
+| `src/lib.rs` | 100-103 | Declaration |
 | `tests/snap_test.rs` | 157-158 | A tick built from 5 and one built from -5 both report a size of 5 |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
 

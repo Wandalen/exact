@@ -2,12 +2,12 @@
 
 ## Representation
 
-Brings in the seven-variant rounding-mode enum that every multiply
+Brings in the eight-variant rounding-mode enum that every multiply
 (`*_mul_ratio`, `price_mul_qty`, and the private `mul_ratio_minor` they share)
 and every `*_div_round` function (and the private `div_round_minor` they
 share) takes as a parameter. The multiplies thread it through to
-`exact_round::round_div_wide` (`src/lib.rs:151-152`), the divisions to
-`exact_round::round_div` (`src/lib.rs:194`).
+`exact_round::round_div_wide` (`src/lib.rs:165-166`), the divisions to
+`exact_round::round_div` (`src/lib.rs:211`).
 
 ## Kind
 
@@ -15,7 +15,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:47`
+`module/exact_ratio/src/lib.rs:48`
 
 ```rust
 use exact_round::Rounding;
@@ -25,10 +25,12 @@ use exact_round::Rounding;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 47,141,162,175,186,192,207,220,236 | Parameter type of `mul_ratio_minor` and `div_round_minor` (both private), the three `*_mul_ratio` functions, both `*_div_round` functions and `price_mul_qty` |
+| `src/lib.rs` | 48,155,177,192,203,209,221,235,253 | Parameter type of `mul_ratio_minor` and `div_round_minor` (both private), the three `*_mul_ratio` functions, both `*_div_round` functions and `price_mul_qty` |
 
-A doc-comment mention at line 20 (`` [`exact_round::Rounding`] ``) is prose,
-not a usage, and is excluded above.
+Doc-comment mentions at lines 20 (`` [`exact_round::Rounding`] ``) and 26 are
+prose, not usages, and are excluded above. The intra-doc links
+`` [`Rounding::Exact`] `` at lines 64,176,190,220,234,251 resolve through this
+declaration.
 
 ## Crate Usage
 

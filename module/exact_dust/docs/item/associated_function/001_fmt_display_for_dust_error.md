@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:90-98`
+`module/exact_dust/src/lib.rs:91-99`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -18,7 +18,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   match self
   {
     Self::EmptyParts => write!( f, "cannot split into zero parts" ),
-    Self::Remainder => write!( f, "the split left a remainder and DustTo::Reject was requested" ),
+    Self::Remainder => write!( f, "a remainder that DustTo::Reject or Rounding::Exact refuses" ),
     Self::Overflow => write!( f, "left the representable or declared range" ),
   }
 }
@@ -28,7 +28,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 90-98 | Declaration |
+| `src/lib.rs` | 91-99 | Declaration |
 
 No file anywhere formats a `DustError` value — confirmed via a workspace-wide
 search for `to_string`/`format!`/`Display` near `DustError`, which returns

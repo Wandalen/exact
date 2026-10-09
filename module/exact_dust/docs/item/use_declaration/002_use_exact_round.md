@@ -23,8 +23,8 @@ use exact_round::{ RoundError, Rounding };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 61 | Declaration |
-| `src/lib.rs` | 103 | `RoundError` match scrutinee in `round_error_to_dust_error` (private — no Item Instance of its own) |
-| `src/lib.rs` | 118,155,172,203,214,226,238,248,258 | `Rounding` parameter type on `split_minor`, `split_with`, `split_into_with` (private) and all 6 public functions |
+| `src/lib.rs` | 104 | `RoundError` match scrutinee in `round_error_to_dust_error` (private — no Item Instance of its own) |
+| `src/lib.rs` | 122,159,176,207,218,231,243,253,263 | `Rounding` parameter type on `split_minor`, `split_with`, `split_into_with` (private) and all 6 public functions |
 
 Deliberately depends on `exact_round` directly rather than through
 `exact_ratio` — the module doc comment (`src/lib.rs:12-19`) discloses this:

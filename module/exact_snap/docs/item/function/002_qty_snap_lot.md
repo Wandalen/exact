@@ -5,6 +5,8 @@
 Snap a quantity to the nearest multiple of `lot`, per `rounding`. The
 `Quantity` counterpart to [price_snap_tick](001_price_snap_tick.md) — same
 round-then-rescale shape.
+Under `Rounding::Exact` a quantity not already on the grid is refused as
+`SnapError::OffGrid` rather than snapped.
 
 ## Kind
 
@@ -12,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:160-166`
+`module/exact_snap/src/lib.rs:166-172`
 
 ```rust
 pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
@@ -28,7 +30,7 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 160-166 | Declaration |
+| `src/lib.rs` | 166-172 | Declaration |
 | `tests/snap_test.rs` | 119,120,130,131 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
@@ -50,7 +52,7 @@ OT012.
 
 ## Callee Tree
 
-- `round_error_to_snap_error` (`src/lib.rs:54`, private — no Item Instance of its own)
+- `round_error_to_snap_error` (`src/lib.rs:57`, private — no Item Instance of its own)
 - **External:** `exact_kind::Qty::minor` (via `qty.minor()` and `lot.0.minor()` ×2)
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)

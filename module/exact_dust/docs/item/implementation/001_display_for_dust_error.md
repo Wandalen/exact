@@ -10,7 +10,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:88-99`
+`module/exact_dust/src/lib.rs:89-100`
 
 ```rust
 impl core::fmt::Display for DustError
@@ -20,7 +20,7 @@ impl core::fmt::Display for DustError
     match self
     {
       Self::EmptyParts => write!( f, "cannot split into zero parts" ),
-      Self::Remainder => write!( f, "the split left a remainder and DustTo::Reject was requested" ),
+      Self::Remainder => write!( f, "a remainder that DustTo::Reject or Rounding::Exact refuses" ),
       Self::Overflow => write!( f, "left the representable or declared range" ),
     }
   }
@@ -31,7 +31,7 @@ impl core::fmt::Display for DustError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 88-99 | Declaration |
+| `src/lib.rs` | 89-100 | Declaration |
 
 ## Crate Usage
 

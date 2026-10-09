@@ -53,8 +53,8 @@ caller.
 | `exact_cmp/src/lib.rs:32,50,64,71` | — | `price_cmp`/`price_min`/`price_max` |
 | `exact_fmt/src/lib.rs:41,119` | — | `price_fmt` |
 | `exact_parse/src/lib.rs:38,72,74` | — | `price_from_str` |
-| `exact_ratio/src/lib.rs:46,186,189,236` | — | `price_mul_ratio`, `price_mul_qty` |
-| `exact_snap/src/lib.rs:24,70,80,87,96,136,151` | — | `Tick`, `Tick::new`'s stored magnitude, `price_snap_tick` |
+| `exact_ratio/src/lib.rs:47,203,206,253` | — | `price_mul_ratio`, `price_mul_qty` |
+| `exact_snap/src/lib.rs:24,74,84,91,100,141,156` | — | `Tick`, `Tick::new`'s stored magnitude, `price_snap_tick` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage

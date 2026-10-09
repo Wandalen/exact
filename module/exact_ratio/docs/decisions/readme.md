@@ -11,7 +11,7 @@
 
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
-| 001 | [Ratio Error Without Scale Mismatch Or Bad Rounding](001_ratio_error_without_scale_mismatch_or_bad_rounding.md) | Why `RatioError` drops two preferred-design variants and adds `Negative` | 🔄 |
+| 001 | [Ratio Error Without Scale Mismatch Or Bad Rounding](001_ratio_error_without_scale_mismatch_or_bad_rounding.md) | Why `RatioError` drops two preferred-design variants and adds `Negative` (`Inexact` is recorded in `exact_round`'s ADR-004) | 🔄 |
 
 ### Regenerate
 

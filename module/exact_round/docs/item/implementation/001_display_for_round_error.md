@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:113`
+`module/exact_round/src/lib.rs:121`
 
 ```rust
 impl core::fmt::Display for RoundError
@@ -22,6 +22,7 @@ impl core::fmt::Display for RoundError
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
       Self::Overflow => write!( f, "the quotient does not fit the integer type" ),
+      Self::Inexact => write!( f, "the division left a remainder and Rounding::Exact was requested" ),
     }
   }
 }
@@ -31,7 +32,7 @@ impl core::fmt::Display for RoundError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 113-123 | Declaration |
+| `src/lib.rs` | 121-132 | Declaration |
 
 Rendered only by this crate's own tests (`tests/round_div_test.rs:248,255`,
 via `.to_string()`), which pin both messages. Every downstream crate maps

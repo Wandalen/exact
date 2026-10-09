@@ -34,8 +34,8 @@ pub enum DustTo
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 64-74 | Declaration |
-| `src/lib.rs` | 135,137,141,156,173 | `slot_minor`'s, `split_with`'s and `split_into_with`'s parameter, and `slot_minor`'s match scrutinee (private — no Item Instance of its own) |
-| `src/lib.rs` | 203,214,238,248 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
+| `src/lib.rs` | 139,141,145,160,177 | `slot_minor`'s, `split_with`'s and `split_into_with`'s parameter, and `slot_minor`'s match scrutinee (private — no Item Instance of its own) |
+| `src/lib.rs` | 207,218,243,253 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
 | `tests/dust_split_test.rs` | — | All 3 variants exercised across every split scenario |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/src/lib.rs:139` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |

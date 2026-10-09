@@ -12,7 +12,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:162`
+`module/exact_ratio/src/lib.rs:177`
 
 ```rust
 pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
@@ -26,7 +26,7 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 162-166 | Declaration |
+| `src/lib.rs` | 177-181 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 34,44,54,166,255,266 | One-half exact multiply; an intermediate-overflow survival case; refusal past the ceiling; `Down`/`Up`/`HalfEven` at both signs; a negative ratio rounding toward the named infinity; a zero ratio giving zero under every mode |
 | `exact_arith/src/lib.rs:108` | — | Facade re-export |
 
@@ -46,6 +46,7 @@ across `substrate/` and `module/`).
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:141`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:155`, private — no Item Instance of its own)
+  - `round_error_to_ratio_error` (`src/lib.rs:119`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div_wide`'s result)
+- `kind_error_to_ratio_error` (`src/lib.rs:84`, private — no Item Instance of its own)
 - **External:** `exact_kind::Money::minor`, `exact_kind::Money::from_minor`

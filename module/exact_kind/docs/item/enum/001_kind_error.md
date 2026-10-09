@@ -45,9 +45,9 @@ pub enum KindError
 | `exact_parse/src/lib.rs:38,52-74` | — | `use` import; return type of all 3 `*_from_str` functions |
 | `exact_bytes/src/lib.rs:39,96-98` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
 | `exact_conserve/src/lib.rs:77` | — | `use` import |
-| `exact_dust/src/lib.rs:60,157,175` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
+| `exact_dust/src/lib.rs:60,161,179` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
 | `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
-| `exact_ratio/src/lib.rs:46,84-86` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
+| `exact_ratio/src/lib.rs:47,88-90` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage
