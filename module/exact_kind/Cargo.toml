@@ -8,6 +8,7 @@ description = "Money, Qty, and Price — the conserved fixed-point value types a
 
 [dependencies]
 exact_minor = { path = "../exact_minor", version = "0.1.0" }
+exact_round = { path = "../exact_round", version = "0.1.0" }
 exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]

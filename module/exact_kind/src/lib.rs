@@ -51,6 +51,7 @@ use exact_minor::
   minor_to_i64,
   minor_zero,
 };
+use exact_round::{ RoundError, Rounding, round_div };
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
@@ -228,6 +229,35 @@ impl< const SCALE : u32 > Decimal< SCALE >
   {
     minor_to_i64( self.minor )
   }
+
+  /// The same value at scale `TO`. Going finer multiplies by `10^(TO - SCALE)`
+  /// and can only overflow; going coarser divides by `10^(SCALE - TO)` and
+  /// rounds per `rounding` — [`Rounding::Exact`] refuses any digit that would
+  /// be lost.
+  ///
+  /// # Errors
+  ///
+  /// [`KindError::Overflow`] or [`KindError::ExceedsCeiling`] when the value
+  /// does not fit at scale `TO`. [`KindError::ExcessPrecision`] when
+  /// `rounding` is [`Rounding::Exact`] and going coarser would drop a digit.
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal< TO >, KindError >
+  {
+    let minor = self.minor();
+    let rescaled = if TO >= SCALE
+    {
+      minor.checked_mul( pow10( TO - SCALE ) ).ok_or( KindError::Overflow { operation : "rescale" } )?
+    }
+    else
+    {
+      round_div( minor, pow10( SCALE - TO ), rounding ).map_err( | e | match e
+      {
+        RoundError::Inexact => KindError::ExcessPrecision { digits : SCALE, scale : TO },
+        RoundError::DivZero | RoundError::Overflow => KindError::Overflow { operation : "rescale" },
+      } )?
+    };
+    Decimal::< TO >::from_minor( rescaled )
+  }
+
 
   /// The whole-unit part, truncated toward zero.
   #[ must_use ]
@@ -493,6 +523,18 @@ impl< const SCALE : u32 > Qty< SCALE >
   {
     self.value.minor()
   }
+
+  /// The same quantity at scale `TO`, as [`Decimal::rescale`] — still
+  /// non-negative, since every mode rounds a non-negative value to one.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
+  {
+    Qty::from_decimal( self.value.rescale::< TO >( rounding )? )
+  }
+
 
   /// The whole-unit part, truncated.
   #[ must_use ]
