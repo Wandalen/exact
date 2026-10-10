@@ -11,7 +11,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:132`
+`module/exact_conserve/src/lib.rs:142`
 
 ```rust
 impl core::error::Error for ConservationError {}
@@ -21,7 +21,7 @@ impl core::error::Error for ConservationError {}
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 132 | Declaration |
+| `src/lib.rs` | 142 | Declaration |
 
 No file anywhere calls a method on this impl directly, but `cluster_economy`
 depends on the trait bound it provides: `economy_test.rs:559` calls

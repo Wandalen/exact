@@ -3,8 +3,8 @@
 ## Representation
 
 Renders a `Report` as either `"balanced: entries N, net 0"` or
-`"UNBALANCED: entries N, net M minor units"`, branching on
-`is_balanced()`.
+`"UNBALANCED: entries N, net A M, B K minor units"` — every asset whose net
+is not zero, with its net, in asset order — branching on `is_balanced()`.
 
 ## Kind
 
@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:175-188`
+`module/exact_conserve/src/lib.rs:188-208`
 
 ```rust
 impl core::fmt::Display for Report
@@ -25,7 +25,14 @@ impl core::fmt::Display for Report
     }
     else
     {
-      write!( f, "UNBALANCED: entries {}, net {} minor units", self.entries, self.net_minor )
+      write!( f, "UNBALANCED: entries {}, net", self.entries )?;
+      let mut first = true;
+      for ( asset, net ) in self.nets.iter().filter( | ( _, net ) | **net != 0 )
+      {
+        write!( f, "{} {asset} {net}", if first { "" } else { "," } )?;
+        first = false;
+      }
+      write!( f, " minor units" )
     }
   }
 }
@@ -35,8 +42,9 @@ impl core::fmt::Display for Report
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 175-188 | Declaration |
-| `tests/conservation_test.rs:73-83` | — | `the_report_renders_both_outcomes_in_words` — asserts both branches' exact text |
+| `src/lib.rs` | 188-208 | Declaration |
+| `tests/conservation_test.rs:76-85` | — | `the_report_renders_both_outcomes_in_words` — asserts both branches' exact text |
+| `tests/conservation_test.rs:147,172` | — | A balanced two-asset log, and two unbalanced assets named in asset order with a balanced one left out |
 
 ## Crate Usage
 

@@ -2,21 +2,22 @@
 
 ### Scope
 
-- **Purpose**: State that a balanced log's net is exactly zero, never merely close to it, so a caller can treat `is_balanced`/`*_sum_assert_zero` as a definitive verdict rather than one more check to re-verify.
-- **Responsibility**: `verify`'s plain-log fold and `Report::is_balanced`; `money_sum_assert_zero`/`qty_sum_assert_zero`'s typed-slice equivalent.
+- **Purpose**: State that a balanced log's net is exactly zero, never merely close to it, so a caller can treat `is_balanced`/`money_sum_assert_zero` as a definitive verdict rather than one more check to re-verify.
+- **Responsibility**: `verify`'s plain-log fold and `Report::is_balanced`; `money_sum_assert_zero`'s typed-slice equivalent.
 - **In Scope**: The accumulator width, the overflow handling that protects it, and the zero comparison itself.
 - **Out of Scope**: Where a non-zero net is attributed to (a specific transaction or account) — this crate reports only the aggregate (→ `docs/algorithm/001_conservation_verification_fold.md`'s "Why Per-Account Totals Are Not Computed" and "...Not Per-Transaction Grouping" sections); the checked arithmetic `money_conserve_into`/`qty_conserve_into` dispatch to (→ `exact_add`'s own crate).
 
 ### Statement
 
-A log or typed slice this crate audits is balanced if and only if its signed
-sum is exactly zero — no tolerance window, no rounding, no "close enough."
-`verify` (`src/lib.rs:205-215`) accumulates every `Entry::amount_minor`
-(`i64`) into an `i128` total via `checked_add`; `Report::is_balanced`
-(`src/lib.rs:159-162`) is then bare `self.net_minor == 0`.
-`money_sum_assert_zero`/`qty_sum_assert_zero` (`src/lib.rs:245-260`,
-`:273-288`) run the identical accumulate-then-compare shape over a typed
-`&[Money]`/`&[Quantity]` slice instead of `&[Entry]`, and apply the same
+A log this crate audits is balanced if and only if every asset's signed sum
+is exactly zero, and a typed slice if and only if its signed sum is — no
+tolerance window, no rounding, no "close enough." `verify`
+(`src/lib.rs:225-236`) accumulates every `Entry::amount_minor` (`i64`) into
+its own asset's `i128` total via `checked_add`, never adding amounts of
+different assets together; `Report::is_balanced` (`src/lib.rs:171-174`) is
+then bare equality of every total with zero.
+`money_sum_assert_zero` (`src/lib.rs:266-281`) runs the identical
+accumulate-then-compare shape over a typed `&[Money]` slice instead of `&[Entry]`, and apply the same
 `== 0` equality with the same no-tolerance rule. The accumulator is strictly
 wider than any single posting (`i128` against `i64`), and the fold is
 `checked_add` throughout, so the zero comparison is never reached by a value
@@ -41,10 +42,9 @@ genuinely exceed what even `i128` can hold.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:205-215` | `verify` — the plain-log fold, `checked_add` into an `i128` accumulator |
-| `src/lib.rs:159-162` | `Report::is_balanced` — bare equality with zero, no tolerance |
-| `src/lib.rs:245-260` | `money_sum_assert_zero` — the typed-slice equivalent |
-| `src/lib.rs:273-288` | `qty_sum_assert_zero` — the same shape, narrower in practice (→ Statement) |
+| `src/lib.rs:225-236` | `verify` — the plain-log fold, `checked_add` into an `i128` accumulator |
+| `src/lib.rs:171-174` | `Report::is_balanced` — bare equality with zero, no tolerance |
+| `src/lib.rs:266-281` | `money_sum_assert_zero` — the typed-slice equivalent |
 | `../algorithm/001_conservation_verification_fold.md` | The fold's full procedure, including why `i128` and not a declared maximum log length |
 
 ### Tests

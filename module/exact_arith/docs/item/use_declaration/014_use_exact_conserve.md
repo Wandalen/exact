@@ -3,7 +3,7 @@
 ## Representation
 
 Re-exports `exact_conserve`'s posting/report types, its error enum, the
-untyped-log auditor, and the 4 typed per-kind convenience functions.
+untyped-log auditor, and the 3 typed per-kind convenience functions.
 
 ## Kind
 
@@ -14,7 +14,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_arith/src/lib.rs:141`
 
 ```rust
-pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, qty_sum_assert_zero, verify };
+pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, verify };
 ```
 
 ## File Usage
@@ -36,11 +36,11 @@ heavily downstream-used re-export block** — per `exact_conserve`'s own
 catalog (`function/001_verify.md`, `associated_function/001_new_entry.md`,
 `003_is_balanced.md`), confirmed via a full-workspace grep, not a
 dependents-only one (the lesson that same catalog's first draft learned the
-hard way, see its readme's Notable Findings). The 4 typed convenience
+hard way, see its readme's Notable Findings). The 3 typed convenience
 functions — `money_conserve_into`, `qty_conserve_into`,
-`money_sum_assert_zero`, `qty_sum_assert_zero` — have the opposite profile:
+`money_sum_assert_zero` — have the opposite profile:
 zero callers anywhere outside `exact_conserve`'s own tests, not even this
-facade's own test suite, matching that catalog's own finding for all four.
+facade's own test suite, matching that catalog's own finding for all three.
 
 ## Crate Usage
 

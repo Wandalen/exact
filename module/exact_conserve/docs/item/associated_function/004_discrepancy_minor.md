@@ -2,9 +2,10 @@
 
 ## Representation
 
-The signed discrepancy in minor units — zero when balanced. Signed
+One asset's signed discrepancy in minor units — zero when that asset
+balances, or when the log never moved it. Signed
 deliberately: the sign distinguishes value appearing from value vanishing,
-which the doc comment calls "different investigations" (`src/lib.rs:166-167`).
+which the doc comment calls "different investigations" (`src/lib.rs:179-180`).
 
 ## Kind
 
@@ -12,12 +13,12 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:169-172`
+`module/exact_conserve/src/lib.rs:182-185`
 
 ```rust
-pub const fn discrepancy_minor( &self ) -> i128
+pub fn discrepancy_minor( &self, asset : &str ) -> i128
 {
-  self.net_minor
+  self.nets.get( asset ).copied().unwrap_or( 0 )
 }
 ```
 
@@ -25,9 +26,9 @@ pub const fn discrepancy_minor( &self ) -> i128
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 169-172 | Declaration |
-| `src/lib.rs` | 199 | `verify`'s own doc-test |
-| `tests/conservation_test.rs:31,53,56,69,90` | — | Asserts the exact signed leftover in 5 distinct scenarios |
+| `src/lib.rs` | 182-185 | Declaration |
+| `src/lib.rs` | 219 | `verify`'s own doc-test |
+| `tests/conservation_test.rs:34,56,59,72,93,128-129,156` | — | Asserts the exact signed leftover per asset — one cash leak and a cash-and-`BTC` pair that cancel only as a whole — and zero for an asset never moved |
 | `exchange_core/tests/submission_test.rs:259` | — | Integration test |
 | `smoke_exact_market_split/src/lib.rs:319`, `tests/lane_test.rs:68` | — | Demo-lane leak-magnitude assertion |
 
@@ -57,5 +58,6 @@ does call from real settlement code.
 
 ## Callee Tree
 
-No callee of its own — reads `self.net_minor` directly; no further hop into
-another Item Instance.
+No callee of its own — reads `self.nets` directly through `BTreeMap::get`;
+no further hop into another Item Instance. No longer a `const fn`, for the
+same reason as [is_balanced](003_is_balanced.md).

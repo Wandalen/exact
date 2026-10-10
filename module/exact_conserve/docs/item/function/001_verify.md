@@ -2,8 +2,9 @@
 
 ## Representation
 
-Audit a log of postings for conservation: fold every `amount_minor` into an
-`i128`-widened net total, and report it. The crate's single most
+Audit a log of postings for conservation: fold each `amount_minor` into its
+own asset's `i128`-widened net total, and report every asset's net — amounts
+of different assets are never added together. The crate's single most
 production-critical export.
 
 ## Kind
@@ -12,23 +13,24 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:205-215`
+`module/exact_conserve/src/lib.rs:225-236`
 
 ```rust
 pub fn verify( entries : &[ Entry ] ) -> Result< Report, ConservationError >
 {
-  let mut net : i128 = 0;
+  let mut nets : BTreeMap< String, i128 > = BTreeMap::new();
   for entry in entries
   {
-    net = net
+    let net = nets.entry( entry.asset.clone() ).or_insert( 0 );
+    *net = net
     .checked_add( i128::from( entry.amount_minor ) )
     .ok_or( ConservationError::Overflow )?;
   }
-  Ok( Report { entries : entries.len(), net_minor : net } )
+  Ok( Report { entries : entries.len(), nets } )
 }
 ```
 
-Carries its own doc-test (`src/lib.rs:192-200`), which runs as a real
+Carries its own doc-test (`src/lib.rs:212-220`), which runs as a real
 `cargo test --doc` execution, demonstrating both a balanced log and a
 one-unit leak.
 
@@ -36,8 +38,8 @@ one-unit leak.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 205-215 | Declaration |
-| `src/lib.rs` | 192-200 | Own doc-test |
+| `src/lib.rs` | 225-236 | Declaration |
+| `src/lib.rs` | 212-220 | Own doc-test |
 | `tests/conservation_test.rs` | throughout | Every test in the file |
 | `exact_arith/src/lib.rs:30` | — | Facade's own module-level doc-test |
 | `exact_arith/tests/facade_test.rs:29` | — | Facade integration test |
@@ -71,6 +73,6 @@ No intra-crate caller.
 
 ## Callee Tree
 
-No callee of its own — folds via `i128::from`/`i128::checked_add` directly
-and constructs [Report](../struct/002_report.md); no further hop into
-another Item Instance.
+No callee of its own — folds via `BTreeMap::entry`, `i128::from` and
+`i128::checked_add` directly, one accumulator per asset, and constructs
+[Report](../struct/002_report.md); no further hop into another Item Instance.

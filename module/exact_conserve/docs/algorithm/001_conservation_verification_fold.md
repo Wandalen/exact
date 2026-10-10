@@ -3,23 +3,23 @@
 ### Scope
 
 - **Purpose**: State exactly how a log or a typed slice is checked for conservation, so a reader can predict the verdict on any input without running it.
-- **Responsibility**: `verify`'s plain-log fold, and the typed layer (`money_conserve_into`/`qty_conserve_into`, `money_sum_assert_zero`/`qty_sum_assert_zero`) built on top of it.
+- **Responsibility**: `verify`'s plain-log fold, and the typed layer (`money_conserve_into`/`qty_conserve_into`, `money_sum_assert_zero`) built on top of it.
 - **In Scope**: The fold's accumulator width, its overflow handling, the balance comparison, and why per-account totals are not part of any of this.
 - **Out of Scope**: A split that fails to conserve, which this audit would catch only as an aggregate imbalance rather than at its source (→ [Equal-Parts Dust Split](../../../exact_dust/docs/algorithm/001_equal_parts_dust_split.md)); the checked arithmetic `money_conserve_into`/`qty_conserve_into` dispatch to (→ `exact_add`'s own crate).
 
 ### Procedure — Plain-Log Fold (`verify`)
 
-1. Start an `i128` accumulator at `0`.
-2. For each `Entry`, in order, add `i128::from(entry.amount_minor)` via `checked_add`.
+1. Start with no accumulators — one `i128` per asset, in a `BTreeMap` keyed by asset.
+2. For each `Entry`, in order, add `i128::from(entry.amount_minor)` via `checked_add` to its own asset's accumulator, starting it at `0` on the asset's first posting. Amounts of different assets are never added together.
 3. If any step overflows `i128`, stop immediately and return `ConservationError::Overflow`.
-4. Otherwise, return `Report { entries: entries.len(), net_minor: net }`.
-5. `Report::is_balanced` is then exact equality of `net_minor` with `0` — no tolerance window of any kind.
+4. Otherwise, return `Report { entries: entries.len(), nets }`.
+5. `Report::is_balanced` is then exact equality of every asset's net with `0` — no tolerance window of any kind. A log that invents one unit of one asset and loses one unit of another is unbalanced twice over, not balanced on the whole.
 
 ### Procedure — Typed Layer
 
-`money_conserve_into`/`qty_conserve_into` are not a second fold implementation — each is one step of the same shape, delegated to `exact_add::money_add`/`exact_add::qty_add` and suitable directly as an `Iterator::try_fold` closure. `money_sum_assert_zero`/`qty_sum_assert_zero` run the identical accumulate-then-compare shape as `verify` above, but over a typed `&[Money]`/`&[Quantity]` slice instead of `&[Entry]`, widening each leg's `minor()` into the same `i128` accumulator and comparing it to zero under the same no-tolerance rule.
+`money_conserve_into`/`qty_conserve_into` are not a second fold implementation — each is one step of the same shape, delegated to `exact_add::money_add`/`exact_add::qty_add` and suitable directly as an `Iterator::try_fold` closure. `money_sum_assert_zero` runs the identical accumulate-then-compare shape as `verify` above, but over a typed `&[Money]` slice instead of `&[Entry]`, widening each leg's `minor()` into the same `i128` accumulator and comparing it to zero under the same no-tolerance rule.
 
-`qty_sum_assert_zero`'s practical meaning is narrower than `money_sum_assert_zero`'s: every `Quantity` is individually non-negative, so their sum can only be zero when every leg is `exact_kind::Qty::ZERO` — a real check (e.g. confirming nothing is left unaccounted after a full reconciliation), but not the general credit/debit cancellation `money_sum_assert_zero` performs over signed legs.
+There is no `qty_sum_assert_zero`: every `Quantity` is individually non-negative, so a slice of them sums to zero only when every leg is zero — it could never check a transfer, whose giving side is negative. A quantity's movements are audited through `verify` instead, as signed `i64` amounts under the quantity's own asset key (→ [Conservation Is Checked Per Asset](../decisions/002_conservation_checked_per_asset.md)).
 
 ### Why `i128`, Not A Declared Maximum Log Length
 
@@ -47,14 +47,14 @@ The check here is a single whole-log (or whole-slice) sum compared to zero — i
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:1-31` | The module doc's "What conservation means here" and "Widths" sections — the `i64`/`i128` framing and the per-account-totals rationale, verbatim source for the two "Why" sections above |
-| `src/lib.rs:205-215` | `verify`'s implementation (steps 1-4) |
-| `src/lib.rs:159-162` | `Report::is_balanced` — step 5 |
-| `src/lib.rs:223-237` | `money_conserve_into`/`qty_conserve_into` — the typed layer's single-step fold, delegated to `exact_add` |
-| `src/lib.rs:245-288` | `money_sum_assert_zero`/`qty_sum_assert_zero` — the typed layer's accumulate-then-compare check |
+| `src/lib.rs:11-36` | The module doc's "What conservation means here" and "Widths" sections — the `i64`/`i128` framing and the per-account-totals rationale, verbatim source for the two "Why" sections above |
+| `src/lib.rs:225-236` | `verify`'s implementation (steps 1-4) |
+| `src/lib.rs:171-174` | `Report::is_balanced` — step 5 |
+| `src/lib.rs:244-258` | `money_conserve_into`/`qty_conserve_into` — the typed layer's single-step fold, delegated to `exact_add` |
+| `src/lib.rs:266-281` | `money_sum_assert_zero` — the typed layer's accumulate-then-compare check |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/conservation_test.rs` | Plain-log balance and discrepancy-sign coverage (ported from `exact_audit`); `money_conserve_into`/`qty_conserve_into` fold-and-overflow coverage; `money_sum_assert_zero`/`qty_sum_assert_zero` cancellation and narrower-quantity-meaning coverage |
+| `tests/conservation_test.rs` | Plain-log balance and discrepancy-sign coverage (ported from `exact_audit`); `money_conserve_into`/`qty_conserve_into` fold-and-overflow coverage; `money_sum_assert_zero` cancellation coverage; per-asset netting |

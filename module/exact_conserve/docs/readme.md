@@ -7,7 +7,7 @@ Design documentation for `exact_conserve`, as typed doc definitions.
 | `type/` | The posting record, the audit outcome, and the error shared by both layers |
 | `invariant/` | The sum-to-zero guarantee every audit path in this crate enforces exactly, no tolerance |
 | `algorithm/` | The conservation fold — plain-log and typed-layer, both exact-zero with no tolerance |
-| `decisions/` | Why this crate is no longer zero-dependency, and what of the original `exact_audit` contract still holds |
+| `decisions/` | Why this crate is no longer zero-dependency, what of the original `exact_audit` contract still holds, and why conservation is checked per asset |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 | `item/` | One page per declaration, with every file and crate that uses it |

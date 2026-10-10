@@ -7,10 +7,9 @@ Renamed from `exact_audit::AuditError` per the preferred design, with its
 shape changed too: `AuditError::AccumulatorOverflow { at_entry }` becomes the
 field-less `Overflow` — the position-tracking `at_entry` is dropped rather
 than preserved, since the doc specifies this crate's error shape explicitly
-(module doc comment, `src/lib.rs:50-57`). `NotZero { got : i128 }` is new,
-added for the typed `*_sum_assert_zero` functions; `i128` is chosen because a
-non-negative `Quantity` has no typed representation for a negative `got`
-(`src/lib.rs:58-64`).
+(module doc comment, `src/lib.rs:56-63`). `NotZero { got : i128 }` is new,
+added for the typed `money_sum_assert_zero`; `i128` is chosen to match
+`Report::discrepancy_minor`, so both outcomes count in the same unit.
 
 ## Kind
 
@@ -18,7 +17,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:106-118`
+`module/exact_conserve/src/lib.rs:116-128`
 
 ```rust
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
@@ -36,8 +35,8 @@ pub enum ConservationError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 108-118 | Declaration |
-| `src/lib.rs` | 136, 212, 258, 286 | Constructed on overflow/not-zero across `verify` and the 4 typed functions |
+| `src/lib.rs` | 118-128 | Declaration |
+| `src/lib.rs` | 146, 233, 271, 279 | Constructed on overflow/not-zero: in the private `KindError` mapping both `*_conserve_into` functions use (146), in `verify` (233), and in `money_sum_assert_zero` (271, 279) |
 | `tests/conservation_test.rs` | throughout | Every error-path test |
 | `cluster_economy/src/error.rs:19,79-81` | — | **Production** — wrapped into `MarketError::Audit` via a `From` impl |
 | `cluster_economy/tests/economy_test.rs:493,549,559` | — | Constructed directly and downcast-matched |
