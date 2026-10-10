@@ -25,7 +25,7 @@ fn a_settlement_runs_end_to_end_through_the_facade_alone()
   let notional = price_mul_qty( price, filled, Rounding::HalfEven ).unwrap();
   assert_eq!( notional, Money::parse( "5" ).unwrap() );
 
-  let log = [ Entry::new( "buyer", -notional.minor() ), Entry::new( "seller", notional.minor() ) ];
+  let log = [ Entry::new( "buyer", "cash", -notional.minor() ), Entry::new( "seller", "cash", notional.minor() ) ];
   let report : Report = verify( &log ).unwrap();
   assert!( report.is_balanced() );
 

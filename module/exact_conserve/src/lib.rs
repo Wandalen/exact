@@ -1,12 +1,12 @@
 //! Conservation auditing: does a set of postings sum to zero?
 //!
-//! Carries `exact_audit`'s whole-log auditor forward unchanged in behaviour
-//! — [`Entry`], [`Report`], and [`verify`] still take a plain `i64`-amount
-//! posting and compute an `i128`-widened net total, exactly as before — and
-//! adds a typed per-kind convenience layer on top: [`money_conserve_into`]/
+//! Carries `exact_audit`'s whole-log auditor forward — [`Entry`], [`Report`],
+//! and [`verify`] still take a plain `i64`-amount posting and compute an
+//! `i128`-widened net total, now one per asset — and adds a typed per-kind
+//! convenience layer on top: [`money_conserve_into`]/
 //! [`qty_conserve_into`] for folding one typed leg at a time via `exact_add`,
-//! and [`money_sum_assert_zero`]/[`qty_sum_assert_zero`] for asserting a
-//! whole typed slice conserves.
+//! and [`money_sum_assert_zero`] for asserting a whole slice of money legs
+//! conserves.
 //!
 //! # What conservation means here
 //!
@@ -14,6 +14,12 @@
 //! destroyed by a transfer, so every transfer contributes one credit and one
 //! matching debit, and the whole log therefore sums to zero. A non-zero sum
 //! is a *discrepancy*: value appeared or vanished between two postings.
+//!
+//! The sum is taken per asset. Each [`Entry`] names what moved — a currency or
+//! an instrument — and amounts of different assets are never added together:
+//! a log that invents one unit of cash and loses one unit of an instrument
+//! sums to zero as a whole, yet conserves neither. A log balances only when
+//! every asset's own sum is zero.
 //!
 //! Per-account totals are deliberately not computed. An account's total is
 //! its balance, and a non-zero balance is the normal state of an account,
@@ -24,7 +30,7 @@
 //! # Widths
 //!
 //! Postings are `i64`, matching the family's backing width; [`verify`]'s and
-//! the `sum_assert_zero` functions' accumulators are `i128`, strictly wider
+//! [`money_sum_assert_zero`]'s accumulators are `i128`, strictly wider
 //! — the fold is still checked, so even the length at which `i128` would run
 //! out — somewhere past `2⁶⁴` maximal postings — returns an error rather
 //! than wrapping.
@@ -57,30 +63,31 @@
 //!   bisect a failing log can still do so externally.
 //! - **`ConservationError::NotZero { got : i128 }`.** The doc does not say
 //!   what type `got` carries. `i128` matches [`Report::discrepancy_minor`]'s
-//!   own type and sidesteps a representation problem specific to `Quantity`:
-//!   a non-negative kind cannot hold a negative leg, so there is no typed
-//!   signed-quantity value a `got` field could carry for
-//!   [`qty_sum_assert_zero`] — a raw minor-unit count is the only
-//!   representation that works for both kinds uniformly.
-//! - **`qty_sum_assert_zero`'s practical meaning is narrower than
-//!   `money_sum_assert_zero`'s.** Every `Quantity` leg is individually
-//!   non-negative, so their sum is zero only when every leg is
-//!   [`exact_kind::Qty::ZERO`] — a real, if narrow, check (e.g. "nothing is
-//!   left unaccounted after a full reconciliation"), not the general
-//!   credit/debit conservation check `money_sum_assert_zero` performs.
+//!   own type, so a typed-layer failure and a plain-log discrepancy are
+//!   counted in the same unit.
 //! - **`money_conserve_into`/`qty_conserve_into` are prefixed per kind**,
 //!   matching this family's established convention (`exact_add`,
 //!   `exact_ratio`, `exact_cmp`, …), rather than the doc's single generic
 //!   `conserve_into(acc, leg)` — the same choice already made for
 //!   `exact_dust`'s `money_dust_split`/`qty_dust_split`.
+//! - **[`verify`] nets each asset separately**, where `exact_audit` summed the
+//!   whole log into one total: an [`Entry`] carries an `asset`, and a
+//!   [`Report`] one net per asset. One total let a leak in one asset cancel a
+//!   forgery in another.
+//! - **No `qty_sum_assert_zero`.** The doc names one beside
+//!   [`money_sum_assert_zero`], but every `Quantity` leg is non-negative, so
+//!   its sum is zero only when every leg is — it could never check a transfer,
+//!   whose giving side is negative. A quantity's movements are audited through
+//!   [`verify`] with an asset key instead.
 
 use exact_kind::{ KindError, Money, Quantity };
+use std::collections::BTreeMap;
 
 /// One posting in a transaction log.
 ///
 /// Plain data, constructed by anyone, carrying no invariant of its own. The
-/// signed amount is a count of minor units at whatever scale the log's
-/// producer and consumer have agreed on; [`verify`] never interprets the
+/// signed amount is a count of minor units of `asset`, at whatever scale the
+/// log's producer and consumer have agreed on; [`verify`] never interprets the
 /// scale, because conservation is a property of the integers and holds at
 /// every scale.
 #[ derive( Debug, Clone, PartialEq, Eq ) ]
@@ -89,6 +96,9 @@ pub struct Entry
   /// The account the posting is against. Carried for reporting, never for
   /// arithmetic — see the module docs on why balances are not totalled.
   pub account : String,
+  /// What moved — a currency or an instrument. [`verify`] nets each asset
+  /// separately: amounts of different assets are never added together.
+  pub asset : String,
   /// Signed minor units: positive credits the account, negative debits it.
   pub amount_minor : i64,
 }
@@ -97,9 +107,9 @@ impl Entry
 {
   /// Build a posting.
   #[ must_use ]
-  pub fn new( account : impl Into< String >, amount_minor : i64 ) -> Self
+  pub fn new( account : impl Into< String >, asset : impl Into< String >, amount_minor : i64 ) -> Self
   {
-    Self { account : account.into(), amount_minor }
+    Self { account : account.into(), asset : asset.into(), amount_minor }
   }
 }
 
@@ -137,18 +147,20 @@ fn kind_error_to_conservation_error( _e : KindError ) -> ConservationError
 }
 
 /// The outcome of auditing a log.
-#[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
+#[ derive( Debug, Clone, PartialEq, Eq ) ]
 pub struct Report
 {
   /// How many postings were folded.
   pub entries : usize,
-  /// Their signed sum, in minor units. Zero is a balanced log.
-  pub net_minor : i128,
+  /// Each asset's signed sum, in minor units, keyed by asset — a `BTreeMap`,
+  /// so a report lists its assets in the same order every time. Every sum
+  /// zero is a balanced log.
+  pub nets : BTreeMap< String, i128 >,
 }
 
 impl Report
 {
-  /// Whether the log conserves value.
+  /// Whether the log conserves value — every asset's sum is zero.
   ///
   /// Exact equality with zero, with no tolerance window. A tolerance is how
   /// an auditor comes to pass the only errors small enough to be worth
@@ -156,19 +168,20 @@ impl Report
   /// is the failure mode this whole crate exists to make impossible, and it
   /// is invisible to any check that ignores single units.
   #[ must_use ]
-  pub const fn is_balanced( &self ) -> bool
+  pub fn is_balanced( &self ) -> bool
   {
-    self.net_minor == 0
+    self.nets.values().all( | net | *net == 0 )
   }
 
-  /// The discrepancy, in minor units — zero when balanced.
+  /// One asset's discrepancy, in minor units — zero when it balances, or when
+  /// the log never moved it.
   ///
   /// Signed on purpose: the sign says whether value appeared or vanished,
   /// and those are different investigations.
   #[ must_use ]
-  pub const fn discrepancy_minor( &self ) -> i128
+  pub fn discrepancy_minor( &self, asset : &str ) -> i128
   {
-    self.net_minor
+    self.nets.get( asset ).copied().unwrap_or( 0 )
   }
 }
 
@@ -182,36 +195,44 @@ impl core::fmt::Display for Report
     }
     else
     {
-      write!( f, "UNBALANCED: entries {}, net {} minor units", self.entries, self.net_minor )
+      write!( f, "UNBALANCED: entries {}, net", self.entries )?;
+      let mut first = true;
+      for ( asset, net ) in self.nets.iter().filter( | ( _, net ) | **net != 0 )
+      {
+        write!( f, "{} {asset} {net}", if first { "" } else { "," } )?;
+        first = false;
+      }
+      write!( f, " minor units" )
     }
   }
 }
 
-/// Audit a log for conservation.
+/// Audit a log for conservation, netting each asset separately.
 ///
 /// ```
 /// use exact_conserve::{ Entry, verify };
 ///
-/// let log = [ Entry::new( "hold", 1_000_000 ), Entry::new( "ship", -1_000_000 ) ];
+/// let log = [ Entry::new( "hold", "cash", 1_000_000 ), Entry::new( "ship", "cash", -1_000_000 ) ];
 /// assert!( verify( &log ).unwrap().is_balanced() );
 ///
-/// let leaky = [ Entry::new( "hold", 1_000_000 ), Entry::new( "ship", -999_999 ) ];
-/// assert_eq!( verify( &leaky ).unwrap().discrepancy_minor(), 1 );
+/// let leaky = [ Entry::new( "hold", "cash", 1_000_000 ), Entry::new( "ship", "cash", -999_999 ) ];
+/// assert_eq!( verify( &leaky ).unwrap().discrepancy_minor( "cash" ), 1 );
 /// ```
 ///
 /// # Errors
 ///
-/// [`ConservationError::Overflow`] if the running total leaves `i128`.
+/// [`ConservationError::Overflow`] if an asset's running total leaves `i128`.
 pub fn verify( entries : &[ Entry ] ) -> Result< Report, ConservationError >
 {
-  let mut net : i128 = 0;
+  let mut nets : BTreeMap< String, i128 > = BTreeMap::new();
   for entry in entries
   {
-    net = net
+    let net = nets.entry( entry.asset.clone() ).or_insert( 0 );
+    *net = net
     .checked_add( i128::from( entry.amount_minor ) )
     .ok_or( ConservationError::Overflow )?;
   }
-  Ok( Report { entries : entries.len(), net_minor : net } )
+  Ok( Report { entries : entries.len(), nets } )
 }
 
 /// Fold one more money leg into a running total, via `exact_add`'s own
@@ -243,34 +264,6 @@ pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, 
 /// [`ConservationError::NotZero`] when the sum is not zero.
 /// [`ConservationError::Overflow`] if the running total leaves `i128`.
 pub fn money_sum_assert_zero( legs : &[ Money ] ) -> Result< (), ConservationError >
-{
-  let mut net : i128 = 0;
-  for leg in legs
-  {
-    net = net.checked_add( i128::from( leg.minor() ) ).ok_or( ConservationError::Overflow )?;
-  }
-  if net == 0
-  {
-    Ok( () )
-  }
-  else
-  {
-    Err( ConservationError::NotZero { got : net } )
-  }
-}
-
-/// Assert a slice of quantity legs sums to exactly zero.
-///
-/// Every `Quantity` is individually non-negative, so this holds only when
-/// every leg is [`exact_kind::Qty::ZERO`] — narrower than
-/// [`money_sum_assert_zero`]'s general conservation check, but the same
-/// shape.
-///
-/// # Errors
-///
-/// [`ConservationError::NotZero`] when the sum is not zero.
-/// [`ConservationError::Overflow`] if the running total leaves `i128`.
-pub fn qty_sum_assert_zero( legs : &[ Quantity ] ) -> Result< (), ConservationError >
 {
   let mut net : i128 = 0;
   for leg in legs

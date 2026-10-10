@@ -65,7 +65,7 @@ fn the_audit_separates_a_balanced_log_from_a_one_unit_leak()
 
   let leaky = verify( &ledger( amount, 1 ) ).expect( "a two-posting log cannot overflow i128" );
   assert!( !leaky.is_balanced(), "a one-unit leak went undetected" );
-  assert_eq!( leaky.discrepancy_minor(), -1, "the leak was detected but its signed magnitude was not" );
+  assert_eq!( leaky.discrepancy_minor( "cash" ), -1, "the leak was detected but its signed magnitude was not" );
 }
 
 /// The lane runs end to end and every step's assertion holds.

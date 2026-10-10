@@ -124,8 +124,8 @@ pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry >
 
   vec!
   [
-    Entry::new( "buyer", -amount.minor() ),
-    Entry::new( "seller", seller_minor ),
+    Entry::new( "buyer", "cash", -amount.minor() ),
+    Entry::new( "seller", "cash", seller_minor ),
   ]
 }
 
@@ -316,7 +316,7 @@ fn step_4_audit( exact : Money )
   // debited, so value vanished. The sign is the difference between a leak
   // and a forgery, and an auditor that reported only a magnitude would lose
   // it.
-  assert_eq!( leaky.discrepancy_minor(), -1, "the discrepancy must be named, not just flagged" );
+  assert_eq!( leaky.discrepancy_minor( "cash" ), -1, "the discrepancy must be named, not just flagged" );
   println!( "  audit, leaky   {leaky}" );
 }
 
