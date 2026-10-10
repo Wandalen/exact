@@ -36,7 +36,7 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 93 | Declaration |
-| `tests/rounding_mode_test.rs:14-23` | — | All 7 names checked |
+| `tests/rounding_mode_test.rs:14-24` | — | All 8 names checked |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 No file anywhere — production or test, in `exact_round` or in any downstream

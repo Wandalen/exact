@@ -44,7 +44,7 @@ pub enum RatioError
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 52,68,82,84,88-90,119,123-125,140,144,148-149,155,167,177,192,203,209,221,235,253 | Declaration; `Display`/`Error` impls; `kind_error_to_ratio_error`'s parameter, match arms and return type; `round_error_to_ratio_error`'s match arms and return type; every fallible function's `Result` error type |
-| `tests/ratio_and_div_round_test.rs` | 16,58,64-67,131,305,315,317,336-339 | `DivZero` and `Negative` asserted directly, and every variant's message |
+| `tests/ratio_and_div_round_test.rs` | 17,59,65-68,132,306,316,318,337-340,343,372-374,383,385,396-397,415,417 | `DivZero`, `Negative` and `Inexact` asserted directly, and every variant's message |
 | `exact_arith/src/lib.rs:106` | — | Facade re-export |
 
 Doc-comment mentions (lines 16,23,25,137,174-175,187,189-190,218-219,231-233,249-250, all `///`/`//!`

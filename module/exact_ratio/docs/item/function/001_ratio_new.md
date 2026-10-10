@@ -36,7 +36,7 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 140-153 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 14,21,213,222 | Zero-denominator refusal, negative-denominator normalization, a positive denominator kept as given, and the `i64::MIN` refusal — and the construction path for every other test's `Ratio` value |
+| `tests/ratio_and_div_round_test.rs` | 15,22,214,223 | Zero-denominator refusal, negative-denominator normalization, a positive denominator kept as given, and the `i64::MIN` refusal — and the construction path for every other test's `Ratio` value |
 | `src/lib.rs` | 256 | **Production** — `price_mul_qty` builds the quantity's ratio |
 | `exact_arith/src/lib.rs:113` | — | Facade re-export |
 

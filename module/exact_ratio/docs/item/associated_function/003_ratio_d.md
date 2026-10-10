@@ -26,7 +26,7 @@ pub const fn d( self ) -> i64
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 113 | Declaration |
-| `tests/ratio_and_div_round_test.rs:25` | — | Asserts the normalized (positive) denominator after a negative-denominator `ratio_new` call |
+| `tests/ratio_and_div_round_test.rs:26` | — | Asserts the normalized (positive) denominator after a negative-denominator `ratio_new` call |
 
 ## Crate Usage
 

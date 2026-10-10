@@ -33,7 +33,7 @@ total's minor count and `Quantity::from_minor` to build each slot.
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 243-246 | Declaration |
-| `tests/dust_split_test.rs:97,136,152` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, and the `Up`-rounded case that refuses a first slot that would go negative |
+| `tests/dust_split_test.rs:97,136,152,230` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, the `Up`-rounded case that refuses a first slot that would go negative, and `Exact` refusing an uneven split |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own 3 tests — an honest empty

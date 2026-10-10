@@ -31,6 +31,7 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 |------|---------|---------|
 | `src/lib.rs` | 231-235 | Declaration |
 | `tests/dust_split_test.rs:50` | — | Confirms the held-back amount under `DustTo::Sink` |
+| `tests/dust_split_test.rs:238-239` | — | Refused under `Exact` when uneven, zero when even |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest

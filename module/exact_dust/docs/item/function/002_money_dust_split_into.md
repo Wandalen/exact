@@ -39,6 +39,7 @@ anything is written.
 | `tests/dust_split_test.rs:106` | — | `DustTo::Reject` refuses before writing — the buffer keeps what it held |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
 | `tests/dust_split_test.rs:181` | — | `DustTo::Sink` leaves every slot at the plain share |
+| `tests/dust_split_test.rs:226` | — | `Exact` refuses an uneven split before writing — the buffer keeps what it held |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/tests/no_alloc_test.rs:72` | — | Test-only call checking the split makes no heap allocation |
 

@@ -1,5 +1,6 @@
 //! `Ratio` construction and normalization, the widened multiply, and `div_round`
-//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all seven.
+//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all eight,
+//! and `Exact`'s refusal of a result that needs rounding.
 
 use exact_kind::{ Money, Price, Quantity };
 use exact_ratio::
@@ -339,6 +340,83 @@ fn every_ratio_error_renders_its_cause()
     RatioError::Negative { minor : -5 }.to_string(),
     "-5 minor units is below zero, which this kind cannot hold"
   );
+  assert_eq!( RatioError::Inexact.to_string(), "the result needed rounding and Rounding::Exact was requested" );
+}
+
+/// A multiply under `Exact` that needs rounding is reported as `Inexact`, not
+/// as `Overflow`.
+///
+/// Root Cause: `mul_ratio_minor` mapped every `RoundError` from
+/// `round_div_wide` to `RatioError::Overflow` with `| _ |`. With only
+/// `DivZero` (unreachable: a `Ratio`'s denominator is never zero) and
+/// `Overflow` to map, that was harmless; with `Inexact` it would have told a
+/// caller an in-range result had left the range.
+///
+/// Why Not Caught: `div_round_minor` matched every variant, so the compiler
+/// flagged it when `RoundError` grew; the wildcard in `mul_ratio_minor` was
+/// silent.
+///
+/// Fix Applied: both go through `round_error_to_ratio_error`, an exhaustive
+/// `match`, so a new `RoundError` variant fails the build until it is mapped.
+///
+/// Prevention: this test pins `Inexact` through every multiply that reaches
+/// `mul_ratio_minor`; it fails on the wildcard.
+///
+/// Pitfall: a `| _ |` error mapping is correct only for the variants that
+/// exist the day it is written.
+#[ test ]
+fn a_multiply_needing_rounding_under_exact_is_inexact_not_overflow()
+{
+  let half = ratio_new( 1, 2 ).unwrap();
+  let seven = Money::from_minor( 7 ).unwrap();
+  assert_eq!( money_mul_ratio( seven, half, Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( price_mul_ratio( Price::from_minor( 7 ).unwrap(), half, Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( qty_mul_ratio( Quantity::from_minor( 7 ).unwrap(), half, Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( money_mul_ratio( Money::from_minor( 8 ).unwrap(), half, Rounding::Exact ).unwrap().minor(), 4 );
+}
+
+/// A rounded division under `Exact` returns an exact quotient and refuses a
+/// remainder, for both kinds.
+#[ test ]
+fn div_round_under_exact_refuses_a_remainder()
+{
+  assert_eq!( money_div_round( Money::from_minor( 7 ).unwrap(), 2, Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( money_div_round( Money::from_minor( 8 ).unwrap(), -2, Rounding::Exact ).unwrap().minor(), -4 );
+  assert_eq!( qty_div_round( Quantity::from_minor( 7 ).unwrap(), 2, Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( qty_div_round( Quantity::from_minor( 9 ).unwrap(), 3, Rounding::Exact ).unwrap().minor(), 3 );
+}
+
+/// Under `Exact` a quantity's product is judged exact before it is judged
+/// non-negative: a negative product that needs rounding is `Inexact`, and an
+/// exact negative one is `Negative`.
+#[ test ]
+fn qty_mul_ratio_under_exact_checks_exactness_before_sign()
+{
+  let one = Quantity::from_minor( 1 ).unwrap();
+  assert_eq!( qty_mul_ratio( one, ratio_new( -1, 3 ).unwrap(), Rounding::Exact ), Err( RatioError::Inexact ) );
+  assert_eq!( qty_mul_ratio( one, ratio_new( -1, 1 ).unwrap(), Rounding::Exact ), Err( RatioError::Negative { minor : -1 } ) );
+}
+
+/// `price_mul_qty` under `Exact` is a settlement cost that is refused, never
+/// rounded — the same answers the exchange's own `notional` gives: exact
+/// costs come back exact, a cost finer than one minor unit is refused, and a
+/// cost past the ceiling is still `Overflow`.
+#[ test ]
+fn price_mul_qty_under_exact_refuses_a_cost_that_needs_rounding()
+{
+  for ( price, qty, cost ) in [ ( "1.25", 4, "5" ), ( "0.000001", 1_000_000, "1" ), ( "3", 7, "21" ), ( "0.5", 3, "1.5" ) ]
+  {
+    let price = Price::parse( price ).unwrap();
+    let qty = Quantity::from_int( qty ).unwrap();
+    assert_eq!( price_mul_qty( price, qty, Rounding::Exact ).unwrap(), Money::parse( cost ).unwrap(), "{price} × {qty}" );
+  }
+  // One minor unit of price × one minor unit of quantity: twelve places on a six-place money.
+  let dust = price_mul_qty( Price::from_minor( 1 ).unwrap(), Quantity::EPSILON, Rounding::Exact );
+  assert_eq!( dust, Err( RatioError::Inexact ) );
+  let half_unit = price_mul_qty( Price::from_minor( 1 ).unwrap(), Quantity::parse( "0.5" ).unwrap(), Rounding::Exact );
+  assert_eq!( half_unit, Err( RatioError::Inexact ) );
+  let past_ceiling = price_mul_qty( Price::parse( "1000000000" ).unwrap(), Quantity::from_int( 10 ).unwrap(), Rounding::Exact );
+  assert_eq!( past_ceiling, Err( RatioError::Overflow ) );
 }
 
 /// A negative ratio on a quantity is refused whenever the rounded product is below zero; the mode
@@ -379,7 +457,7 @@ fn qty_mul_ratio_by_a_sub_unit_negative_product_depends_on_the_mode()
 }
 
 /// Every rounding mode, for the tests that must hold under each of them.
-const EVERY_MODE : [ Rounding; 7 ] =
+const EVERY_MODE : [ Rounding; 8 ] =
 [
   Rounding::Down,
   Rounding::Up,
@@ -388,4 +466,5 @@ const EVERY_MODE : [ Rounding; 7 ] =
   Rounding::AwayFromZero,
   Rounding::HalfUp,
   Rounding::HalfDown,
+  Rounding::Exact,
 ];

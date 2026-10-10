@@ -83,7 +83,7 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
   `price_snap_tick`/`qty_snap_lot`, which bypass them via direct `.0`
   tuple-field access instead (legal — same defining module). Verified by
   grepping `.price()`/`.qty()` across `src/lib.rs` and `tests/snap_test.rs`:
-  the only matches are the size test's `tests/snap_test.rs:157-158,161`.
+  the only matches are the size test's `tests/snap_test.rs:158-159,162`.
 - **Both snap functions have zero callers anywhere in the workspace** —
   `exact_arith` re-exports both but its own facade test suite never calls
   either, the same bypass pattern already found independently in

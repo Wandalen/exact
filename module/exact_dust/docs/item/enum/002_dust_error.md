@@ -43,6 +43,7 @@ pub enum DustError
 | `src/lib.rs` | 89-100 | `Display` match arms |
 | `src/lib.rs` | 113-114,117,126,128,130-131,143,147,166,194 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own) |
 | `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
+| `tests/dust_split_test.rs:223,226,230,238,240` | — | `Remainder` under `Exact`, for an uneven split, buffer and remainder |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No production call site anywhere constructs or matches `DustError` outside

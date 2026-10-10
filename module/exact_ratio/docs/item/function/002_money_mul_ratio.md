@@ -27,7 +27,7 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 177-181 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 34,44,54,166,255,266 | One-half exact multiply; an intermediate-overflow survival case; refusal past the ceiling; `Down`/`Up`/`HalfEven` at both signs; a negative ratio rounding toward the named infinity; a zero ratio giving zero under every mode |
+| `tests/ratio_and_div_round_test.rs` | 35,45,55,167,256,267,372,375 | One-half exact multiply; `Inexact` under `Exact`, not `Overflow`; an intermediate-overflow survival case; refusal past the ceiling; `Down`/`Up`/`HalfEven` at both signs; a negative ratio rounding toward the named infinity; a zero ratio giving zero under every mode |
 | `exact_arith/src/lib.rs:108` | — | Facade re-export |
 
 ## Crate Usage

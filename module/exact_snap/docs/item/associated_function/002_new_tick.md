@@ -39,7 +39,7 @@ pub const fn new( price : Price ) -> Result< Self, SnapError >
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 84-96 | Declaration |
-| `tests/snap_test.rs` | 12,21,33,42,51,100,157-159 | Zero-rejection check; the fixture every snap test builds before calling `price_snap_tick`; a tick of -5 stored as 5 and equal to a tick of 5 |
+| `tests/snap_test.rs` | 13,22,34,43,52,101,158-160 | Zero-rejection check; the fixture every snap test builds before calling `price_snap_tick`; a tick of -5 stored as 5 and equal to a tick of 5 |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own

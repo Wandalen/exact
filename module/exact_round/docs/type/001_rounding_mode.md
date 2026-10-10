@@ -45,4 +45,4 @@ parses a rounding mode back out of a log line.
 
 | File | Relationship |
 |------|--------------|
-| `tests/rounding_mode_test.rs` | `every_rounding_mode_has_a_stable_name`, `rounding_is_copy_and_comparable` |
+| `tests/rounding_mode_test.rs` | `every_rounding_mode_has_a_stable_name` (all eight, `"exact"` included), `rounding_is_copy_and_comparable` |

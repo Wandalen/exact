@@ -20,6 +20,7 @@ fn every_rounding_mode_has_a_stable_name()
   assert_eq!( rounding_name( Rounding::AwayFromZero ), "away_from_zero" );
   assert_eq!( rounding_name( Rounding::HalfUp ), "half_up" );
   assert_eq!( rounding_name( Rounding::HalfDown ), "half_down" );
+  assert_eq!( rounding_name( Rounding::Exact ), "exact" );
 }
 
 /// `Rounding` is a plain, comparable, copyable enum — a policy value, not a

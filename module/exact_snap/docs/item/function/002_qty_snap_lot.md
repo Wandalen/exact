@@ -31,7 +31,7 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 166-172 | Declaration |
-| `tests/snap_test.rs` | 119,120,130,131 | Rounding-down/up parity with `price_snap_tick`, and never producing a negative result |
+| `tests/snap_test.rs` | 120,121,131,132,202-203 | Rounding-down/up parity with `price_snap_tick`, never producing a negative result, and `Exact` keeping an on-grid quantity and refusing an off-grid one |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own

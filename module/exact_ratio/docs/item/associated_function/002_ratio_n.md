@@ -25,7 +25,7 @@ pub const fn n( self ) -> i64
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 106 | Declaration |
-| `tests/ratio_and_div_round_test.rs:24` | — | Asserts the normalized numerator after a negative-denominator `ratio_new` call |
+| `tests/ratio_and_div_round_test.rs:25` | — | Asserts the normalized numerator after a negative-denominator `ratio_new` call |
 
 ## Crate Usage
 

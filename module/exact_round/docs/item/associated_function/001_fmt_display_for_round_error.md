@@ -31,7 +31,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 123-131 | Declaration |
-| `tests/round_div_test.rs` | 248,255 | Both messages, via `.to_string()` |
+| `tests/round_div_test.rs` | 280,288,295 | All three messages, via `.to_string()` |
 
 No production file calls this method — every downstream crate maps
 `RoundError` by `match`, never by rendering it (see
@@ -45,7 +45,7 @@ No production file calls this method — every downstream crate maps
 
 ## Caller Tree
 
-- **Test-only:** `the_overflow_message_names_the_real_cause`, `the_div_zero_message_names_the_zero_divisor` (`tests/round_div_test.rs:248,255`)
+- **Test-only:** `the_overflow_message_names_the_real_cause`, `the_inexact_message_names_the_refused_remainder`, `the_div_zero_message_names_the_zero_divisor` (`tests/round_div_test.rs:280,288,295`)
 
 ## Callee Tree
 

@@ -82,7 +82,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 |------|---------|---------|
 | `src/lib.rs` | 171-220 | Declaration |
 | `src/lib.rs` | 149 | `round_div`'s call, with widened operands |
-| `tests/round_div_test.rs` | 4,155,196-203,234-240 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
+| `tests/round_div_test.rs` | 4,156,228-235,266-272,215-220 | Each mode's definition on a grid; `Exact` past `i64`; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
 | `exact_ratio/src/lib.rs:165-166` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 

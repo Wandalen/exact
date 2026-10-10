@@ -14,7 +14,7 @@ crate's one consumer of a `Tick`) reads the wrapped value via `tick.0.minor()`
 — direct tuple-field access, legal because `price_snap_tick` shares `Tick`'s
 defining module — rather than `tick.price().minor()` through this accessor.
 Verified by grepping `src/lib.rs` and `tests/snap_test.rs` for `.price()`: the
-only matches are `tests/snap_test.rs:157-158`.
+only matches are `tests/snap_test.rs:158-159`.
 
 ## Kind
 
@@ -37,7 +37,7 @@ pub const fn price( self ) -> Price
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 100-103 | Declaration |
-| `tests/snap_test.rs` | 157-158 | A tick built from 5 and one built from -5 both report a size of 5 |
+| `tests/snap_test.rs` | 158-159 | A tick built from 5 and one built from -5 both report a size of 5 |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
 
 No production call site anywhere — an honest empty finding, and the
