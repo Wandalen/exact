@@ -96,7 +96,7 @@ pub fn float_tenths() -> f64
 /// every call in this lane passes `0` or `1`, so the panic is reachable only
 /// by a future caller supplying an unrealistic leak, never by `run` itself.
 #[ must_use ]
-pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry >
+pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry< &'static str > >
 {
   // Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow): the
   // "seller" posting computed `amount.minor() - leak_minor` with a bare `-`
@@ -316,7 +316,7 @@ fn step_4_audit( exact : Money )
   // debited, so value vanished. The sign is the difference between a leak
   // and a forgery, and an auditor that reported only a magnitude would lose
   // it.
-  assert_eq!( leaky.discrepancy_minor( "cash" ), -1, "the discrepancy must be named, not just flagged" );
+  assert_eq!( leaky.discrepancy_minor( "cash" ), Some( -1 ), "the discrepancy must be named, not just flagged" );
   println!( "  audit, leaky   {leaky}" );
 }
 

@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:190-207`
+`module/exact_conserve/src/lib.rs:195-212`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -38,7 +38,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 190-207 | Declaration |
+| `src/lib.rs` | 195-212 | Declaration |
 | `tests/conservation_test.rs:79,82-83,147,172` | — | Asserts both branches' exact rendered text, for one asset and for several |
 | `exchange_core/tests/submission_test.rs:258` | — | `assert!( report.is_balanced(), "{report}" )` — rendered only on assertion failure |
 
@@ -58,4 +58,4 @@ not a direct `.fmt()` call.
 
 ## Callee Tree
 
-- [is_balanced](003_is_balanced.md) (`src/lib.rs:192`)
+- [is_balanced](003_is_balanced.md) (`src/lib.rs:197`)

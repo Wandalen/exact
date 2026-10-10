@@ -15,19 +15,22 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:161-186`
+`module/exact_conserve/src/lib.rs:162-191`
 
 ```rust
-impl Report
+impl< A > Report< A >
 {
   pub fn is_balanced( &self ) -> bool
   {
     self.nets.values().all( | net | *net == 0 )
   }
 
-  pub fn discrepancy_minor( &self, asset : &str ) -> i128
+  pub fn discrepancy_minor< Q >( &self, asset : &Q ) -> Option< i128 >
+  where
+    A : Borrow< Q > + Ord,
+    Q : Ord + ?Sized,
   {
-    self.nets.get( asset ).copied().unwrap_or( 0 )
+    self.nets.get( asset ).copied()
   }
 }
 ```
@@ -36,7 +39,7 @@ impl Report
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 161-186 | Declaration |
+| `src/lib.rs` | 162-191 | Declaration |
 
 ## Crate Usage
 

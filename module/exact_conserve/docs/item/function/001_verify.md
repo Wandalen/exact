@@ -4,7 +4,9 @@
 
 Audit a log of postings for conservation: fold each `amount_minor` into its
 own asset's `i128`-widened net total, and report every asset's net — amounts
-of different assets are never added together. The crate's single most
+of different assets are never added together. Generic over the caller's
+asset key `A : Ord + Clone`: `Ord` to keep the nets in a `BTreeMap`, `Clone`
+to store a key the first time its asset appears. The crate's single most
 production-critical export.
 
 ## Kind
@@ -13,24 +15,26 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:225-236`
+`module/exact_conserve/src/lib.rs:230-243`
 
 ```rust
-pub fn verify( entries : &[ Entry ] ) -> Result< Report, ConservationError >
+pub fn verify< A : Ord + Clone >( entries : &[ Entry< A > ] ) -> Result< Report< A >, ConservationError >
 {
-  let mut nets : BTreeMap< String, i128 > = BTreeMap::new();
+  let mut nets : BTreeMap< A, i128 > = BTreeMap::new();
   for entry in entries
   {
-    let net = nets.entry( entry.asset.clone() ).or_insert( 0 );
-    *net = net
-    .checked_add( i128::from( entry.amount_minor ) )
-    .ok_or( ConservationError::Overflow )?;
+    let amount = i128::from( entry.amount_minor );
+    match nets.get_mut( &entry.asset )
+    {
+      Some( net ) => *net = net.checked_add( amount ).ok_or( ConservationError::Overflow )?,
+      None => { nets.insert( entry.asset.clone(), amount ); }
+    }
   }
   Ok( Report { entries : entries.len(), nets } )
 }
 ```
 
-Carries its own doc-test (`src/lib.rs:212-220`), which runs as a real
+Carries its own doc-test (`src/lib.rs:217-225`), which runs as a real
 `cargo test --doc` execution, demonstrating both a balanced log and a
 one-unit leak.
 
@@ -38,8 +42,8 @@ one-unit leak.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 225-236 | Declaration |
-| `src/lib.rs` | 212-220 | Own doc-test |
+| `src/lib.rs` | 230-243 | Declaration |
+| `src/lib.rs` | 217-225 | Own doc-test |
 | `tests/conservation_test.rs` | throughout | Every test in the file |
 | `exact_arith/src/lib.rs:30` | — | Facade's own module-level doc-test |
 | `exact_arith/tests/facade_test.rs:29` | — | Facade integration test |
@@ -73,6 +77,6 @@ No intra-crate caller.
 
 ## Callee Tree
 
-No callee of its own — folds via `BTreeMap::entry`, `i128::from` and
-`i128::checked_add` directly, one accumulator per asset, and constructs
+No callee of its own — folds via `BTreeMap::get_mut`/`insert`, `i128::from`
+and `i128::checked_add` directly, one accumulator per asset, and constructs
 [Report](../struct/002_report.md); no further hop into another Item Instance.

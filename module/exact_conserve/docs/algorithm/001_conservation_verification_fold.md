@@ -48,13 +48,13 @@ The check here is a single whole-log (or whole-slice) sum compared to zero — i
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:11-36` | The module doc's "What conservation means here" and "Widths" sections — the `i64`/`i128` framing and the per-account-totals rationale, verbatim source for the two "Why" sections above |
-| `src/lib.rs:225-236` | `verify`'s implementation (steps 1-4) |
-| `src/lib.rs:171-174` | `Report::is_balanced` — step 5 |
-| `src/lib.rs:244-258` | `money_conserve_into`/`qty_conserve_into` — the typed layer's single-step fold, delegated to `exact_add` |
-| `src/lib.rs:266-281` | `money_sum_assert_zero` — the typed layer's accumulate-then-compare check |
+| `src/lib.rs:230-243` | `verify`'s implementation (steps 1-4) |
+| `src/lib.rs:172-175` | `Report::is_balanced` — step 5 |
+| `src/lib.rs:251-265` | `money_conserve_into`/`qty_conserve_into` — the typed layer's single-step fold, delegated to `exact_add` |
+| `src/lib.rs:273-288` | `money_sum_assert_zero` — the typed layer's accumulate-then-compare check |
 
 ### Tests
 
 | File | Relationship |
 |------|--------------|
-| `tests/conservation_test.rs` | Plain-log balance and discrepancy-sign coverage (ported from `exact_audit`); `money_conserve_into`/`qty_conserve_into` fold-and-overflow coverage; `money_sum_assert_zero` cancellation coverage; per-asset netting |
+| `tests/conservation_test.rs` | Plain-log balance and discrepancy-sign coverage (ported from `exact_audit`); `money_conserve_into`/`qty_conserve_into` fold-and-overflow coverage; `money_sum_assert_zero` cancellation coverage; per-asset netting (`a_leak_in_one_asset_does_not_cancel_a_forgery_in_another`, `a_log_balances_when_every_asset_balances`), under a `&str` or an enum key (`a_log_can_be_keyed_by_the_callers_own_asset_type`) |

@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_conserve`'s
-own source tree — 19 instances across 6 Item Kinds, all in `src/lib.rs` (this
+own source tree — 20 instances across 6 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and every file and crate that uses it,
@@ -33,13 +33,13 @@ reach, documented below.
 
 | Kind | Directory | Instances |
 |------|-----------|-----------|
-| Use Declaration | `use_declaration/` | 2 |
+| Use Declaration | `use_declaration/` | 3 |
 | Struct | `struct/` | 2 |
 | Enum | `enum/` | 1 |
 | Implementation | `implementation/` | 5 |
 | Associated Function/Method | `associated_function/` | 5 |
 | Function | `function/` | 4 |
-| **Total** | | **19** |
+| **Total** | | **20** |
 
 9 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Union, Constant, Static, Trait, External Block, Macro
@@ -51,6 +51,7 @@ Definition/Invocation. No Associated Constant either.
 |----|------|------|--------|
 | use_declaration/001 | use exact_kind::{ KindError, Money, Quantity } | Use Declaration | 🔄 |
 | use_declaration/002 | use std::collections::BTreeMap | Use Declaration | 🔄 |
+| use_declaration/003 | use std::borrow::Borrow | Use Declaration | 🔄 |
 | struct/001 | Entry | Struct | 🔄 |
 | struct/002 | Report | Struct | 🔄 |
 | enum/001 | ConservationError | Enum | 🔄 |
@@ -113,5 +114,5 @@ Definition/Invocation. No Associated Constant either.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_conserve/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 19
+# → 20
 ```

@@ -110,13 +110,13 @@ behaviour.
 | `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:263` | — |
 | `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:243` | — |
 | `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:253` | — |
-| `ConservationError` | enum | `../../../exact_conserve/src/lib.rs:118` | — |
-| `Entry` | struct | `../../../exact_conserve/src/lib.rs:94` | — |
-| `Report` | struct | `../../../exact_conserve/src/lib.rs:151` | — |
-| `money_conserve_into` | fn | `../../../exact_conserve/src/lib.rs:244` | — |
-| `money_sum_assert_zero` | fn | `../../../exact_conserve/src/lib.rs:266` | — |
-| `qty_conserve_into` | fn | `../../../exact_conserve/src/lib.rs:255` | — |
-| `verify` | fn | `../../../exact_conserve/src/lib.rs:225` | — |
+| `ConservationError` | enum | `../../../exact_conserve/src/lib.rs:119` | — |
+| `Entry` | struct | `../../../exact_conserve/src/lib.rs:95` | — |
+| `Report` | struct | `../../../exact_conserve/src/lib.rs:152` | — |
+| `money_conserve_into` | fn | `../../../exact_conserve/src/lib.rs:251` | — |
+| `money_sum_assert_zero` | fn | `../../../exact_conserve/src/lib.rs:273` | — |
+| `qty_conserve_into` | fn | `../../../exact_conserve/src/lib.rs:262` | — |
+| `verify` | fn | `../../../exact_conserve/src/lib.rs:230` | — |
 
 ### Regenerate
 

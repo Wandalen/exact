@@ -82,6 +82,7 @@
 
 use exact_kind::{ KindError, Money, Quantity };
 use std::collections::BTreeMap;
+use std::borrow::Borrow;
 
 /// One posting in a transaction log.
 ///
@@ -91,25 +92,25 @@ use std::collections::BTreeMap;
 /// scale, because conservation is a property of the integers and holds at
 /// every scale.
 #[ derive( Debug, Clone, PartialEq, Eq ) ]
-pub struct Entry
+pub struct Entry< A >
 {
   /// The account the posting is against. Carried for reporting, never for
   /// arithmetic — see the module docs on why balances are not totalled.
   pub account : String,
   /// What moved — a currency or an instrument. [`verify`] nets each asset
   /// separately: amounts of different assets are never added together.
-  pub asset : String,
+  pub asset : A,
   /// Signed minor units: positive credits the account, negative debits it.
   pub amount_minor : i64,
 }
 
-impl Entry
+impl< A > Entry< A >
 {
   /// Build a posting.
   #[ must_use ]
-  pub fn new( account : impl Into< String >, asset : impl Into< String >, amount_minor : i64 ) -> Self
+  pub fn new( account : impl Into< String >, asset : A, amount_minor : i64 ) -> Self
   {
-    Self { account : account.into(), asset : asset.into(), amount_minor }
+    Self { account : account.into(), asset, amount_minor }
   }
 }
 
@@ -148,17 +149,17 @@ fn kind_error_to_conservation_error( _e : KindError ) -> ConservationError
 
 /// The outcome of auditing a log.
 #[ derive( Debug, Clone, PartialEq, Eq ) ]
-pub struct Report
+pub struct Report< A >
 {
   /// How many postings were folded.
   pub entries : usize,
   /// Each asset's signed sum, in minor units, keyed by asset — a `BTreeMap`,
   /// so a report lists its assets in the same order every time. Every sum
   /// zero is a balanced log.
-  pub nets : BTreeMap< String, i128 >,
+  pub nets : BTreeMap< A, i128 >,
 }
 
-impl Report
+impl< A > Report< A >
 {
   /// Whether the log conserves value — every asset's sum is zero.
   ///
@@ -173,19 +174,23 @@ impl Report
     self.nets.values().all( | net | *net == 0 )
   }
 
-  /// One asset's discrepancy, in minor units — zero when it balances, or when
-  /// the log never moved it.
+  /// One asset's discrepancy, in minor units — `Some( 0 )` when it balances,
+  /// and `None` when the log never moved it, so a misspelt asset cannot read
+  /// as balanced.
   ///
   /// Signed on purpose: the sign says whether value appeared or vanished,
   /// and those are different investigations.
   #[ must_use ]
-  pub fn discrepancy_minor( &self, asset : &str ) -> i128
+  pub fn discrepancy_minor< Q >( &self, asset : &Q ) -> Option< i128 >
+  where
+    A : Borrow< Q > + Ord,
+    Q : Ord + ?Sized,
   {
-    self.nets.get( asset ).copied().unwrap_or( 0 )
+    self.nets.get( asset ).copied()
   }
 }
 
-impl core::fmt::Display for Report
+impl< A : core::fmt::Display > core::fmt::Display for Report< A >
 {
   fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   {
@@ -216,21 +221,23 @@ impl core::fmt::Display for Report
 /// assert!( verify( &log ).unwrap().is_balanced() );
 ///
 /// let leaky = [ Entry::new( "hold", "cash", 1_000_000 ), Entry::new( "ship", "cash", -999_999 ) ];
-/// assert_eq!( verify( &leaky ).unwrap().discrepancy_minor( "cash" ), 1 );
+/// assert_eq!( verify( &leaky ).unwrap().discrepancy_minor( "cash" ), Some( 1 ) );
 /// ```
 ///
 /// # Errors
 ///
 /// [`ConservationError::Overflow`] if an asset's running total leaves `i128`.
-pub fn verify( entries : &[ Entry ] ) -> Result< Report, ConservationError >
+pub fn verify< A : Ord + Clone >( entries : &[ Entry< A > ] ) -> Result< Report< A >, ConservationError >
 {
-  let mut nets : BTreeMap< String, i128 > = BTreeMap::new();
+  let mut nets : BTreeMap< A, i128 > = BTreeMap::new();
   for entry in entries
   {
-    let net = nets.entry( entry.asset.clone() ).or_insert( 0 );
-    *net = net
-    .checked_add( i128::from( entry.amount_minor ) )
-    .ok_or( ConservationError::Overflow )?;
+    let amount = i128::from( entry.amount_minor );
+    match nets.get_mut( &entry.asset )
+    {
+      Some( net ) => *net = net.checked_add( amount ).ok_or( ConservationError::Overflow )?,
+      None => { nets.insert( entry.asset.clone(), amount ); }
+    }
   }
   Ok( Report { entries : entries.len(), nets } )
 }

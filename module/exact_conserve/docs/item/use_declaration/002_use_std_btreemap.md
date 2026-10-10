@@ -25,8 +25,8 @@ use std::collections::BTreeMap;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 84 | Declaration |
-| `src/lib.rs` | 158 | `Report::nets` field type |
-| `src/lib.rs` | 227 | `verify`'s per-asset accumulator |
+| `src/lib.rs` | 159 | `Report::nets` field type |
+| `src/lib.rs` | 232 | `verify`'s per-asset accumulator |
 
 The mention at line 155 is a doc comment, not a usage.
 

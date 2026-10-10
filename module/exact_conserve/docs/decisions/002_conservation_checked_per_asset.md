@@ -33,13 +33,17 @@ cannot be expressed as a `Quantity` at all.
 
 ## Decision
 
-- `Entry` gains `asset : String`, naming what moved — a currency or an
+- `Entry` gains `asset : A`, naming what moved — a currency or an
   instrument — and `Entry::new` takes it between the account and the amount.
-- `verify` keeps one `i128` net per asset, in a `BTreeMap< String, i128 >`,
-  and never adds amounts of different assets together.
+  `A` is the caller's own key type: an enum, where a misspelt asset is a
+  compile error, or a `&str`/`String` where text is enough.
+- `verify< A : Ord + Clone >` keeps one `i128` net per asset, in a
+  `BTreeMap< A, i128 >`, and never adds amounts of different assets together.
+  It clones a key only the first time it sees that asset.
 - `Report` carries those nets as `nets` in place of the single `net_minor`.
   `is_balanced` holds when every net is zero, and `discrepancy_minor( asset )`
-  returns one asset's net — zero for an asset the log never moved.
+  returns `Some` of one asset's net, or `None` for an asset the log never
+  moved — so a misspelt asset cannot read as a zero discrepancy.
 - `Report`'s `Display` keeps its balanced text, and when unbalanced names each
   asset whose net is not zero, in asset order:
   `UNBALANCED: entries 4, net BTC -1, cash 1 minor units`.
@@ -56,7 +60,16 @@ Rejected: the caller has to know to split the log, and the auditor reports a
 mixed log balanced when it is not. An auditor whose answer depends on the
 caller remembering a rule is the gap this crate exists to close.
 
-### Option 2: A `HashMap` of nets
+### Option 2: A `String` asset key
+
+Rejected in review: any text is a valid `String`, so a misspelt asset is not
+an error — `discrepancy_minor( "csah" )` would report the zero of an asset
+never moved while `cash` is off — and `verify` cloned the key on every
+posting. A key type the caller chooses lets an enum make the misspelling a
+compile error and the clone free, while `&str` keys keep string literals
+working.
+
+### Option 3: A `HashMap` of nets
 
 Rejected: a `HashMap` iterates in an order that changes from run to run, so
 the same log would render its `Display` text, and its `Debug` output,
@@ -64,7 +77,7 @@ differently each time — and the tests and the smoke demo compare that text.
 A log moves a handful of assets, where a `BTreeMap`'s ordered iteration costs
 nothing measurable.
 
-### Option 3: Deprecate `qty_sum_assert_zero` instead of removing it
+### Option 4: Deprecate `qty_sum_assert_zero` instead of removing it
 
 Rejected: a deprecated function still compiles and still invites a check that
 cannot check anything, and this change already breaks every caller of
@@ -81,13 +94,15 @@ crate's own test was found.
 
 **Negative:**
 - Breaking: every `Entry::new` call gains an argument, every
-  `discrepancy_minor()` call an asset, `Report` loses `Copy` and its
+  `discrepancy_minor()` call an asset and an `Option` result, `Entry` and
+  `Report` a type parameter, `Report` loses `Copy` and its
   `net_minor` field, and `qty_sum_assert_zero` is gone. Inside this workspace: `exact_conserve`'s own tests,
   `exact_arith`'s doc example and facade test, and `smoke_exact_market_split`.
   Outside it: the exchange's `postings`, and `cluster_economy`.
 - `is_balanced` and `discrepancy_minor` are no longer `const fn` — both read a
   map, which `const` code cannot. No caller used either at compile time.
-- `verify` now allocates: one map entry, and one cloned asset name, per asset.
+- `verify` now allocates one map entry per asset, and clones one key per
+  asset — free for a `Copy` key such as an enum or a `&str`.
 
 **Neutral:**
 - An `Entry`'s `account` is still carried for reporting only; per-account

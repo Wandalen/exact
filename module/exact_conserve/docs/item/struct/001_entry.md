@@ -2,8 +2,8 @@
 
 ## Representation
 
-One posting in a transaction log — an account label, the asset that moved,
-and a signed minor-unit amount. Plain data with no invariant of its own;
+One posting in a transaction log — an account label, the asset that moved
+(of the caller's own key type `A`), and a signed minor-unit amount. Plain data with no invariant of its own;
 carried forward from `exact_audit`, which had no `asset` — [verify](../function/001_verify.md)
 nets each asset separately, so amounts of different assets never cancel. The scale is never interpreted by [`verify`],
 because conservation is a property of the raw integers and holds at every
@@ -15,14 +15,14 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:93-104`
+`module/exact_conserve/src/lib.rs:94-105`
 
 ```rust
 #[ derive( Debug, Clone, PartialEq, Eq ) ]
-pub struct Entry
+pub struct Entry< A >
 {
   pub account : String,
-  pub asset : String,
+  pub asset : A,
   pub amount_minor : i64,
 }
 ```
@@ -31,8 +31,8 @@ pub struct Entry
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 94-104 | Declaration |
-| `src/lib.rs` | 212-219 | `verify`'s own doc-test |
+| `src/lib.rs` | 95-105 | Declaration |
+| `src/lib.rs` | 217-224 | `verify`'s own doc-test |
 | `tests/conservation_test.rs:18-21` | — | `transfer` test helper builds a matched credit/debit pair |
 | `exchange_core/src/lib.rs:460-461` | — | **Production** — one credit and one matching debit posting per settled trade |
 | `cluster_economy/src/market.rs:504-505,515-516` | — | **Production** — cash-leg and asset-leg postings per settlement |

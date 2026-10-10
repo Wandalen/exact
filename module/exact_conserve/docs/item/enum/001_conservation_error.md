@@ -17,7 +17,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:116-128`
+`module/exact_conserve/src/lib.rs:117-129`
 
 ```rust
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
@@ -35,8 +35,8 @@ pub enum ConservationError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 118-128 | Declaration |
-| `src/lib.rs` | 146, 233, 271, 279 | Constructed on overflow/not-zero: in the private `KindError` mapping both `*_conserve_into` functions use (146), in `verify` (233), and in `money_sum_assert_zero` (271, 279) |
+| `src/lib.rs` | 119-129 | Declaration |
+| `src/lib.rs` | 147, 238, 278, 286 | Constructed on overflow/not-zero: in the private `KindError` mapping both `*_conserve_into` functions use (147), in `verify` (238), and in `money_sum_assert_zero` (278, 286) |
 | `tests/conservation_test.rs` | throughout | Every error-path test |
 | `cluster_economy/src/error.rs:19,79-81` | — | **Production** — wrapped into `MarketError::Audit` via a `From` impl |
 | `cluster_economy/tests/economy_test.rs:493,549,559` | — | Constructed directly and downcast-matched |
