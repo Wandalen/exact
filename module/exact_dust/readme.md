@@ -38,7 +38,7 @@ anywhere in this codebase.
 |------|-----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_round` |
 | [`src/lib.rs`](src/lib.rs) | `DustTo`, `DustError`, `money`/`qty_dust_split`, `_into`, `_remainder` |
-| [`tests/dust_split_test.rs`](tests/dust_split_test.rs) | Even splits, remainder destinations, and the non-negative kind's own negative-slot refusal under `Up` |
+| [`tests/dust_split_test.rs`](tests/dust_split_test.rs) | Even splits, remainder destinations, the non-negative kind's own negative-slot refusal under `Up`, and `Exact`'s refusal of an uneven split |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Algorithm, decisions, and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

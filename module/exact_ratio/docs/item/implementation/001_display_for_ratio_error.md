@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:65`
+`module/exact_ratio/src/lib.rs:68`
 
 ```rust
 impl core::fmt::Display for RatioError
@@ -24,6 +24,7 @@ impl core::fmt::Display for RatioError
       Self::DivZero => write!( f, "a zero denominator was supplied" ),
       Self::Overflow => write!( f, "left the representable or declared range" ),
       Self::Negative { minor } => write!( f, "{minor} minor units is below zero, which this kind cannot hold" ),
+      Self::Inexact => write!( f, "the result needed rounding and Rounding::Exact was requested" ),
     }
   }
 }
@@ -33,7 +34,7 @@ impl core::fmt::Display for RatioError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 65-76 | Declaration — the block spans the one `fmt` member |
+| `src/lib.rs` | 68-80 | Declaration — the block spans the one `fmt` member |
 
 ## Crate Usage
 

@@ -12,9 +12,9 @@ closures.
 
 `exact_ratio` is Tier 2, depending on `exact_kind` and `exact_round`. Net-new:
 no real precedent exists for either rational-multiply or mode-driven integer
-division (module doc comment, `src/lib.rs:9-12`). The crate also declares 3
-private free functions (`kind_error_to_ratio_error`, `mul_ratio_minor`,
-`div_round_minor`) that get **no Item Instance of their own**
+division (module doc comment, `src/lib.rs:9-12`). The crate also declares 4
+private free functions (`kind_error_to_ratio_error`, `round_error_to_ratio_error`,
+`mul_ratio_minor`, `div_round_minor`) that get **no Item Instance of their own**
 (`item_des.rulebook.md` line 243: a private/`pub(crate)`/`pub(super)` helper
 is a real call-graph hop, not a catalogable Item) — they appear only as plain
 `file:line` citations inside the Callee Trees of the public functions that

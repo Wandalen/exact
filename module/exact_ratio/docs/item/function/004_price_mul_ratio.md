@@ -21,7 +21,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:186`
+`module/exact_ratio/src/lib.rs:203`
 
 ```rust
 pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
@@ -35,8 +35,8 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 186-190 | Declaration |
-| `tests/ratio_and_div_round_test.rs` | 231,246 | `Down`/`Up`/`HalfEven` at both signs, and refusal past the ceiling |
+| `src/lib.rs` | 203-207 | Declaration |
+| `tests/ratio_and_div_round_test.rs` | 232,247,373 | `Down`/`Up`/`HalfEven` at both signs, refusal past the ceiling, and `Inexact` under `Exact` |
 | `exact_arith/src/lib.rs:110` | — | Facade re-export |
 
 ## Crate Usage
@@ -54,6 +54,7 @@ tree (production call-graph only); `exact_arith` only re-exports the name.
 
 ## Callee Tree
 
-- `mul_ratio_minor` (`src/lib.rs:141`, private — no Item Instance of its own)
-- `kind_error_to_ratio_error` (`src/lib.rs:80`, private — no Item Instance of its own)
+- `mul_ratio_minor` (`src/lib.rs:155`, private — no Item Instance of its own)
+  - `round_error_to_ratio_error` (`src/lib.rs:119`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div_wide`'s result)
+- `kind_error_to_ratio_error` (`src/lib.rs:84`, private — no Item Instance of its own)
 - **External:** `exact_kind::Price::minor`, `exact_kind::Price::from_minor` (each delegating to `Decimal`'s)

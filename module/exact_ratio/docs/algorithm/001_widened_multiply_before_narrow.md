@@ -15,7 +15,9 @@
    the intermediate.
 3. Divide the widened product by `i128::from(r.d)` with
    `exact_round::round_div_wide`, rounding the remainder per the caller's
-   `rounding` — never a silent truncation toward zero.
+   `rounding` — never a silent truncation toward zero. Under
+   `Rounding::Exact` a nonzero remainder is refused as `RatioError::Inexact`
+   (mapped by `round_error_to_ratio_error`) instead of rounded.
 4. Narrow the quotient back to `i64` via `try_from`, returning
    `RatioError::Overflow` when it does not fit.
 5. Hand the narrowed minor-unit count to the kind's own `from_minor`, which
@@ -45,9 +47,9 @@ multiply itself runs in `i128`.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:141-154` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
-| `src/lib.rs:156-191` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
-| `src/lib.rs:226-242` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
+| `src/lib.rs:155-168` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
+| `src/lib.rs:170-208` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
+| `src/lib.rs:241-259` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
 
 ### Tests
 

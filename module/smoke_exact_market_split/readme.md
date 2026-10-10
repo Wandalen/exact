@@ -19,7 +19,7 @@ smoke_exact_market_split — this family's slice, one process
   quantity       hold 3, withdraw 5 -> -2000000 minor units is below zero, which this kind cannot hold
 
   audit, clean   balanced: entries 2, net 0
-  audit, leaky   UNBALANCED: entries 2, net -1 minor units
+  audit, leaky   UNBALANCED: entries 2, net cash -1 minor units
 
   market split   100.000001 into 3 -> [33.333335, 33.333333, 33.333333] (recombines exactly)
 

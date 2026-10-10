@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:113-120`
+`module/exact_snap/src/lib.rs:117-124`
 
 ```rust
 pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
@@ -29,8 +29,8 @@ pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 113-120 | Declaration |
-| `tests/snap_test.rs` | 13,117,128 | Zero-rejection check, and as the fixture every `qty_snap_lot` test builds |
+| `src/lib.rs` | 117-124 | Declaration |
+| `tests/snap_test.rs` | 14,118,129 | Zero-rejection check, and as the fixture every `qty_snap_lot` test builds |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own

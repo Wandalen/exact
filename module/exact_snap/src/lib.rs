@@ -34,6 +34,8 @@ pub enum SnapError
   ZeroLot,
   /// The snapped result left the representable or declared range.
   Overflow,
+  /// The value is not on the grid and [`Rounding::Exact`] was asked.
+  OffGrid,
 }
 
 impl core::fmt::Display for SnapError
@@ -45,6 +47,7 @@ impl core::fmt::Display for SnapError
       Self::ZeroTick => write!( f, "a zero-sized tick was supplied" ),
       Self::ZeroLot => write!( f, "a zero-sized lot was supplied" ),
       Self::Overflow => write!( f, "the snapped result left the representable or declared range" ),
+      Self::OffGrid => write!( f, "the value is not on the grid and Rounding::Exact was requested" ),
     }
   }
 }
@@ -62,6 +65,7 @@ fn round_error_to_snap_error( e : exact_round::RoundError, zero : SnapError ) ->
     // pattern `exact_kind::Decimal::checked_neg` already uses.
     exact_round::RoundError::DivZero => zero,
     exact_round::RoundError::Overflow => SnapError::Overflow,
+    exact_round::RoundError::Inexact => SnapError::OffGrid,
   }
 }
 
@@ -132,7 +136,8 @@ impl Lot
 /// # Errors
 ///
 /// [`SnapError::Overflow`] when the snapped result leaves the representable
-/// or declared range.
+/// or declared range. [`SnapError::OffGrid`] when `rounding` is
+/// [`Rounding::Exact`] and the price is not already on the grid.
 pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
 {
   // Fix(exact_snap_negative_tick_reversed_rounding): the price used to be
@@ -156,7 +161,8 @@ pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Res
 /// # Errors
 ///
 /// [`SnapError::Overflow`] when the snapped result leaves the representable
-/// or declared range.
+/// or declared range. [`SnapError::OffGrid`] when `rounding` is
+/// [`Rounding::Exact`] and the quantity is not already on the grid.
 pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
 {
   let q = exact_round::round_div( qty.minor(), lot.0.minor(), rounding )

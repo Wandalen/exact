@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_conserve`'s
-own source tree — 19 instances across 6 Item Kinds, all in `src/lib.rs` (this
+own source tree — 20 instances across 6 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and every file and crate that uses it,
@@ -12,9 +12,8 @@ Function/Method) additionally carry their Caller/Callee Tree closures.
 
 `exact_conserve` is Tier 3, depending on `exact_kind` and `exact_add`. It
 carries `exact_audit`'s whole-log auditor (`Entry`, `Report`, `verify`)
-forward unchanged in behavior, and layers a typed per-kind convenience API
-(`money_conserve_into`/`qty_conserve_into`/`money_sum_assert_zero`/
-`qty_sum_assert_zero`) on top — two halves with sharply different real-world
+forward, now netting each asset separately, and layers a typed per-kind convenience API
+(`money_conserve_into`/`qty_conserve_into`/`money_sum_assert_zero`) on top — two halves with sharply different real-world
 reach, documented below.
 
 ### Type Declaration
@@ -34,13 +33,13 @@ reach, documented below.
 
 | Kind | Directory | Instances |
 |------|-----------|-----------|
-| Use Declaration | `use_declaration/` | 1 |
+| Use Declaration | `use_declaration/` | 3 |
 | Struct | `struct/` | 2 |
 | Enum | `enum/` | 1 |
 | Implementation | `implementation/` | 5 |
 | Associated Function/Method | `associated_function/` | 5 |
-| Function | `function/` | 5 |
-| **Total** | | **19** |
+| Function | `function/` | 4 |
+| **Total** | | **20** |
 
 9 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Union, Constant, Static, Trait, External Block, Macro
@@ -51,6 +50,8 @@ Definition/Invocation. No Associated Constant either.
 | ID | Name | Kind | Status |
 |----|------|------|--------|
 | use_declaration/001 | use exact_kind::{ KindError, Money, Quantity } | Use Declaration | 🔄 |
+| use_declaration/002 | use std::collections::BTreeMap | Use Declaration | 🔄 |
+| use_declaration/003 | use std::borrow::Borrow | Use Declaration | 🔄 |
 | struct/001 | Entry | Struct | 🔄 |
 | struct/002 | Report | Struct | 🔄 |
 | enum/001 | ConservationError | Enum | 🔄 |
@@ -68,7 +69,6 @@ Definition/Invocation. No Associated Constant either.
 | function/002 | money_conserve_into | Function | 🔄 |
 | function/003 | qty_conserve_into | Function | 🔄 |
 | function/004 | money_sum_assert_zero | Function | 🔄 |
-| function/005 | qty_sum_assert_zero | Function | 🔄 |
 
 ### Notable Findings
 
@@ -80,7 +80,7 @@ Definition/Invocation. No Associated Constant either.
   `exchange_core`/`smoke_exchange_core` touch the same surface in
   integration tests and a demo lane. By contrast, the brand-new typed
   convenience layer this crate adds (`money_conserve_into`,
-  `qty_conserve_into`, `money_sum_assert_zero`, `qty_sum_assert_zero`) has
+  `qty_conserve_into`, `money_sum_assert_zero`) has
   **zero** callers anywhere outside this crate's own tests — the same
   "never called outside the defining crate" pattern seen in every other new
   function across this migration, sitting right next to the one surface
@@ -99,16 +99,20 @@ Definition/Invocation. No Associated Constant either.
   `Display` output exercised, where every sibling error type elsewhere
   (`KindError`, `RatioError`, `SnapError`, `DustError`) is never rendered
   anywhere.
-- **`verify`, `money_sum_assert_zero`, and `qty_sum_assert_zero` all
-  duplicate the identical `i128`-accumulation fold** rather than one calling
-  another — `money_sum_assert_zero` and `qty_sum_assert_zero` are
-  byte-for-byte identical except for the parameter type. Noted as a real,
-  verified structural fact, not flagged as a defect to fix.
+- **`verify` and `money_sum_assert_zero` run the same
+  `i128`-accumulation fold** rather than one calling the other — `verify`
+  keeps one accumulator per asset, `money_sum_assert_zero` one for the
+  slice. Noted as a real, verified structural fact, not flagged as a defect
+  to fix.
+- **No `qty_sum_assert_zero`.** The preferred design names one, but a slice
+  of non-negative quantities sums to zero only when every leg is zero, so it
+  could never check a transfer; it was removed in favour of [verify](function/001_verify.md)
+  with an asset key (→ [ADR-002](../decisions/002_conservation_checked_per_asset.md)).
 
 ### Regenerate
 
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_conserve/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 19
+# → 20
 ```

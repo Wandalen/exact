@@ -208,8 +208,40 @@ fn a_single_part_receives_the_whole_total()
   }
 }
 
+/// Under `Exact` an even split goes through, and an uneven one is refused as
+/// `Remainder` — the same refusal `DustTo::Reject` gives, whatever the
+/// destination asked for, and before any slot of a buffer is written.
+#[ test ]
+fn exact_refuses_a_split_that_does_not_divide_evenly()
+{
+  let even = Money::from_minor( 12 ).unwrap();
+  assert_eq!( money_dust_split( even, 3, Rounding::Exact, DustTo::First ).unwrap(), vec![ Money::from_minor( 4 ).unwrap(); 3 ] );
+
+  let uneven = Money::from_minor( 10 ).unwrap();
+  for to in [ DustTo::First, DustTo::Sink, DustTo::Reject ]
+  {
+    assert_eq!( money_dust_split( uneven, 3, Rounding::Exact, to ), Err( DustError::Remainder ), "{to:?}" );
+  }
+  let mut out = [ Money::from_minor( 7 ).unwrap(); 3 ];
+  assert_eq!( money_dust_split_into( uneven, Rounding::Exact, DustTo::First, &mut out ), Err( DustError::Remainder ) );
+  assert_eq!( out, [ Money::from_minor( 7 ).unwrap(); 3 ] );
+
+  let held = Quantity::from_minor( 10 ).unwrap();
+  assert_eq!( qty_dust_split( held, 3, Rounding::Exact, DustTo::First ), Err( DustError::Remainder ) );
+}
+
+/// Under `Exact` the remainder functions refuse the remainder they would
+/// report, and report zero for an even split.
+#[ test ]
+fn the_remainder_under_exact_is_refused_unless_it_is_zero()
+{
+  assert_eq!( money_dust_remainder( Money::from_minor( 10 ).unwrap(), 3, Rounding::Exact ), Err( DustError::Remainder ) );
+  assert_eq!( money_dust_remainder( Money::from_minor( 12 ).unwrap(), 3, Rounding::Exact ), Ok( 0 ) );
+  assert_eq!( qty_dust_remainder( Quantity::from_minor( 10 ).unwrap(), 3, Rounding::Exact ), Err( DustError::Remainder ) );
+}
+
 /// Every rounding mode, for the tests that must hold under each of them.
-const EVERY_MODE : [ Rounding; 7 ] =
+const EVERY_MODE : [ Rounding; 8 ] =
 [
   Rounding::Down,
   Rounding::Up,
@@ -218,4 +250,5 @@ const EVERY_MODE : [ Rounding; 7 ] =
   Rounding::AwayFromZero,
   Rounding::HalfUp,
   Rounding::HalfDown,
+  Rounding::Exact,
 ];

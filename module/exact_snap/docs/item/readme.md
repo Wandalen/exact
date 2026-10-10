@@ -42,7 +42,7 @@ snapping itself (module doc comment, `src/lib.rs:9-10`).
 9 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration, Type
 Alias, Union, Constant, Static, Trait, External Block, Macro
 Definition/Invocation. One private free function, `round_error_to_snap_error`
-(`src/lib.rs:54`), is deliberately excluded from this count — a
+(`src/lib.rs:57`), is deliberately excluded from this count — a
 private/`pub(crate)`/`pub(super)` function gets no Item Instance of its own
 (`item_des.rulebook.md` line 243), but it IS a real call-graph hop and
 appears as a plain `file:line` citation in both [price_snap_tick](function/001_price_snap_tick.md)'s
@@ -83,7 +83,7 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
   `price_snap_tick`/`qty_snap_lot`, which bypass them via direct `.0`
   tuple-field access instead (legal — same defining module). Verified by
   grepping `.price()`/`.qty()` across `src/lib.rs` and `tests/snap_test.rs`:
-  the only matches are the size test's `tests/snap_test.rs:157-158,161`.
+  the only matches are the size test's `tests/snap_test.rs:158-159,162`.
 - **Both snap functions have zero callers anywhere in the workspace** —
   `exact_arith` re-exports both but its own facade test suite never calls
   either, the same bypass pattern already found independently in
@@ -94,7 +94,7 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
 - **The `RoundError::DivZero` arm `round_error_to_snap_error` maps is
   currently unreachable** through this crate's own public API (`Tick::new`/
   `Lot::new` already refuse a zero-sized grid before any division happens) —
-  the function's own comment (`src/lib.rs:58-62`) discloses this, calling it
+  the function's own comment (`src/lib.rs:61-65`) discloses this, calling it
   the same defensive-but-unreachable pattern `exact_kind::Decimal::checked_neg`
   already uses.
 - **One identifier collision correctly excluded per OT012**: `demiurg_log`

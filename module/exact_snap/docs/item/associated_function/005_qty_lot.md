@@ -9,7 +9,7 @@ The lot size as a plain `Quantity`. The `Quantity` counterpart to
 crate's one consumer of a `Lot`) reads the wrapped value via `lot.0.minor()`
 — direct tuple-field access — rather than `lot.qty().minor()` through this
 accessor. Verified by grepping `src/lib.rs` and `tests/snap_test.rs` for
-`.qty()`: the only match is `tests/snap_test.rs:161`.
+`.qty()`: the only match is `tests/snap_test.rs:162`.
 
 ## Kind
 
@@ -17,7 +17,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:124-127`
+`module/exact_snap/src/lib.rs:128-131`
 
 ```rust
 #[ must_use ]
@@ -31,8 +31,8 @@ pub const fn qty( self ) -> Quantity
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 124-127 | Declaration |
-| `tests/snap_test.rs` | 161 | A lot hands back the size it was built from |
+| `src/lib.rs` | 128-131 | Declaration |
+| `tests/snap_test.rs` | 162 | A lot hands back the size it was built from |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Lot`'s re-export) |
 
 No production call site anywhere — an honest empty finding, matching

@@ -27,7 +27,7 @@
 //! let held = Quantity::parse( "2.5" ).unwrap();
 //! let cost = price_mul_qty( price, held, Rounding::HalfEven ).unwrap();
 //! assert_eq!( cost, Money::parse( "3.125" ).unwrap() );
-//! assert!( verify( &[ Entry::new( "a", 5 ), Entry::new( "b", -5 ) ] ).unwrap().is_balanced() );
+//! assert!( verify( &[ Entry::new( "a", "cash", 5 ), Entry::new( "b", "cash", -5 ) ] ).unwrap().is_balanced() );
 //!
 //! let total = Money::from_minor( 11 ).unwrap();
 //! let shares = money_dust_split( total, 4, Rounding::Down, DustTo::First ).unwrap();
@@ -138,4 +138,4 @@ pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_c
 
 pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
 
-pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, qty_sum_assert_zero, verify };
+pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, verify };

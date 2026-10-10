@@ -5,7 +5,9 @@
 The remainder a [money_dust_split](001_money_dust_split.md) of `total` into
 `parts` under `mode` would hold back, independent of where a `DustTo` would
 send it. Unlike the split functions, this one never calls `split_with` — it
-only needs the leftover, not a built set of output slots.
+only needs the leftover, not a built set of output slots. Under
+`Rounding::Exact` it reports no leftover at all: a split that does not divide
+evenly is refused as `DustError::Remainder`, the remainder `Exact` forbids.
 
 ## Kind
 
@@ -13,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:226-230`
+`module/exact_dust/src/lib.rs:231-235`
 
 ```rust
 pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> Result< i64, DustError >
@@ -27,8 +29,9 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 226-230 | Declaration |
+| `src/lib.rs` | 231-235 | Declaration |
 | `tests/dust_split_test.rs:50` | — | Confirms the held-back amount under `DustTo::Sink` |
+| `tests/dust_split_test.rs:238-239` | — | Refused under `Exact` when uneven, zero when even |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
@@ -47,10 +50,10 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:228`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:233`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:228`)
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:233`)
 
 No call to `split_with` or `split_into_with` — this function returns the raw leftover and never
 builds a set of output slots, the one structural difference from

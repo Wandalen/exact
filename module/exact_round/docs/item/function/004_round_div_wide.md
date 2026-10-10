@@ -12,7 +12,8 @@ like any other. `Overflow` is reported only for `i128::MIN / -1`, the one
 quotient no `i128` holds; the final one-step adjustment cannot overflow,
 because a nonzero remainder needs `|d| >= 2`. The tie detection the three
 `Half*` modes share doubles the remainder in `u128`, because twice a remainder just below
-`i128::MAX` would not fit `i128`.
+`i128::MAX` would not fit `i128`. Under `Rounding::Exact` a nonzero remainder is
+refused as `Inexact` instead of deciding a step.
 
 ## Kind
 
@@ -20,7 +21,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:158`
+`module/exact_round/src/lib.rs:171`
 
 ```rust
 pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result< i128, RoundError >
@@ -64,6 +65,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
     Rounding::HalfEven => twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 ),
     Rounding::HalfUp => twice_r >= d_abs,
     Rounding::HalfDown => twice_r > d_abs,
+    Rounding::Exact => return Err( RoundError::Inexact ),
   };
   if !step_toward_exact
   {
@@ -78,10 +80,10 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 158-206 | Declaration |
-| `src/lib.rs` | 138 | `round_div`'s call, with widened operands |
-| `tests/round_div_test.rs` | 4,155,196-203,234-240 | Each mode's definition on a grid; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
-| `exact_ratio/src/lib.rs:151-152` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
+| `src/lib.rs` | 171-220 | Declaration |
+| `src/lib.rs` | 149 | `round_div`'s call, with widened operands |
+| `tests/round_div_test.rs` | 4,156,228-235,266-272,215-220 | Each mode's definition on a grid; `Exact` past `i64`; a dividend wider than `i64`, with positive and negative divisors; the minimum value as either operand; the zero divisor |
+| `exact_ratio/src/lib.rs:165-166` | — | **Production** — `mul_ratio_minor`, backing `money_mul_ratio`/`qty_mul_ratio`/`price_mul_ratio`/`price_mul_qty` |
 | `exact_arith/src/lib.rs:84` | — | Facade re-export |
 
 ## Crate Usage
@@ -94,8 +96,8 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
 
 ## Caller Tree
 
-- [round_div](003_round_div.md) (`src/lib.rs:138`)
-- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:151-152`)
+- [round_div](003_round_div.md) (`src/lib.rs:149`)
+- **External:** `exact_ratio::mul_ratio_minor` (`exact_ratio/src/lib.rs:165-166`)
 
 ## Callee Tree
 

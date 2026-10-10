@@ -5,7 +5,7 @@
 The hand-written impl on `Report`, providing its two query methods —
 `is_balanced` (a yes/no verdict) and `discrepancy_minor` (the signed amount
 behind that verdict). Deliberately does not compute per-account totals; the
-module doc comment explains why (`src/lib.rs:18-22`): an account's non-zero
+module doc comment explains why (`src/lib.rs:24-28`): an account's non-zero
 balance is normal, so reporting it alongside the one non-zero that actually
 matters would bury the real signal.
 
@@ -15,19 +15,22 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:149-173`
+`module/exact_conserve/src/lib.rs:162-191`
 
 ```rust
-impl Report
+impl< A > Report< A >
 {
-  pub const fn is_balanced( &self ) -> bool
+  pub fn is_balanced( &self ) -> bool
   {
-    self.net_minor == 0
+    self.nets.values().all( | net | *net == 0 )
   }
 
-  pub const fn discrepancy_minor( &self ) -> i128
+  pub fn discrepancy_minor< Q >( &self, asset : &Q ) -> Option< i128 >
+  where
+    A : Borrow< Q > + Ord,
+    Q : Ord + ?Sized,
   {
-    self.net_minor
+    self.nets.get( asset ).copied()
   }
 }
 ```
@@ -36,7 +39,7 @@ impl Report
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 149-173 | Declaration |
+| `src/lib.rs` | 162-191 | Declaration |
 
 ## Crate Usage
 

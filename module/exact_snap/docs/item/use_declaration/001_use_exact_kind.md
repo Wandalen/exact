@@ -21,8 +21,8 @@ use exact_kind::{ Price, Quantity };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 24 | Declaration |
-| `src/lib.rs` | 70,96,136 | `Price` in `Tick`'s tuple field, `Tick::price`'s return type, `price_snap_tick`'s parameter/return types |
-| `src/lib.rs` | 104,124,160 | `Quantity` in `Lot`'s tuple field, `Lot::qty`'s return type, `qty_snap_lot`'s parameter/return types |
+| `src/lib.rs` | 74,100,141 | `Price` in `Tick`'s tuple field, `Tick::price`'s return type, `price_snap_tick`'s parameter/return types |
+| `src/lib.rs` | 108,128,166 | `Quantity` in `Lot`'s tuple field, `Lot::qty`'s return type, `qty_snap_lot`'s parameter/return types |
 
 ## Crate Usage
 

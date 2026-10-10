@@ -2,7 +2,8 @@
 
 ## Representation
 
-Renders a `Report` as a one-line balanced/unbalanced summary.
+Renders a `Report` as a one-line balanced/unbalanced summary, naming each
+unbalanced asset and its net in asset order.
 
 ## Kind
 
@@ -10,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:177-187`
+`module/exact_conserve/src/lib.rs:195-212`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -21,7 +22,14 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   }
   else
   {
-    write!( f, "UNBALANCED: entries {}, net {} minor units", self.entries, self.net_minor )
+    write!( f, "UNBALANCED: entries {}, net", self.entries )?;
+    let mut first = true;
+    for ( asset, net ) in self.nets.iter().filter( | ( _, net ) | **net != 0 )
+    {
+      write!( f, "{} {asset} {net}", if first { "" } else { "," } )?;
+      first = false;
+    }
+    write!( f, " minor units" )
   }
 }
 ```
@@ -30,8 +38,8 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 177-187 | Declaration |
-| `tests/conservation_test.rs:76,79-80` | — | Asserts both branches' exact rendered text |
+| `src/lib.rs` | 195-212 | Declaration |
+| `tests/conservation_test.rs:79,82-83,147,172` | — | Asserts both branches' exact rendered text, for one asset and for several |
 | `exchange_core/tests/submission_test.rs:258` | — | `assert!( report.is_balanced(), "{report}" )` — rendered only on assertion failure |
 
 ## Crate Usage
@@ -50,4 +58,4 @@ not a direct `.fmt()` call.
 
 ## Callee Tree
 
-- [is_balanced](003_is_balanced.md) (`src/lib.rs:179`)
+- [is_balanced](003_is_balanced.md) (`src/lib.rs:197`)

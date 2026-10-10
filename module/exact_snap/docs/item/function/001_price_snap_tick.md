@@ -6,6 +6,8 @@ Snap a price to the nearest multiple of `tick`, per `rounding`. Divides to
 find the nearest grid index (sign-handled, tie-broken by `rounding`), then
 multiplies back out — the same round-then-rescale shape `exact_ratio`'s
 `*_div_round` functions use, built on the same shared `exact_round::round_div`.
+Under `Rounding::Exact` a price not already on the grid is refused as
+`SnapError::OffGrid` rather than snapped.
 
 ## Kind
 
@@ -13,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:136-152`
+`module/exact_snap/src/lib.rs:141-157`
 
 ```rust
 pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
@@ -43,8 +45,8 @@ exactly like its positive counterpart instead of reversing `Down` and `Up`.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 136-152 | Declaration |
-| `tests/snap_test.rs` | 25,35,44,53,63-64,74-75,106,146 | On-grid identity, between-grid rounding down/up, half-even on and off a tie, a negative price, a negative tick matching its positive counterpart, and overflow past the ceiling |
+| `src/lib.rs` | 141-157 | Declaration |
+| `tests/snap_test.rs` | 26,36,45,54,64-65,75-76,107,147,195,199 | On-grid identity, `Exact` keeping an on-grid price and refusing an off-grid one, between-grid rounding down/up, half-even on and off a tie, a negative price, a negative tick matching its positive counterpart, and overflow past the ceiling |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
@@ -67,7 +69,7 @@ OT012.
 
 ## Callee Tree
 
-- `round_error_to_snap_error` (`src/lib.rs:54`, private — no Item Instance of its own)
+- `round_error_to_snap_error` (`src/lib.rs:57`, private — no Item Instance of its own)
 - **External:** `exact_kind::Price::minor` (via `price.minor()` and `tick.0.minor()`), which delegates to `Decimal::minor`
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)

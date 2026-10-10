@@ -23,7 +23,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:203-206`
+`module/exact_dust/src/lib.rs:207-210`
 
 ```rust
 pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
@@ -32,7 +32,7 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 }
 ```
 
-The body is the private `split_with` (`src/lib.rs:148-164`), shared with
+The body is the private `split_with` (`src/lib.rs:152-168`), shared with
 [qty_dust_split](004_qty_dust_split.md): this function only supplies the
 total's minor count and `Money::from_minor` to build each slot.
 
@@ -40,8 +40,8 @@ total's minor count and `Money::from_minor` to build each slot.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 203-206 | Declaration |
-| `tests/dust_split_test.rs` | 25-27,36,48,58,67,75,83,124 | Every split scenario this crate's own tests cover |
+| `src/lib.rs` | 207-210 | Declaration |
+| `tests/dust_split_test.rs` | 25-27,36,48,58,67,75,83,124,218,223 | Every split scenario this crate's own tests cover |
 | `exact_arith/src/lib.rs:33` | — | Doctest call (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`, not production) |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:38` | — | Test-only call exercising the facade re-export |
@@ -72,9 +72,9 @@ are out of scope for both trees"): `exact_arith`'s own crate-doc doctest
 
 ## Callee Tree
 
-- `split_with` (`src/lib.rs:205`, private — no Item Instance of its own)
-  - `split_minor` (`src/lib.rs:160`, private — no Item Instance of its own)
-    - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_with` (`src/lib.rs:209`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:164`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
     - **External:** `exact_round::round_div`
-  - `slot_minor` (`src/lib.rs:162`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:205`), `exact_kind::Money::from_minor` (`src/lib.rs:205`, passed to `split_with` as `make`, called at `162`)
+  - `slot_minor` (`src/lib.rs:166`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:209`), `exact_kind::Money::from_minor` (`src/lib.rs:209`, passed to `split_with` as `make`, called at `162`)

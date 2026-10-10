@@ -27,12 +27,12 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `tests/non_negative_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `exact_parse/src/lib.rs:62,64` | — | `qty_from_str` |
 | `exact_bytes/src/lib.rs:217,219,230,233` | — | `qty_to_wire`/`qty_from_wire` |
-| `exact_conserve/src/lib.rs:234,273` | — | `qty_conserve_into`/`qty_sum_assert_zero` |
-| `exact_dust/src/lib.rs:238,240,248,250,258` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
+| `exact_dust/src/lib.rs:243,245,253,255,263` | — | `qty_dust_split`/`qty_dust_split_into`/`qty_dust_remainder` |
+| `exact_conserve/src/lib.rs:262` | — | `qty_conserve_into` |
 | `exact_add/src/lib.rs:73,83,142` | — | `qty_add`/`qty_sub`/`qty_saturating_add` |
 | `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported alongside `Money`/`Price` |
-| `exact_snap/src/lib.rs:113,124,160` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |
-| `exact_ratio/src/lib.rs:175,178,220` | — | `qty_mul_ratio`/`qty_div_round` |
+| `exact_snap/src/lib.rs:117,128,166` | — | `Lot::new`, `Lot::qty`, `qty_snap_lot` |
+| `exact_ratio/src/lib.rs:192,195,235` | — | `qty_mul_ratio`/`qty_div_round` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage

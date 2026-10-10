@@ -19,7 +19,7 @@ unused dependency on `exact_ratio`'s rational-multiplier surface.
 
 **Five private top-level functions are real call-graph hops, cataloged
 nowhere of their own** (`item_des.rulebook.md` § Instance Documentation :
-Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:103`),
+Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:104`),
 `split_minor` (`118`), `slot_minor` (`135`), and the generic `split_with`
 (`151`) and `split_into_with` (`169`), each taking the kind's `from_minor`
 as `make`. `split_minor` is called by the 2 `*_remainder` functions directly

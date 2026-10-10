@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:67`
+`module/exact_ratio/src/lib.rs:70`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -21,6 +21,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
     Self::DivZero => write!( f, "a zero denominator was supplied" ),
     Self::Overflow => write!( f, "left the representable or declared range" ),
     Self::Negative { minor } => write!( f, "{minor} minor units is below zero, which this kind cannot hold" ),
+    Self::Inexact => write!( f, "the result needed rounding and Rounding::Exact was requested" ),
   }
 }
 ```
@@ -29,7 +30,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 67-75 | Declaration |
+| `src/lib.rs` | 70-79 | Declaration |
 
 ## Crate Usage
 

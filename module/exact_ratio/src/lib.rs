@@ -17,12 +17,13 @@
 //!   `ScaleMismatch` is unreachable for the same reason every other crate in
 //!   this family already drops it — two different `SCALE` values are two
 //!   different Rust types, caught at compile time. `BadRounding` is
-//!   likewise unreachable: [`exact_round::Rounding`] is a closed seven-variant
+//!   likewise unreachable: [`exact_round::Rounding`] is a closed eight-variant
 //!   enum, and every value of it is already a valid rounding mode — there is
 //!   no way to construct an invalid one through the public API for this
 //!   error to report. In its place, `RatioError::Negative` carries the one
 //!   real failure the doc's listing missed: a `Qty`-kind multiply or divide
-//!   whose result would be negative.
+//!   whose result would be negative. `RatioError::Inexact` is a second
+//!   addition: `Rounding::Exact` refusing a result that would need rounding.
 //! - **A `Ratio`'s denominator is always stored positive.** `ratio_new`
 //!   accepts a negative denominator and normalizes it by negating both
 //!   fields — a negative ratio is conventionally a negative numerator over a
@@ -60,6 +61,8 @@ pub enum RatioError
     /// The count of minor units the operation would have produced.
     minor : i64,
   },
+  /// [`Rounding::Exact`] was asked and the result needed rounding.
+  Inexact,
 }
 
 impl core::fmt::Display for RatioError
@@ -71,6 +74,7 @@ impl core::fmt::Display for RatioError
       Self::DivZero => write!( f, "a zero denominator was supplied" ),
       Self::Overflow => write!( f, "left the representable or declared range" ),
       Self::Negative { minor } => write!( f, "{minor} minor units is below zero, which this kind cannot hold" ),
+      Self::Inexact => write!( f, "the result needed rounding and Rounding::Exact was requested" ),
     }
   }
 }
@@ -112,6 +116,16 @@ impl Ratio
   }
 }
 
+fn round_error_to_ratio_error( e : exact_round::RoundError ) -> RatioError
+{
+  match e
+  {
+    exact_round::RoundError::DivZero => RatioError::DivZero,
+    exact_round::RoundError::Overflow => RatioError::Overflow,
+    exact_round::RoundError::Inexact => RatioError::Inexact,
+  }
+}
+
 /// Build a ratio, refusing a zero denominator.
 ///
 /// A negative denominator is accepted and normalized: `n / d` with `d < 0`
@@ -149,7 +163,7 @@ fn mul_ratio_minor( minor : i64, r : Ratio, rounding : Rounding ) -> Result< i64
   //   remainder matters has to name its rounding mode.
   let wide = i128::from( minor ) * i128::from( r.n );
   let divided = exact_round::round_div_wide( wide, i128::from( r.d ), rounding )
-  .map_err( | _ | RatioError::Overflow )?;
+  .map_err( round_error_to_ratio_error )?;
   i64::try_from( divided ).map_err( | _ | RatioError::Overflow )
 }
 
@@ -158,7 +172,8 @@ fn mul_ratio_minor( minor : i64, r : Ratio, rounding : Rounding ) -> Result< i64
 /// # Errors
 ///
 /// [`RatioError::Overflow`] when the widened product or the result leaves
-/// the representable or declared range.
+/// the representable or declared range. [`RatioError::Inexact`] when
+/// `rounding` is [`Rounding::Exact`] and the result needs rounding.
 pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
@@ -172,6 +187,8 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 /// [`RatioError::Negative`] when a negative-numerator ratio rounds the result below zero: at or below
 /// -1 minor unit in every mode; within one of zero, `Down`/`AwayFromZero` always, `HalfEven`/`HalfDown`
 /// past half a minor unit, `HalfUp` at half, `Up`/`TowardZero` never. [`RatioError::Overflow`] on overflow.
+/// [`RatioError::Inexact`] when `rounding` is [`Rounding::Exact`] and the result needs rounding — checked
+/// first, so an inexact negative result is `Inexact`, not `Negative`.
 pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
@@ -191,11 +208,7 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 
 fn div_round_minor( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RatioError >
 {
-  exact_round::round_div( n, d, rounding ).map_err( | e | match e
-  {
-    exact_round::RoundError::DivZero => RatioError::DivZero,
-    exact_round::RoundError::Overflow => RatioError::Overflow,
-  } )
+  exact_round::round_div( n, d, rounding ).map_err( round_error_to_ratio_error )
 }
 
 /// Divide a money value by `d`, rounding the remainder per `rounding`.
@@ -203,7 +216,8 @@ fn div_round_minor( n : i64, d : i64, rounding : Rounding ) -> Result< i64, Rati
 /// # Errors
 ///
 /// [`RatioError::DivZero`] when `d` is zero. [`RatioError::Overflow`] on
-/// overflow or ceiling breach.
+/// overflow or ceiling breach. [`RatioError::Inexact`] when `rounding` is
+/// [`Rounding::Exact`] and the result needs rounding.
 pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Money, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
@@ -216,7 +230,8 @@ pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Mon
 ///
 /// [`RatioError::DivZero`] when `d` is zero. [`RatioError::Negative`] when
 /// the rounded result would be below zero. [`RatioError::Overflow`] on
-/// overflow or ceiling breach.
+/// overflow or ceiling breach. [`RatioError::Inexact`] when `rounding` is
+/// [`Rounding::Exact`] and the result needs rounding.
 pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
@@ -232,7 +247,9 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 /// # Errors
 ///
 /// [`RatioError::Overflow`] when the cost leaves the representable or
-/// declared range.
+/// declared range. [`RatioError::Inexact`] when `rounding` is
+/// [`Rounding::Exact`] and the cost does not land exactly on the money scale —
+/// a settlement amount is then refused, never rounded.
 pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Result< Money, RatioError >
 {
   // `Quantity` and `Money` share one scale, so one whole quantity is `Money::ONE_MINOR` minor units.

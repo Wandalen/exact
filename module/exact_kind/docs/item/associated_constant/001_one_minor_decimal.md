@@ -23,7 +23,7 @@ pub const ONE_MINOR : Backing = pow10( SCALE );
 |------|---------|---------|
 | `src/lib.rs` | 176,217,236,364-365,378 | Declaration; `from_int`'s scaling multiply; `whole`'s divide; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
 | `exact_parse/src/lib.rs:45` | — | **Production** — compile-time assert cross-checking `Money::ONE_MINOR` against `exact_scale::pow10( MONEY_SCALE )` directly |
-| `exact_ratio/src/lib.rs:239,246` | — | **Production** — `price_mul_qty`'s quantity-as-ratio denominator, and the compile-time assert that `Quantity` and `Money` share that scale |
+| `exact_ratio/src/lib.rs:256,263` | — | **Production** — `price_mul_qty`'s quantity-as-ratio denominator, and the compile-time assert that `Quantity` and `Money` share that scale |
 
 ## Crate Usage
 

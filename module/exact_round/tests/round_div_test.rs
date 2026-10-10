@@ -116,8 +116,9 @@ fn half_even_rounds_below_half_toward_the_nearer_neighbour()
 /// Every mode matches its definition on a grid of small operands, both signs:
 /// `Down` is the largest integer at most `n / d`, `Up` the smallest at least
 /// `n / d`, `TowardZero` and `AwayFromZero` whichever of those two is nearer
-/// to and farther from zero, and the three `Half*` modes the nearest, a tie
-/// going to the even one, away from zero, or toward zero.
+/// to and farther from zero, the three `Half*` modes the nearest, a tie
+/// going to the even one, away from zero, or toward zero, and `Exact` the
+/// quotient itself when `d` divides `n`, and `Inexact` otherwise.
 #[ test ]
 fn every_mode_matches_its_definition_on_a_grid()
 {
@@ -155,6 +156,10 @@ fn every_mode_matches_its_definition_on_a_grid()
         let wide = round_div_wide( i128::from( n ), i128::from( d ), mode );
         assert_eq!( wide, Ok( i128::from( want ) ), "wide {n} / {d}, {mode:?}" );
       }
+      let exact = if down * d == n { Ok( down ) } else { Err( RoundError::Inexact ) };
+      assert_eq!( round_div( n, d, Rounding::Exact ), exact, "{n} / {d}, Exact" );
+      let wide = round_div_wide( i128::from( n ), i128::from( d ), Rounding::Exact );
+      assert_eq!( wide, exact.map( i128::from ), "wide {n} / {d}, Exact" );
     }
   }
 }
@@ -186,6 +191,33 @@ fn every_mode_rounds_as_named()
       assert_eq!( round_div( n, d, mode ), Ok( want ), "{n} / {d} under {mode:?}" );
     }
   }
+}
+
+/// `Exact` returns a quotient with no remainder, at either sign, and refuses
+/// any remainder — a tie or not, below one or above — as `Inexact`, never
+/// rounding it either way.
+#[ test ]
+fn exact_returns_an_exact_quotient_and_refuses_any_remainder()
+{
+  assert_eq!( round_div( 6, 2, Rounding::Exact ), Ok( 3 ) );
+  assert_eq!( round_div( -6, 2, Rounding::Exact ), Ok( -3 ) );
+  assert_eq!( round_div( 6, -2, Rounding::Exact ), Ok( -3 ) );
+  assert_eq!( round_div( 0, 5, Rounding::Exact ), Ok( 0 ) );
+  for ( n, d ) in [ ( 7, 2 ), ( -7, 2 ), ( 7, -2 ), ( 7, 3 ), ( -1, 3 ), ( 1, 1_000_000 ) ]
+  {
+    assert_eq!( round_div( n, d, Rounding::Exact ), Err( RoundError::Inexact ), "{n} / {d}" );
+  }
+}
+
+/// `Exact` at `i128` width: a dividend no `i64` can hold divides when it is a
+/// multiple, and is refused one unit past it.
+#[ test ]
+fn round_div_wide_under_exact_refuses_a_remainder_past_i64()
+{
+  let n = i128::from( i64::MAX ) * 3;
+  assert_eq!( round_div_wide( n, 3, Rounding::Exact ), Ok( i128::from( i64::MAX ) ) );
+  assert_eq!( round_div_wide( n + 1, 3, Rounding::Exact ), Err( RoundError::Inexact ) );
+  assert_eq!( round_div_wide( n + 1, 0, Rounding::Exact ), Err( RoundError::DivZero ) );
 }
 
 /// `round_div_wide` divides a dividend no `i64` can hold — the case it exists for.
@@ -248,6 +280,14 @@ fn the_overflow_message_names_the_real_cause()
   assert_eq!( error.to_string(), "the quotient does not fit the integer type" );
 }
 
+/// The inexact message names the refused remainder and the mode that refused it.
+#[ test ]
+fn the_inexact_message_names_the_refused_remainder()
+{
+  let error = round_div( 7, 2, Rounding::Exact ).unwrap_err();
+  assert_eq!( error.to_string(), "the division left a remainder and Rounding::Exact was requested" );
+}
+
 /// The zero-divisor message names the zero divisor.
 #[ test ]
 fn the_div_zero_message_names_the_zero_divisor()
@@ -256,7 +296,7 @@ fn the_div_zero_message_names_the_zero_divisor()
 }
 
 /// Every rounding mode, for the tests that must hold under each of them.
-const EVERY_MODE : [ Rounding; 7 ] =
+const EVERY_MODE : [ Rounding; 8 ] =
 [
   Rounding::Down,
   Rounding::Up,
@@ -265,4 +305,5 @@ const EVERY_MODE : [ Rounding; 7 ] =
   Rounding::AwayFromZero,
   Rounding::HalfUp,
   Rounding::HalfDown,
+  Rounding::Exact,
 ];

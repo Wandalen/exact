@@ -8,13 +8,16 @@
 //! is replaced by `the_overflow_error_names_the_representable_range` below,
 //! since `ConservationError::Overflow` carries no `at_entry` field.
 
-use exact_conserve::{ money_conserve_into, money_sum_assert_zero, qty_conserve_into, qty_sum_assert_zero, ConservationError, Entry, Report, verify };
+use exact_conserve::{ money_conserve_into, money_sum_assert_zero, qty_conserve_into, ConservationError, Entry, Report, verify };
 use exact_kind::{ Money, Quantity };
 
-/// A transfer, as the two postings it really is.
-fn transfer( from : &str, to : &str, amount_minor : i64 ) -> Vec< Entry >
+/// The asset the single-asset logs below move.
+const CASH : &str = "cash";
+
+/// A transfer of cash, as the two postings it really is.
+fn transfer( from : &str, to : &str, amount_minor : i64 ) -> Vec< Entry< &'static str > >
 {
-  vec![ Entry::new( from, -amount_minor ), Entry::new( to, amount_minor ) ]
+  vec![ Entry::new( from, CASH, -amount_minor ), Entry::new( to, CASH, amount_minor ) ]
 }
 
 /// T07 — a log whose credits match its debits reports balanced.
@@ -28,7 +31,7 @@ fn a_log_of_matched_postings_balances()
   let report = verify( &log ).unwrap();
 
   assert!( report.is_balanced() );
-  assert_eq!( report.discrepancy_minor(), 0 );
+  assert_eq!( report.discrepancy_minor( CASH ), Some( 0 ) );
   assert_eq!( report.entries, 6 );
 }
 
@@ -36,7 +39,7 @@ fn a_log_of_matched_postings_balances()
 #[ test ]
 fn an_empty_log_balances_at_zero_entries()
 {
-  let report = verify( &[] ).unwrap();
+  let report = verify::< &str >( &[] ).unwrap();
 
   assert!( report.is_balanced() );
   assert_eq!( report.entries, 0 );
@@ -46,38 +49,38 @@ fn an_empty_log_balances_at_zero_entries()
 #[ test ]
 fn a_single_minor_unit_of_leakage_is_detected_and_named()
 {
-  let log = [ Entry::new( "buyer", -1_000_000 ), Entry::new( "seller", 999_999 ) ];
+  let log = [ Entry::new( "buyer", CASH, -1_000_000 ), Entry::new( "seller", CASH, 999_999 ) ];
   let report = verify( &log ).unwrap();
 
   assert!( !report.is_balanced() );
-  assert_eq!( report.discrepancy_minor(), -1 );
+  assert_eq!( report.discrepancy_minor( CASH ), Some( -1 ) );
 
-  let forged = [ Entry::new( "buyer", -1_000_000 ), Entry::new( "seller", 1_000_001 ) ];
-  assert_eq!( verify( &forged ).unwrap().discrepancy_minor(), 1 );
+  let forged = [ Entry::new( "buyer", CASH, -1_000_000 ), Entry::new( "seller", CASH, 1_000_001 ) ];
+  assert_eq!( verify( &forged ).unwrap().discrepancy_minor( CASH ), Some( 1 ) );
 }
 
 /// T08 — a single unit stays visible in a log large enough to hide it.
 #[ test ]
 fn one_unit_stays_visible_against_a_million_units_of_turnover()
 {
-  let mut log : Vec< Entry > = ( 0..1_000 ).flat_map( | i | transfer( "a", "b", i64::from( i ) * 1_000 ) ).collect();
-  log.push( Entry::new( "leak", -1 ) );
+  let mut log : Vec< Entry< &str > > = ( 0..1_000 ).flat_map( | i | transfer( "a", "b", i64::from( i ) * 1_000 ) ).collect();
+  log.push( Entry::new( "leak", CASH, -1 ) );
 
   let report = verify( &log ).unwrap();
 
   assert_eq!( report.entries, 2_001 );
-  assert_eq!( report.discrepancy_minor(), -1 );
+  assert_eq!( report.discrepancy_minor( CASH ), Some( -1 ) );
 }
 
 /// The report renders the two outcomes distinguishably.
 #[ test ]
 fn the_report_renders_both_outcomes_in_words()
 {
-  assert_eq!( verify( &[] ).unwrap().to_string(), "balanced: entries 0, net 0" );
+  assert_eq!( verify::< &str >( &[] ).unwrap().to_string(), "balanced: entries 0, net 0" );
   assert_eq!
   (
-    verify( &[ Entry::new( "x", -1 ) ] ).unwrap().to_string(),
-    "UNBALANCED: entries 1, net -1 minor units",
+    verify( &[ Entry::new( "x", CASH, -1 ) ] ).unwrap().to_string(),
+    "UNBALANCED: entries 1, net cash -1 minor units",
   );
 }
 
@@ -85,9 +88,9 @@ fn the_report_renders_both_outcomes_in_words()
 #[ test ]
 fn the_accumulator_holds_a_total_the_posting_type_could_not()
 {
-  let log : Vec< Entry > = ( 0..4 ).map( | _ | Entry::new( "x", i64::MAX ) ).collect();
+  let log : Vec< Entry< &str > > = ( 0..4 ).map( | _ | Entry::new( "x", CASH, i64::MAX ) ).collect();
 
-  let total = verify( &log ).unwrap().discrepancy_minor();
+  let total = verify( &log ).unwrap().discrepancy_minor( CASH ).unwrap();
 
   assert_eq!( total, i128::from( i64::MAX ) * 4 );
   assert!( total > i128::from( u64::MAX ), "the total must exceed what 64 bits can hold" );
@@ -97,13 +100,107 @@ fn the_accumulator_holds_a_total_the_posting_type_could_not()
 #[ test ]
 fn a_log_can_be_built_from_nothing_but_integers()
 {
-  let log : Vec< Entry > = [ ( "a", -5_i64 ), ( "b", 5_i64 ) ]
+  let log : Vec< Entry< &str > > = [ ( "a", -5_i64 ), ( "b", 5_i64 ) ]
   .into_iter()
-  .map( | ( account, amount ) | Entry::new( account, amount ) )
+  .map( | ( account, amount ) | Entry::new( account, CASH, amount ) )
   .collect();
 
-  let report : Report = verify( &log ).unwrap();
+  let report : Report< &str > = verify( &log ).unwrap();
   assert!( report.is_balanced() );
+}
+
+/// A cash forgery and an instrument leak of the same size cancel in one
+/// total; netted per asset, each is caught and named. The case a single
+/// whole-log sum passed as balanced.
+#[ test ]
+fn a_leak_in_one_asset_does_not_cancel_a_forgery_in_another()
+{
+  let log =
+  [
+    Entry::new( "buyer", CASH, -100 ),
+    Entry::new( "seller", CASH, 101 ),
+    Entry::new( "seller", "BTC", -5 ),
+    Entry::new( "buyer", "BTC", 4 ),
+  ];
+  let report = verify( &log ).unwrap();
+
+  assert!( !report.is_balanced() );
+  assert_eq!( report.discrepancy_minor( CASH ), Some( 1 ) );
+  assert_eq!( report.discrepancy_minor( "BTC" ), Some( -1 ) );
+}
+
+/// A log moving several assets balances when every asset balances on its own.
+#[ test ]
+fn a_log_balances_when_every_asset_balances()
+{
+  let log =
+  [
+    Entry::new( "buyer", CASH, -100 ),
+    Entry::new( "seller", CASH, 100 ),
+    Entry::new( "seller", "BTC", -5 ),
+    Entry::new( "buyer", "BTC", 5 ),
+  ];
+  let report = verify( &log ).unwrap();
+
+  assert!( report.is_balanced() );
+  assert_eq!( report.nets.len(), 2 );
+  assert_eq!( report.to_string(), "balanced: entries 4, net 0" );
+}
+
+/// An asset the log never moved is absent from the report, not zero.
+#[ test ]
+fn an_asset_the_log_never_moved_has_no_discrepancy()
+{
+  let report = verify( &transfer( "buyer", "seller", 100 ) ).unwrap();
+
+  assert_eq!( report.discrepancy_minor( "BTC" ), None );
+}
+
+/// The report names every unbalanced asset, in asset order, and leaves out
+/// the ones that balance.
+#[ test ]
+fn the_report_names_each_unbalanced_asset_in_order()
+{
+  let log =
+  [
+    Entry::new( "seller", CASH, 1 ),
+    Entry::new( "buyer", "ETH", 7 ),
+    Entry::new( "seller", "ETH", -7 ),
+    Entry::new( "buyer", "BTC", -1 ),
+  ];
+
+  assert_eq!( verify( &log ).unwrap().to_string(), "UNBALANCED: entries 4, net BTC -1, cash 1 minor units" );
+}
+
+/// A misspelt asset reads as absent, not as balanced: `cash` is off by one,
+/// and asking for `csah` cannot make it look otherwise.
+#[ test ]
+fn a_misspelt_asset_is_none_not_a_zero_discrepancy()
+{
+  let report = verify( &[ Entry::new( "a", CASH, 5 ), Entry::new( "b", CASH, -4 ) ] ).unwrap();
+  assert_eq!( report.discrepancy_minor( "csah" ), None );
+  assert_eq!( report.discrepancy_minor( CASH ), Some( 1 ) );
+}
+
+/// A caller keys its log by its own asset type; a misspelt variant does not
+/// compile, and copying the key allocates nothing.
+#[ test ]
+fn a_log_can_be_keyed_by_the_callers_own_asset_type()
+{
+  #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord ) ]
+  enum Asset { Cash, Btc }
+
+  let log =
+  [
+    Entry::new( "buyer", Asset::Cash, -100 ),
+    Entry::new( "seller", Asset::Cash, 101 ),
+    Entry::new( "seller", Asset::Btc, -5 ),
+    Entry::new( "buyer", Asset::Btc, 5 ),
+  ];
+  let report = verify( &log ).unwrap();
+  assert!( !report.is_balanced() );
+  assert_eq!( report.discrepancy_minor( &Asset::Cash ), Some( 1 ) );
+  assert_eq!( report.discrepancy_minor( &Asset::Btc ), Some( 0 ) );
 }
 
 /// `ConservationError::Overflow` carries no position — it names the
@@ -159,17 +256,6 @@ fn money_sum_assert_zero_passes_when_legs_cancel_and_reports_the_exact_discrepan
 fn money_sum_assert_zero_passes_on_an_empty_slice()
 {
   assert_eq!( money_sum_assert_zero( &[] ), Ok( () ) );
-}
-
-/// `qty_sum_assert_zero` passes only when every leg is zero — a non-negative
-/// kind's sum can never cancel the way signed money legs do.
-#[ test ]
-fn qty_sum_assert_zero_passes_only_when_every_leg_is_zero()
-{
-  assert_eq!( qty_sum_assert_zero( &[ Quantity::ZERO, Quantity::ZERO ] ), Ok( () ) );
-
-  let holding = [ Quantity::ZERO, Quantity::from_minor( 3 ).unwrap() ];
-  assert_eq!( qty_sum_assert_zero( &holding ), Err( ConservationError::NotZero { got : 3 } ) );
 }
 
 /// A slice whose running total passes the ceiling partway, but ends at

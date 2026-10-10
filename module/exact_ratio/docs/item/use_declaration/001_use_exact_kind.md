@@ -13,7 +13,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:46`
+`module/exact_ratio/src/lib.rs:47`
 
 ```rust
 use exact_kind::{ KindError, Money, Price, Quantity };
@@ -23,7 +23,7 @@ use exact_kind::{ KindError, Money, Price, Quantity };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 46,80,84-86,162,165,175,178,186,189,207,210,220,223 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject, each of its five variants matched by name (80,84-86); `Money`/`Price`/`Quantity` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions |
+| `src/lib.rs` | 47,84,88-90,177,180,192,195,203,206,221,224,235,238 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject, each of its five variants matched by name (80,84-86); `Money`/`Price`/`Quantity` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions |
 
 ## Crate Usage
 

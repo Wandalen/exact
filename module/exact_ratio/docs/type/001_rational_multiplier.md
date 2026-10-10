@@ -33,8 +33,8 @@ failure to the first multiply or divide that uses it.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:90-113` | The `Ratio` struct and its `n()`/`d()` accessors |
-| `src/lib.rs:115-139` | `ratio_new` — refusal and normalization |
+| `src/lib.rs:94-117` | The `Ratio` struct and its `n()`/`d()` accessors |
+| `src/lib.rs:129-153` | `ratio_new` — refusal and normalization |
 
 ### Tests
 

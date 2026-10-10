@@ -11,7 +11,7 @@
 
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
-| 001 | [Rounding Mode](001_rounding_mode.md) | `Rounding`'s seven variants and its stable-name accessor | 🔄 |
+| 001 | [Rounding Mode](001_rounding_mode.md) | `Rounding`'s eight variants and its stable-name accessor | 🔄 |
 
 ### Regenerate
 

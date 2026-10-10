@@ -65,6 +65,11 @@ pub enum Rounding
   /// Round to the nearest grid point; on an exact tie, round toward zero:
   /// `2.5` to `2`, `-2.5` to `-2`.
   HalfDown,
+
+  /// Refuse any remainder: the division must be exact, or it fails with
+  /// [`RoundError::Inexact`]. For amounts that must never be rounded, such as
+  /// a settlement value.
+  Exact,
 }
 
 /// The family's default rounding policy where a call site states none.
@@ -96,6 +101,7 @@ pub const fn rounding_name( rounding : Rounding ) -> &'static str
     Rounding::AwayFromZero => "away_from_zero",
     Rounding::HalfUp => "half_up",
     Rounding::HalfDown => "half_down",
+    Rounding::Exact => "exact",
   }
 }
 
@@ -108,6 +114,8 @@ pub enum RoundError
   /// The quotient does not fit the integer type — only reachable dividing
   /// the type's minimum value by `-1`.
   Overflow,
+  /// [`Rounding::Exact`] was asked and the division left a remainder.
+  Inexact,
 }
 
 impl core::fmt::Display for RoundError
@@ -118,6 +126,7 @@ impl core::fmt::Display for RoundError
     {
       Self::DivZero => write!( f, "a zero divisor was supplied" ),
       Self::Overflow => write!( f, "the quotient does not fit the integer type" ),
+      Self::Inexact => write!( f, "the division left a remainder and Rounding::Exact was requested" ),
     }
   }
 }
@@ -133,6 +142,8 @@ impl core::error::Error for RoundError {}
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
 /// the quotient does not fit an `i64` — only `i64::MIN / -1`.
+/// [`RoundError::Inexact`] when `rounding` is [`Rounding::Exact`] and the
+/// division leaves a remainder.
 pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RoundError >
 {
   match round_div_wide( n as i128, d as i128, rounding )
@@ -155,6 +166,8 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 ///
 /// [`RoundError::DivZero`] when `d` is zero. [`RoundError::Overflow`] when
 /// the quotient does not fit an `i128` — only `i128::MIN / -1`.
+/// [`RoundError::Inexact`] when `rounding` is [`Rounding::Exact`] and the
+/// division leaves a remainder.
 pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result< i128, RoundError >
 {
   if d == 0
@@ -196,6 +209,7 @@ pub const fn round_div_wide( n : i128, d : i128, rounding : Rounding ) -> Result
     Rounding::HalfEven => twice_r > d_abs || ( twice_r == d_abs && q % 2 != 0 ),
     Rounding::HalfUp => twice_r >= d_abs,
     Rounding::HalfDown => twice_r > d_abs,
+    Rounding::Exact => return Err( RoundError::Inexact ),
   };
   if !step_toward_exact
   {
