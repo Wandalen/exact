@@ -60,6 +60,9 @@ pub type Money = Decimal< MONEY_SCALE >;
 /// A non-negative quantity at the standard money scale.
 pub type Quantity = Qty< MONEY_SCALE >;
 
+/// A price at the standard money scale.
+pub type Price = PriceAt< MONEY_SCALE >;
+
 /// Why a value could not be constructed, or an operation could not be completed.
 ///
 /// Every variant names the specific condition rather than a generic failure:
@@ -649,7 +652,8 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
   }
 }
 
-/// A price at the standard money scale.
+/// A price at scale `SCALE` — [`Price`] is the one at the standard money
+/// scale.
 ///
 /// A type of its own, so a price cannot stand in for money, or money for a
 /// price. Like [`Money`] it may be negative — a discount. Same-kind
@@ -678,19 +682,28 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 /// let price = Price::parse( "1.25" ).unwrap();
 /// let _ = price.checked_add( cash );
 /// ```
+///
+/// Nor two prices at different scales:
+///
+/// ```compile_fail
+/// use exact_kind::PriceAt;
+/// let cents : PriceAt< 2 > = PriceAt::parse( "1.25" ).unwrap();
+/// let fine : PriceAt< 6 > = PriceAt::parse( "1.25" ).unwrap();
+/// let _ = cents.checked_add( fine );
+/// ```
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Price
+pub struct PriceAt< const SCALE : u32 >
 {
-  value : Money,
+  value : Decimal< SCALE >,
 }
 
-impl Price
+impl< const SCALE : u32 > PriceAt< SCALE >
 {
   /// No price at all.
-  pub const ZERO : Self = Self { value : Money::ZERO };
+  pub const ZERO : Self = Self { value : Decimal::< SCALE >::ZERO };
 
   /// The largest price this type can hold — exactly the declared ceiling.
-  pub const MAX : Self = Self { value : Money::MAX };
+  pub const MAX : Self = Self { value : Decimal::< SCALE >::MAX };
 
   /// Build from a count of minor units.
   ///
@@ -699,7 +712,7 @@ impl Price
   /// As [`Decimal::from_minor`].
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
-    match Money::from_minor( minor )
+    match Decimal::< SCALE >::from_minor( minor )
     {
       Ok( value ) => Ok( Self { value } ),
       Err( e ) => Err( e ),
@@ -748,12 +761,22 @@ impl Price
   /// As [`Decimal::parse`].
   pub fn parse( text : &str ) -> Result< Self, KindError >
   {
-    Ok( Self { value : Money::parse( text )? } )
+    Ok( Self { value : Decimal::< SCALE >::parse( text )? } )
+  }
+
+  /// The same price at scale `TO`, as [`Decimal::rescale`].
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< PriceAt< TO >, KindError >
+  {
+    Ok( PriceAt { value : self.value.rescale::< TO >( rounding )? } )
   }
 }
 
 /// Renders a price exactly as money of the same amount renders.
-impl fmt::Display for Price
+impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
