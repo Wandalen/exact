@@ -49,7 +49,7 @@ Definition/Invocation. No Associated Constant either.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{ KindError, Money, Quantity } | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{ Decimal, KindError, Qty } | Use Declaration | 🔄 |
 | use_declaration/002 | use std::collections::BTreeMap | Use Declaration | 🔄 |
 | use_declaration/003 | use std::borrow::Borrow | Use Declaration | 🔄 |
 | struct/001 | Entry | Struct | 🔄 |

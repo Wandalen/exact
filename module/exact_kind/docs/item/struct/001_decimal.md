@@ -35,7 +35,7 @@ pub struct Decimal< const SCALE : u32 >
 | `exact_add/src/lib.rs:46,53,63,113,128,133` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add`, generic over the scale |
 | `exact_bytes/src/lib.rs:39,199,211,214` | — | `money_to_wire`/`money_from_wire` |
 | `exact_cmp/src/lib.rs:32,36,57` | — | `money_cmp`/`money_eq` |
-| `exact_conserve/src/lib.rs:83,251,273` | — | `money_conserve_into`/`money_sum_assert_zero` |
+| `exact_conserve/src/lib.rs:83,255,277` | — | `money_conserve_into`/`money_sum_assert_zero` |
 | `exact_dust/src/lib.rs:60,207,209,218,220,231` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_fmt/src/lib.rs:41,105` | — | `money_fmt` |
 | `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
