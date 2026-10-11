@@ -46,4 +46,5 @@ test-only exception even in the facade's own test suite (contrast
 
 ## Callee Tree
 
-- **External:** `exact_kind::Quantity::minor` (`v.minor()`, `src/lib.rs:221`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the record's scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
+- **External:** `exact_kind::Qty::minor` (`v.minor()`, `src/lib.rs:221`)

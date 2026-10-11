@@ -7,8 +7,12 @@ itself a ratio — its minor-unit count over one whole unit — so this reuses
 `mul_ratio_minor`'s widened multiply and rounded divide with the quantity as
 the ratio, and a fractional quantity counts in full. It replaces the pattern
 `price.checked_mul_int( qty.whole() )`, which silently drops the quantity's
-fractional part (`1.25 × 4.5` came out as `5`, not `5.625`). Under
-`Rounding::Exact` a cost that does not land on the money scale is refused as
+fractional part (`1.25 × 4.5` came out as `5`, not `5.625`). The price and
+the quantity may sit at different scales — a price in cents, a quantity in
+satoshis — and one whole quantity is counted at the quantity's own scale; the
+cost is money at the price's scale
+(→ [ADR-002](../../decisions/002_price_mul_qty_across_two_scales.md)). Under
+`Rounding::Exact` a cost that does not land on the price's scale is refused as
 `RatioError::Inexact` — a settlement amount that is never rounded.
 
 ## Kind
@@ -17,15 +21,15 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_ratio/src/lib.rs:256`
+`module/exact_ratio/src/lib.rs:256-262`
 
 ```rust
 pub fn price_mul_qty< const P : u32, const Q : u32 >( price : PriceAt< P >, qty : Qty< Q >, rounding : Rounding ) -> Result< Decimal< P >, RatioError >
 {
-  // `Quantity` and `Money` share one scale, so one whole quantity is `Money::ONE_MINOR` minor units.
+  // One whole quantity is `Decimal::< Q >::ONE_MINOR` minor units at the quantity's own scale.
   let qty_as_ratio = ratio_new( qty.minor(), Decimal::< Q >::ONE_MINOR )?;
   let minor = mul_ratio_minor( price.minor(), qty_as_ratio, rounding )?;
-  Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Decimal::< P >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 
@@ -58,6 +62,6 @@ No production caller inside this repository yet.
 - `mul_ratio_minor` (private — no Item Instance of its own) — widen, multiply, round, narrow
   - `round_error_to_ratio_error` (`src/lib.rs:119`, private — no Item Instance of its own) — `Inexact` under `Rounding::Exact`
 - `kind_error_to_ratio_error` (`src/lib.rs:84`, private — no Item Instance of its own) — maps a refused cost to `RatioError`
-- **External:** `exact_kind::Qty::minor` and `exact_kind::Price::minor` — the raw counts of both inputs (`src/lib.rs:259-260`)
-- **External:** `exact_kind::Decimal::ONE_MINOR` (as `Money::ONE_MINOR`) — one whole quantity in minor units (`src/lib.rs:259`)
-- **External:** `exact_kind::Decimal::from_minor` — the declared-ceiling check on the cost
+- **External:** `exact_kind::Qty::minor` and `exact_kind::PriceAt::minor` — the raw counts of both inputs (`src/lib.rs:259-260`)
+- **External:** `exact_kind::Decimal::ONE_MINOR` at the quantity's scale `Q` — one whole quantity in minor units (`src/lib.rs:259`)
+- **External:** `exact_kind::Decimal::from_minor` at the price's scale `P` — the declared-ceiling check on the cost (`src/lib.rs:261`)

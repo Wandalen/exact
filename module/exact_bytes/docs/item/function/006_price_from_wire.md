@@ -43,6 +43,7 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `check_header` (`src/lib.rs:107`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
+- `check_header` (`src/lib.rs:107`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against the expected scale (`BadScale`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the expected scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
 - `kind_error_to_wire_error` (`src/lib.rs:94`, private — no Item Instance of its own)
-- **External:** `exact_kind::Price::from_minor` (`src/lib.rs:253`)
+- **External:** `exact_kind::PriceAt::from_minor` (`src/lib.rs:253`)

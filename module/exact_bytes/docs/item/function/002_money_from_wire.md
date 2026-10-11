@@ -35,7 +35,7 @@ pub fn money_from_wire< const S : u32 >( w : Wire ) -> Result< Decimal< S >, Wir
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_bytes` | `(defining crate)` | The crate's most-tested function — exercises every `WireError` variant except `Truncated` |
-| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs` | Re-exported, and actually called in the facade's own test |
+| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs`, `tests/any_scale_test.rs` | Re-exported, and actually called in the facade's own tests — at the standard scale, and at scale 2 including the `BadScale` refusal |
 
 ## Caller Tree
 
@@ -45,6 +45,7 @@ is a test file in a different crate, out of scope for this tree.
 
 ## Callee Tree
 
-- `check_header` (`src/lib.rs:107`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
+- `check_header` (`src/lib.rs:107`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against the expected scale (`BadScale`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the expected scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
 - `kind_error_to_wire_error` (`src/lib.rs:94`, private — no Item Instance of its own)
-- **External:** `exact_kind::Money::from_minor` (`src/lib.rs:214`)
+- **External:** `exact_kind::Decimal::from_minor` (`src/lib.rs:214`)

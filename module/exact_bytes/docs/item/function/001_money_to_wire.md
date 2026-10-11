@@ -34,7 +34,7 @@ pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_bytes` | `(defining crate)` | Exercised by the majority of its own test suite |
-| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs` | Re-exported, and actually called in the facade's own test — unlike `qty_to_wire`/`price_to_wire`, which the facade only re-exports without exercising |
+| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs`, `tests/any_scale_test.rs` | Re-exported, and actually called in the facade's own tests — at the standard scale, and at scale 2 — unlike `qty_to_wire`/`price_to_wire`, which the facade only re-exports without exercising |
 
 ## Caller Tree
 
@@ -47,4 +47,5 @@ found).
 
 ## Callee Tree
 
-- **External:** `exact_kind::Money::minor` (`v.minor()`, `src/lib.rs:201`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the record's scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
+- **External:** `exact_kind::Decimal::minor` (`v.minor()`, `src/lib.rs:201`)

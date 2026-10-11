@@ -43,4 +43,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Price::minor` (`v.minor()`, `src/lib.rs:242`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the record's scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
+- **External:** `exact_kind::PriceAt::minor` (`v.minor()`, `src/lib.rs:242`)

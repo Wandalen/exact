@@ -1,9 +1,10 @@
-# 001: use exact_kind::{ Money, Price, Quantity }
+# 001: use exact_kind::{ Decimal, PriceAt, Qty }
 
 ## Representation
 
-Imports the three conserved value types every comparison/equality/min-max
-function in this crate operates on.
+Imports the three conserved value types, in their generic form, every
+comparison/equality/min-max function in this crate operates on, at any scale
+(→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)).
 
 ## Kind
 

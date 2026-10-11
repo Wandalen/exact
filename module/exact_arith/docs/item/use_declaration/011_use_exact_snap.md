@@ -2,8 +2,8 @@
 
 ## Representation
 
-Re-exports `exact_snap`'s `Tick`/`Lot` grid types, its error enum, and both
-snap functions.
+Re-exports `exact_snap`'s grid types — the generic `TickAt`/`LotAt` and their
+standard-scale aliases `Tick`/`Lot` — its error enum, and both snap functions.
 
 ## Kind
 
@@ -22,6 +22,7 @@ pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 135 | Declaration |
+| `tests/any_scale_test.rs` | 6,40-42 | `TickAt` and `price_snap_tick` at scale 2 |
 
 Confirmed via a full-workspace grep: not one of these 5 names is imported
 or called through `exact_arith` anywhere, including this crate's own test
@@ -32,4 +33,4 @@ have zero callers even within `module/` itself.
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_arith` | `(defining crate)` | Declared only — not exercised by this crate's own tests |
+| `exact_arith` | `(defining crate)` | Exercised by `tests/any_scale_test.rs` only |

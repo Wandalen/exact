@@ -23,7 +23,7 @@ pub const ONE_MINOR : Backing = pow10( SCALE );
 |------|---------|---------|
 | `src/lib.rs` | 180,221,269,397-398,411 | Declaration; `from_int`'s scaling multiply; `whole`'s divide; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
 | `exact_parse/src/lib.rs:46` | — | **Production** — compile-time assert cross-checking `Money::ONE_MINOR` against `exact_scale::pow10( MONEY_SCALE )` directly |
-| `exact_ratio/src/lib.rs:259,264` | — | **Production** — `price_mul_qty`'s quantity-as-ratio denominator, and the compile-time assert that `Quantity` and `Money` share that scale |
+| `exact_ratio/src/lib.rs:259` | — | **Production** — `price_mul_qty`'s quantity-as-ratio denominator, `Decimal::< Q >::ONE_MINOR` at the quantity's own scale |
 
 ## Crate Usage
 
@@ -31,4 +31,4 @@ pub const ONE_MINOR : Backing = pow10( SCALE );
 |-------|----------|---------|
 | `exact_kind` | `(defining crate)` | The scaling factor for every whole-unit conversion and the renderer |
 | `exact_parse` | `src/lib.rs` | A compile-time consistency check between `exact_kind` and `exact_scale`'s own constants — not consumed for any runtime computation |
-| `exact_ratio` | `src/lib.rs` | `price_mul_qty` counts one whole quantity as `Money::ONE_MINOR` minor units |
+| `exact_ratio` | `src/lib.rs` | `price_mul_qty` counts one whole quantity as `Decimal::< Q >::ONE_MINOR` minor units |
