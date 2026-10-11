@@ -88,15 +88,15 @@ pub enum KindError
     /// The offending count of minor units.
     minor : Backing,
   },
-  /// A decimal string with more fractional digits than the type's scale.
-  ///
-  /// Rejected rather than repaired. Truncating destroys the excess
-  /// silently; rounding invents a value the caller did not write.
+  /// A value with more fractional digits than the target scale can hold:
+  /// text given to `parse`, or a value `rescale` narrows under `Exact`.
+  /// Rejected rather than repaired — truncating destroys the excess
+  /// silently; rounding invents a value the caller did not ask for.
   ExcessPrecision
   {
-    /// Fractional digits the text carried.
+    /// Fractional digits the input carried: typed in the text, or the source scale.
     digits : u32,
-    /// Fractional digits the type can hold.
+    /// Fractional digits the target type can hold.
     scale : u32,
   },
   /// Text the grammar does not accept.
