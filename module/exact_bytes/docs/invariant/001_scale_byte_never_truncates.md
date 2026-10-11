@@ -9,7 +9,7 @@
 
 ### Statement
 
-`src/lib.rs:48` declares `const _ : () = assert!( exact_scale::MONEY_SCALE <=
+`src/lib.rs:52` declares `const _ : () = assert!( exact_scale::MONEY_SCALE <=
 u8::MAX as u32 );`. `SCALE_BYTE` (`src/lib.rs:52`) casts `exact_scale::MONEY_SCALE`
 (a `u32`) down to the record's one-byte `scale` field via `as u8`, once; every
 `*_to_wire` function writes it and every `*_from_wire` function checks against
@@ -37,10 +37,10 @@ of constants.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:48` | The compile-time assertion itself |
-| `src/lib.rs:50-52` | `SCALE_BYTE` — the one `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
-| `src/lib.rs:199, 219, 240` | The three `*_to_wire` functions writing `SCALE_BYTE` into a record |
-| `src/lib.rs:105-116` | `check_header` — comparing a decoded record's `scale` byte against `SCALE_BYTE` |
+| `src/lib.rs:52` | The compile-time assertion itself |
+| `src/lib.rs:52-52` | `SCALE_BYTE` — the one `exact_scale::MONEY_SCALE as u8` cast this assertion protects |
+| `src/lib.rs:201, 221, 242` | The three `*_to_wire` functions writing `SCALE_BYTE` into a record |
+| `src/lib.rs:107-118` | `check_header` — comparing a decoded record's `scale` byte against `SCALE_BYTE` |
 
 ### Tests
 

@@ -62,9 +62,9 @@ than zero-padded.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:41-48` | `KIND_MONEY`, `KIND_QTY`, `KIND_PRICE`, and the compile-time check that `MONEY_SCALE` fits the `scale` byte |
-| `src/lib.rs:118-193` | `Wire`'s struct definition, `ENCODED_LEN`, `new`, `to_bytes`, `from_bytes` |
-| `src/lib.rs:195-252` | The six `*_to_wire`/`*_from_wire` functions, one pair per kind |
+| `src/lib.rs:41-52` | `KIND_MONEY`, `KIND_QTY`, `KIND_PRICE`, and the compile-time check that `MONEY_SCALE` fits the `scale` byte |
+| `src/lib.rs:120-195` | `Wire`'s struct definition, `ENCODED_LEN`, `new`, `to_bytes`, `from_bytes` |
+| `src/lib.rs:197-254` | The six `*_to_wire`/`*_from_wire` functions, one pair per kind |
 
 ### Tests
 

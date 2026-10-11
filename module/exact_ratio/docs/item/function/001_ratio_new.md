@@ -37,7 +37,7 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 |------|---------|---------|
 | `src/lib.rs` | 140-153 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 15,22,214,223 | Zero-denominator refusal, negative-denominator normalization, a positive denominator kept as given, and the `i64::MIN` refusal — and the construction path for every other test's `Ratio` value |
-| `src/lib.rs` | 256 | **Production** — `price_mul_qty` builds the quantity's ratio |
+| `src/lib.rs` | 259 | **Production** — `price_mul_qty` builds the quantity's ratio |
 | `exact_arith/src/lib.rs:113` | — | Facade re-export |
 
 ## Crate Usage
@@ -49,7 +49,7 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 
 ## Caller Tree
 
-- [price_mul_qty](007_price_mul_qty.md) (`src/lib.rs:256`) — the one
+- [price_mul_qty](007_price_mul_qty.md) (`src/lib.rs:259`) — the one
   production caller, turning a quantity into the ratio `qty.minor() /
   Money::ONE_MINOR`
 

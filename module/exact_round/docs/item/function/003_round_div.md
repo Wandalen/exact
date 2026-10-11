@@ -40,7 +40,7 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 | `src/lib.rs` | 147-155 | Declaration |
 | `tests/round_div_test.rs` | throughout | Every rounding mode, both signs, the zero divisor, the minimum value as either operand, a grid checked against each mode's definition, and `Exact`'s refusal of a remainder |
 | `exact_dust/src/lib.rs:129` | — | **Production** — `split_minor`'s per-share division |
-| `exact_snap/src/lib.rs:154,168` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
+| `exact_snap/src/lib.rs:163,177` | — | **Production** — `price_snap_tick`, `qty_snap_lot` |
 | `exact_ratio/src/lib.rs:211` | — | **Production** — `div_round_minor`, backing `money_div_round`/`qty_div_round` |
 | `exact_arith/tests/facade_test.rs:56` | — | Re-exported-path test call |
 
@@ -55,7 +55,7 @@ pub const fn round_div( n : i64, d : i64, rounding : Rounding ) -> Result< i64, 
 ## Caller Tree
 
 - **External:** `exact_dust::split_minor` (`exact_dust/src/lib.rs:129`)
-- **External:** `exact_snap::price_snap_tick` (`exact_snap/src/lib.rs:154`), `qty_snap_lot` (`:168`)
+- **External:** `exact_snap::price_snap_tick` (`exact_snap/src/lib.rs:163`), `qty_snap_lot` (`:168`)
 - **External:** `exact_ratio::div_round_minor` (`exact_ratio/src/lib.rs:211`)
 
 No intra-crate caller.

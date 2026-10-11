@@ -49,7 +49,7 @@ multiply itself runs in `i128`.
 |------|--------------|
 | `src/lib.rs:155-168` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
 | `src/lib.rs:170-208` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
-| `src/lib.rs:241-259` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
+| `src/lib.rs:241-262` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
 
 ### Tests
 

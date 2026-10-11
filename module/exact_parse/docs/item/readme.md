@@ -70,7 +70,7 @@ Enum is absent despite every sibling Tier-2 crate having one.
   consistent against each other, rather than merely sharing a numeric
   literal at each definition site by convention.
 - **`qty_from_str` is the only function with a dedicated negative-value
-  test** (`tests/from_str_test.rs:19-22`) — `money_from_str`/`price_from_str`
+  test** (`tests/from_str_test.rs:20-23`) — `money_from_str`/`price_from_str`
   have no equivalent since `Money`/`Price` admit negative values by design.
 
 ### Regenerate

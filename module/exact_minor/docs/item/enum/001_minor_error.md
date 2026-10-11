@@ -41,7 +41,7 @@ pub enum MinorError
 | `exact_arith/src/lib.rs:70` | — | Facade re-export only |
 
 `exact_kind` receives one from the 3 checked functions and matches it in its
-private `kind_overflow` (`exact_kind/src/lib.rs:164-171`), turning both variants into
+private `kind_overflow` (`exact_kind/src/lib.rs:168-175`), turning both variants into
 `KindError::Overflow`; nothing else outside this crate does.
 
 ## Crate Usage

@@ -21,9 +21,9 @@ pub const KIND_MONEY : u8 = 0;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 42 | Declaration |
-| `src/lib.rs` | 199 | `money_to_wire`'s encoded discriminator |
-| `src/lib.rs` | 211 | `money_from_wire`'s expected discriminator, passed to `check_header` |
-| `tests/wire_roundtrip_test.rs` | 15,87,98 | Asserting the round-tripped discriminator; constructing a tampered `Wire` directly |
+| `src/lib.rs` | 201 | `money_to_wire`'s encoded discriminator |
+| `src/lib.rs` | 213 | `money_from_wire`'s expected discriminator, passed to `check_header` |
+| `tests/wire_roundtrip_test.rs` | 16,88,99 | Asserting the round-tripped discriminator; constructing a tampered `Wire` directly |
 | `exact_arith/src/lib.rs:122` | — | Facade re-export |
 
 ## Crate Usage

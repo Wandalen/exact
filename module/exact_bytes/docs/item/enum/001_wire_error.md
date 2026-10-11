@@ -17,7 +17,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:56-73`
+`module/exact_bytes/src/lib.rs:58-75`
 
 ```rust
 /// Why a `Wire` could not be decoded, or a decoded value could not be
@@ -46,11 +46,11 @@ pub enum WireError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 57-73 | Declaration |
-| `src/lib.rs` | 81-85 | Matched exhaustively in `Display for WireError` |
-| `src/lib.rs` | 96-98 | Constructed in `kind_error_to_wire_error` |
-| `src/lib.rs` | 109,113,188 | Constructed directly as the `Err` arm of `check_header`'s kind and scale guards (shared by every `*_from_wire`) and of `Wire::from_bytes`'s length guard |
-| `tests/wire_roundtrip_test.rs` | 44,47,58,67,88,96 | Asserting the exact variant returned by each failure mode |
+| `src/lib.rs` | 59-75 | Declaration |
+| `src/lib.rs` | 83-87 | Matched exhaustively in `Display for WireError` |
+| `src/lib.rs` | 98-100 | Constructed in `kind_error_to_wire_error` |
+| `src/lib.rs` | 111,115,190 | Constructed directly as the `Err` arm of `check_header`'s kind and scale guards (shared by every `*_from_wire`) and of `Wire::from_bytes`'s length guard |
+| `tests/wire_roundtrip_test.rs` | 45,48,59,68,89,97 | Asserting the exact variant returned by each failure mode |
 | `exact_arith/src/lib.rs:126` | — | Facade re-export |
 
 No production call site anywhere renders a `WireError` through its `Display`

@@ -10,7 +10,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:179`
+`module/exact_kind/src/lib.rs:183`
 
 ```rust
 pub const ZERO : Self = Self { minor : minor_zero() };
@@ -20,7 +20,7 @@ pub const ZERO : Self = Self { minor : minor_zero() };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 179,428 | Declaration; `Qty::ZERO`'s own definition wraps this value |
+| `src/lib.rs` | 183,461 | Declaration; `Qty::ZERO`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Accumulator seed, boundary comparisons |
 | `exact_dust/tests/dust_split_test.rs:84` | — | Array-fill seed `[ Money::ZERO; 4 ]` |
 | `exact_arith/src/lib.rs:42,46` (doc) | — | Facade doc comment naming it as part of the re-exported surface |

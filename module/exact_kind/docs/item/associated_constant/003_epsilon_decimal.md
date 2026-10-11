@@ -10,7 +10,7 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:182`
+`module/exact_kind/src/lib.rs:186`
 
 ```rust
 pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
@@ -20,7 +20,7 @@ pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 182,431 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
+| `src/lib.rs` | 186,464 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Boundary-adjacent values (`MAX.checked_add(EPSILON)` etc.) |
 | `exact_add/tests/checked_and_saturating_add_test.rs:60,61,62` | — | Saturation-boundary test inputs |
 | `exact_conserve/tests/conservation_test.rs:230` | — | Overflow-boundary test input |

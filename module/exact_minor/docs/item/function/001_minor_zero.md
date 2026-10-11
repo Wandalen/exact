@@ -25,7 +25,7 @@ pub const fn minor_zero() -> Minor
 |------|---------|---------|
 | `src/lib.rs` | 238-241 | Declaration |
 | `tests/zero_test.rs` | throughout | Equality with `0`, and `minor_is_zero` on it |
-| `exact_kind/src/lib.rs:179` | — | `Decimal::ZERO` |
+| `exact_kind/src/lib.rs:183` | — | `Decimal::ZERO` |
 | `exact_arith/src/lib.rs:79` | — | Facade re-export |
 
 ## Crate Usage
@@ -38,7 +38,7 @@ pub const fn minor_zero() -> Minor
 
 ## Caller Tree
 
-- **External:** `exact_kind::Decimal::ZERO` (`exact_kind/src/lib.rs:179`)
+- **External:** `exact_kind::Decimal::ZERO` (`exact_kind/src/lib.rs:183`)
 
 ## Callee Tree
 
