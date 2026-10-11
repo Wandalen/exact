@@ -7,20 +7,33 @@ negative), the whole-unit part, then `.` and the fractional digits with
 trailing zeros stripped (omitted entirely when `SCALE == 0` or the fraction
 is zero). The inverse of `parse` for every value it produces.
 
+When the caller asks for a precision — `{:.2}` — it prints exactly that many
+digits after the point instead, through the private `fmt_at_precision`
+(`src/lib.rs:456-490`): extra places are zeros, fewer round half to even.
+Only the text is rounded, never the value, and nothing is allocated
+(→ [ADR-004](../../decisions/004_display_precision_rounds_half_to_even.md)).
+
 ## Kind
 
 Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:406`
+`module/exact_kind/src/lib.rs:406-448`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
-  /// Render exactly, with trailing fractional zeros trimmed.
+  /// Render exactly, with trailing fractional zeros trimmed — or, when the
+  /// caller asks for a precision (`{:.2}`), with exactly that many digits
+  /// after the point.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
+    if let Some( places ) = f.precision()
+    {
+      return fmt_at_precision( self.minor(), SCALE, places, f );
+    }
+
     let unit = Self::ONE_MINOR;
     let magnitude = self.minor().unsigned_abs();
     let unit_u = unit.unsigned_abs();
@@ -58,8 +71,11 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 406-441 | Declaration |
+| `src/lib.rs` | 406-490 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
+| `tests/display_precision_test.rs` | throughout | `{:.N}`: padding, half-even rounding, negatives, `Qty`/`PriceAt` pass-through |
+| `exact_arith/tests/no_alloc_test.rs` | — | `{:.N}` rendered into a stack buffer with no allocation |
+| `smoke_exact_market_split/src/lib.rs:444-445` | — | Step 7 prints its amounts in cents with `{:.2}` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
 ## Crate Usage

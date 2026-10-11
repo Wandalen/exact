@@ -56,15 +56,16 @@ a `Qty` again.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:58-64` | `Money`, `Quantity`, `Price` — the three aliases |
-| `src/lib.rs:694-698` | The `PriceAt<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
-| `src/lib.rs:246,536,772` | `rescale` on `Decimal`, `Qty` and `PriceAt` — the explicit crossing between scales (→ [ADR-002](../decisions/002_explicit_rescale_between_scales.md)) |
+| `src/lib.rs:744-748` | The `PriceAt<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
+| `src/lib.rs:246,585,822` | `rescale` on `Decimal`, `Qty` and `PriceAt` — the explicit crossing between scales (→ [ADR-002](../decisions/002_explicit_rescale_between_scales.md)) |
 | `src/lib.rs:160-164` | The `Decimal<const SCALE: u32>` struct — one `minor: Minor` field |
 | `src/lib.rs:180-196` | `ONE_MINOR`, `ZERO`, `EPSILON`, `MAX`, `MIN` associated constants |
 | `src/lib.rs:203-227` | `from_minor`, `from_int` — the two range-checked constructors |
 | `src/lib.rs:347-403` | `parse` — the grammar |
-| `src/lib.rs:406-441` | `Display` — canonical rendering, trailing zeros trimmed |
-| `src/lib.rs:453-456` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
-| `src/lib.rs:518-521` | `as_decimal` — the escape hatch back to a signed value |
+| `src/lib.rs:406-448` | `Display` — canonical rendering, trailing zeros trimmed |
+| `src/lib.rs:456-490` | `fmt_at_precision` — a requested `{:.N}`, padded or rounded half to even (→ [ADR-004](../decisions/004_display_precision_rounds_half_to_even.md)) |
+| `src/lib.rs:502-505` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
+| `src/lib.rs:567-570` | `as_decimal` — the escape hatch back to a signed value |
 
 ### Tests
 

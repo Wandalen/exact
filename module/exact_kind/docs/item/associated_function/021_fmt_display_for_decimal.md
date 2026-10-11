@@ -2,7 +2,8 @@
 
 ## Representation
 
-Renders exactly, with trailing fractional zeros trimmed. See
+Renders exactly, with trailing fractional zeros trimmed — or, given a
+precision (`{:.2}`), with exactly that many digits after the point. See
 [impl Display for Decimal](../implementation/004_display_for_decimal.md) for
 the full body.
 
@@ -12,11 +13,16 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:409`
+`module/exact_kind/src/lib.rs:411`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 {
+  if let Some( places ) = f.precision()
+  {
+    return fmt_at_precision( self.minor(), SCALE, places, f );
+  }
+
   let unit = Self::ONE_MINOR;
   let magnitude = self.minor().unsigned_abs();
   let unit_u = unit.unsigned_abs();
@@ -53,8 +59,9 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 409-440 | Declaration |
+| `src/lib.rs` | 411-447 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
+| `tests/display_precision_test.rs` | throughout | The precision branch, via `format!( "{:.N}", … )` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
 ## Crate Usage
@@ -68,11 +75,12 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 - **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:121`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
 
-No intra-crate caller (this crate's own tests invoke it only via
-`.to_string()` in test-context, out of Caller Tree scope per OT012).
+- **Intra-crate:** [Display::fmt for Qty](022_fmt_display_for_qty.md) (`src/lib.rs:701`) and `Display::fmt` for `PriceAt` (`src/lib.rs:834`), each forwarding its own formatter so a precision reaches this one
 
 ## Callee Tree
 
+- `fmt_at_precision` (`src/lib.rs:456`, private — no Item Instance of its own), when a precision is given
+  - **External:** `exact_round::round_div` under `Rounding::HalfEven`, when fewer places than `SCALE` are asked (`src/lib.rs:463`)
 - **External:** `i64::unsigned_abs` (×2 — magnitude and unit)
 - **External:** `fmt::Formatter::write_fmt` (via the three `write!` calls)
 - **External:** `u64::pow` — counting and removing trailing fractional zeros arithmetically, with no `String` allocated
