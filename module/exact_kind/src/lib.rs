@@ -405,9 +405,16 @@ impl< const SCALE : u32 > Decimal< SCALE >
 
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
-  /// Render exactly, with trailing fractional zeros trimmed.
+  /// Render exactly, with trailing fractional zeros trimmed — or, when the
+  /// caller asks for a precision (`{:.2}`), with exactly that many digits
+  /// after the point.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
+    if let Some( places ) = f.precision()
+    {
+      return fmt_at_precision( self.minor(), SCALE, places, f );
+    }
+
     let unit = Self::ONE_MINOR;
     let magnitude = self.minor().unsigned_abs();
     let unit_u = unit.unsigned_abs();
@@ -438,6 +445,48 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
     let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
     write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
   }
+}
+
+/// Write `minor` at `scale` with exactly `places` digits after the point.
+///
+/// More places than the scale holds are filled with zeros. Fewer round the
+/// dropped digits half to even — the family's default, and the rule `{:.N}`
+/// follows for `f64`. Only the text is rounded, never the value. Writes
+/// straight into the formatter, so it allocates nothing.
+fn fmt_at_precision( minor : Backing, scale : u32, places : usize, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+{
+  // Fewer places than the scale holds: round the dropped digits away first.
+  let ( shown, shown_scale ) = match u32::try_from( places )
+  {
+    Ok( p ) if p < scale =>
+    (
+      round_div( minor, pow10( scale - p ), Rounding::HalfEven ).map_err( | _ | fmt::Error )?,
+      p,
+    ),
+    _ => ( minor, scale ),
+  };
+  let unit = pow10( shown_scale ).unsigned_abs();
+  let magnitude = shown.unsigned_abs();
+  if shown < 0
+  {
+    f.write_str( "-" )?;
+  }
+  write!( f, "{}", magnitude / unit )?;
+  if places == 0
+  {
+    return Ok( () );
+  }
+  f.write_str( "." )?;
+  if shown_scale > 0
+  {
+    write!( f, "{:0width$}", magnitude % unit, width = shown_scale as usize )?;
+  }
+  // More places than the scale holds: the rest are zeros.
+  for _ in shown_scale as usize .. places
+  {
+    f.write_str( "0" )?;
+  }
+  Ok( () )
 }
 
 /// A non-negative quantity at a type-level scale.
@@ -648,7 +697,8 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }
 
@@ -780,6 +830,7 @@ impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }

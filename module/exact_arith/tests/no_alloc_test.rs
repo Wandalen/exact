@@ -58,6 +58,26 @@ fn rendering_into_a_stack_buffer_does_not_allocate()
   assert_eq!( &buf[ .. len ], b"-1234.5" );
 }
 
+/// A requested precision allocates nothing either — padding with zeros and
+/// rounding dropped digits are both written straight into the formatter.
+#[ test ]
+fn rendering_at_a_precision_does_not_allocate()
+{
+  let padded = Price::parse( "0.9" ).unwrap();
+  let rounded = Money::parse( "-1.015" ).unwrap();
+  let qty = Quantity::parse( "3" ).unwrap();
+  let mut buf = [ 0_u8; 64 ];
+  let count = allocations_during( ||
+  {
+    fmt_into( format_args!( "{padded:.2}" ), &mut buf ).unwrap();
+    fmt_into( format_args!( "{rounded:.2}" ), &mut buf ).unwrap();
+    fmt_into( format_args!( "{qty:.4}" ), &mut buf ).unwrap();
+  } );
+  assert_eq!( count, 0 );
+  let len = fmt_into( format_args!( "{rounded:.2}" ), &mut buf ).unwrap();
+  assert_eq!( &buf[ .. len ], b"-1.02" );
+}
+
 /// Both `*_dust_split_into` functions fill the caller's slice without
 /// allocating. Guards the fix recorded at `Fix(exact_dust_split_into_allocated)`.
 #[ test ]
