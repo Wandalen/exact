@@ -1,8 +1,8 @@
 //! The conserved value type family: `Money`, `Qty`, and `Price`, each a
 //! fixed-point decimal whose scale lives in the type.
 //!
-//! Tier 1 of the family, depending on `exact_minor` for the backing integer
-//! and `exact_scale` for the power-of-ten table and the declared ceiling.
+//! Tier 1 of the family, depending on `exact_minor` for the backing integer,
+//! `exact_scale` for powers of ten and the ceiling, `exact_round` for `rescale`.
 //! Consolidates what the real codebase built as two separate crates —
 //! `exact_decimal`'s signed `Decimal< SCALE >` and `exact_qty`'s
 //! non-negative `Qty< SCALE >` — into the one crate the preferred design

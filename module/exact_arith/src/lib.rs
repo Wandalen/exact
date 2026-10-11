@@ -132,7 +132,7 @@ pub use exact_bytes::
   qty_to_wire,
 };
 
-pub use exact_snap::{ Lot, SnapError, Tick, price_snap_tick, qty_snap_lot };
+pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_snap_lot };
 
 pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_cmp };
 

@@ -255,7 +255,8 @@ fn money_sum_assert_zero_passes_when_legs_cancel_and_reports_the_exact_discrepan
 #[ test ]
 fn money_sum_assert_zero_passes_on_an_empty_slice()
 {
-  assert_eq!( money_sum_assert_zero( &[] ), Ok( () ) );
+  let none : &[ Money ] = &[];
+  assert_eq!( money_sum_assert_zero( none ), Ok( () ) );
 }
 
 /// A slice whose running total passes the ceiling partway, but ends at

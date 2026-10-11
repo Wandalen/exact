@@ -8,6 +8,8 @@ description = "A fixed-width wire encoding and its to/from conversions for exact
 
 [dependencies]
 exact_kind = { path = "../exact_kind", version = "0.1.0" }
+
+[dev-dependencies]
 exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]

@@ -9,6 +9,7 @@ description = "Snap a price or quantity to the nearest tick or lot grid point, f
 [dependencies]
 exact_kind = { path = "../exact_kind", version = "0.1.0" }
 exact_round = { path = "../exact_round", version = "0.1.0" }
+exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]
 workspace = true

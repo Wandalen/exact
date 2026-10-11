@@ -44,7 +44,7 @@
 //! assert_eq!( money_div_round( v, 4, Rounding::HalfEven ).unwrap(), Money::parse( "2.5" ).unwrap() );
 //! ```
 
-use exact_kind::{ KindError, Money, Price, Quantity };
+use exact_kind::{ Decimal, KindError, PriceAt, Qty };
 use exact_round::Rounding;
 
 /// Why a ratio could not be constructed, or an operation could not be completed.
@@ -174,10 +174,10 @@ fn mul_ratio_minor( minor : i64, r : Ratio, rounding : Rounding ) -> Result< i64
 /// [`RatioError::Overflow`] when the widened product or the result leaves
 /// the representable or declared range. [`RatioError::Inexact`] when
 /// `rounding` is [`Rounding::Exact`] and the result needs rounding.
-pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
+pub fn money_mul_ratio< const S : u32 >( v : Decimal< S >, r : Ratio, rounding : Rounding ) -> Result< Decimal< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Decimal::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
 /// Multiply a quantity by `n / d`, rounding the result per `rounding`.
@@ -189,10 +189,10 @@ pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< M
 /// past half a minor unit, `HalfUp` at half, `Up`/`TowardZero` never. [`RatioError::Overflow`] on overflow.
 /// [`RatioError::Inexact`] when `rounding` is [`Rounding::Exact`] and the result needs rounding — checked
 /// first, so an inexact negative result is `Inexact`, not `Negative`.
-pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
+pub fn qty_mul_ratio< const S : u32 >( v : Qty< S >, r : Ratio, rounding : Rounding ) -> Result< Qty< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
 /// Multiply a price by `n / d`, rounding the result per `rounding`.
@@ -200,10 +200,10 @@ pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< 
 /// # Errors
 ///
 /// As [`money_mul_ratio`].
-pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
+pub fn price_mul_ratio< const S : u32 >( v : PriceAt< S >, r : Ratio, rounding : Rounding ) -> Result< PriceAt< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  PriceAt::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
 fn div_round_minor( n : i64, d : i64, rounding : Rounding ) -> Result< i64, RatioError >
@@ -218,10 +218,10 @@ fn div_round_minor( n : i64, d : i64, rounding : Rounding ) -> Result< i64, Rati
 /// [`RatioError::DivZero`] when `d` is zero. [`RatioError::Overflow`] on
 /// overflow or ceiling breach. [`RatioError::Inexact`] when `rounding` is
 /// [`Rounding::Exact`] and the result needs rounding.
-pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Money, RatioError >
+pub fn money_div_round< const S : u32 >( v : Decimal< S >, d : i64, rounding : Rounding ) -> Result< Decimal< S >, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
-  Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Decimal::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
 /// Divide a quantity by `d`, rounding the remainder per `rounding`.
@@ -232,10 +232,10 @@ pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Mon
 /// the rounded result would be below zero. [`RatioError::Overflow`] on
 /// overflow or ceiling breach. [`RatioError::Inexact`] when `rounding` is
 /// [`Rounding::Exact`] and the result needs rounding.
-pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
+pub fn qty_div_round< const S : u32 >( v : Qty< S >, d : i64, rounding : Rounding ) -> Result< Qty< S >, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
-  Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
 /// The money a trade costs: `price × qty`, rounding the result per `rounding`.
@@ -248,16 +248,15 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 ///
 /// [`RatioError::Overflow`] when the cost leaves the representable or
 /// declared range. [`RatioError::Inexact`] when `rounding` is
-/// [`Rounding::Exact`] and the cost does not land exactly on the money scale —
-/// a settlement amount is then refused, never rounded.
-pub fn price_mul_qty( price : Price, qty : Quantity, rounding : Rounding ) -> Result< Money, RatioError >
+/// [`Rounding::Exact`] and the cost does not land exactly on the price's
+/// scale — a settlement amount is then refused, never rounded.
+///
+/// The price and the quantity may have different scales — a price in cents
+/// times a quantity in satoshis. The cost is money at the price's scale.
+pub fn price_mul_qty< const P : u32, const Q : u32 >( price : PriceAt< P >, qty : Qty< Q >, rounding : Rounding ) -> Result< Decimal< P >, RatioError >
 {
-  // `Quantity` and `Money` share one scale, so one whole quantity is `Money::ONE_MINOR` minor units.
-  let qty_as_ratio = ratio_new( qty.minor(), Money::ONE_MINOR )?;
+  // One whole quantity is `Decimal::< Q >::ONE_MINOR` minor units at the quantity's own scale.
+  let qty_as_ratio = ratio_new( qty.minor(), Decimal::< Q >::ONE_MINOR )?;
   let minor = mul_ratio_minor( price.minor(), qty_as_ratio, rounding )?;
-  Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Decimal::< P >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
-
-// `price_mul_qty` counts one whole quantity as `Money::ONE_MINOR` minor units, which holds only
-// while `Quantity` and `Money` share one scale — fail the build the moment they drift apart.
-const _ : () = assert!( matches!( Quantity::from_int( 1 ), Ok( q ) if q.minor() == Money::ONE_MINOR ) );

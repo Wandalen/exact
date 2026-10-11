@@ -57,7 +57,7 @@
 //! assert_eq!( shares[ 1 ], Money::from_minor( 2 ).unwrap() );
 //! ```
 
-use exact_kind::{ KindError, Money, Quantity };
+use exact_kind::{ Decimal, KindError, Qty };
 use exact_round::{ RoundError, Rounding };
 
 /// Where the remainder of an equal split goes.
@@ -204,9 +204,9 @@ fn split_into_with< T >
 /// [`DustError::EmptyParts`] when `parts` is zero. [`DustError::Remainder`]
 /// when [`DustTo::Reject`] or [`Rounding::Exact`] was asked and the split did
 /// not divide evenly. [`DustError::Overflow`] on overflow or ceiling breach.
-pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
+pub fn money_dust_split< const S : u32 >( total : Decimal< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
 {
-  split_with( total.minor(), parts, mode, to, Money::from_minor )
+  split_with( total.minor(), parts, mode, to, Decimal::< S >::from_minor )
 }
 
 /// Non-allocating variant of [`money_dust_split`] — writes into `out` instead
@@ -215,9 +215,9 @@ pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : Dus
 /// # Errors
 ///
 /// As [`money_dust_split`].
-pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
+pub fn money_dust_split_into< const S : u32 >( total : Decimal< S >, mode : Rounding, to : DustTo, out : &mut [ Decimal< S > ] ) -> Result< (), DustError >
 {
-  split_into_with( total.minor(), mode, to, out, Money::from_minor )
+  split_into_with( total.minor(), mode, to, out, Decimal::< S >::from_minor )
 }
 
 /// The remainder a [`money_dust_split`] of `total` into `parts` under `mode`
@@ -228,7 +228,7 @@ pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out :
 /// As [`money_dust_split`]. [`DustError::Remainder`] only under
 /// [`Rounding::Exact`] — this function reports the remainder, and refuses one
 /// only when the mode itself forbids it.
-pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> Result< i64, DustError >
+pub fn money_dust_remainder< const S : u32 >( total : Decimal< S >, parts : usize, mode : Rounding ) -> Result< i64, DustError >
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
   Ok( leftover )
@@ -240,9 +240,9 @@ pub fn money_dust_remainder( total : Money, parts : usize, mode : Rounding ) -> 
 /// # Errors
 ///
 /// As [`money_dust_split`].
-pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
+pub fn qty_dust_split< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Qty< S > >, DustError >
 {
-  split_with( total.minor(), parts, mode, to, Quantity::from_minor )
+  split_with( total.minor(), parts, mode, to, Qty::< S >::from_minor )
 }
 
 /// Non-allocating variant of [`qty_dust_split`].
@@ -250,9 +250,9 @@ pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : Du
 /// # Errors
 ///
 /// As [`money_dust_split_into`].
-pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
+pub fn qty_dust_split_into< const S : u32 >( total : Qty< S >, mode : Rounding, to : DustTo, out : &mut [ Qty< S > ] ) -> Result< (), DustError >
 {
-  split_into_with( total.minor(), mode, to, out, Quantity::from_minor )
+  split_into_with( total.minor(), mode, to, out, Qty::< S >::from_minor )
 }
 
 /// The remainder a [`qty_dust_split`] would hold back.
@@ -260,7 +260,7 @@ pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out 
 /// # Errors
 ///
 /// As [`money_dust_remainder`].
-pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) -> Result< i64, DustError >
+pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding ) -> Result< i64, DustError >
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
   Ok( leftover )
