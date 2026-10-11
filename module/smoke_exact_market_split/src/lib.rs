@@ -364,6 +364,10 @@ fn step_6_golden_print()
 #[ derive( Debug, Clone, PartialEq, Eq ) ]
 pub struct PerAsset
 {
+  /// The price, in cents.
+  pub price : PriceAt< 2 >,
+  /// The quantity, in satoshis.
+  pub qty : Qty< 8 >,
   /// `65000.00 × 0.12345679`, each value at its own scale, in cents.
   pub cost : Decimal< 2 >,
   /// The same trade at one shared scale of 6 — the quantity rounded to
@@ -422,7 +426,7 @@ pub fn per_asset_trade() -> PerAsset
   let report = verify( &log ).expect( "a four-posting log cannot overflow i128" );
   assert!( report.is_balanced(), "a settled two-asset trade must balance per asset" );
 
-  PerAsset { cost, one_scale_cost, wire_scale : wire.scale(), shares }
+  PerAsset { price, qty : btc, cost, one_scale_cost, wire_scale : wire.scale(), shares }
 }
 
 /// Step 7: one trade, two precisions — and the one-scale arm that must disagree.
@@ -436,9 +440,10 @@ fn step_7_per_asset_scales()
      asset keeps its own precision and must not pass",
   );
   println!();
-  println!( "  per asset      65000.00 x 0.12345679 BTC = {} (cents x satoshis)", t.cost );
-  println!( "  one scale      the same trade at scale 6 = {} (a cent off)", t.one_scale_cost );
+  // `{:.2}`: amounts in cents always show both digits — `8024.70`, not `8024.7`.
+  println!( "  per asset      {:.2} x {} BTC = {:.2} (cents x satoshis)", t.price, t.qty, t.cost );
+  println!( "  one scale      the same trade at scale 6 = {:.2} (a cent off)", t.one_scale_cost );
   println!( "  wire           a satoshi quantity carries scale byte {}", t.wire_scale );
-  println!( "  split          0.12345679 BTC into 3 -> [{}, {}, {}] (recombines exactly)", t.shares[ 0 ], t.shares[ 1 ], t.shares[ 2 ] );
+  println!( "  split          {} BTC into 3 -> [{}, {}, {}] (recombines exactly)", t.qty, t.shares[ 0 ], t.shares[ 1 ], t.shares[ 2 ] );
   println!( "  audit          USD and BTC each net to zero, each at its own precision" );
 }

@@ -196,3 +196,14 @@ fn a_satoshi_quantity_keeps_its_scale_on_the_wire_and_splits_without_loss()
   let total = t.shares.iter().copied().try_fold( Qty::< 8 >::ZERO, | a, b | a.checked_add( b ) ).unwrap();
   assert_eq!( total, Qty::< 8 >::parse( "0.12345679" ).unwrap() );
 }
+
+/// Step 7 prints its amounts in cents with both digits — `{:.2}` on a
+/// `Decimal< 2 >` keeps the trailing zero that plain `{}` trims.
+#[ test ]
+fn amounts_in_cents_print_with_both_digits()
+{
+  let t = per_asset_trade();
+  assert_eq!( format!( "{:.2}", t.price ), "65000.00" );
+  assert_eq!( format!( "{:.2}", t.one_scale_cost ), "8024.70" );
+  assert_eq!( format!( "{}", t.one_scale_cost ), "8024.7", "plain `{{}}` still trims, by design" );
+}
