@@ -136,6 +136,6 @@ pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_
 
 pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_cmp };
 
-pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
+pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, money_dust_split_weighted, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
 
 pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, verify };
