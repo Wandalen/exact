@@ -31,7 +31,7 @@ pub type Money = Decimal< MONEY_SCALE >;
 | `tests/rescale_test.rs` | 4,12,19,22,30,48 | The scale-6 side of every `rescale` |
 | `exact_parse/src/lib.rs:39,46` | — | Compile-time assert that `Money::ONE_MINOR` matches `exact_scale::MONEY_SCALE` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export (`pub use exact_kind::{ .., Money, .. }`) |
-| `smoke_exact_market_split/src/lib.rs` | 49,63,65,66,99,140,153,188,265,272,276,306,326,328,346 | The demo lane's money values, through `exact_arith` |
+| `smoke_exact_market_split/src/lib.rs` | 51,65,67,68,101,142,270,277,281,311,331,333 | The demo lane's money values, through `exact_arith` — steps 1 to 5; its scenes and step 7 run at other scales |
 
 ## Crate Usage
 

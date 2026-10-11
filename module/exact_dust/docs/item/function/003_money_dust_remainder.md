@@ -33,9 +33,10 @@ pub fn money_dust_remainder< const S : u32 >( total : Decimal< S >, parts : usiz
 | `tests/dust_split_test.rs:50` | — | Confirms the held-back amount under `DustTo::Sink` |
 | `tests/dust_split_test.rs:238-239` | — | Refused under `Exact` when uneven, zero when even |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `smoke_exact_market_split/src/lib.rs:192` | — | Scene 003's held-back dust, at scale 2 |
 
-No call site anywhere outside this crate's own single test — an honest
-empty finding. `exact_arith` only re-exports the name.
+Outside this crate's own single test, only the demo lane's scene 003 calls
+it; `exact_arith` only re-exports the name.
 
 ## Crate Usage
 
@@ -43,10 +44,13 @@ empty finding. `exact_arith` only re-exports the name.
 |-------|----------|---------|
 | `exact_dust` | `(defining crate)` | Exercised by its one remainder-reporting test |
 | `exact_arith` | `src/lib.rs` | Re-export only |
+| `smoke_exact_market_split` | `src/lib.rs` | Demo lane: scene 003 |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `smoke_exact_market_split::golden` (`smoke_exact_market_split/src/lib.rs:192`) — demo-lane code, not production
+
+No production caller.
 
 ## Callee Tree
 

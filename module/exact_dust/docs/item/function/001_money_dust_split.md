@@ -45,7 +45,7 @@ total's minor count and `Money::from_minor` to build each slot.
 | `exact_arith/src/lib.rs:33` | — | Doctest call (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`, not production) |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:38` | — | Test-only call exercising the facade re-export |
-| `smoke_exact_market_split/src/lib.rs:142` | — | `market_split`'s own body — the only production (non-test, non-doctest) call site anywhere in the workspace |
+| `smoke_exact_market_split/src/lib.rs:144` | — | `market_split`'s own body — the only production (non-test, non-doctest) call site anywhere in the workspace |
 
 ## Crate Usage
 
@@ -60,10 +60,10 @@ total's minor count and `Money::from_minor` to build each slot.
 No caller within `exact_dust` itself, and no *production* caller within any
 other crate's own source either, when scoped strictly to
 non-test/non-doctest code — `smoke_exact_market_split::market_split`
-(`smoke_exact_market_split/src/lib.rs:142`) is the one exception: a genuine
+(`smoke_exact_market_split/src/lib.rs:144`) is the one exception: a genuine
 production call from a different crate.
 
-- **External:** `smoke_exact_market_split::market_split` (`smoke_exact_market_split/src/lib.rs:142`)
+- **External:** `smoke_exact_market_split::market_split` (`smoke_exact_market_split/src/lib.rs:144`)
 
 Also reached, but out of scope for this tree per `item_des.rulebook.md` §
 Instance Documentation : Completeness Verification ("test-only call sites

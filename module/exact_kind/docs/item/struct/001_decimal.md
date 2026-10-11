@@ -41,7 +41,7 @@ pub struct Decimal< const SCALE : u32 >
 | `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
 | `exact_ratio/src/lib.rs:47,177,180,221,224,256,259,261` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost and its quantity's `ONE_MINOR` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:49,151,181,182,183,185,205` | — | The demo lane's scale-2 values, through `exact_arith` |
+| `smoke_exact_market_split/src/lib.rs:51,153,155,183,184,185,187,190,207,351,368,371` | — | The demo lane's scale-2 scenes — the sum, the dust split, the wire round trip — and step 7's cost in cents, through `exact_arith` |
 
 ## Crate Usage
 
@@ -50,4 +50,4 @@ pub struct Decimal< const SCALE : u32 >
 | `exact_kind` | `(defining crate)` | The signed fixed-point representation `Money` aliases and `Qty` and `PriceAt` wrap |
 | `exact_add`, `exact_bytes`, `exact_cmp`, `exact_conserve`, `exact_dust`, `exact_fmt`, `exact_parse`, `exact_ratio` | `src/lib.rs` | The money type every `money_*` function takes, as `Decimal< S >` (→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)) |
 | `exact_arith` | `src/lib.rs` | Re-export |
-| `smoke_exact_market_split` | `src/lib.rs` | Values at scale 2, through `exact_arith` |
+| `smoke_exact_market_split` | `src/lib.rs` | Amounts at scale 2, through `exact_arith` |

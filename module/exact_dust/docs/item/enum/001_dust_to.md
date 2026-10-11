@@ -39,7 +39,7 @@ pub enum DustTo
 | `tests/dust_split_test.rs` | — | All 3 variants exercised across every split scenario |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/src/lib.rs:139` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |
-| `smoke_exact_market_split/src/lib.rs:142` | — | `market_split`'s own call always passes `DustTo::First` |
+| `smoke_exact_market_split/src/lib.rs:144` | — | `market_split`'s own call always passes `DustTo::First` |
 
 ## Crate Usage
 

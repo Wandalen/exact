@@ -36,11 +36,11 @@ total's minor count and `Quantity::from_minor` to build each slot.
 | `tests/dust_split_test.rs:97,136,152,230` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, the `Up`-rounded case that refuses a first slot that would go negative, and `Exact` refusing an uneven split |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:50` | — | Splits a quantity in satoshis |
+| `smoke_exact_market_split/src/lib.rs:409` | — | Step 7 splits a satoshi quantity among three accounts |
 
-No call site anywhere outside this crate's own 3 tests — an honest empty
-finding. `exact_arith` only re-exports the name; neither its crate-doc
-example nor its test suite calls this function (both only exercise the
-`Money` side).
+Outside this crate's own tests, it is called only at other scales: at
+scale 8 by `exact_arith`'s any-scale test and by the demo lane's step 7.
+`exact_arith`'s crate-doc example exercises only the `Money` side.
 
 ## Crate Usage
 
@@ -48,10 +48,13 @@ example nor its test suite calls this function (both only exercise the
 |-------|----------|---------|
 | `exact_dust` | `(defining crate)` | Exercised by 2 of this crate's own tests, including the crate's one negative-correction edge case |
 | `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 8 by the any-scale facade test |
+| `smoke_exact_market_split` | `src/lib.rs` | Demo lane: step 7's split at scale 8 |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:409`) — demo-lane code, not production
+
+No production caller.
 
 ## Callee Tree
 

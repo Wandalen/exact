@@ -31,7 +31,7 @@ pub type Price = PriceAt< MONEY_SCALE >;
 | `tests/price_test.rs` | throughout | `Price` as its own kind at the standard scale |
 | `tests/price_at_test.rs` | 4,11,37,47,49 | `Price` is `PriceAt< 6 >`; rescaling to and from it |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:49,157,195,196,198` | — | The demo lane's tick size and snapped prices, through `exact_arith` |
+| `smoke_exact_market_split/src/lib.rs:51,159,197,198,200` | — | The demo lane's tick size and snapped prices, through `exact_arith` |
 
 No `price_*` function names `Price` in its signature: since
 [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)

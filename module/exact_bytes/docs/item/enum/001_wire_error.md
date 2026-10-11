@@ -52,6 +52,8 @@ pub enum WireError
 | `src/lib.rs` | 111,115,190 | Constructed directly as the `Err` arm of `check_header`'s kind and scale guards (shared by every `*_from_wire`) and of `Wire::from_bytes`'s length guard |
 | `tests/wire_roundtrip_test.rs` | 45,48,59,68,89,97 | Asserting the exact variant returned by each failure mode |
 | `exact_arith/src/lib.rs:126` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:6,72` | — | `BadScale` when money at scale 2 is read at scale 6 |
+| `smoke_exact_market_split/src/lib.rs:51,406` | — | Step 7: `BadScale` when a satoshi quantity is read at scale 6 |
 
 No production call site anywhere renders a `WireError` through its `Display`
 impl — every real use is construction or `assert_eq!`/`matches!` pattern
@@ -62,4 +64,5 @@ matching. See [Display::fmt for WireError](../associated_function/001_fmt_displa
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_bytes` | `src/lib.rs` | The sole error type for every fallible function in the crate |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; `BadScale` asserted at scale 2 |
+| `smoke_exact_market_split` | `src/lib.rs` | Demo lane: `BadScale` asserted in step 7 |

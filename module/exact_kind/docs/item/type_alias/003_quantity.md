@@ -29,7 +29,7 @@ pub type Quantity = Qty< MONEY_SCALE >;
 | `src/lib.rs` | 615-644 | Named by the `compile_fail` doctests: money and a quantity do not mix |
 | `tests/non_negative_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs` | 49,159,199,200,202,297,298 | The demo lane's quantities and lot size, through `exact_arith` |
+| `smoke_exact_market_split/src/lib.rs` | 51,161,201,202,204,302,303 | The demo lane's quantities and lot size, through `exact_arith` |
 
 ## Crate Usage
 

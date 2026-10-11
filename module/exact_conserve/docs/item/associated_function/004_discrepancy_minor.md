@@ -35,7 +35,7 @@ where
 | `src/lib.rs` | 228 | `verify`'s own doc-test |
 | `tests/conservation_test.rs:34,56,59,72,93,128-129,156,181-182,202-203` | — | Asserts the exact signed leftover per asset — one cash leak and a cash-and-`BTC` pair that cancel only as a whole — `None` for an asset never moved or misspelt, and a log keyed by an enum |
 | `exchange_core/tests/submission_test.rs:259` | — | Integration test |
-| `smoke_exact_market_split/src/lib.rs:319`, `tests/lane_test.rs:68` | — | Demo-lane leak-magnitude assertion |
+| `smoke_exact_market_split/src/lib.rs:324`, `tests/lane_test.rs:68` | — | Demo-lane leak-magnitude assertion |
 
 Confirmed via grep across the full workspace (not only `exact_conserve`'s
 direct dependents): no production call site in `cluster_economy` or
@@ -55,7 +55,7 @@ methods, not an oversight in this catalog.
 ## Caller Tree
 
 - **External:** `exchange_core`'s own integration test (`tests/submission_test.rs:259`)
-- **External:** `smoke_exact_market_split`'s own demo-lane code and test (`src/lib.rs:319`, `tests/lane_test.rs:68`)
+- **External:** `smoke_exact_market_split`'s own demo-lane code and test (`smoke_exact_market_split/src/lib.rs:324`, `tests/lane_test.rs:68`)
 
 No intra-crate caller, and no confirmed production (non-test, non-demo-lane)
 caller — narrower reach than its sibling `is_balanced`, which `cluster_economy`

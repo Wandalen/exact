@@ -81,7 +81,7 @@ only the two trait impls on `DustError`.
 
 - **`money_dust_split` is the one function in this entire crate with a real
   production caller** — `smoke_exact_market_split::market_split`
-  (`smoke_exact_market_split/src/lib.rs:142`), reached through the
+  (`smoke_exact_market_split/src/lib.rs:144`), reached through the
   `exact_arith` facade re-export and confirmed via that crate's own
   `Cargo.toml` dependency, not assumed from the name match alone. It's also
   the one function `exact_arith`'s own crate-doc doctest and end-to-end test

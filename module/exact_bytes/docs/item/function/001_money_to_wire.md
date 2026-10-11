@@ -28,6 +28,7 @@ pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 | `exact_arith/src/lib.rs:128` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:69` | — | Encodes money at scale 2, writing scale byte `2` |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed in the facade's own end-to-end settlement test |
+| `smoke_exact_market_split/src/lib.rs:215` | — | Scene 009 encodes `10.00` at scale 2 |
 
 ## Crate Usage
 
@@ -35,11 +36,13 @@ pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 |-------|----------|---------|
 | `exact_bytes` | `(defining crate)` | Exercised by the majority of its own test suite |
 | `exact_arith` | `src/lib.rs`, `tests/facade_test.rs`, `tests/any_scale_test.rs` | Re-exported, and actually called in the facade's own tests — at the standard scale, and at scale 2 — unlike `qty_to_wire`/`price_to_wire`, which the facade only re-exports without exercising |
+| `smoke_exact_market_split` | `src/lib.rs` | Demo lane: scene 009 |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external, in **production** code — an
-honest empty tree. `exact_arith/tests/facade_test.rs:41` calls it, but that
+- **External:** `smoke_exact_market_split::golden` (`smoke_exact_market_split/src/lib.rs:215`) — demo-lane code, not production
+
+No caller in **production** code. `exact_arith/tests/facade_test.rs:41` calls it, but that
 is a test file in a different crate, out of scope for this tree per
 § Instance Documentation : Completeness Verification (test-only call sites
 are excluded from Caller/Callee Trees even when they are the only call site

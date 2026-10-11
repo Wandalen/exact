@@ -33,19 +33,22 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO
 |------|---------|---------|
 | `src/lib.rs` | 536 | Declaration |
 | `tests/rescale_test.rs` | 40,41 | A quantity in satoshis rescaled to six places, under `Down` and `Exact` |
+| `smoke_exact_market_split/src/lib.rs:397` | — | Step 7's one-scale arm rounds a satoshi quantity to six places |
 
-No file outside `exact_kind` calls `Qty::rescale` yet — an honest empty
-finding.
+Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_kind` | `(defining crate)` | Declared here; exercised by its own test |
+| `smoke_exact_market_split` | `src/lib.rs` | Demo lane: the one-scale arm of step 7 |
 
 ## Caller Tree
 
-No caller anywhere, intra-crate or external — an honest empty tree.
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:397`) — demo-lane code, not production
+
+No production caller.
 
 ## Callee Tree
 

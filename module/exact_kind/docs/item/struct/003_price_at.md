@@ -62,6 +62,7 @@ no `PriceAt` caller.
 | `exact_snap/src/lib.rs:24,76,89,96,105,150,165` | — | `TickAt`, `TickAt::new`'s stored magnitude, `price_snap_tick` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs` | throughout | Prices in cents through the facade: add, compare, render, parse, snap, `price_mul_qty` |
+| `smoke_exact_market_split/src/lib.rs:51,388` | — | Step 7's price in cents, `PriceAt< 2 >`, through `exact_arith` |
 
 ## Crate Usage
 
@@ -70,3 +71,4 @@ no `PriceAt` caller.
 | `exact_kind` | `(defining crate)` | Declared here; its own tests check the negative-price round trip, that money and price do not mix, and a price at scale 2 |
 | `exact_add`, `exact_bytes`, `exact_cmp`, `exact_fmt`, `exact_parse`, `exact_ratio`, `exact_snap` | `src/lib.rs` | The `price_*` member of the `money_*`/`qty_*`/`price_*` set each of these crates exposes, generic over the scale |
 | `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export, and the any-scale facade test |
+| `smoke_exact_market_split` | `src/lib.rs` | A price in cents in the demo lane's step 7 |
