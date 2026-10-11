@@ -36,7 +36,7 @@ use exact_minor::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 89,118,180,203,219,231,267,309,381,385,392,489,503,525,544,585,713,724 | `Backing`: every constructor/operation's raw-integer parameter and return, and the `KindError` fields |
+| `src/lib.rs` | 89,118,180,203,219,231,267,309,381,385,392,538,552,574,593,634,763,774 | `Backing`: every constructor/operation's raw-integer parameter and return, and the `KindError` fields |
 | `src/lib.rs` | 163 | `Minor`: the type of `Decimal`'s stored count |
 | `src/lib.rs` | 168,172 | `MinorError`: turned into `KindError::Overflow` by `kind_overflow` |
 | `src/lib.rs` | 281,295,329 | `minor_checked_add`/`_sub`/`_neg`: `Decimal`'s `checked_add`/`checked_sub`/`checked_neg` |

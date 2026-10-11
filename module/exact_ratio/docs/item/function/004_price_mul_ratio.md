@@ -10,7 +10,7 @@ is "as `money_mul_ratio`" — the body is the same as
 across the whole `module/` tree): outside this crate's own tests, the only
 matches are this declaration and the `exact_arith` facade re-export — no
 other crate calls it. This mirrors `exact_ratio`'s own module doc comment's disclosure
-(`exact_dust/src/lib.rs:25-26`) that the sibling crate `exact_dust`
+(`exact_dust/src/lib.rs:27-28`) that the sibling crate `exact_dust`
 deliberately ships no `price_dust_split` for the same reason: "splitting a
 *price* into equal shares has no natural reading and no consumer anywhere in
 this codebase."

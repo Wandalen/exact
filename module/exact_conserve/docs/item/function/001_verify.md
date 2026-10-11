@@ -52,7 +52,7 @@ one-unit leak.
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |
 | `exchange_core/tests/submission_test.rs:257` | — | Integration test |
 | `smoke_exchange_core/src/lib.rs:105` | — | Demo-lane settlement audit |
-| `smoke_exact_market_split/src/lib.rs:313,318,422`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test), and step 7's two-asset settlement — USD and BTC, each at its own scale |
+| `smoke_exact_market_split/src/lib.rs:313,318,426`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test), and step 7's two-asset settlement — USD and BTC, each at its own scale |
 
 Confirmed via a full-workspace grep (not limited to `exact_conserve`'s direct
 `Cargo.toml` dependents) — the same wider sweep that corrected this

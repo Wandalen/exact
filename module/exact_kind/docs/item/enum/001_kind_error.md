@@ -40,12 +40,12 @@ pub enum KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 72,122,128-133,137,203,207,216,219,224,246,251,257,258,274,276,279,284,288,291,293,298,302,306,309,314,319,321,323,327,332,334,342,344,345,347,357,364,368,372,378,383,393,400,402,471,473,478,481,486,488,489,494,500,502,503,509,514,515,518,536,552,554,556,561,563,567,569,570,575,577,581,583,585,590,592,596,598,599,602,772 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
+| `src/lib.rs` | 72,122,128-133,137,203,207,216,219,224,246,251,257,258,274,276,279,284,288,291,293,298,302,306,309,314,319,321,323,327,332,334,342,344,345,347,357,364,368,372,378,383,393,400,402,520,522,527,530,535,537,538,543,549,551,552,558,563,564,567,585,601,603,605,610,612,616,618,619,624,626,630,632,634,639,641,645,647,648,651,822 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
 | `tests/*.rs` (4 files) | throughout | Matched against specific variants |
 | `exact_parse/src/lib.rs:39,53-75` | — | `use` import; return type of all 3 `*_from_str` functions |
 | `exact_bytes/src/lib.rs:39,98-100` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
 | `exact_conserve/src/lib.rs:83` | — | `use` import |
-| `exact_dust/src/lib.rs:60,161,179` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
+| `exact_dust/src/lib.rs:62,164,182` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
 | `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
 | `exact_ratio/src/lib.rs:47,88-90` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |

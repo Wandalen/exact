@@ -14,7 +14,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:458`
+`module/exact_kind/src/lib.rs:507`
 
 ```rust
 impl< const SCALE : u32 > Qty< SCALE >
@@ -28,7 +28,7 @@ impl< const SCALE : u32 > Qty< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 458-603 | Declaration — the block spans every `Qty` member |
+| `src/lib.rs` | 507-652 | Declaration — the block spans every `Qty` member |
 
 ## Crate Usage
 

@@ -28,7 +28,7 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 293,572 | Declaration; `Qty::checked_sub`'s delegation |
+| `src/lib.rs` | 293,621 | Declaration; `Qty::checked_sub`'s delegation |
 | `tests/checked_arithmetic_test.rs` | throughout | Floor-breach and ordinary-difference checks |
 | `exact_add/src/lib.rs:65` | — | `money_sub` (`price_sub` reaches it through `Price::checked_sub`) |
 
@@ -41,8 +41,8 @@ pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:572`)
-- [PriceAt::checked_sub](../struct/003_price_at.md) (`src/lib.rs:750`), which `exact_add::price_sub` calls
+- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:621`)
+- [PriceAt::checked_sub](../struct/003_price_at.md) (`src/lib.rs:800`), which `exact_add::price_sub` calls
 - **External:** `exact_add::money_sub` (`exact_add/src/lib.rs:65`)
 
 ## Callee Tree

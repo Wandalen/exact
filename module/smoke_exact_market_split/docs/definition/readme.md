@@ -21,7 +21,7 @@
 | `checksum` | fn | `../../src/lib.rs:223` | [Checksum Equality Across Calls](../../../../docs/scene/010_checksum_equality_across_calls.md) |
 | `run` | fn | `../../src/lib.rs:248` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md), [Library Not Bare Main](../decisions/002_library_not_bare_main.md) |
 | `PerAsset` | struct | `../../src/lib.rs:365` | [Every Operation Is Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) |
-| `per_asset_trade` | fn | `../../src/lib.rs:386` | [Every Operation Is Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) |
+| `per_asset_trade` | fn | `../../src/lib.rs:390` | [Every Operation Is Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) |
 
 ### Regenerate
 

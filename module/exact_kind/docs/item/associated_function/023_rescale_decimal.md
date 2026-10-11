@@ -49,10 +49,10 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 246 | Declaration |
-| `src/lib.rs` | 538,774 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
+| `src/lib.rs` | 587,824 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
 | `tests/rescale_test.rs` | 12,20,21,23,31,32,48 | Finer is exact; coarser rounds per the mode at both signs; `Exact` refuses a dropped digit; past the ceiling is refused |
 | `tests/price_at_test.rs` | 47,50,51 | Through `PriceAt::rescale` |
-| `smoke_exact_market_split/src/lib.rs:400` | — | Step 7 narrows the one-scale arm's cost back to cents |
+| `smoke_exact_market_split/src/lib.rs:404` | — | Step 7 narrows the one-scale arm's cost back to cents |
 
 Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
@@ -65,8 +65,8 @@ Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 ## Caller Tree
 
-- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:538`), and `PriceAt::rescale` (`src/lib.rs:774`, a member listed on [PriceAt](../struct/003_price_at.md))
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:400`) — demo-lane code, not production
+- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:587`), and `PriceAt::rescale` (`src/lib.rs:824`, a member listed on [PriceAt](../struct/003_price_at.md))
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:404`) — demo-lane code, not production
 
 ## Callee Tree
 

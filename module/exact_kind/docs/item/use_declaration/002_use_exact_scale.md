@@ -23,7 +23,7 @@ use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 55,58,695,61,129,180,193,196,205 | `MONEY_SCALE` fixes the three type aliases (56,62,65); `CEILING_MINOR_UNITS` bounds `from_minor`'s range check (186), renders in `KindError::Display` (130), and defines `Decimal::MAX`/`MIN` (174,177); `pow10` computes `ONE_MINOR` (161) |
+| `src/lib.rs` | 55,58,745,61,129,180,193,196,205 | `MONEY_SCALE` fixes the three type aliases (56,62,65); `CEILING_MINOR_UNITS` bounds `from_minor`'s range check (186), renders in `KindError::Display` (130), and defines `Decimal::MAX`/`MIN` (174,177); `pow10` computes `ONE_MINOR` (161) |
 
 No external file references this `use` declaration directly — other crates
 depending on `exact_scale` import it independently.

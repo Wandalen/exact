@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:503`
+`module/exact_kind/src/lib.rs:552`
 
 ```rust
 pub const fn from_int( whole : Backing ) -> Result< Self, KindError >
@@ -27,7 +27,7 @@ pub const fn from_int( whole : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 503,448 | Declaration; struct-doc-comment doctest |
+| `src/lib.rs` | 552,497 | Declaration; struct-doc-comment doctest |
 | `tests/non_negative_test.rs` | throughout | The primary constructor this test file uses |
 
 No file outside `exact_kind` calls `Qty::from_int` directly — an honest gap.
@@ -47,5 +47,5 @@ constructor is exercised only by `exact_kind`'s own tests and doctest.
 
 ## Callee Tree
 
-- [Decimal::from_int](002_from_int_decimal.md) (`src/lib.rs:505`)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:507`)
+- [Decimal::from_int](002_from_int_decimal.md) (`src/lib.rs:554`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:556`)

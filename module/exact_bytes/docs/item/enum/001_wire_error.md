@@ -53,7 +53,7 @@ pub enum WireError
 | `tests/wire_roundtrip_test.rs` | 45,48,59,68,89,97 | Asserting the exact variant returned by each failure mode |
 | `exact_arith/src/lib.rs:126` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:6,72` | — | `BadScale` when money at scale 2 is read at scale 6 |
-| `smoke_exact_market_split/src/lib.rs:51,406` | — | Step 7: `BadScale` when a satoshi quantity is read at scale 6 |
+| `smoke_exact_market_split/src/lib.rs:51,410` | — | Step 7: `BadScale` when a satoshi quantity is read at scale 6 |
 
 No production call site anywhere renders a `WireError` through its `Display`
 impl — every real use is construction or `assert_eq!`/`matches!` pattern

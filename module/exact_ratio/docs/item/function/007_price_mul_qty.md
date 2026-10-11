@@ -42,7 +42,7 @@ pub fn price_mul_qty< const P : u32, const Q : u32 >( price : PriceAt< P >, qty 
 | `exact_arith/src/lib.rs:109` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:25` | — | The settlement test's notional, through the facade |
 | `exact_arith/tests/any_scale_test.rs:31,33` | — | A price in cents times a quantity in satoshis, under `HalfEven` and `Exact` |
-| `smoke_exact_market_split/src/lib.rs:392,398` | — | Step 7: cents × satoshis, and the same trade at one shared scale |
+| `smoke_exact_market_split/src/lib.rs:396,402` | — | Step 7: cents × satoshis, and the same trade at one shared scale |
 
 ## Crate Usage
 
@@ -55,7 +55,7 @@ pub fn price_mul_qty< const P : u32, const Q : u32 >( price : PriceAt< P >, qty 
 ## Caller Tree
 
 - **External:** `exact_arith`'s own test, `facade_test.rs:25` (test-context, via the re-exported name)
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:392,398`) — demo-lane code
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:396,402`) — demo-lane code
 
 No production caller inside this repository yet.
 
