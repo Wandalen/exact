@@ -7,7 +7,7 @@
 - **In Scope**: The struct, functions, and error enum this crate would define.
 - **Out of Scope**: Its dependency edges (→ `../crate/011_exact_bytes.md`).
 
-**Design status**: implemented in [`exact_bytes`](../../module/exact_bytes/readme.md). `Wire`'s struct fields and all six to/from functions match as specified; `WireError` diverges — it adds `Overflow` and `Negative { minor }` beyond this proposal's three variants (`BadKind`, `BadScale`, `Truncated`) — see [`exact_bytes`'s own decision](../../module/exact_bytes/docs/decisions/001_wire_error_overflow_and_negative_variants.md) for the full account.
+**Design status**: implemented in [`exact_bytes`](../../module/exact_bytes/readme.md). `Wire`'s struct fields and all six to/from functions match as specified; `WireError` diverges — it adds `Overflow` and `Negative { minor }` beyond this proposal's three variants (`BadKind`, `BadScale`, `Truncated`) — see [`exact_bytes`'s own decision](../../module/exact_bytes/docs/decisions/001_wire_error_overflow_and_negative_variants.md) for the full account. The six functions are generic over the scale, and a record's scale byte is the encoded type's own scale, checked on decode ([`exact_bytes`'s ADR-002](../../module/exact_bytes/docs/decisions/002_scale_byte_from_the_type.md)).
 
 ### Structs
 

@@ -26,9 +26,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_dust/src/lib.rs:207-210`
 
 ```rust
-pub fn money_dust_split( total : Money, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Money >, DustError >
+pub fn money_dust_split< const S : u32 >( total : Decimal< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
 {
-  split_with( total.minor(), parts, mode, to, Money::from_minor )
+  split_with( total.minor(), parts, mode, to, Decimal::< S >::from_minor )
 }
 ```
 

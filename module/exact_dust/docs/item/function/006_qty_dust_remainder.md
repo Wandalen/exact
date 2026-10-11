@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_dust/src/lib.rs:263-267`
 
 ```rust
-pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) -> Result< i64, DustError >
+pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding ) -> Result< i64, DustError >
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
   Ok( leftover )

@@ -21,10 +21,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:235`
 
 ```rust
-pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
+pub fn qty_div_round< const S : u32 >( v : Qty< S >, d : i64, rounding : Rounding ) -> Result< Qty< S >, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
-  Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 

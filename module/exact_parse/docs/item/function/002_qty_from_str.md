@@ -11,12 +11,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_parse/src/lib.rs:62`
+`module/exact_parse/src/lib.rs:63`
 
 ```rust
-pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
+pub fn qty_from_str< const S : u32 >( text : &str ) -> Result< Qty< S >, KindError >
 {
-  Quantity::parse( text )
+  Qty::< S >::parse( text )
 }
 ```
 
@@ -24,8 +24,8 @@ pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 62 | Declaration |
-| `tests/from_str_test.rs:13,21,32` | — | Exact round-trip through `"1.23"`; negative-value refusal (`KindError::Negative`); `"NaN"` rejection |
+| `src/lib.rs` | 63 | Declaration |
+| `tests/from_str_test.rs:14,22,33` | — | Exact round-trip through `"1.23"`; negative-value refusal (`KindError::Negative`); `"NaN"` rejection |
 | `exact_arith/src/lib.rs:116` | — | Facade re-export |
 
 ## Crate Usage

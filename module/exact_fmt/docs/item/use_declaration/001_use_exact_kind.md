@@ -15,7 +15,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_fmt/src/lib.rs:41`
 
 ```rust
-use exact_kind::{ Money, Price, Quantity };
+use exact_kind::{ Decimal, PriceAt, Qty };
 ```
 
 ## File Usage

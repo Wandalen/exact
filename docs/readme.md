@@ -96,7 +96,7 @@ Design status for the full account. The proposed consumer-narrowing edge
 ("002... directly on `exact_kind`, `exact_cmp`, `exact_snap`,
 `exact_conserve`") was not taken — `exchange_core` depends on `exact_arith`
 alone (confirmed via its `Cargo.toml`), matching the simpler option the
-proposal itself offered as an alternative. The MVP build-order subset was
+proposal itself offered as an alternative. Three leaf edges differ too: `exact_kind → exact_round` and `exact_snap → exact_scale` are added, and `exact_bytes → exact_scale` is gone — see [the crate family overview](guide/001_crate_family_overview.md)'s Dependency Tree. The MVP build-order subset was
 not followed as a staged rollout — all 15 crates (16 with the demo lane)
 were built together in one migration rather than parse/fmt/bytes/snap
 trailing behind the rest.

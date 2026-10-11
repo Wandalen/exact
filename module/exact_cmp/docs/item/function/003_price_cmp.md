@@ -16,7 +16,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
+pub fn price_cmp< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }
@@ -29,13 +29,14 @@ pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
 | `src/lib.rs` | 50 | Declaration |
 | `tests/cmp_test.rs` | 29 | Less ordering, alongside the sibling `qty_cmp` check in the same test |
 | `exact_arith/src/lib.rs:137` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:22` | — | Compares two prices in cents |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_cmp` | `(defining crate)` | Exercised by its own ordering test |
-| `exact_arith` | `src/lib.rs` | Re-export only — not called by the facade's own test |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 2 by the any-scale facade test |
 
 ## Caller Tree
 

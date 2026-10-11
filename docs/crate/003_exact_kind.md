@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its struct/function/error surface (→ `../type/003_exact_kind_types.md`).
 
-**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md). Dependencies match this proposal exactly (`exact_minor`, `exact_scale`). The boundary deviates: checked arithmetic (`checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`) is implemented as inherent methods on `Decimal`/`Qty` here, not deferred entirely to `exact_add` — see [`exact_kind`'s own readme](../../module/exact_kind/readme.md)'s "What it does not do" section. The struct/function/error surface deviates further — see `../type/003_exact_kind_types.md` for the account.
+**Design status**: implemented in [`exact_kind`](../../module/exact_kind/readme.md). Dependencies deviate by one: beside `exact_minor` and `exact_scale`, it depends on `exact_round`, for the rounded division `rescale` drives ([ADR-002](../../module/exact_kind/docs/decisions/002_explicit_rescale_between_scales.md)). The boundary deviates: checked arithmetic (`checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`) is implemented as inherent methods on `Decimal`/`Qty` here, not deferred entirely to `exact_add` — see [`exact_kind`'s own readme](../../module/exact_kind/readme.md)'s "What it does not do" section. The struct/function/error surface deviates further — see `../type/003_exact_kind_types.md` for the account.
 
 ### Why It Exists
 

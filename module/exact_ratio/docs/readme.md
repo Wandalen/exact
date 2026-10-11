@@ -7,7 +7,7 @@ Design documentation for `exact_ratio`, as typed doc definitions.
 | `type/` | `Ratio`'s shape, normalization, and construction |
 | `algorithm/` | The widened multiply every `*_mul_ratio` function shares |
 | `invariant/` | Why the widened intermediate product can never silently overflow |
-| `decisions/` | Why `RatioError` departs from the preferred design's own listing |
+| `decisions/` | Why `RatioError` departs from the preferred design's own listing, and why `price_mul_qty` takes two scales |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 | `item/` | One page per declaration, with every file and crate that uses it |

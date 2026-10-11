@@ -3,7 +3,7 @@
 ## Representation
 
 A cross-crate compile-time guard: `Wire` stores `scale` as a single `u8`
-(`src/lib.rs:124`), so this assertion fails the build the moment
+(`src/lib.rs:126`), so this assertion fails the build the moment
 `exact_scale::MONEY_SCALE` would no longer fit in that byte, rather than
 letting the one cast that fills it, `SCALE_BYTE` (`src/lib.rs:52`), silently
 truncate it. An
@@ -17,17 +17,17 @@ Constant (§ Item Kind Taxonomy : Stable Item Kinds #9)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:48`
+`module/exact_bytes/src/lib.rs:52`
 
 ```rust
-const _ : () = assert!( exact_scale::MONEY_SCALE <= u8::MAX as u32 );
+const { assert!( S <= u8::MAX as u32 ) };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 48 | Declaration — evaluated once, at compile time; has no runtime call sites by construction |
+| `src/lib.rs` | 52 | Declaration — evaluated once, at compile time; has no runtime call sites by construction |
 
 Not referenceable from any other file — anonymous (`_`) and private, existing
 solely for its compile-time side effect.

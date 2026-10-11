@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:93`
 
 ```rust
-pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
+pub const fn price_add< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> Result< PriceAt< S >, KindError >
 {
   a.checked_add( b )
 }
@@ -28,6 +28,7 @@ pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
 | `src/lib.rs` | 93 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:42` | — | Dispatch parity with `price_sub`, confirming a price adds exactly as money does |
 | `exact_arith/src/lib.rs:96` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:20` | — | Adds two prices in cents |
 
 No production (non-test) file outside `exact_add` calls `price_add` — an
 honest empty finding.
@@ -37,7 +38,7 @@ honest empty finding.
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_add` | `(defining crate)` | Exercised by its own dispatch-parity test |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 2 by the any-scale facade test |
 
 ## Caller Tree
 

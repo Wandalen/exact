@@ -18,9 +18,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_dust/src/lib.rs:243-246`
 
 ```rust
-pub fn qty_dust_split( total : Quantity, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Quantity >, DustError >
+pub fn qty_dust_split< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Qty< S > >, DustError >
 {
-  split_with( total.minor(), parts, mode, to, Quantity::from_minor )
+  split_with( total.minor(), parts, mode, to, Qty::< S >::from_minor )
 }
 ```
 
@@ -35,6 +35,7 @@ total's minor count and `Quantity::from_minor` to build each slot.
 | `src/lib.rs` | 243-246 | Declaration |
 | `tests/dust_split_test.rs:97,136,152,230` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, the `Up`-rounded case that refuses a first slot that would go negative, and `Exact` refusing an uneven split |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:50` | — | Splits a quantity in satoshis |
 
 No call site anywhere outside this crate's own 3 tests — an honest empty
 finding. `exact_arith` only re-exports the name; neither its crate-doc
@@ -46,7 +47,7 @@ example nor its test suite calls this function (both only exercise the
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_dust` | `(defining crate)` | Exercised by 2 of this crate's own tests, including the crate's one negative-correction edge case |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 8 by the any-scale facade test |
 
 ## Caller Tree
 

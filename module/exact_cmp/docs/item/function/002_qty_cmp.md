@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn qty_cmp( a : Quantity, b : Quantity ) -> core::cmp::Ordering
+pub fn qty_cmp< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }

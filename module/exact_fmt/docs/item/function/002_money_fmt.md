@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_fmt/src/lib.rs:105-108`
 
 ```rust
-pub fn money_fmt( v : Money ) -> String
+pub fn money_fmt< const S : u32 >( v : Decimal< S > ) -> String
 {
   v.to_string()
 }

@@ -1,4 +1,4 @@
-# 004: Lot::new
+# 004: LotAt::new
 
 ## Representation
 
@@ -12,10 +12,10 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:117-124`
+`module/exact_snap/src/lib.rs:126-133`
 
 ```rust
-pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
+pub const fn new( qty : Qty< S > ) -> Result< Self, SnapError >
 {
   if qty.minor() == 0
   {
@@ -29,7 +29,7 @@ pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 117-124 | Declaration |
+| `src/lib.rs` | 126-133 | Declaration |
 | `tests/snap_test.rs` | 14,118,129 | Zero-rejection check, and as the fixture every `qty_snap_lot` test builds |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 

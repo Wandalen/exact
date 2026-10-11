@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn money_cmp( a : Money, b : Money ) -> core::cmp::Ordering
+pub fn money_cmp< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }

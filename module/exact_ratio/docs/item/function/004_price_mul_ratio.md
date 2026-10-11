@@ -24,10 +24,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:203`
 
 ```rust
-pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
+pub fn price_mul_ratio< const S : u32 >( v : PriceAt< S >, r : Ratio, rounding : Rounding ) -> Result< PriceAt< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  PriceAt::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 

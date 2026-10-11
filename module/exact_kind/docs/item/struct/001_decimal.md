@@ -17,7 +17,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #6)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:157`
+`module/exact_kind/src/lib.rs:161`
 
 ```rust
 pub struct Decimal< const SCALE : u32 >
@@ -30,13 +30,24 @@ pub struct Decimal< const SCALE : u32 >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 57,642,139-146,157,173,189,192,199,215,227,234,246,250,260,264,276,283,294,298,314,369,373,420,422,441,443,445,458,472,485,487 | Backs the `Money` alias and `Price`'s `value` field; receiver/return type of every `Decimal` method; backs `Qty`'s `value` field |
-| `tests/*.rs` (3 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money` |
-| 9 downstream crates (`exact_parse` … `exact_arith`) | `src/lib.rs` | Named only through the `Money` alias and `Price` — see [Money](../type_alias/001_money.md), [Price](003_price.md) for the full per-crate breakdown; no downstream file names bare `Decimal` |
+| `src/lib.rs` | 58,143-150,161,177,193,196,203,219,231,246,261,267,279,283,293,297,309,316,327,331,347,402,406,453,455,474,476,478,491,505,518,520,697,703,706,715,764 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
+| `tests/*.rs` (5 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money`, including `rescale_test.rs` and `price_at_test.rs` |
+| `exact_add/src/lib.rs:46,53,63,113,128,133` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add`, generic over the scale |
+| `exact_bytes/src/lib.rs:39,199,211,214` | — | `money_to_wire`/`money_from_wire` |
+| `exact_cmp/src/lib.rs:32,36,57` | — | `money_cmp`/`money_eq` |
+| `exact_conserve/src/lib.rs:83,251,273` | — | `money_conserve_into`/`money_sum_assert_zero` |
+| `exact_dust/src/lib.rs:60,207,209,218,220,231` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
+| `exact_fmt/src/lib.rs:41,105` | — | `money_fmt` |
+| `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
+| `exact_ratio/src/lib.rs:47,177,180,221,224,256,259,261` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost and its quantity's `ONE_MINOR` |
+| `exact_arith/src/lib.rs:88` | — | Facade re-export |
+| `smoke_exact_market_split/src/lib.rs:49,151,181,182,183,185,205` | — | The demo lane's scale-2 values, through `exact_arith` |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_kind` | `(defining crate)` | The signed fixed-point representation `Money` aliases and `Qty` and `Price` wrap |
-| 9 downstream crates | — | Indirectly, exclusively through `Money` and `Price` (§ File Usage) |
+| `exact_kind` | `(defining crate)` | The signed fixed-point representation `Money` aliases and `Qty` and `PriceAt` wrap |
+| `exact_add`, `exact_bytes`, `exact_cmp`, `exact_conserve`, `exact_dust`, `exact_fmt`, `exact_parse`, `exact_ratio` | `src/lib.rs` | The money type every `money_*` function takes, as `Decimal< S >` (→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)) |
+| `exact_arith` | `src/lib.rs` | Re-export |
+| `smoke_exact_market_split` | `src/lib.rs` | Values at scale 2, through `exact_arith` |

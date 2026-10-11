@@ -16,7 +16,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn price_max( a : Price, b : Price ) -> Price
+pub fn price_max< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> PriceAt< S >
 {
   a.max( b )
 }

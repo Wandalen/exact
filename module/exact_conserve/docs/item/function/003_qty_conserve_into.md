@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_conserve/src/lib.rs:262-265`
 
 ```rust
-pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, ConservationError >
+pub fn qty_conserve_into< const S : u32 >( acc : Qty< S >, leg : Qty< S > ) -> Result< Qty< S >, ConservationError >
 {
   exact_add::qty_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }

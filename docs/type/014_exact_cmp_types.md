@@ -7,7 +7,7 @@
 - **In Scope**: The functions and error enum this crate would define, and the conditional-`Ord` rule.
 - **Out of Scope**: Its dependency edges (→ `../crate/014_exact_cmp.md`).
 
-**Design status**: implemented in [`exact_cmp`](../../module/exact_cmp/readme.md). The six comparison/equality/extrema functions match as specified; it defines no `CmpError` and implements `Ord` unconditionally rather than after a scale check — a scale mismatch is a compile error under this family's const-generic `Decimal<SCALE>`, never a runtime value these functions could receive — see [`exact_cmp`'s own decision](../../module/exact_cmp/docs/decisions/001_no_cmp_error_unconditional_ord.md) for the full account.
+**Design status**: implemented in [`exact_cmp`](../../module/exact_cmp/readme.md). The six comparison/equality/extrema functions match as specified; it defines no `CmpError` and implements `Ord` unconditionally rather than after a scale check — a scale mismatch is a compile error under this family's const-generic `Decimal<SCALE>`, never a runtime value these functions could receive — see [`exact_cmp`'s own decision](../../module/exact_cmp/docs/decisions/001_no_cmp_error_unconditional_ord.md) for the full account. Every function is generic over the scale, so it takes a value at any scale (→ [`exact_arith`'s ADR-001](../../module/exact_arith/docs/decisions/001_operations_generic_over_scale.md)).
 
 ### Functions
 

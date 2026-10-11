@@ -14,7 +14,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_arith/src/lib.rs:135`
 
 ```rust
-pub use exact_snap::{ Lot, SnapError, Tick, price_snap_tick, qty_snap_lot };
+pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_snap_lot };
 ```
 
 ## File Usage

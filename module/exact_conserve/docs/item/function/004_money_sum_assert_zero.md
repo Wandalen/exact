@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_conserve/src/lib.rs:273-288`
 
 ```rust
-pub fn money_sum_assert_zero( legs : &[ Money ] ) -> Result< (), ConservationError >
+pub fn money_sum_assert_zero< const S : u32 >( legs : &[ Decimal< S > ] ) -> Result< (), ConservationError >
 {
   let mut net : i128 = 0;
   for leg in legs
@@ -38,8 +38,9 @@ pub fn money_sum_assert_zero( legs : &[ Money ] ) -> Result< (), ConservationErr
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 273-288 | Declaration |
-| `tests/conservation_test.rs:244-259` | — | A cancelling slice, a one-unit leak, and an empty slice |
+| `tests/conservation_test.rs:244-260` | — | A cancelling slice, a one-unit leak, and an empty slice |
 | `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:60` | — | Money in cents sums to zero |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.
@@ -49,7 +50,7 @@ crate's own tests.
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_conserve` | `(defining crate)` | Exercised by 3 of its own tests |
-| `exact_arith` | `src/lib.rs` | Re-export only — not called by the facade's own test suite |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 2 by the any-scale facade test |
 
 ## Caller Tree
 

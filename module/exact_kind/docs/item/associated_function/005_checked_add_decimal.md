@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:246`
+`module/exact_kind/src/lib.rs:279`
 
 ```rust
 pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
@@ -28,7 +28,7 @@ pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 246,513 | Declaration; `Qty::checked_add`'s delegation |
+| `src/lib.rs` | 279,558 | Declaration; `Qty::checked_add`'s delegation |
 | `tests/checked_arithmetic_test.rs` | throughout | Ceiling-breach and ordinary-sum checks |
 | `exact_add/src/lib.rs:55,130` | — | `money_add`, `money_saturating_add` (`price_add` reaches it through `Price::checked_add`) |
 
@@ -41,11 +41,11 @@ pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:513`)
-- [Price::checked_add](../struct/003_price.md) (`src/lib.rs:681`), which `exact_add::price_add` calls
+- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:558`)
+- [PriceAt::checked_add](../struct/003_price_at.md) (`src/lib.rs:736`), which `exact_add::price_add` calls
 - **External:** `exact_add::money_add` (`exact_add/src/lib.rs:55`), `money_saturating_add` (`:130`)
 
 ## Callee Tree
 
 - **External:** `exact_minor::minor_checked_add` — `minor_checked_add( self.minor, rhs.minor )`, then `minor_to_i64`; a failure goes through the private `kind_overflow`
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:250`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:283`)

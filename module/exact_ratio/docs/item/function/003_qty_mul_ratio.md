@@ -15,10 +15,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:192`
 
 ```rust
-pub fn qty_mul_ratio( v : Quantity, r : Ratio, rounding : Rounding ) -> Result< Quantity, RatioError >
+pub fn qty_mul_ratio< const S : u32 >( v : Qty< S >, r : Ratio, rounding : Rounding ) -> Result< Qty< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 

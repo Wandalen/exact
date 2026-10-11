@@ -11,7 +11,7 @@
 
 No float appears in an input or an output position anywhere in this crate's
 public surface. `Decimal<SCALE>` stores exactly one `exact_minor::Minor` (an
-`i64`), and `Qty<SCALE>` and `Price` each store one wrapped value of it; every constructor takes
+`i64`), and `Qty<SCALE>` and `PriceAt<SCALE>` each store one wrapped value of it; every constructor takes
 an integer (`from_minor`, `from_int`), a string (`parse`), or another value of
 the family's own types (`from_decimal`); every accessor returns `Backing` or
 `Self`; and `Display` renders by integer division and modulo against
@@ -34,11 +34,11 @@ exactly how a float re-enters a system built to keep it out.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:42-53` | `use exact_minor::{ Backing, Minor, … }` — `Minor`, an `i64`, is the one count ever stored |
-| `src/lib.rs:199-223` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
-| `src/lib.rs:314-370` | `Decimal::parse` — the grammar, with no float spelling accepted |
-| `src/lib.rs:373-408` | `Decimal`'s `Display` impl — integer division and modulo, no float intermediate |
-| `src/lib.rs:441-477` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
-| `src/lib.rs:554-557` | `Qty::parse` |
+| `src/lib.rs:203-227` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
+| `src/lib.rs:347-403` | `Decimal::parse` — the grammar, with no float spelling accepted |
+| `src/lib.rs:406-441` | `Decimal`'s `Display` impl — integer division and modulo, no float intermediate |
+| `src/lib.rs:474-510` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
+| `src/lib.rs:599-602` | `Qty::parse` |
 
 ### Tests
 

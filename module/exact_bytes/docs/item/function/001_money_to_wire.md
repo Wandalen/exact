@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:197-200`
+`module/exact_bytes/src/lib.rs:199-202`
 
 ```rust
-pub fn money_to_wire( v : Money ) -> Wire
+pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_MONEY }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_MONEY }
 }
 ```
 
@@ -23,9 +23,10 @@ pub fn money_to_wire( v : Money ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 197-200 | Declaration |
-| `tests/wire_roundtrip_test.rs` | 14,43,54,65,76,109,128,146 | Encoding across 8 of the crate's 14 tests |
+| `src/lib.rs` | 199-202 | Declaration |
+| `tests/wire_roundtrip_test.rs` | 15,44,55,66,77,110,129,147 | Encoding across 8 of the crate's 14 tests |
 | `exact_arith/src/lib.rs:128` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:69` | — | Encodes money at scale 2, writing scale byte `2` |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed in the facade's own end-to-end settlement test |
 
 ## Crate Usage
@@ -46,4 +47,4 @@ found).
 
 ## Callee Tree
 
-- **External:** `exact_kind::Money::minor` (`v.minor()`, `src/lib.rs:199`)
+- **External:** `exact_kind::Money::minor` (`v.minor()`, `src/lib.rs:201`)

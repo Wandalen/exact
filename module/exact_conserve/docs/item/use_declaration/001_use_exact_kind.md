@@ -18,7 +18,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_conserve/src/lib.rs:83`
 
 ```rust
-use exact_kind::{ KindError, Money, Quantity };
+use exact_kind::{ Decimal, KindError, Qty };
 ```
 
 ## File Usage

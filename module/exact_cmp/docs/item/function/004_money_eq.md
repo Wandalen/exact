@@ -17,7 +17,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn money_eq( a : Money, b : Money ) -> bool
+pub fn money_eq< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> bool
 {
   a == b
 }

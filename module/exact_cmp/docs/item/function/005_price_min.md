@@ -17,7 +17,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn price_min( a : Price, b : Price ) -> Price
+pub fn price_min< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> PriceAt< S >
 {
   a.min( b )
 }

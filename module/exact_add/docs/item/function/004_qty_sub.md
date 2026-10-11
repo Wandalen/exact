@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:83`
 
 ```rust
-pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
+pub const fn qty_sub< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Result< Qty< S >, KindError >
 {
   a.checked_sub( b )
 }

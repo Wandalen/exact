@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:217-220`
+`module/exact_bytes/src/lib.rs:219-222`
 
 ```rust
-pub fn qty_to_wire( v : Quantity ) -> Wire
+pub fn qty_to_wire< const S : u32 >( v : Qty< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_QTY }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_QTY }
 }
 ```
 
@@ -23,8 +23,8 @@ pub fn qty_to_wire( v : Quantity ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 217-220 | Declaration |
-| `tests/wire_roundtrip_test.rs:24,46` | — | Encoding in the quantity round-trip test and the cross-kind-rejection test |
+| `src/lib.rs` | 219-222 | Declaration |
+| `tests/wire_roundtrip_test.rs:25,47` | — | Encoding in the quantity round-trip test and the cross-kind-rejection test |
 | `exact_arith/src/lib.rs:132` | — | Facade re-export |
 
 Unlike [`money_to_wire`](001_money_to_wire.md), `exact_arith`'s own facade
@@ -46,4 +46,4 @@ test-only exception even in the facade's own test suite (contrast
 
 ## Callee Tree
 
-- **External:** `exact_kind::Quantity::minor` (`v.minor()`, `src/lib.rs:219`)
+- **External:** `exact_kind::Quantity::minor` (`v.minor()`, `src/lib.rs:221`)

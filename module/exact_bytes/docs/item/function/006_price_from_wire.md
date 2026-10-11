@@ -10,13 +10,13 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:248-252`
+`module/exact_bytes/src/lib.rs:250-254`
 
 ```rust
-pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
+pub fn price_from_wire< const S : u32 >( w : Wire ) -> Result< PriceAt< S >, WireError >
 {
-  check_header( w, KIND_PRICE )?;
-  Price::from_minor( w.minor ).map_err( kind_error_to_wire_error )
+  check_header( w, KIND_PRICE, scale_byte::< S >() )?;
+  PriceAt::< S >::from_minor( w.minor ).map_err( kind_error_to_wire_error )
 }
 ```
 
@@ -24,8 +24,8 @@ pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 248-252 | Declaration |
-| `tests/wire_roundtrip_test.rs:36` | — | Decoding in the price round-trip test |
+| `src/lib.rs` | 250-254 | Declaration |
+| `tests/wire_roundtrip_test.rs:37` | — | Decoding in the price round-trip test |
 | `exact_arith/src/lib.rs:129` | — | Facade re-export |
 
 `exact_arith`'s own facade test does not call this function.
@@ -43,6 +43,6 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `check_header` (`src/lib.rs:105`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
-- `kind_error_to_wire_error` (`src/lib.rs:92`, private — no Item Instance of its own)
-- **External:** `exact_kind::Price::from_minor` (`src/lib.rs:251`)
+- `check_header` (`src/lib.rs:107`, private — no Item Instance of its own): the kind check (`BadKind`), then the scale check against `SCALE_BYTE` (`BadScale`)
+- `kind_error_to_wire_error` (`src/lib.rs:94`, private — no Item Instance of its own)
+- **External:** `exact_kind::Price::from_minor` (`src/lib.rs:253`)

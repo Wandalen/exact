@@ -14,15 +14,15 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:166-172`
+`module/exact_snap/src/lib.rs:175-181`
 
 ```rust
-pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
+pub fn qty_snap_lot< const S : u32 >( qty : Qty< S >, lot : LotAt< S >, rounding : Rounding ) -> Result< Qty< S >, SnapError >
 {
   let q = exact_round::round_div( qty.minor(), lot.0.minor(), rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroLot ) )?;
   let snapped = q.checked_mul( lot.0.minor() ).ok_or( SnapError::Overflow )?;
-  Quantity::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
+  Qty::< S >::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
 }
 ```
 
@@ -30,7 +30,7 @@ pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result<
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 166-172 | Declaration |
+| `src/lib.rs` | 175-181 | Declaration |
 | `tests/snap_test.rs` | 120,121,131,132,202-203 | Rounding-down/up parity with `price_snap_tick`, never producing a negative result, and `Exact` keeping an on-grid quantity and refusing an off-grid one |
 | `exact_arith/src/lib.rs:135` | — | Facade re-export |
 
@@ -52,7 +52,7 @@ OT012.
 
 ## Callee Tree
 
-- `round_error_to_snap_error` (`src/lib.rs:57`, private — no Item Instance of its own)
+- `round_error_to_snap_error` (`src/lib.rs:58`, private — no Item Instance of its own)
 - **External:** `exact_kind::Qty::minor` (via `qty.minor()` and `lot.0.minor()` ×2)
 - **External:** `exact_round::round_div`
 - **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)

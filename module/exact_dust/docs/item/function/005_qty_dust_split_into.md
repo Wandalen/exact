@@ -14,9 +14,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_dust/src/lib.rs:253-256`
 
 ```rust
-pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
+pub fn qty_dust_split_into< const S : u32 >( total : Qty< S >, mode : Rounding, to : DustTo, out : &mut [ Qty< S > ] ) -> Result< (), DustError >
 {
-  split_into_with( total.minor(), mode, to, out, Quantity::from_minor )
+  split_into_with( total.minor(), mode, to, out, Qty::< S >::from_minor )
 }
 ```
 

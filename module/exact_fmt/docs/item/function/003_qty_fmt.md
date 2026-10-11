@@ -13,7 +13,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_fmt/src/lib.rs:112-115`
 
 ```rust
-pub fn qty_fmt( v : Quantity ) -> String
+pub fn qty_fmt< const S : u32 >( v : Qty< S > ) -> String
 {
   v.to_string()
 }
