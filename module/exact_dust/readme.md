@@ -1,6 +1,6 @@
 # exact_dust
 
-Tier 3 — splitting a value into equal parts under a chosen rounding mode,
+Tier 3 — splitting a value into equal or weighted parts under a chosen rounding mode,
 giving the remainder ("dust") an explicit destination instead of letting it
 silently vanish into truncation.
 

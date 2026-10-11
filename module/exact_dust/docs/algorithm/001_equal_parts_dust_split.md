@@ -5,7 +5,7 @@
 - **Purpose**: Define how a conserved value is divided into equal integer shares without ever creating or destroying a unit, so a division is never a hole in the conservation argument a logged split later has to pass.
 - **Responsibility**: `split_minor`'s per-share quotient and leftover, and `slot_minor`'s distribution of that leftover across the output slots.
 - **In Scope**: Equal-count splitting (`parts: usize`) of `Money`/`Quantity`, the effect of the chosen `Rounding` mode on the per-share quotient, and the three `DustTo` destinations for whatever the chosen mode leaves over.
-- **Out of Scope**: `round_div`'s own sign-handling and tie-breaking rules — that is `exact_round`'s own responsibility (see `../../../exact_round/src/lib.rs`); detecting, after the fact, that a logged split failed to conserve (→ [Conservation Verification Fold](../../../exact_conserve/docs/algorithm/001_conservation_verification_fold.md)); weighted (non-equal-share) splitting, which this crate does not implement (→ [Equal-Count Split Surface](../decisions/002_equal_count_split_surface.md)).
+- **Out of Scope**: `round_div`'s own sign-handling and tie-breaking rules — that is `exact_round`'s own responsibility (see `../../../exact_round/src/lib.rs`); detecting, after the fact, that a logged split failed to conserve (→ [Conservation Verification Fold](../../../exact_conserve/docs/algorithm/001_conservation_verification_fold.md)); weighted (non-equal-share) splitting, a separate operation (→ [Weighted-Parts Dust Split](002_weighted_parts_dust_split.md)).
 
 ### Algorithm
 
@@ -29,7 +29,7 @@
 
 For `DustTo::Sink` and a successful `DustTo::Reject`, every output slot sums to `share * parts`, and `leftover` — zero for `Reject`, otherwise queryable via the `_remainder` functions — accounts for the rest; nothing is silently dropped. For `DustTo::First`, the output slots themselves sum to `share * parts + leftover == total_minor` exactly, by step 3's identity. Either way the total `total` represents is fully accounted for after the call, whether every unit of it landed in an output slot or part of it was deliberately held back for the caller to place.
 
-This is a narrower guarantee than a weighted, multi-share split would need: there is only ever one `share` value here — every slot before distribution is identical — so there is no selection step and nothing for an iteration order or a tie-break rule to make nondeterministic. The only slot that can ever receive the leftover is slot `0`, by construction of `DustTo::First`; `Sink` and `Reject` never place it at all.
+This is a narrower guarantee than the weighted split needs (→ [Weighted-Parts Dust Split](002_weighted_parts_dust_split.md)): there is only ever one `share` value here — every slot before distribution is identical — so there is no selection step and nothing for an iteration order or a tie-break rule to make nondeterministic. The only slot that can ever receive the leftover is slot `0`, by construction of `DustTo::First`; `Sink` and `Reject` never place it at all.
 
 ### Decisions
 
@@ -43,12 +43,12 @@ This is a narrower guarantee than a weighted, multi-share split would need: ther
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:122-133` | `split_minor` — the per-share quotient and the subtraction-derived leftover (steps 2-3) |
-| `src/lib.rs:135-150` | `slot_minor` — leftover distribution per `DustTo`, one slot at a time (step 4) |
-| `src/lib.rs:152-197` | `split_with`/`split_into_with` — every slot, built by the kind's `from_minor` (steps 4-5), into a `Vec` or into the caller's buffer |
-| `src/lib.rs:199-210` | `money_dust_split` — passes `Money::from_minor` to `split_with` (step 5) |
-| `src/lib.rs:237-246` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
-| `src/lib.rs:78-87` | `DustError` — the three failure modes steps 1, 3, and 4 return |
+| `src/lib.rs:125-136` | `split_minor` — the per-share quotient and the subtraction-derived leftover (steps 2-3) |
+| `src/lib.rs:138-153` | `slot_minor` — leftover distribution per `DustTo`, one slot at a time (step 4) |
+| `src/lib.rs:155-200` | `split_with`/`split_into_with` — every slot, built by the kind's `from_minor` (steps 4-5), into a `Vec` or into the caller's buffer |
+| `src/lib.rs:202-213` | `money_dust_split` — passes `Money::from_minor` to `split_with` (step 5) |
+| `src/lib.rs:240-249` | `qty_dust_split` — the `Quantity` counterpart, where step 5's refusal is actually reachable |
+| `src/lib.rs:81-90` | `DustError` — the three failure modes steps 1, 3, and 4 return |
 | `../../../exact_round/src/lib.rs:147-155` | `round_div` — the per-share division this procedure drives directly (step 2), rounding through `round_div_wide` |
 
 ### Tests

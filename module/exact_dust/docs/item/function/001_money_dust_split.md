@@ -7,7 +7,7 @@ sending the remainder to `to`. The allocating entry point — the crate's one
 function with a confirmed real caller outside its own tests.
 
 `DustError::Overflow` also covers a subtle case the module doc comment
-discloses (`src/lib.rs:36-45`): the leftover is folded in at the raw
+discloses (`src/lib.rs:38-47`): the leftover is folded in at the raw
 minor-unit level rather than through `Money`/`Quantity`'s own checked
 arithmetic, because an `Up`/`HalfEven` rounding mode can make the collective
 share allocation *exceed* the total — correcting slot 0 then means
@@ -23,7 +23,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:207-210`
+`module/exact_dust/src/lib.rs:210-213`
 
 ```rust
 pub fn money_dust_split< const S : u32 >( total : Decimal< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
@@ -32,7 +32,7 @@ pub fn money_dust_split< const S : u32 >( total : Decimal< S >, parts : usize, m
 }
 ```
 
-The body is the private `split_with` (`src/lib.rs:152-168`), shared with
+The body is the private `split_with` (`src/lib.rs:155-171`), shared with
 [qty_dust_split](004_qty_dust_split.md): this function only supplies the
 total's minor count and `Money::from_minor` to build each slot.
 
@@ -40,7 +40,7 @@ total's minor count and `Money::from_minor` to build each slot.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 207-210 | Declaration |
+| `src/lib.rs` | 210-213 | Declaration |
 | `tests/dust_split_test.rs` | 25-27,36,48,58,67,75,83,124,218,223 | Every split scenario this crate's own tests cover |
 | `exact_arith/src/lib.rs:33` | — | Doctest call (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`, not production) |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
@@ -68,13 +68,13 @@ production call from a different crate.
 Also reached, but out of scope for this tree per `item_des.rulebook.md` §
 Instance Documentation : Completeness Verification ("test-only call sites
 are out of scope for both trees"): `exact_arith`'s own crate-doc doctest
-(`src/lib.rs:29`) and its `tests/facade_test.rs:38`.
+(`src/lib.rs:31`) and its `tests/facade_test.rs:38`.
 
 ## Callee Tree
 
-- `split_with` (`src/lib.rs:209`, private — no Item Instance of its own)
-  - `split_minor` (`src/lib.rs:164`, private — no Item Instance of its own)
-    - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_with` (`src/lib.rs:212`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:167`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:132`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
     - **External:** `exact_round::round_div`
-  - `slot_minor` (`src/lib.rs:166`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Money::minor` (`src/lib.rs:209`), `exact_kind::Money::from_minor` (`src/lib.rs:209`, passed to `split_with` as `make`, called at `162`)
+  - `slot_minor` (`src/lib.rs:169`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Money::minor` (`src/lib.rs:212`), `exact_kind::Money::from_minor` (`src/lib.rs:212`, passed to `split_with` as `make`, called at `162`)

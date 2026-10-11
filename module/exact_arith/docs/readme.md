@@ -7,7 +7,7 @@ Design documentation for `exact_arith`, as typed doc definitions.
 | `feature/` | Version scope — what this facade's re-export surface commits to, and which of the family's original exit criteria now hold |
 | `invariant/` | The facade's own restraint: it declares nothing of its own |
 | `decisions/` | Decisions spanning every re-exported crate — every operation generic over the scale |
-| `definition/` | Module Index — every one of the 100 publicly re-exported items, in one place |
+| `definition/` | Module Index — every one of the 101 publicly re-exported items, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 | `item/` | One page per declaration, with every file and crate that uses it |
 

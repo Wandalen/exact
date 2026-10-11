@@ -12,7 +12,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:63-74`
+`module/exact_dust/src/lib.rs:65-77`
 
 ```rust
 /// Where the remainder of an equal split goes.
@@ -33,9 +33,9 @@ pub enum DustTo
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 64-74 | Declaration |
-| `src/lib.rs` | 139,141,145,160,177 | `slot_minor`'s, `split_with`'s and `split_into_with`'s parameter, and `slot_minor`'s match scrutinee (private — no Item Instance of its own) |
-| `src/lib.rs` | 207,218,243,253 | Parameter on the 4 `*_split`/`*_split_into` functions (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
+| `src/lib.rs` | 66-77 | Declaration |
+| `src/lib.rs` | 142,144,148,163,180 | `slot_minor`'s, `split_with`'s and `split_into_with`'s parameter, and `slot_minor`'s match scrutinee (private — no Item Instance of its own) |
+| `src/lib.rs` | 210,221,246,256,308 | Parameter on the 4 `*_split`/`*_split_into` functions and `money_dust_split_weighted` (absent from the 2 `*_remainder` functions, which have no `to` parameter — the remainder is reported, never redirected) |
 | `tests/dust_split_test.rs` | — | All 3 variants exercised across every split scenario |
 | `exact_arith/src/lib.rs:139` | — | Facade re-export |
 | `exact_arith/src/lib.rs:139` | — | Doctest import (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`) |

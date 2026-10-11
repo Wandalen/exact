@@ -4,9 +4,9 @@ Design documentation for `exact_dust`, as typed doc definitions.
 
 | Directory | Responsibility |
 |------|-----------------|
-| `algorithm/` | The equal-parts split procedure — per-share division, leftover computation, and its three destinations |
+| `algorithm/` | The equal-parts and weighted-parts split procedures — per-share division, leftover computation, and its three destinations |
 | `invariant/` | Why a split's total is always fully accounted for, whichever `DustTo` destination is chosen |
-| `decisions/` | Three deviations from the preferred design's own crate listing, and why each is correct for what this crate actually needs |
+| `decisions/` | Three deviations from the preferred design's own crate listing, and why each is correct for what this crate actually needs; and why a weighted split is its own named operation |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 | `item/` | One page per declaration, with every file and crate that uses it |

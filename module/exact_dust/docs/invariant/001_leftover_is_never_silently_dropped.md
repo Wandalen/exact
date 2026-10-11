@@ -3,14 +3,14 @@
 ### Scope
 
 - **Purpose**: State that a split's total is always fully accounted for — in its output shares, in an explicitly queryable remainder, or by outright refusal — so a caller never has to wonder whether a fraction of the original value quietly disappeared.
-- **Responsibility**: `split_minor`'s leftover computation and how each `DustTo` destination disposes of it.
+- **Responsibility**: `split_minor`'s and the weighted split's leftover computation, and how each `DustTo` destination disposes of it.
 - **In Scope**: The relationship between `total`, the output shares, and the leftover, under all three `DustTo` variants.
 - **Out of Scope**: Whether a set of split outputs actually sums to zero across a whole ledger — a different, aggregate-level check (→ [`exact_conserve`](../../../exact_conserve/docs/readme.md)); the per-share division and rounding procedure itself (→ `../algorithm/001_equal_parts_dust_split.md`).
 
 ### Statement
 
 For every split, `total_minor == share * parts + leftover` holds by
-construction (`split_minor`, `src/lib.rs:122-133`: `leftover` is computed as
+construction (`split_minor`, `src/lib.rs:125-136`: `leftover` is computed as
 `total_minor.checked_sub(allocated)`, never estimated). What differs per
 `DustTo` is only where `leftover` ends up, never whether it is preserved:
 
@@ -27,6 +27,13 @@ construction (`split_minor`, `src/lib.rs:122-133`: `leftover` is computed as
 - **`DustTo::Reject`**: a nonzero `leftover` fails the whole operation
   (`DustError::Remainder`) before any output is produced at all — there is no
   partial result to account for.
+
+The weighted split, `money_dust_split_weighted`, holds the same invariant
+with one share per slot: `total_minor == Σ shares + leftover`, the leftover
+computed by `checked_sub` against the summed shares (`src/lib.rs:318-323`),
+and distributed by the same `slot_minor`. With `Sink`, its held-back dust is
+`total` minus the sum of the returned parts — there is no separate
+`_remainder` function for it (→ [ADR-004](../decisions/004_weighted_split_as_a_named_operation.md)).
 
 In no case does a nonzero fraction of `total_minor` vanish without appearing
 in exactly one of: an output share, the queryable remainder, or a refused
@@ -51,9 +58,9 @@ not destroyed.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:122-133` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
-| `src/lib.rs:135-197` | `slot_minor`, used by `split_with`/`split_into_with` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
-| `src/lib.rs:223-235` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
+| `src/lib.rs:125-136` | `split_minor` — `leftover = total_minor - allocated`, computed via `checked_sub`, never estimated |
+| `src/lib.rs:138-200` | `slot_minor`, used by `split_with`/`split_into_with` — where `DustTo::First` folds `leftover` into slot 0, and `DustTo::Reject` refuses a nonzero one before producing any output |
+| `src/lib.rs:226-238` | `money_dust_remainder` — the same `split_minor` computation, exposed directly so `DustTo::Sink`'s leftover is always independently recoverable |
 
 ### Tests
 
