@@ -38,7 +38,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 | `tests/checked_arithmetic_test.rs` | throughout | Direct construction at and past boundaries |
 | `exact_bytes/src/lib.rs:214,253` | — | `money_from_wire`/`price_from_wire` |
 | `exact_dust/src/lib.rs:209,220` | — | `money_dust_split`/`money_dust_split_into`, passed as `make` to the private `split_with`/`split_into_with` |
-| `exact_ratio/src/lib.rs:180,206,224,261` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round`, `price_mul_qty` |
+| `exact_ratio/src/lib.rs:180,206,224,304` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round`, `price_mul_qty_to` |
 
 ## Crate Usage
 

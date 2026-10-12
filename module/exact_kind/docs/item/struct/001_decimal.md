@@ -39,7 +39,7 @@ pub struct Decimal< const SCALE : u32 >
 | `exact_dust/src/lib.rs:60,207,209,218,220,231` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_fmt/src/lib.rs:41,105` | — | `money_fmt` |
 | `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
-| `exact_ratio/src/lib.rs:47,177,180,221,224,256,259,261` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost and its quantity's `ONE_MINOR` |
+| `exact_ratio/src/lib.rs:47,177,180,221,224,258,289,304` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost, and `price_mul_qty_to`'s at the scale `M` the caller picks |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:51,153,155,183,184,185,187,190,207,351,368,371` | — | The demo lane's scale-2 scenes — the sum, the dust split, the wire round trip — and step 7's cost in cents, through `exact_arith` |
 

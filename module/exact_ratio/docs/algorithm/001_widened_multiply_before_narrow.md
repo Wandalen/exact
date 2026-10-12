@@ -49,7 +49,7 @@ multiply itself runs in `i128`.
 |------|--------------|
 | `src/lib.rs:155-168` | `mul_ratio_minor` — the widen, multiply, divide, narrow sequence |
 | `src/lib.rs:170-208` | `money_mul_ratio`, `qty_mul_ratio`, `price_mul_ratio` — one caller per kind |
-| `src/lib.rs:241-262` | `price_mul_qty` — the fourth caller, with the quantity as the ratio |
+| `src/lib.rs:263-305` | `price_mul_qty_to` — the same widen-then-divide-once shape on `price.minor × qty.minor`, which fits `i128` because both counts are within the ceiling; a finer target scale multiplies with a checked `i128` multiply (`price_mul_qty`, `241-261`, delegates to it — [ADR-003](../decisions/003_cost_rounded_once_at_a_chosen_scale.md)) |
 
 ### Tests
 

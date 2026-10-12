@@ -2,8 +2,8 @@
 
 ## Representation
 
-Re-exports `exact_ratio`'s `Ratio` type, its error enum, and all 7 of its
-multiply/divide functions, `price_mul_qty` included.
+Re-exports `exact_ratio`'s `Ratio` type, its error enum, and all 8 of its
+multiply/divide functions, `price_mul_qty` and `price_mul_qty_to` included.
 
 ## Kind
 
@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:103-114`
+`module/exact_arith/src/lib.rs:103-115`
 
 ```rust
 pub use exact_ratio::
@@ -21,6 +21,7 @@ pub use exact_ratio::
   money_div_round,
   money_mul_ratio,
   price_mul_qty,
+  price_mul_qty_to,
   price_mul_ratio,
   qty_div_round,
   qty_mul_ratio,
@@ -32,7 +33,7 @@ pub use exact_ratio::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 103-114 | Declaration |
+| `src/lib.rs` | 103-115 | Declaration |
 | `src/lib.rs` | 23,28-29 | Module doc example — `price_mul_qty` |
 | `tests/facade_test.rs` | 9,25 | `price_mul_qty`, through the facade |
 
