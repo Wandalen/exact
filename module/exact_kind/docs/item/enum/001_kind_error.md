@@ -40,7 +40,7 @@ pub enum KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 72,122,128-133,137,203,207,216,219,224,246,251,257,258,274,276,279,284,288,291,293,298,302,306,309,314,319,321,323,327,332,334,342,344,345,347,357,364,368,372,378,383,393,400,402,471,473,478,481,486,488,489,494,500,502,503,509,514,515,518,536,552,554,556,561,563,567,569,570,575,577,581,583,585,590,592,596,598,599,602,772 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
+| `src/lib.rs` | 72,122,128-133,137,208,213,222,225,230,261,266,272,273,289,291,294,299,303,306,308,313,317,321,324,329,334,336,338,342,347,349,357,359,360,362,372,379,383,387,393,398,408,415,417,486,488,493,496,501,503,504,509,515,517,518,524,529,530,533,551,567,569,571,576,578,582,584,585,590,592,596,598,600,605,607,611,613,614,617,787 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
 | `tests/*.rs` (4 files) | throughout | Matched against specific variants |
 | `exact_parse/src/lib.rs:39,53-75` | — | `use` import; return type of all 3 `*_from_str` functions |
 | `exact_bytes/src/lib.rs:39,98-100` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |

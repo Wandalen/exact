@@ -30,7 +30,7 @@ pub struct Decimal< const SCALE : u32 >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58,143-150,161,177,193,196,203,219,231,246,261,267,279,283,293,297,309,316,327,331,347,402,406,453,455,474,476,478,491,505,518,520,697,703,706,715,764 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
+| `src/lib.rs` | 58,143-150,161,177,198,201,208,225,237,261,276,282,294,298,308,312,324,331,342,346,362,417,421,468,470,489,491,493,506,520,533,535,712,718,721,730,779 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
 | `tests/*.rs` (5 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money`, including `rescale_test.rs` and `price_at_test.rs` |
 | `exact_add/src/lib.rs:46,53,63,113,128,133` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add`, generic over the scale |
 | `exact_bytes/src/lib.rs:39,199,211,214` | — | `money_to_wire`/`money_from_wire` |

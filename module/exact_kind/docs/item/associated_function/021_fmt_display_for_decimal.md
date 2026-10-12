@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:409`
+`module/exact_kind/src/lib.rs:424`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -53,7 +53,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 409-440 | Declaration |
+| `src/lib.rs` | 424-455 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 

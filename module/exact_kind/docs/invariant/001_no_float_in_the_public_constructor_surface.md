@@ -34,11 +34,11 @@ exactly how a float re-enters a system built to keep it out.
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:42-53` | `use exact_minor::{ Backing, Minor, … }` — `Minor`, an `i64`, is the one count ever stored |
-| `src/lib.rs:203-227` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
-| `src/lib.rs:347-403` | `Decimal::parse` — the grammar, with no float spelling accepted |
-| `src/lib.rs:406-441` | `Decimal`'s `Display` impl — integer division and modulo, no float intermediate |
-| `src/lib.rs:474-510` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
-| `src/lib.rs:599-602` | `Qty::parse` |
+| `src/lib.rs:208-233` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
+| `src/lib.rs:362-418` | `Decimal::parse` — the grammar, with no float spelling accepted |
+| `src/lib.rs:421-456` | `Decimal`'s `Display` impl — integer division and modulo, no float intermediate |
+| `src/lib.rs:489-525` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
+| `src/lib.rs:614-617` | `Qty::parse` |
 
 ### Tests
 

@@ -18,7 +18,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:536`
+`module/exact_kind/src/lib.rs:551`
 
 ```rust
 pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
@@ -31,7 +31,7 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 536 | Declaration |
+| `src/lib.rs` | 551 | Declaration |
 | `tests/rescale_test.rs` | 40,41 | A quantity in satoshis rescaled to six places, under `Down` and `Exact` |
 | `smoke_exact_market_split/src/lib.rs:397` | — | Step 7's one-scale arm rounds a satoshi quantity to six places |
 

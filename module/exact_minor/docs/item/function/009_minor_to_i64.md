@@ -25,7 +25,7 @@ pub const fn minor_to_i64( m : Minor ) -> i64
 |------|---------|---------|
 | `src/lib.rs` | 62-65 | Declaration |
 | `tests/` | throughout | Round trip in `tests/conversion_test.rs`; `tests/zero_test.rs` |
-| `exact_kind/src/lib.rs:233,283,297,331` | — | **Production** — `Decimal::minor`, and the results of `checked_add`/`checked_sub`/`checked_neg` |
+| `exact_kind/src/lib.rs:239,298,312,346` | — | **Production** — `Decimal::minor`, and the results of `checked_add`/`checked_sub`/`checked_neg` |
 | `exact_arith/src/lib.rs:78` | — | Facade re-export |
 
 ## Crate Usage
@@ -38,7 +38,7 @@ pub const fn minor_to_i64( m : Minor ) -> i64
 
 ## Caller Tree
 
-- **External:** `exact_kind::Decimal::minor`, `checked_add`, `checked_sub`, `checked_neg` (`exact_kind/src/lib.rs:233,283,297,331`)
+- **External:** `exact_kind::Decimal::minor`, `checked_add`, `checked_sub`, `checked_neg` (`exact_kind/src/lib.rs:239,298,312,346`)
 
 ## Callee Tree
 

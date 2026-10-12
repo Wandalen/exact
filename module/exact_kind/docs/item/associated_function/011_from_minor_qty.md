@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:489`
+`module/exact_kind/src/lib.rs:504`
 
 ```rust
 pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
@@ -28,7 +28,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 489 | Declaration |
+| `src/lib.rs` | 504 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative/ceiling-breach checks |
 | `exact_bytes/src/lib.rs:235` | — | `qty_from_wire` |
 | `exact_dust/src/lib.rs:245,255` | — | `qty_dust_split`/`qty_dust_split_into`, passed as `make` to the private `split_with`/`split_into_with` |
@@ -51,5 +51,5 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:491`)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:493`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:506`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:508`)

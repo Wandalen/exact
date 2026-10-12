@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:474`
+`module/exact_kind/src/lib.rs:489`
 
 ```rust
 pub const fn from_decimal( value : Decimal< SCALE > ) -> Result< Self, KindError >
@@ -29,7 +29,7 @@ pub const fn from_decimal( value : Decimal< SCALE > ) -> Result< Self, KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 474,493,507,601 | Declaration; `from_minor`, `from_int`, `parse`'s delegation |
+| `src/lib.rs` | 489,508,522,616 | Declaration; `from_minor`, `from_int`, `parse`'s delegation |
 | `tests/non_negative_test.rs` | throughout | Direct negativity-refusal checks |
 
 No file outside `exact_kind` calls `Qty::from_decimal` directly — an honest
@@ -44,12 +44,12 @@ gap. Every downstream crate reaches a `Quantity` through
 
 ## Caller Tree
 
-- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:493`)
-- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:507`)
-- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:560`)
-- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:574`)
-- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:589`)
-- [Qty::parse](019_parse_qty.md) (`src/lib.rs:601`)
+- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:508`)
+- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:522`)
+- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:575`)
+- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:589`)
+- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:604`)
+- [Qty::parse](019_parse_qty.md) (`src/lib.rs:616`)
 
 No external caller anywhere in the workspace — every public `Qty` entry
 point funnels through this, making it (alongside
@@ -58,4 +58,4 @@ points of the crate.
 
 ## Callee Tree
 
-- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:476`, the negativity check)
+- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:491`, the negativity check)

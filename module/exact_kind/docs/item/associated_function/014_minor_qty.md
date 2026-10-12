@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:525`
+`module/exact_kind/src/lib.rs:540`
 
 ```rust
 pub const fn minor( self ) -> Backing
@@ -23,7 +23,7 @@ pub const fn minor( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 525 | Declaration |
+| `src/lib.rs` | 540 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Minor-count assertions |
 | `exact_bytes/src/lib.rs:221` | — | `qty_to_wire` |
 | `exact_dust/src/lib.rs:245,255,265` | — | `qty_dust_split`/`_into`/`_remainder` |
@@ -48,4 +48,4 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:527`)
+- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:542`)
