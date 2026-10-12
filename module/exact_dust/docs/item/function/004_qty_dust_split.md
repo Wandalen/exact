@@ -34,7 +34,7 @@ total's minor count and `Quantity::from_minor` to build each slot.
 |------|---------|---------|
 | `src/lib.rs` | 243-246 | Declaration |
 | `tests/dust_split_test.rs:97,136,152,230` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, the `Up`-rounded case that refuses a first slot that would go negative, and `Exact` refusing an uneven split |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:50` | — | Splits a quantity in satoshis |
 | `smoke_exact_market_split/src/lib.rs:409` | — | Step 7 splits a satoshi quantity among three accounts |
 

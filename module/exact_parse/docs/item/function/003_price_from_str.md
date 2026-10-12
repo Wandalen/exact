@@ -27,7 +27,7 @@ pub fn price_from_str< const S : u32 >( text : &str ) -> Result< PriceAt< S >, K
 |------|---------|---------|
 | `src/lib.rs` | 73 | Declaration |
 | `tests/from_str_test.rs:15,31-32` | — | Exact round-trip through `"1.23"`; malformed text (`"NaN"`, `""`) refused, each by a direct call |
-| `exact_arith/src/lib.rs:116` | — | Facade re-export |
+| `exact_arith/src/lib.rs:117` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:23` | — | Parses a price at scale 2, named by turbofish |
 
 ## Crate Usage

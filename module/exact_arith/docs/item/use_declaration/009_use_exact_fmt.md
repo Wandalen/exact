@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:118`
+`module/exact_arith/src/lib.rs:119`
 
 ```rust
 pub use exact_fmt::{ FmtError, fmt_into, money_fmt, price_fmt, qty_fmt };
@@ -21,7 +21,7 @@ pub use exact_fmt::{ FmtError, fmt_into, money_fmt, price_fmt, qty_fmt };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 118 | Declaration |
+| `src/lib.rs` | 119 | Declaration |
 | `tests/no_alloc_test.rs` | 14,51,53-54,57 | `fmt_into` renders every kind into a stack buffer, checked to allocate nothing |
 
 Confirmed via a full-workspace grep: of these 5 names only `fmt_into` is

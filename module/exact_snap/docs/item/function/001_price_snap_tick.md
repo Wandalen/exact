@@ -47,7 +47,7 @@ exactly like its positive counterpart instead of reversing `Down` and `Up`.
 |------|---------|---------|
 | `src/lib.rs` | 150-166 | Declaration |
 | `tests/snap_test.rs` | 26,36,45,54,64-65,75-76,107,147,195,199 | On-grid identity, `Exact` keeping an on-grid price and refusing an off-grid one, between-grid rounding down/up, half-even on and off a tie, a negative price, a negative tick matching its positive counterpart, and overflow past the ceiling |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:41,42` | — | Snaps a price in cents to a tick in cents |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own

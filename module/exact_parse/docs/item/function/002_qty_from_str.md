@@ -26,7 +26,7 @@ pub fn qty_from_str< const S : u32 >( text : &str ) -> Result< Qty< S >, KindErr
 |------|---------|---------|
 | `src/lib.rs` | 63 | Declaration |
 | `tests/from_str_test.rs:14,22,33` | — | Exact round-trip through `"1.23"`; negative-value refusal (`KindError::Negative`); `"NaN"` rejection |
-| `exact_arith/src/lib.rs:116` | — | Facade re-export |
+| `exact_arith/src/lib.rs:117` | — | Facade re-export |
 
 ## Crate Usage
 

@@ -32,7 +32,7 @@ pub fn money_dust_remainder< const S : u32 >( total : Decimal< S >, parts : usiz
 | `src/lib.rs` | 231-235 | Declaration |
 | `tests/dust_split_test.rs:50` | — | Confirms the held-back amount under `DustTo::Sink` |
 | `tests/dust_split_test.rs:238-239` | — | Refused under `Exact` when uneven, zero when even |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:192` | — | Scene 003's held-back dust, at scale 2 |
 
 Outside this crate's own single test, only the demo lane's scene 003 calls

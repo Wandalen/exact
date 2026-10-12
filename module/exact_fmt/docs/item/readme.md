@@ -94,7 +94,7 @@ Definition/Invocation. No Associated Constant either — `Wire`-style
   formats an error message through it; every consumer matches on the enum
   variant instead.
 - **`exact_arith`'s end-to-end facade test never calls into this crate** —
-  it re-exports all 4 public items (`exact_arith/src/lib.rs:118`), and
+  it re-exports all 4 public items (`exact_arith/src/lib.rs:119`), and
   `facade_test.rs` exercises none of them, the same bypass pattern
   independently found in `exact_add` and `exact_parse`'s catalogs. The one
   facade-level call is `price_fmt` at scale 2, in `tests/any_scale_test.rs`.

@@ -26,7 +26,7 @@ pub fn qty_conserve_into< const S : u32 >( acc : Qty< S >, leg : Qty< S > ) -> R
 |------|---------|---------|
 | `src/lib.rs` | 266-269 | Declaration |
 | `tests/conservation_test.rs:247-253` | — | `try_fold` usage |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.

@@ -26,7 +26,7 @@ pub type Tick = TickAt< MONEY_SCALE >;
 | `src/lib.rs` | 79 | Declaration |
 | `src/lib.rs` | 17-21 | Module doc example: a tick of 5 minor units |
 | `tests/snap_test.rs` | 7,13,22,34,43,52,61,73,100,101,146,158,159,160,193 | Constructed via `Tick::new` at the standard scale |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:51,197` | — | The demo lane's tick size, through `exact_arith` |
 
 ## Crate Usage

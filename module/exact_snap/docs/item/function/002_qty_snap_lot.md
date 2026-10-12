@@ -32,7 +32,7 @@ pub fn qty_snap_lot< const S : u32 >( qty : Qty< S >, lot : LotAt< S >, rounding
 |------|---------|---------|
 | `src/lib.rs` | 175-181 | Declaration |
 | `tests/snap_test.rs` | 120,121,131,132,202-203 | Rounding-down/up parity with `price_snap_tick`, never producing a negative result, and `Exact` keeping an on-grid quantity and refusing an off-grid one |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests. `exact_arith`'s own facade test suite never calls it either.

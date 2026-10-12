@@ -11,7 +11,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_arith/src/lib.rs:135`
+`module/exact_arith/src/lib.rs:136`
 
 ```rust
 pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_snap_lot };
@@ -21,7 +21,7 @@ pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 135 | Declaration |
+| `src/lib.rs` | 136 | Declaration |
 | `tests/any_scale_test.rs` | 6,40-42 | `TickAt` and `price_snap_tick` at scale 2 |
 
 Confirmed via a full-workspace grep: not one of these 5 names is imported

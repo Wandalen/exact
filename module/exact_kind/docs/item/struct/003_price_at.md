@@ -58,7 +58,7 @@ no `PriceAt` caller.
 | `exact_cmp/src/lib.rs:32,50,64,71` | — | `price_cmp`/`price_min`/`price_max` |
 | `exact_fmt/src/lib.rs:41,119` | — | `price_fmt` |
 | `exact_parse/src/lib.rs:39,73,75` | — | `price_from_str` |
-| `exact_ratio/src/lib.rs:47,203,206,256` | — | `price_mul_ratio`, `price_mul_qty` |
+| `exact_ratio/src/lib.rs:47,203,206,258` | — | `price_mul_ratio`, `price_mul_qty` |
 | `exact_snap/src/lib.rs:24,76,89,96,105,150,165` | — | `TickAt`, `TickAt::new`'s stored magnitude, `price_snap_tick` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs` | throughout | Prices in cents through the facade: add, compare, render, parse, snap, `price_mul_qty` |

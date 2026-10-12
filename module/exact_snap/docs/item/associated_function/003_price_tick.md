@@ -38,7 +38,7 @@ pub const fn price( self ) -> PriceAt< S >
 |------|---------|---------|
 | `src/lib.rs` | 105-108 | Declaration |
 | `tests/snap_test.rs` | 158-159 | A tick built from 5 and one built from -5 both report a size of 5 |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
 
 No production call site anywhere — an honest empty finding, and the
 sharpest one in this crate: the accessor exists and is part of the public
