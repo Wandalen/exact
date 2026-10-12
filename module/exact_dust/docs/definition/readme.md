@@ -20,7 +20,7 @@
 | `qty_dust_split` | fn | `src/lib.rs:246` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 | `qty_dust_split_into` | fn | `src/lib.rs:256` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
 | `qty_dust_remainder` | fn | `src/lib.rs:266` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_split_weighted` | fn | `src/lib.rs:317` | [Weighted-Parts Dust Split](../algorithm/002_weighted_parts_dust_split.md) |
+| `money_dust_split_weighted` | fn | `src/lib.rs:320` | [Weighted-Parts Dust Split](../algorithm/002_weighted_parts_dust_split.md) |
 
 `impl core::error::Error for DustError {}` (`src/lib.rs:105`) carries no associated item of its own, so it gets no row here — same treatment as every other marker trait impl in this family's `definition/` indexes.
 

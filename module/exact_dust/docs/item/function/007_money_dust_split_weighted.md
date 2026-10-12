@@ -6,7 +6,9 @@ Split a money value in proportion to whole-number weights — slot `i` gets
 `total × weights[ i ] / Σ weights`, rounded under `mode` — and send the
 remainder to `to`, exactly as [money_dust_split](001_money_dust_split.md)
 does. Built for fees split by percentage (E4, for the exchange's X8): `$10.01`
-at `[ 70, 20, 10 ]` under `Down`/`First` is `[ 7.01, 2.00, 1.00 ]`. A
+at `[ 70, 20, 10 ]` under `Down`/`First` is `[ 7.01, 2.00, 1.00 ]`. Weights
+are `u64`, so they can also be amounts in minor units — a fee spread over
+fills by what each was worth, past `u32`'s `$4 294.97` at scale 6. A
 separately named operation, as [ADR-002](../../decisions/002_equal_count_split_surface.md)
 required (→ [ADR-004](../../decisions/004_weighted_split_as_a_named_operation.md)).
 
@@ -21,13 +23,13 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:317-339`
+`module/exact_dust/src/lib.rs:320-342`
 
 ```rust
-pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u32 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
+pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u64 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
 {
   let total_minor = total.minor();
-  let sum = weights.iter().try_fold( 0_u64, | acc, &w | acc.checked_add( u64::from( w ) ) ).ok_or( DustError::Overflow )?;
+  let sum = weights.iter().try_fold( 0_i128, | acc, &w | acc.checked_add( i128::from( w ) ) ).ok_or( DustError::Overflow )?;
   if sum == 0
   {
     return Err( DustError::EmptyParts );
@@ -53,9 +55,9 @@ pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 317-339 | Declaration |
-| `src/lib.rs` | 299-306 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
-| `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, `Reject` on a remainder and not a rounded share, empty and zero weights, signs under `TowardZero`, equal weights against `money_dust_split`, conservation over 70 035 cases under `First` and `Sink`, no overflow at `Money::MAX` |
+| `src/lib.rs` | 320-342 | Declaration |
+| `src/lib.rs` | 302-309 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
+| `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, `Reject` on a remainder and not a rounded share, empty and zero weights, signs under `TowardZero`, equal weights against `money_dust_split`, conservation over 70 035 cases under `First` and `Sink`, no overflow at `Money::MAX` and `u64::MAX` weights, notional weights past `u32` |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:75-83` | — | A fee in cents split 70/20/10 through the facade |
 
@@ -74,8 +76,8 @@ policy is decided.
 
 ## Callee Tree
 
-- `weighted_share` (`src/lib.rs:275`, private — no Item Instance of its own), once per slot: each share is summed and built in one pass
+- `weighted_share` (`src/lib.rs:276`, private — no Item Instance of its own), once per slot: each share is summed and built in one pass
   - **External:** `exact_round::round_div_wide`, on `total × weight` widened to `i128`
   - `round_error_to_dust_error` (`src/lib.rs:107`, private — no Item Instance of its own), via `.map_err(...)`
 - `slot_minor` (`src/lib.rs:142`, private — no Item Instance of its own), once, for slot 0 — the same leftover distribution the equal split uses
-- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:319,336`), `exact_kind::Decimal::from_minor` (`src/lib.rs:332,337`)
+- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:322,339`), `exact_kind::Decimal::from_minor` (`src/lib.rs:335,340`)

@@ -30,7 +30,7 @@ construction (`split_minor`, `src/lib.rs:125-136`: `leftover` is computed as
 
 The weighted split, `money_dust_split_weighted`, holds the same invariant
 with one share per slot: `total_minor == Σ shares + leftover`, the leftover
-computed by `checked_sub` against the summed shares (`src/lib.rs:327-335`),
+computed by `checked_sub` against the summed shares (`src/lib.rs:330-338`),
 and distributed by the same `slot_minor`. With `Sink`, its held-back dust is
 `total` minus the sum of the returned parts — there is no separate
 `_remainder` function for it (→ [ADR-004](../decisions/004_weighted_split_as_a_named_operation.md)).

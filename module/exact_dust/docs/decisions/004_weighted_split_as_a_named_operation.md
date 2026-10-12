@@ -19,14 +19,18 @@ its own loses or invents cents: `$10.00` split three ways is `3.33 × 3 = 9.99`.
 
 ## Decision
 
-- A new function, `money_dust_split_weighted( total, weights : &[ u32 ], mode, to )`,
+- A new function, `money_dust_split_weighted( total, weights : &[ u64 ], mode, to )`,
   beside `money_dust_split`, which is unchanged.
 - Slot `i` gets `total × weights[ i ] / Σ weights`, rounded under `mode`
   through `exact_round::round_div_wide`. The leftover — `total − Σ shares` —
   goes where `to` says, through the same `slot_minor` the equal split uses, so
   `First`, `Sink` and `Reject` mean exactly what they already mean.
-- Weights are `u32` whole numbers — percentages, basis points or any ratio,
-  never floats. `total × weight` is computed in `i128`, so it cannot overflow.
+- Weights are `u64` whole numbers — percentages, basis points, or amounts in
+  minor units, never floats. An amount is the weight a fee split by notional
+  needs: each fill's worth, up to the ceiling (about 9 × 10¹⁵), far past
+  `u32::MAX` (about 4.3 × 10⁹, `$4 294.97` at scale 6). `total × weight` is
+  computed in `i128` — an `i64` times a `u64` stays inside it, so it cannot
+  overflow — and the weights are summed in `i128`, checked.
 - Edge cases:
 
   | Input | Result |
@@ -66,6 +70,14 @@ as a new `DustTo` variant if a fee policy asks for it.
 
 Rejected under YAGNI: E4 and X8 are about money. Each can be added beside this
 one without changing it.
+
+### Option 5: `u32` weights
+
+Enough for percentages and basis points, and the first version took them.
+Rejected in review (#7, P7-8): the split the exchange most likely needs spreads
+one fee over several fills by what each was worth, and any fill past
+`$4 294.97` at scale 6 does not fit a `u32`. Widening is a signature change —
+free before the first release, breaking after it.
 
 ## Consequences
 

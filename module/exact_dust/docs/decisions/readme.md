@@ -14,7 +14,7 @@
 | 001 | [Direct `exact_round` Dependency, Not `exact_ratio`](001_direct_exact_round_dependency.md) | Why this crate depends on `exact_round` directly instead of through `exact_ratio` | 🔄 |
 | 002 | [Equal-Count Split Surface](002_equal_count_split_surface.md) | Why `parts` is a plain count, and why there is no `price_dust_split` | 🔄 |
 | 003 | [Leftover Correction via Raw Minor-Unit Reconstruction](003_leftover_via_raw_minor_reconstruction.md) | Why the `First` correction happens at the raw-minor stage, and folds into `Overflow` | 🔄 |
-| 004 | [A Weighted Split Is Its Own, Named Operation](004_weighted_split_as_a_named_operation.md) | Why `money_dust_split_weighted` sits beside the equal split, with `u32` weights and the same `DustTo` rules | 🔄 |
+| 004 | [A Weighted Split Is Its Own, Named Operation](004_weighted_split_as_a_named_operation.md) | Why `money_dust_split_weighted` sits beside the equal split, with `u64` weights and the same `DustTo` rules | 🔄 |
 
 ### Regenerate
 
