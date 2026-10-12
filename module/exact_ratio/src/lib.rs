@@ -238,11 +238,13 @@ pub fn qty_div_round< const S : u32 >( v : Qty< S >, d : i64, rounding : Roundin
   Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 
-/// The money a trade costs: `price × qty`, rounding the result per `rounding`.
+/// The money a trade costs: `price × qty`, rounding the result per `rounding`,
+/// at the price's own scale — [`price_mul_qty_to`] with `M = P`.
 ///
-/// A quantity is itself a ratio — its minor-unit count over one whole unit —
-/// so this is [`price_mul_ratio`]'s widened multiply and rounded divide, with
-/// the quantity as the ratio. A fractional quantity counts in full.
+/// A fractional quantity counts in full. To hold the cost at another scale,
+/// use [`price_mul_qty_to`] rather than [`exact_kind::Decimal::rescale`] on
+/// this result: rescaling rounds a second time, which can land a minor unit
+/// off.
 ///
 /// # Errors
 ///
@@ -255,8 +257,49 @@ pub fn qty_div_round< const S : u32 >( v : Qty< S >, d : i64, rounding : Roundin
 /// times a quantity in satoshis. The cost is money at the price's scale.
 pub fn price_mul_qty< const P : u32, const Q : u32 >( price : PriceAt< P >, qty : Qty< Q >, rounding : Rounding ) -> Result< Decimal< P >, RatioError >
 {
-  // One whole quantity is `Decimal::< Q >::ONE_MINOR` minor units at the quantity's own scale.
-  let qty_as_ratio = ratio_new( qty.minor(), Decimal::< Q >::ONE_MINOR )?;
-  let minor = mul_ratio_minor( price.minor(), qty_as_ratio, rounding )?;
-  Decimal::< P >::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  price_mul_qty_to::< P, P, Q >( price, qty, rounding )
+}
+
+/// The money a trade costs, `price × qty`, at the scale `M` the caller holds
+/// that money in — computed exactly and rounded once, per `rounding`.
+///
+/// `price.minor × qty.minor` is the exact cost at scale `P + Q`. It is divided
+/// by `10^(P + Q − M)` once, with the caller's rounding — or, for an `M` finer
+/// than `P + Q`, multiplied by `10^(M − P − Q)`, which is exact. Converting
+/// [`price_mul_qty`]'s result instead would round twice: once to the price's
+/// scale, again to `M`.
+///
+/// ```
+/// use exact_kind::{ Decimal, PriceAt, Qty };
+/// use exact_ratio::price_mul_qty_to;
+/// use exact_round::Rounding;
+///
+/// // 0.149 × 0.1 is exactly 0.0149 — the nearest cent is 0.01.
+/// let price : PriceAt< 3 > = PriceAt::parse( "0.149" ).unwrap();
+/// let qty : Qty< 1 > = Qty::parse( "0.1" ).unwrap();
+/// let cents : Decimal< 2 > = price_mul_qty_to( price, qty, Rounding::HalfEven ).unwrap();
+/// assert_eq!( cents.minor(), 1 );
+/// ```
+///
+/// # Errors
+///
+/// [`RatioError::Overflow`] when the cost leaves the representable or
+/// declared range. [`RatioError::Inexact`] when `rounding` is
+/// [`Rounding::Exact`] and the cost does not land exactly on scale `M`.
+pub fn price_mul_qty_to< const M : u32, const P : u32, const Q : u32 >( price : PriceAt< P >, qty : Qty< Q >, rounding : Rounding ) -> Result< Decimal< M >, RatioError >
+{
+  // The exact cost at scale `P + Q`; both counts are within the ceiling, so the
+  // `i128` product cannot overflow.
+  let exact = i128::from( price.minor() ) * i128::from( qty.minor() );
+  let minor = if M >= P + Q
+  {
+    exact.checked_mul( 10_i128.pow( M - ( P + Q ) ) ).ok_or( RatioError::Overflow )?
+  }
+  else
+  {
+    // The one rounding: straight from the exact cost to scale `M`.
+    exact_round::round_div_wide( exact, 10_i128.pow( P + Q - M ), rounding ).map_err( round_error_to_ratio_error )?
+  };
+  let minor = i64::try_from( minor ).map_err( | _ | RatioError::Overflow )?;
+  Decimal::< M >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
