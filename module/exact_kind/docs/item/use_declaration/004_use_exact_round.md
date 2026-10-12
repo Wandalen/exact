@@ -25,9 +25,9 @@ use exact_round::{ RoundError, Rounding, round_div };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 54 | Declaration |
-| `src/lib.rs` | 246,585,822 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
-| `src/lib.rs` | 255-258 | `round_div` divides on the coarser branch; `RoundError`'s three variants map to `KindError` |
-| `src/lib.rs` | 463 | `round_div` under `Rounding::HalfEven` in `fmt_at_precision`, when `{:.N}` asks for fewer places than `SCALE` |
+| `src/lib.rs` | 261,600,837 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
+| `src/lib.rs` | 270-273 | `round_div` divides on the coarser branch; `RoundError`'s three variants map to `KindError` |
+| `src/lib.rs` | 478 | `round_div` under `Rounding::HalfEven` in `fmt_at_precision`, when `{:.N}` asks for fewer places than `SCALE` |
 
 No external file references this `use` declaration directly — other crates
 depending on `exact_round` import it independently.

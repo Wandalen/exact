@@ -26,7 +26,7 @@ pub fn qty_fmt< const S : u32 >( v : Qty< S > ) -> String
 | `src/lib.rs` | 112-115 | Declaration |
 | `tests/fmt_test.rs:15` | — | Matches a literal `"3"` |
 | `tests/fmt_test.rs:81` | — | A fraction trimmed, and zero as plain `0` |
-| `exact_arith/src/lib.rs:118` | — | Facade re-export |
+| `exact_arith/src/lib.rs:119` | — | Facade re-export |
 
 ## Crate Usage
 

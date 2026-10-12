@@ -43,7 +43,7 @@ total's minor count and `Money::from_minor` to build each slot.
 | `src/lib.rs` | 210-213 | Declaration |
 | `tests/dust_split_test.rs` | 25-27,36,48,58,67,75,83,124,218,223 | Every split scenario this crate's own tests cover |
 | `exact_arith/src/lib.rs:33` | — | Doctest call (crate-level `//! ``` ` example, compiled/run under `cargo test --doc`, not production) |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:38` | — | Test-only call exercising the facade re-export |
 | `smoke_exact_market_split/src/lib.rs:144` | — | `market_split`'s own body — the only production (non-test, non-doctest) call site anywhere in the workspace |
 

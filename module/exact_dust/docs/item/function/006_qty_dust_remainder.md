@@ -29,7 +29,7 @@ pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mod
 | `src/lib.rs` | 266-270 | Declaration |
 | `tests/dust_split_test.rs:162` | — | Confirms the held-back amount matches the `Money` case's figure (identical minor-unit arithmetic) |
 | `tests/dust_split_test.rs:240` | — | Refused under `Exact` when uneven |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.

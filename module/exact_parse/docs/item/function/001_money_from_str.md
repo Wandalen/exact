@@ -26,7 +26,7 @@ pub fn money_from_str< const S : u32 >( text : &str ) -> Result< Decimal< S >, K
 |------|---------|---------|
 | `src/lib.rs` | 53 | Declaration |
 | `tests/from_str_test.rs:13,29-30` | — | Exact round-trip through `"1.23"`; malformed text (`"NaN"`, `""`) refused, each by a direct call |
-| `exact_arith/src/lib.rs:116` | — | Facade re-export |
+| `exact_arith/src/lib.rs:117` | — | Facade re-export |
 
 ## Crate Usage
 

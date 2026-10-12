@@ -25,7 +25,7 @@ pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 |------|---------|---------|
 | `src/lib.rs` | 199-202 | Declaration |
 | `tests/wire_roundtrip_test.rs` | 15,44,55,66,77,110,129,147 | Encoding across 8 of the crate's 14 tests |
-| `exact_arith/src/lib.rs:128` | — | Facade re-export |
+| `exact_arith/src/lib.rs:129` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:69` | — | Encodes money at scale 2, writing scale byte `2` |
 | `exact_arith/tests/facade_test.rs:41` | — | Constructed in the facade's own end-to-end settlement test |
 | `smoke_exact_market_split/src/lib.rs:215` | — | Scene 009 encodes `10.00` at scale 2 |

@@ -53,7 +53,7 @@ pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights
 | `src/lib.rs` | 308-332 | Declaration |
 | `src/lib.rs` | 292-299 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
 | `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, empty and zero weights, equal weights against `money_dust_split`, conservation over about 100 000 cases, no overflow at `Money::MAX` |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:75-83` | — | A fee in cents split 70/20/10 through the facade |
 
 ## Crate Usage

@@ -26,7 +26,7 @@ pub fn money_from_wire< const S : u32 >( w : Wire ) -> Result< Decimal< S >, Wir
 |------|---------|---------|
 | `src/lib.rs` | 211-215 | Declaration |
 | `tests/wire_roundtrip_test.rs` | 17,48,59,79,89,100,111,119,138 | Decoding across 9 of the crate's 14 tests, covering every failure mode and the success path |
-| `exact_arith/src/lib.rs:127` | — | Facade re-export |
+| `exact_arith/src/lib.rs:128` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:71,72` | — | Decodes money at scale 2, and refuses it at scale 6 with `BadScale` |
 | `exact_arith/tests/facade_test.rs:42` | — | Decoding in the facade's own end-to-end settlement test |
 | `smoke_exact_market_split/src/lib.rs:215` | — | Scene 009 decodes `10.00` back at scale 2 |

@@ -107,6 +107,7 @@ pub use exact_ratio::
   money_div_round,
   money_mul_ratio,
   price_mul_qty,
+  price_mul_qty_to,
   price_mul_ratio,
   qty_div_round,
   qty_mul_ratio,

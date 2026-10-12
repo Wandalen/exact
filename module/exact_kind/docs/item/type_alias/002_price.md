@@ -26,7 +26,7 @@ pub type Price = PriceAt< MONEY_SCALE >;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 64 | Declaration |
-| `src/lib.rs` | 713-714,721-723,730-732 | Doctests on `PriceAt`: same-kind arithmetic, and money/price mixing refused |
+| `src/lib.rs` | 728-729,736-738,745-747 | Doctests on `PriceAt`: same-kind arithmetic, and money/price mixing refused |
 | `tests/parse_render_test.rs` | 10,131 | A negative price round-trips |
 | `tests/price_test.rs` | throughout | `Price` as its own kind at the standard scale |
 | `tests/price_at_test.rs` | 4,11,37,47,49 | `Price` is `PriceAt< 6 >`; rescaling to and from it |

@@ -25,7 +25,7 @@ use exact_round::Rounding;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 48,155,177,192,203,209,221,235,256 | Parameter type of `mul_ratio_minor` and `div_round_minor` (both private), the three `*_mul_ratio` functions, both `*_div_round` functions and `price_mul_qty` |
+| `src/lib.rs` | 48,155,177,192,203,209,221,235,258,289,301 | Parameter type of `mul_ratio_minor` and `div_round_minor` (both private), the three `*_mul_ratio` functions, both `*_div_round` functions, `price_mul_qty` and `price_mul_qty_to`; `round_div_wide` is `price_mul_qty_to`'s one rounding (301) |
 
 Doc-comment mentions at lines 20 (`` [`exact_round::Rounding`] ``) and 26 are
 prose, not usages, and are excluded above. The intra-doc links

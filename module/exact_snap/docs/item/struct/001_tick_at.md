@@ -33,7 +33,7 @@ pub struct TickAt< const S : u32 >( PriceAt< S > );
 | `src/lib.rs` | 81-109 | `impl TickAt` (constructor and accessor) |
 | `src/lib.rs` | 150,161 | `tick` parameter type and field access in `price_snap_tick` |
 | `tests/snap_test.rs` | 7,13,22,34,43,52 | Constructed via `Tick::new` and passed into `price_snap_tick` |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs` | 6,40 | A tick in cents, `TickAt::new( cents( "0.05" ) )` |
 
 The derived traits (`Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord,

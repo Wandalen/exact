@@ -27,7 +27,7 @@ pub fn money_conserve_into< const S : u32 >( acc : Decimal< S >, leg : Decimal< 
 | `src/lib.rs` | 255-258 | Declaration |
 | `tests/conservation_test.rs:231-244` | — | `try_fold` usage and an overflow case |
 | `tests/conservation_test.rs:297` | — | Credits and debits folding back to exactly zero |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests — not `exact_arith`'s own test suite, not `cluster_economy`

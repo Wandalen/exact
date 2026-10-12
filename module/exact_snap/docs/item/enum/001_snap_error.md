@@ -43,7 +43,7 @@ pub enum SnapError
 | `src/lib.rs` | 163,164,178,179 | Threaded through `price_snap_tick`/`qty_snap_lot`'s error paths |
 | `tests/snap_test.rs:13-14` | — | Asserts `Tick::new`/`Lot::new` reject a zero grid with the matching variant |
 | `tests/snap_test.rs:199,203,210` | — | `OffGrid` under `Exact`, for a price and a quantity, and its message |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 
 ## Crate Usage
 

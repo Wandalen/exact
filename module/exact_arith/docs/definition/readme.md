@@ -5,7 +5,7 @@
 - **Purpose**: Index every public definition reachable through this crate in one place, so a reader can find where something is actually declared without grepping.
 - **Responsibility**: A flat module index — one row per public item, not a duplicate explanation of each.
 - **In Scope**: Every `pub` item named in `src/lib.rs`'s `pub use` lists.
-- **Out of Scope**: Rationale and invariants for any one item — link to the owning leaf crate's own doc definition instead of restating it here; this crate has no `impl` blocks of its own, so there are no associated items to enumerate beyond the 101 top-level names below.
+- **Out of Scope**: Rationale and invariants for any one item — link to the owning leaf crate's own doc definition instead of restating it here; this crate has no `impl` blocks of its own, so there are no associated items to enumerate beyond the 102 top-level names below.
 
 ### Module Index
 
@@ -52,8 +52,8 @@ behaviour.
 | `KindError` | enum | `../../../exact_kind/src/lib.rs:72` | — |
 | `Money` | type alias | `../../../exact_kind/src/lib.rs:58` | — |
 | `Price` | type alias | `../../../exact_kind/src/lib.rs:64` | — |
-| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:745` | — |
-| `Qty` | struct | `../../../exact_kind/src/lib.rs:502` | — |
+| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:760` | — |
+| `Qty` | struct | `../../../exact_kind/src/lib.rs:517` | — |
 | `Quantity` | type alias | `../../../exact_kind/src/lib.rs:61` | — |
 | `money_add` | fn | `../../../exact_add/src/lib.rs:53` | — |
 | `money_checked_neg` | fn | `../../../exact_add/src/lib.rs:113` | — |
@@ -68,7 +68,8 @@ behaviour.
 | `RatioError` | enum | `../../../exact_ratio/src/lib.rs:52` | — |
 | `money_div_round` | fn | `../../../exact_ratio/src/lib.rs:221` | — |
 | `money_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:177` | — |
-| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:256` | — |
+| `price_mul_qty` | fn | `../../../exact_ratio/src/lib.rs:258` | — |
+| `price_mul_qty_to` | fn | `../../../exact_ratio/src/lib.rs:289` | — |
 | `price_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:203` | — |
 | `qty_div_round` | fn | `../../../exact_ratio/src/lib.rs:235` | — |
 | `qty_mul_ratio` | fn | `../../../exact_ratio/src/lib.rs:192` | — |
@@ -129,5 +130,5 @@ cd "$(git rev-parse --show-toplevel)"/module/exact_arith
 printf 'pub use statements in src/lib.rs: '; grep -c '^pub use' src/lib.rs
 printf 'rows in Module Index:             '; grep -cE '^\| `' docs/definition/readme.md
 # pub use statements in src/lib.rs: 14
-# rows in Module Index:             101
+# rows in Module Index:             102
 ```

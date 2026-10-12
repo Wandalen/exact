@@ -33,7 +33,7 @@ pub struct LotAt< const S : u32 >( Qty< S > );
 | `src/lib.rs` | 119-141 | `impl LotAt` (constructor and accessor) |
 | `src/lib.rs` | 175,177,179 | `lot` parameter type and field access in `qty_snap_lot` |
 | `tests/snap_test.rs` | 7,14,118,129 | Constructed via `Lot::new` and passed into `qty_snap_lot` |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 
 The derived traits are not hand-written `impl` blocks and are not cataloged
 separately, per the same precedent noted on [TickAt](001_tick_at.md).

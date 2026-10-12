@@ -9,7 +9,7 @@ is zero). The inverse of `parse` for every value it produces.
 
 When the caller asks for a precision — `{:.2}` — it prints exactly that many
 digits after the point instead, through the private `fmt_at_precision`
-(`src/lib.rs:456-490`): extra places are zeros, fewer round half to even.
+(`src/lib.rs:471-505`): extra places are zeros, fewer round half to even.
 Only the text is rounded, never the value, and nothing is allocated
 (→ [ADR-004](../../decisions/004_display_precision_rounds_half_to_even.md)).
 
@@ -19,7 +19,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:406-448`
+`module/exact_kind/src/lib.rs:421-463`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
@@ -71,7 +71,7 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 406-490 | Declaration |
+| `src/lib.rs` | 421-505 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
 | `tests/display_precision_test.rs` | throughout | `{:.N}`: padding, half-even rounding, negatives, `Qty`/`PriceAt` pass-through |
 | `exact_arith/tests/no_alloc_test.rs` | — | `{:.N}` rendered into a stack buffer with no allocation |

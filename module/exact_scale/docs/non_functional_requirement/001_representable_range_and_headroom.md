@@ -47,12 +47,13 @@ the largest power of ten an `i64` holds (`10¹⁸ ≈ 1.0×10¹⁸ < i64::MAX`; 
 overflows). Past that, it panics rather than wrapping or returning a
 truncated value. The panic is deliberate. In a `const` position
 (`CEILING_MINOR_UNITS`'s own declaration, and every `Decimal<SCALE>::ONE_MINOR`
-in `exact_kind`) it becomes a compile error, so a `SCALE` past 18 fails to
-build. A runtime call past 18 panics at runtime instead, as this crate's own
+in `exact_kind`, which every `Decimal` constructor evaluates) it becomes a
+compile error, so a `SCALE` past 18 fails to build. A runtime call past 18 panics at runtime instead, as this crate's own
 test shows. `exact_kind` does call `pow10` at runtime — in `Decimal::parse`
-(`pow10( SCALE - supplied )`) and twice in `Decimal`'s `Display` (trimming
-trailing zeros) — but each exponent is at most `SCALE`, so none of them can
-pass 18 while `SCALE` itself does not.
+(`pow10( SCALE - supplied )`), twice in `Decimal`'s `Display` (trimming
+trailing zeros), and in `rescale` (`pow10( TO - SCALE )` or
+`pow10( SCALE - TO )`) — but each exponent is at most the larger of the two
+scales, and neither can pass 18, so none of them can either.
 
 ### Sources
 

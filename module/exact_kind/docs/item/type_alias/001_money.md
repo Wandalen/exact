@@ -25,7 +25,7 @@ pub type Money = Decimal< MONEY_SCALE >;
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 58 | Declaration |
-| `src/lib.rs` | 664-694,721-731 | Named by the `compile_fail` doctests: money and a quantity, and money and a price, do not mix |
+| `src/lib.rs` | 679-709,736-746 | Named by the `compile_fail` doctests: money and a quantity, and money and a price, do not mix |
 | `tests/checked_arithmetic_test.rs`, `tests/parse_render_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `tests/price_test.rs` | 6,8,13,21,45 | `Price`'s range checked against `Money`'s |
 | `tests/rescale_test.rs` | 4,12,19,22,30,48 | The scale-6 side of every `rescale` |

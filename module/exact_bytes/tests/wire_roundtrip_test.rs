@@ -4,7 +4,7 @@
 //! hold.
 
 use exact_bytes::{ KIND_MONEY, KIND_PRICE, KIND_QTY, Wire, WireError, money_from_wire, money_to_wire, qty_from_wire, qty_to_wire, price_from_wire, price_to_wire };
-use exact_kind::{ Money, Quantity, Price };
+use exact_kind::{ Money, Price, PriceAt, Quantity };
 use exact_scale::MONEY_SCALE;
 
 /// A money value round-trips through the wire form unchanged.
@@ -148,4 +148,20 @@ fn an_empty_slice_is_truncated_and_a_longer_one_decodes_its_first_record()
   let mut longer = wire.to_bytes().to_vec();
   longer.push( 0xff );
   assert_eq!( Wire::from_bytes( &longer ).unwrap(), wire );
+}
+
+/// A price at a scale other than 6 round-trips — through the record and
+/// through raw bytes — and a reader at another scale refuses it.
+#[ test ]
+fn a_price_at_another_scale_round_trips_and_is_refused_at_the_wrong_one()
+{
+  let cents : PriceAt< 2 > = PriceAt::parse( "65000.25" ).unwrap();
+  let wire = price_to_wire( cents );
+  assert_eq!( wire.scale(), 2 );
+  assert_eq!( price_from_wire::< 2 >( wire ), Ok( cents ) );
+  assert_eq!( price_from_wire::< MONEY_SCALE >( wire ), Err( WireError::BadScale ) );
+
+  let fine : PriceAt< 8 > = PriceAt::parse( "0.00001234" ).unwrap();
+  let bytes = price_to_wire( fine ).to_bytes();
+  assert_eq!( price_from_wire( Wire::from_bytes( &bytes ).unwrap() ), Ok( fine ) );
 }

@@ -39,7 +39,7 @@ pub fn money_sum_assert_zero< const S : u32 >( legs : &[ Decimal< S > ] ) -> Res
 |------|---------|---------|
 | `src/lib.rs` | 277-292 | Declaration |
 | `tests/conservation_test.rs:257-273` | — | A cancelling slice, a one-unit leak, and an empty slice |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:60` | — | Money in cents sums to zero |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this

@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:698`
+`module/exact_kind/src/lib.rs:713`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -25,7 +25,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 698-702 | Declaration |
+| `src/lib.rs` | 713-717 | Declaration |
 | `tests/non_negative_test.rs:50` | — | Compared against the inner decimal's own rendering, via `.to_string()` |
 | `tests/display_precision_test.rs` | — | `{:.2}`/`{:.3}`/`{:.4}` on a `Quantity` and a `Qty< 8 >` |
 | `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |
@@ -45,4 +45,4 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [Display::fmt for Decimal](021_fmt_display_for_decimal.md) (`src/lib.rs:701`, via `fmt::Display::fmt( &self.value, f )` — the same formatter, so its precision carries over)
+- [Display::fmt for Decimal](021_fmt_display_for_decimal.md) (`src/lib.rs:716`, via `fmt::Display::fmt( &self.value, f )` — the same formatter, so its precision carries over)

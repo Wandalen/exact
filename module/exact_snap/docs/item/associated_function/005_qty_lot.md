@@ -33,7 +33,7 @@ pub const fn qty( self ) -> Qty< S >
 |------|---------|---------|
 | `src/lib.rs` | 137-140 | Declaration |
 | `tests/snap_test.rs` | 162 | A lot hands back the size it was built from |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Lot`'s re-export) |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export (via `Lot`'s re-export) |
 
 No production call site anywhere — an honest empty finding, matching
 [Tick::price](003_price_tick.md) exactly: declared, part of the public API,

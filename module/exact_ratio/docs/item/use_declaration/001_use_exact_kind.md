@@ -23,7 +23,7 @@ use exact_kind::{ Decimal, KindError, PriceAt, Qty };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 47,84,88-90,177,180,192,195,203,206,221,224,235,238,256,259,261 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject, each of its five variants matched by name (80,84-86); `Decimal`/`PriceAt`/`Qty` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions, and of `price_mul_qty` at its two scales |
+| `src/lib.rs` | 47,84,88-90,177,180,192,195,203,206,221,224,235,238,258,289,304 | `KindError` is `kind_error_to_ratio_error`'s parameter type and match subject, each of its five variants matched by name (80,84-86); `Decimal`/`PriceAt`/`Qty` are the operand and return types of the 5 `*_mul_ratio`/`*_div_round` functions, and of `price_mul_qty` at its two scales |
 
 ## Crate Usage
 

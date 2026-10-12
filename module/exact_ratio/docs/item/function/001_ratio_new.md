@@ -37,8 +37,7 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 |------|---------|---------|
 | `src/lib.rs` | 140-153 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 15,22,214,223 | Zero-denominator refusal, negative-denominator normalization, a positive denominator kept as given, and the `i64::MIN` refusal — and the construction path for every other test's `Ratio` value |
-| `src/lib.rs` | 259 | **Production** — `price_mul_qty` builds the quantity's ratio |
-| `exact_arith/src/lib.rs:113` | — | Facade re-export |
+| `exact_arith/src/lib.rs:114` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -49,11 +48,11 @@ pub const fn ratio_new( n : i64, d : i64 ) -> Result< Ratio, RatioError >
 
 ## Caller Tree
 
-- [price_mul_qty](007_price_mul_qty.md) (`src/lib.rs:259`) — the one
-  production caller, turning a quantity into the ratio `qty.minor() /
-  Money::ONE_MINOR`
+No production caller: `price_mul_qty` built its quantity's ratio with this
+until it began delegating to [price_mul_qty_to](008_price_mul_qty_to.md),
+which multiplies the two counts directly (→ [ADR-003](../../decisions/003_cost_rounded_once_at_a_chosen_scale.md)).
 
-Every other call site is in `exact_ratio`'s own tests, which are out of
+Every call site is in `exact_ratio`'s own tests, which are out of
 scope for this tree (production call-graph only); `exact_arith` only
 re-exports the name.
 

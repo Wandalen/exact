@@ -35,7 +35,7 @@ so no heap allocation, and a refusal on slot 0 leaves `out` untouched.
 | `src/lib.rs` | 256-259 | Declaration |
 | `tests/dust_split_test.rs:94` | — | Writes the same shares as the allocating `qty_dust_split` — under `Up`, where slot 0 absorbs a negative leftover |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/no_alloc_test.rs:93` | — | Test-only call checking the split makes no heap allocation |
 
 No production call site outside this crate — not `exact_arith`'s crate-doc

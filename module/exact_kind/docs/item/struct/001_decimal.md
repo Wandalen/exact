@@ -30,7 +30,7 @@ pub struct Decimal< const SCALE : u32 >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58,143-150,161,177,193,196,203,219,231,246,261,267,279,283,293,297,309,316,327,331,347,402,406,502,504,523,525,527,540,554,567,569,747,753,756,765,814 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
+| `src/lib.rs` | 58,143-150,161,177,198,201,208,225,237,261,276,282,294,298,308,312,324,331,342,346,362,417,421,517,519,538,540,542,555,569,582,584,762,768,771,780,829 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
 | `tests/*.rs` (5 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money`, including `rescale_test.rs` and `price_at_test.rs` |
 | `exact_add/src/lib.rs:46,53,63,113,128,133` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add`, generic over the scale |
 | `exact_bytes/src/lib.rs:39,199,211,214` | — | `money_to_wire`/`money_from_wire` |
@@ -39,7 +39,7 @@ pub struct Decimal< const SCALE : u32 >
 | `exact_dust/src/lib.rs:62,210,212,221,223,234` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_fmt/src/lib.rs:41,105` | — | `money_fmt` |
 | `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
-| `exact_ratio/src/lib.rs:47,177,180,221,224,256,259,261` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost and its quantity's `ONE_MINOR` |
+| `exact_ratio/src/lib.rs:47,177,180,221,224,258,289,304` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost, and `price_mul_qty_to`'s at the scale `M` the caller picks |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs:51,153,155,183,184,185,187,190,207,351,372,375` | — | The demo lane's scale-2 scenes — the sum, the dust split, the wire round trip — and step 7's cost in cents, through `exact_arith` |
 

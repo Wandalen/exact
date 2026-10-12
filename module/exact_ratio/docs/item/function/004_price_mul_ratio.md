@@ -37,7 +37,7 @@ pub fn price_mul_ratio< const S : u32 >( v : PriceAt< S >, r : Ratio, rounding :
 |------|---------|---------|
 | `src/lib.rs` | 203-207 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 232,247,373 | `Down`/`Up`/`HalfEven` at both signs, refusal past the ceiling, and `Inexact` under `Exact` |
-| `exact_arith/src/lib.rs:110` | — | Facade re-export |
+| `exact_arith/src/lib.rs:111` | — | Facade re-export |
 
 ## Crate Usage
 

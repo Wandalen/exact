@@ -40,7 +40,7 @@ pub const fn new( price : PriceAt< S > ) -> Result< Self, SnapError >
 |------|---------|---------|
 | `src/lib.rs` | 89-101 | Declaration |
 | `tests/snap_test.rs` | 13,22,34,43,52,101,158-160 | Zero-rejection check; the fixture every snap test builds before calling `price_snap_tick`; a tick of -5 stored as 5 and equal to a tick of 5 |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests — `exact_arith`'s own facade test suite never constructs a `Tick`
