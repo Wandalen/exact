@@ -30,7 +30,7 @@ carries, so there is no length prefix and no varint.
 | Offset | Width | Field | Value |
 |-------:|------:|-------|-------|
 | 0 | 8 | minor | The value's minor-unit count, as a signed `i64` |
-| 8 | 1 | scale | The scale the value was written at — `exact_scale::MONEY_SCALE` for every kind this crate encodes today |
+| 8 | 1 | scale | The scale the value was written at — the encoded type's own `S`, so `6` for `Money`/`Quantity`/`Price` and `2` for a `Decimal< 2 >` ([ADR-002](../decisions/002_scale_byte_from_the_type.md)) |
 | 9 | 1 | kind | A discriminator: [`KIND_MONEY`] (`0`), [`KIND_QTY`] (`1`), or [`KIND_PRICE`] (`2`) |
 
 `minor` carries no range check of its own at the `Wire` level — `Wire::new`
@@ -62,9 +62,9 @@ than zero-padded.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:41-48` | `KIND_MONEY`, `KIND_QTY`, `KIND_PRICE`, and the compile-time check that `MONEY_SCALE` fits the `scale` byte |
-| `src/lib.rs:118-193` | `Wire`'s struct definition, `ENCODED_LEN`, `new`, `to_bytes`, `from_bytes` |
-| `src/lib.rs:195-252` | The six `*_to_wire`/`*_from_wire` functions, one pair per kind |
+| `src/lib.rs:41-54` | `KIND_MONEY`, `KIND_QTY`, `KIND_PRICE`, and `scale_byte`, whose compile-time check keeps every scale whole in the `scale` byte |
+| `src/lib.rs:120-195` | `Wire`'s struct definition, `ENCODED_LEN`, `new`, `to_bytes`, `from_bytes` |
+| `src/lib.rs:197-254` | The six `*_to_wire`/`*_from_wire` functions, one pair per kind |
 
 ### Tests
 

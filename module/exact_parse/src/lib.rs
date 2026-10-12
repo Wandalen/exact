@@ -13,8 +13,8 @@
 //!   per grammar rule. `ExtraDigits` is `KindError::ExcessPrecision`, and
 //!   `Overflow` already exists under that name. `ScaleTooLarge` is
 //!   unreachable: `SCALE` is a compile-time const generic, so an
-//!   unrepresentable scale is already a compile error (`Decimal`'s own
-//!   `ONE_MINOR` associated const panics at const-eval time), never a value
+//!   unrepresentable scale is already a compile error (every `Decimal`
+//!   constructor checks `ONE_MINOR` at const-eval time), never a value
 //!   a running parse call could receive. Every function here therefore
 //!   returns [`exact_kind::KindError`] directly, matching `exact_add`'s
 //!   identical reasoning for dropping its own doc-specified error enum.
@@ -29,13 +29,14 @@
 //! # Examples
 //!
 //! ```
+//! use exact_kind::Money;
 //! use exact_parse::money_from_str;
 //!
-//! let v = money_from_str( "1.23" ).unwrap();
+//! let v : Money = money_from_str( "1.23" ).unwrap();
 //! assert_eq!( v.minor(), 1_230_000 );
 //! ```
 
-use exact_kind::{ KindError, Money, Price, Quantity };
+use exact_kind::{ Decimal, KindError, Money, PriceAt, Qty };
 
 // A real cross-crate consistency guard: `exact_kind`'s `Money`/`Price` scale
 // and `exact_scale`'s own `MONEY_SCALE` constant are declared in two
@@ -49,9 +50,9 @@ const _ : () = assert!( Money::ONE_MINOR == exact_scale::pow10( exact_scale::MON
 /// # Errors
 ///
 /// See [`exact_kind::Decimal::parse`].
-pub fn money_from_str( text : &str ) -> Result< Money, KindError >
+pub fn money_from_str< const S : u32 >( text : &str ) -> Result< Decimal< S >, KindError >
 {
-  Money::parse( text )
+  Decimal::< S >::parse( text )
 }
 
 /// Parse a quantity from text, refusing a negative one.
@@ -59,9 +60,9 @@ pub fn money_from_str( text : &str ) -> Result< Money, KindError >
 /// # Errors
 ///
 /// See [`exact_kind::Qty::parse`].
-pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
+pub fn qty_from_str< const S : u32 >( text : &str ) -> Result< Qty< S >, KindError >
 {
-  Quantity::parse( text )
+  Qty::< S >::parse( text )
 }
 
 /// Parse a price from text.
@@ -69,7 +70,7 @@ pub fn qty_from_str( text : &str ) -> Result< Quantity, KindError >
 /// # Errors
 ///
 /// As [`money_from_str`].
-pub fn price_from_str( text : &str ) -> Result< Price, KindError >
+pub fn price_from_str< const S : u32 >( text : &str ) -> Result< PriceAt< S >, KindError >
 {
-  Price::parse( text )
+  PriceAt::< S >::parse( text )
 }

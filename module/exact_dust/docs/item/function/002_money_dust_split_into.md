@@ -15,9 +15,9 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_dust/src/lib.rs:218-221`
 
 ```rust
-pub fn money_dust_split_into( total : Money, mode : Rounding, to : DustTo, out : &mut [ Money ] ) -> Result< (), DustError >
+pub fn money_dust_split_into< const S : u32 >( total : Decimal< S >, mode : Rounding, to : DustTo, out : &mut [ Decimal< S > ] ) -> Result< (), DustError >
 {
-  split_into_with( total.minor(), mode, to, out, Money::from_minor )
+  split_into_with( total.minor(), mode, to, out, Decimal::< S >::from_minor )
 }
 ```
 
@@ -40,7 +40,7 @@ anything is written.
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
 | `tests/dust_split_test.rs:181` | — | `DustTo::Sink` leaves every slot at the plain share |
 | `tests/dust_split_test.rs:226` | — | `Exact` refuses an uneven split before writing — the buffer keeps what it held |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/no_alloc_test.rs:72` | — | Test-only call checking the split makes no heap allocation |
 
 No production call site anywhere outside this crate. `exact_arith`'s

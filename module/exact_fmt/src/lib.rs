@@ -38,7 +38,7 @@
 //! assert_eq!( &buf[ .. written ], b"1.5" );
 //! ```
 
-use exact_kind::{ Money, Price, Quantity };
+use exact_kind::{ Decimal, PriceAt, Qty };
 
 /// Why a buffer-writing render could not complete.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
@@ -102,21 +102,21 @@ pub fn fmt_into( value : impl core::fmt::Display, buf : &mut [ u8 ] ) -> Result<
 
 /// Render a money value.
 #[ must_use ]
-pub fn money_fmt( v : Money ) -> String
+pub fn money_fmt< const S : u32 >( v : Decimal< S > ) -> String
 {
   v.to_string()
 }
 
 /// Render a quantity.
 #[ must_use ]
-pub fn qty_fmt( v : Quantity ) -> String
+pub fn qty_fmt< const S : u32 >( v : Qty< S > ) -> String
 {
   v.to_string()
 }
 
 /// Render a price.
 #[ must_use ]
-pub fn price_fmt( v : Price ) -> String
+pub fn price_fmt< const S : u32 >( v : PriceAt< S > ) -> String
 {
   v.to_string()
 }

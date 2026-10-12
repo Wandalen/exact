@@ -6,8 +6,16 @@ license.workspace = true
 repository.workspace = true
 description = "Money, Qty, and Price — the conserved fixed-point value types at the core of the exact family"
 
+# Tier 1: the three Tier-0 crates, and nothing above them.
 [dependencies]
+# The stored count, `Minor`, and its checked add, subtract and negate.
 exact_minor = { path = "../exact_minor", version = "0.1.0" }
+# `round_div` and `Rounding`, for `rescale` to a coarser scale — shared with
+# exact_ratio, exact_snap and exact_dust rather than written a third time
+# (docs/decisions/002_explicit_rescale_between_scales.md).
+exact_round = { path = "../exact_round", version = "0.1.0" }
+# `MONEY_SCALE` for the `Money`/`Quantity`/`Price` aliases, `pow10`, and the
+# declared ceiling every constructor checks.
 exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]

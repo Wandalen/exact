@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_conserve/src/lib.rs:255-258`
 
 ```rust
-pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, ConservationError >
+pub fn money_conserve_into< const S : u32 >( acc : Decimal< S >, leg : Decimal< S > ) -> Result< Decimal< S >, ConservationError >
 {
   exact_add::money_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }
@@ -26,8 +26,8 @@ pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, Conserv
 |------|---------|---------|
 | `src/lib.rs` | 255-258 | Declaration |
 | `tests/conservation_test.rs:231-244` | — | `try_fold` usage and an overflow case |
-| `tests/conservation_test.rs:296` | — | Credits and debits folding back to exactly zero |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `tests/conservation_test.rs:297` | — | Credits and debits folding back to exactly zero |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests — not `exact_arith`'s own test suite, not `cluster_economy`

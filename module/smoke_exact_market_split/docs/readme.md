@@ -9,9 +9,9 @@ Design documentation for `smoke_exact_market_split`, as typed doc definitions.
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 
-This crate is the family's smoke lane: the leaves its six steps need —
-`exact_kind`, `exact_minor`, `exact_round`, `exact_dust`, `exact_snap`,
-`exact_bytes` and `exact_conserve` — exercised in one process through
+This crate is the family's smoke lane: the leaves its seven steps need —
+`exact_kind`, `exact_minor`, `exact_round`, `exact_ratio`, `exact_dust`,
+`exact_snap`, `exact_bytes` and `exact_conserve` — exercised in one process through
 `exact_arith` alone, with an `f64` control arm required to disagree with the
 exact path. It replaces `smoke_exact_arithmetic` at the
 Tier 5 cutover, carrying that crate's `decisions/` and `pitfall/` content

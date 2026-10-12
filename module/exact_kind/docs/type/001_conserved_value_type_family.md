@@ -3,7 +3,7 @@
 ### Scope
 
 - **Purpose**: Define what `Money`, `Price`, and `Quantity` denote and how the three relate, so a caller reasons about them as a family of fixed-point counts rather than three unrelated wrappers.
-- **Responsibility**: `Decimal<const SCALE: u32>`, `Qty<const SCALE: u32>`, `Price`, and the `Money`/`Quantity` aliases built from them.
+- **Responsibility**: `Decimal<const SCALE: u32>`, `Qty<const SCALE: u32>`, `PriceAt<const SCALE: u32>`, and the `Money`/`Quantity`/`Price` aliases built from them.
 - **In Scope**: Representation, construction, rendering, and the type-level scale mechanism.
 - **Out of Scope**: The checked-operation contract itself (→ [Checked Operations Total](../invariant/002_checked_operations_total.md)); why non-negativity is a separate wrapper type rather than a flag (→ [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md)); the declared ceiling and `pow10` (→ [`exact_scale`'s own instance](../../../exact_scale/docs/non_functional_requirement/001_representable_range_and_headroom.md)).
 
@@ -24,17 +24,17 @@ it cannot hold a negative value (→
 for the mechanism). It reuses `Decimal`'s scale mechanism and range checking
 rather than re-implementing fixed-point arithmetic a second time.
 
-Three distinct types, all at `exact_scale::MONEY_SCALE` (6 decimal places):
+Three distinct types, each named at `exact_scale::MONEY_SCALE` (6 decimal places) and available at any other scale through its generic form:
 
 | Type | Built as | Notes |
 |------|----------|-------|
 | `Money` | `Decimal<MONEY_SCALE>` | Signed — a balance going negative is a debt, a state the type must hold |
-| `Price` | a struct wrapping one `Money` | Signed like `Money` — a price may be a discount; its own type, so a price and an amount of money cannot be mixed |
+| `Price` | `PriceAt<MONEY_SCALE>`, a struct wrapping one `Decimal<SCALE>` | Signed like `Money` — a price may be a discount; its own type, so a price and an amount of money cannot be mixed (→ [ADR-003](../decisions/003_price_generic_over_scale.md)) |
 | `Quantity` | `Qty<MONEY_SCALE>` | Non-negative |
 
 ### Construction And Rendering
 
-None of `Decimal`, `Qty` and `Price` has an infallible general constructor. Every
+None of `Decimal`, `Qty` and `PriceAt` has an infallible general constructor. Every
 path — `from_minor`, `from_int`, `parse` (and, for `Qty`, `from_decimal`) —
 returns `Result<Self, KindError>`, because an infallible constructor is
 exactly a place where a range check did not happen. `ZERO` and `EPSILON` are
@@ -55,15 +55,16 @@ a `Qty` again.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:57-60` | `Money`, `Quantity` — the two aliases |
-| `src/lib.rs:639-643` | The `Price` struct — one `value: Money` field |
-| `src/lib.rs:156-160` | The `Decimal<const SCALE: u32>` struct — one `minor: Minor` field |
-| `src/lib.rs:176-192` | `ONE_MINOR`, `ZERO`, `EPSILON`, `MAX`, `MIN` associated constants |
-| `src/lib.rs:199-223` | `from_minor`, `from_int` — the two range-checked constructors |
-| `src/lib.rs:314-370` | `parse` — the grammar |
-| `src/lib.rs:373-408` | `Display` — canonical rendering, trailing zeros trimmed |
-| `src/lib.rs:420-423` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
-| `src/lib.rs:485-488` | `as_decimal` — the escape hatch back to a signed value |
+| `src/lib.rs:58-64` | `Money`, `Quantity`, `Price` — the three aliases |
+| `src/lib.rs:709-713` | The `PriceAt<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
+| `src/lib.rs:261,551,787` | `rescale` on `Decimal`, `Qty` and `PriceAt` — the explicit crossing between scales (→ [ADR-002](../decisions/002_explicit_rescale_between_scales.md)) |
+| `src/lib.rs:160-164` | The `Decimal<const SCALE: u32>` struct — one `minor: Minor` field |
+| `src/lib.rs:180-201` | `ONE_MINOR`, `ZERO`, `EPSILON`, `MAX`, `MIN` associated constants |
+| `src/lib.rs:208-233` | `from_minor`, `from_int` — the two range-checked constructors |
+| `src/lib.rs:362-418` | `parse` — the grammar |
+| `src/lib.rs:421-456` | `Display` — canonical rendering, trailing zeros trimmed |
+| `src/lib.rs:468-471` | The `Qty<const SCALE: u32>` struct — one `value: Decimal<SCALE>` field |
+| `src/lib.rs:533-536` | `as_decimal` — the escape hatch back to a signed value |
 
 ### Tests
 

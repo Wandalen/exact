@@ -80,7 +80,7 @@
 //!   whose giving side is negative. A quantity's movements are audited through
 //!   [`verify`] with an asset key instead.
 
-use exact_kind::{ KindError, Money, Quantity };
+use exact_kind::{ Decimal, KindError, Qty };
 use std::collections::BTreeMap;
 use std::borrow::Borrow;
 
@@ -252,7 +252,7 @@ pub fn verify< K, A : Ord + Clone >( entries : &[ Entry< K, A > ] ) -> Result< R
 /// # Errors
 ///
 /// [`ConservationError::Overflow`] on overflow or ceiling breach.
-pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, ConservationError >
+pub fn money_conserve_into< const S : u32 >( acc : Decimal< S >, leg : Decimal< S > ) -> Result< Decimal< S >, ConservationError >
 {
   exact_add::money_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }
@@ -263,7 +263,7 @@ pub fn money_conserve_into( acc : Money, leg : Money ) -> Result< Money, Conserv
 /// # Errors
 ///
 /// [`ConservationError::Overflow`] on overflow or ceiling breach.
-pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, ConservationError >
+pub fn qty_conserve_into< const S : u32 >( acc : Qty< S >, leg : Qty< S > ) -> Result< Qty< S >, ConservationError >
 {
   exact_add::qty_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }
@@ -274,7 +274,7 @@ pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, 
 ///
 /// [`ConservationError::NotZero`] when the sum is not zero.
 /// [`ConservationError::Overflow`] if the running total leaves `i128`.
-pub fn money_sum_assert_zero( legs : &[ Money ] ) -> Result< (), ConservationError >
+pub fn money_sum_assert_zero< const S : u32 >( legs : &[ Decimal< S > ] ) -> Result< (), ConservationError >
 {
   let mut net : i128 = 0;
   for leg in legs

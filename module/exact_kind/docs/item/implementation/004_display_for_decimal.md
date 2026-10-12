@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:373`
+`module/exact_kind/src/lib.rs:421`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
@@ -58,7 +58,7 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 373-408 | Declaration |
+| `src/lib.rs` | 421-456 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 

@@ -36,11 +36,11 @@ use exact_minor::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 85,114,176,199,215,227,234,276,348,352,359,456,470,492,499,540,658,669 | `Backing`: every constructor/operation's raw-integer parameter and return, and the `KindError` fields |
-| `src/lib.rs` | 159 | `Minor`: the type of `Decimal`'s stored count |
-| `src/lib.rs` | 164,168 | `MinorError`: turned into `KindError::Overflow` by `kind_overflow` |
-| `src/lib.rs` | 248,262,296 | `minor_checked_add`/`_sub`/`_neg`: `Decimal`'s `checked_add`/`checked_sub`/`checked_neg` |
-| `src/lib.rs` | 179,182,189,192,205,229,250,264,298 | `minor_zero`, `minor_from_i64`, `minor_to_i64`: in and out of the stored `Minor` |
+| `src/lib.rs` | 89,118,180,208,225,237,282,324,396,400,407,504,518,540,559,600,728,739 | `Backing`: every constructor/operation's raw-integer parameter and return, and the `KindError` fields |
+| `src/lib.rs` | 163 | `Minor`: the type of `Decimal`'s stored count |
+| `src/lib.rs` | 168,172 | `MinorError`: turned into `KindError::Overflow` by `kind_overflow` |
+| `src/lib.rs` | 296,310,344 | `minor_checked_add`/`_sub`/`_neg`: `Decimal`'s `checked_add`/`checked_sub`/`checked_neg` |
+| `src/lib.rs` | 188,191,198,201,215,239,298,312,346 | `minor_zero`, `minor_from_i64`, `minor_to_i64`: in and out of the stored `Minor` |
 
 No external file references this `use` declaration directly — it is private
 to this module; other crates reach these names by depending on `exact_minor`

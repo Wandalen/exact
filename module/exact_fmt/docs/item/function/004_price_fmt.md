@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_fmt/src/lib.rs:119-122`
 
 ```rust
-pub fn price_fmt( v : Price ) -> String
+pub fn price_fmt< const S : u32 >( v : PriceAt< S > ) -> String
 {
   v.to_string()
 }
@@ -26,7 +26,8 @@ pub fn price_fmt( v : Price ) -> String
 |------|---------|---------|
 | `src/lib.rs` | 119-122 | Declaration |
 | `tests/fmt_test.rs:48` | — | A positive and a negative price render exactly |
-| `exact_arith/src/lib.rs:118` | — | Facade re-export |
+| `exact_arith/src/lib.rs:119` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:21` | — | Renders a price in cents |
 
 No caller outside this crate's own tests.
 
@@ -35,7 +36,7 @@ No caller outside this crate's own tests.
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_fmt` | `(defining crate)` | Exercised by its own tests |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 2 by the any-scale facade test |
 
 ## Caller Tree
 

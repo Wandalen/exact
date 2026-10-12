@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_conserve/src/lib.rs:266-269`
 
 ```rust
-pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, ConservationError >
+pub fn qty_conserve_into< const S : u32 >( acc : Qty< S >, leg : Qty< S > ) -> Result< Qty< S >, ConservationError >
 {
   exact_add::qty_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }
@@ -26,7 +26,7 @@ pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, 
 |------|---------|---------|
 | `src/lib.rs` | 266-269 | Declaration |
 | `tests/conservation_test.rs:247-253` | — | `try_fold` usage |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.

@@ -26,7 +26,7 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 | `src/lib.rs` | 21,33 | Module-level doc-test — `Rounding` |
 | `tests/facade_test.rs:10,38,56` | — | `Rounding`, `round_div` both exercised |
 | `tests/no_alloc_test.rs:14,72-73` | — | `Rounding` passed to both `*_dust_split_into` functions |
-| `smoke_exact_market_split/src/lib.rs:45` | — | **Demo-lane** — `Rounding` |
+| `smoke_exact_market_split/src/lib.rs:47` | — | **Demo-lane** — `Rounding` |
 
 `RoundError` and the 2 convenience functions (`rounding_default`,
 `rounding_name`) have no confirmed caller anywhere through this facade — the

@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:221`
 
 ```rust
-pub fn money_div_round( v : Money, d : i64, rounding : Rounding ) -> Result< Money, RatioError >
+pub fn money_div_round< const S : u32 >( v : Decimal< S >, d : i64, rounding : Rounding ) -> Result< Decimal< S >, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )

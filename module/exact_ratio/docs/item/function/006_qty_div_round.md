@@ -21,10 +21,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:235`
 
 ```rust
-pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Quantity, RatioError >
+pub fn qty_div_round< const S : u32 >( v : Qty< S >, d : i64, rounding : Rounding ) -> Result< Qty< S >, RatioError >
 {
   let minor = div_round_minor( v.minor(), d, rounding )?;
-  Quantity::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  Qty::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 
@@ -34,7 +34,7 @@ pub fn qty_div_round( v : Quantity, d : i64, rounding : Rounding ) -> Result< Qu
 |------|---------|---------|
 | `src/lib.rs` | 235-239 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 293,303,313,385-386 | `Down`/`Up`/`HalfEven`, a zero divisor, a negative divisor — refused unless the result rounds to zero — and `Inexact` under `Exact` |
-| `exact_arith/src/lib.rs:111` | — | Facade re-export |
+| `exact_arith/src/lib.rs:112` | — | Facade re-export |
 
 ## Crate Usage
 

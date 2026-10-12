@@ -7,7 +7,14 @@ repository.workspace = true
 description = "A fixed-width wire encoding and its to/from conversions for exact's Money, Qty, and Price value types"
 
 [dependencies]
+# `Decimal`, `Qty`, `PriceAt` and `KindError` — the values a `Wire` record
+# carries, and the error a decoded record can fail with.
 exact_kind = { path = "../exact_kind", version = "0.1.0" }
+
+# Tests only: `MONEY_SCALE` names the scale a test decodes at. The library
+# writes each value's own scale, so it needs no scale constant
+# (docs/decisions/002_scale_byte_from_the_type.md).
+[dev-dependencies]
 exact_scale = { path = "../exact_scale", version = "0.1.0" }
 
 [lints]

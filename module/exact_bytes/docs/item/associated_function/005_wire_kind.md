@@ -17,7 +17,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:162-165`
+`module/exact_bytes/src/lib.rs:164-167`
 
 ```rust
 pub const fn kind( self ) -> u8
@@ -30,12 +30,12 @@ pub const fn kind( self ) -> u8
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 162-165 | Declaration |
-| `tests/wire_roundtrip_test.rs` | 15,25,35 | Asserting each kind's own round-trip preserves its discriminator |
+| `src/lib.rs` | 164-167 | Declaration |
+| `tests/wire_roundtrip_test.rs` | 16,26,36 | Asserting each kind's own round-trip preserves its discriminator |
 
 No production function in `exact_bytes` calls `Wire::kind` — like `minor`/
 `scale`, `check_header`, which the `*_from_wire` functions call, reads `w.kind`
-as a direct private-field access (`src/lib.rs:107`) instead.
+as a direct private-field access (`src/lib.rs:109`) instead.
 
 ## Crate Usage
 

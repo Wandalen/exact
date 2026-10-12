@@ -4,9 +4,9 @@ Design documentation for `exact_kind`, as typed doc definitions.
 
 | Directory | Responsibility |
 |------|-----------------|
-| `type/` | `Decimal`/`Qty`/`Price` and the `Money`/`Quantity` aliases built from them |
-| `invariant/` | No float anywhere, and every checked operation total, at the decimal/kind level |
-| `decisions/` | Why non-negativity is a separate wrapper type, enforced at construction |
+| `type/` | `Decimal`/`Qty`/`PriceAt` and the `Money`/`Quantity`/`Price` aliases built from them |
+| `invariant/` | No float anywhere, every checked operation total, and every scale at most 18, at the decimal/kind level |
+| `decisions/` | Why non-negativity is a separate wrapper type, why crossing scales is an explicit `rescale`, and why a price carries its own scale |
 | `algorithm/` | `Qty::checked_sub`'s exact below-zero procedure |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
@@ -18,7 +18,7 @@ ceiling. It consolidates what the real codebase built as two separate
 crates — `exact_decimal`'s signed `Decimal<SCALE>` and `exact_qty`'s
 non-negative `Qty<SCALE>` — into the one crate the family's preferred design
 names `exact_kind`, carrying both representations forward unchanged in
-behaviour, plus `Price` as its own type wrapping a `Money`; see each
+behaviour, plus `PriceAt< SCALE >` as its own type wrapping a `Decimal`, with `Price` its alias at the standard scale; see each
 collection's own instances for the two disclosed deviations from that
 preferred design (no `Scaled` trait, `KindError` with no `ScaleMismatch`).
 

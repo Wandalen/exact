@@ -1,8 +1,8 @@
 //! The conserved value type family: `Money`, `Qty`, and `Price`, each a
 //! fixed-point decimal whose scale lives in the type.
 //!
-//! Tier 1 of the family, depending on `exact_minor` for the backing integer
-//! and `exact_scale` for the power-of-ten table and the declared ceiling.
+//! Tier 1 of the family, depending on `exact_minor` for the backing integer,
+//! `exact_scale` for powers of ten and the ceiling, `exact_round` for `rescale`.
 //! Consolidates what the real codebase built as two separate crates —
 //! `exact_decimal`'s signed `Decimal< SCALE >` and `exact_qty`'s
 //! non-negative `Qty< SCALE >` — into the one crate the preferred design
@@ -51,6 +51,7 @@ use exact_minor::
   minor_to_i64,
   minor_zero,
 };
+use exact_round::{ RoundError, Rounding, round_div };
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
@@ -58,6 +59,9 @@ pub type Money = Decimal< MONEY_SCALE >;
 
 /// A non-negative quantity at the standard money scale.
 pub type Quantity = Qty< MONEY_SCALE >;
+
+/// A price at the standard money scale.
+pub type Price = PriceAt< MONEY_SCALE >;
 
 /// Why a value could not be constructed, or an operation could not be completed.
 ///
@@ -84,15 +88,15 @@ pub enum KindError
     /// The offending count of minor units.
     minor : Backing,
   },
-  /// A decimal string with more fractional digits than the type's scale.
-  ///
-  /// Rejected rather than repaired. Truncating destroys the excess
-  /// silently; rounding invents a value the caller did not write.
+  /// A value with more fractional digits than the target scale can hold:
+  /// text given to `parse`, or a value `rescale` narrows under `Exact`.
+  /// Rejected rather than repaired — truncating destroys the excess
+  /// silently; rounding invents a value the caller did not ask for.
   ExcessPrecision
   {
-    /// Fractional digits the text carried.
+    /// Fractional digits the input carried: typed in the text, or the source scale.
     digits : u32,
-    /// Fractional digits the type can hold.
+    /// Fractional digits the target type can hold.
     scale : u32,
   },
   /// Text the grammar does not accept.
@@ -175,21 +179,26 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// One whole unit, in minor units.
   pub const ONE_MINOR : Backing = pow10( SCALE );
 
-  /// Zero — the one infallible constructor, representable at every scale.
-  pub const ZERO : Self = Self { minor : minor_zero() };
+  /// Fails the build for a scale whose whole unit, `10^SCALE`, does not fit
+  /// the backing integer — `pow10`'s own limit of 18 places. Every way to
+  /// build a `Decimal` evaluates it, so a scale past 18 cannot be built.
+  const REPRESENTABLE : () = assert!( Self::ONE_MINOR > 0 );
+
+  /// Zero — the one infallible constructor, representable at every valid scale.
+  pub const ZERO : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_zero() } };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
+  pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ) } };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
+  pub const MAX : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) } };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) };
+  pub const MIN : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) } };
 
   /// Build from a count of minor units.
   ///
@@ -198,6 +207,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// [`KindError::ExceedsCeiling`] when `|minor|` is past the ceiling.
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
+    let () = Self::REPRESENTABLE;
     if minor > CEILING_MINOR_UNITS || minor < -CEILING_MINOR_UNITS
     {
       return Err( KindError::ExceedsCeiling { minor } );
@@ -228,6 +238,44 @@ impl< const SCALE : u32 > Decimal< SCALE >
   {
     minor_to_i64( self.minor )
   }
+
+  /// The same value at scale `TO`. Going finer multiplies by `10^(TO - SCALE)`
+  /// and can only overflow; going coarser divides by `10^(SCALE - TO)` and
+  /// rounds per `rounding` — [`Rounding::Exact`] refuses any digit that would
+  /// be lost.
+  ///
+  /// `TO` is at most 18, like every scale: a coarser one does not compile.
+  ///
+  /// ```compile_fail
+  /// use exact_kind::Decimal;
+  /// use exact_round::Rounding;
+  /// let one = Decimal::< 6 >::from_minor( 1 ).unwrap();
+  /// let _ = one.rescale::< 20 >( Rounding::Exact ); // 10^20 does not fit the backing integer
+  /// ```
+  ///
+  /// # Errors
+  ///
+  /// [`KindError::Overflow`] or [`KindError::ExceedsCeiling`] when the value
+  /// does not fit at scale `TO`. [`KindError::ExcessPrecision`] when
+  /// `rounding` is [`Rounding::Exact`] and going coarser would drop a digit.
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal< TO >, KindError >
+  {
+    let minor = self.minor();
+    let rescaled = if TO >= SCALE
+    {
+      minor.checked_mul( pow10( TO - SCALE ) ).ok_or( KindError::Overflow { operation : "rescale" } )?
+    }
+    else
+    {
+      round_div( minor, pow10( SCALE - TO ), rounding ).map_err( | e | match e
+      {
+        RoundError::Inexact => KindError::ExcessPrecision { digits : SCALE, scale : TO },
+        RoundError::DivZero | RoundError::Overflow => KindError::Overflow { operation : "rescale" },
+      } )?
+    };
+    Decimal::< TO >::from_minor( rescaled )
+  }
+
 
   /// The whole-unit part, truncated toward zero.
   #[ must_use ]
@@ -494,6 +542,18 @@ impl< const SCALE : u32 > Qty< SCALE >
     self.value.minor()
   }
 
+  /// The same quantity at scale `TO`, as [`Decimal::rescale`] — still
+  /// non-negative, since every mode rounds a non-negative value to one.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
+  {
+    Qty::from_decimal( self.value.rescale::< TO >( rounding )? )
+  }
+
+
   /// The whole-unit part, truncated.
   #[ must_use ]
   pub const fn whole( self ) -> Backing
@@ -607,7 +667,8 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
   }
 }
 
-/// A price at the standard money scale.
+/// A price at scale `SCALE` — [`Price`] is the one at the standard money
+/// scale.
 ///
 /// A type of its own, so a price cannot stand in for money, or money for a
 /// price. Like [`Money`] it may be negative — a discount. Same-kind
@@ -636,19 +697,28 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 /// let price = Price::parse( "1.25" ).unwrap();
 /// let _ = price.checked_add( cash );
 /// ```
+///
+/// Nor two prices at different scales:
+///
+/// ```compile_fail
+/// use exact_kind::PriceAt;
+/// let cents : PriceAt< 2 > = PriceAt::parse( "1.25" ).unwrap();
+/// let fine : PriceAt< 6 > = PriceAt::parse( "1.25" ).unwrap();
+/// let _ = cents.checked_add( fine );
+/// ```
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Price
+pub struct PriceAt< const SCALE : u32 >
 {
-  value : Money,
+  value : Decimal< SCALE >,
 }
 
-impl Price
+impl< const SCALE : u32 > PriceAt< SCALE >
 {
   /// No price at all.
-  pub const ZERO : Self = Self { value : Money::ZERO };
+  pub const ZERO : Self = Self { value : Decimal::< SCALE >::ZERO };
 
   /// The largest price this type can hold — exactly the declared ceiling.
-  pub const MAX : Self = Self { value : Money::MAX };
+  pub const MAX : Self = Self { value : Decimal::< SCALE >::MAX };
 
   /// Build from a count of minor units.
   ///
@@ -657,7 +727,7 @@ impl Price
   /// As [`Decimal::from_minor`].
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
-    match Money::from_minor( minor )
+    match Decimal::< SCALE >::from_minor( minor )
     {
       Ok( value ) => Ok( Self { value } ),
       Err( e ) => Err( e ),
@@ -706,12 +776,22 @@ impl Price
   /// As [`Decimal::parse`].
   pub fn parse( text : &str ) -> Result< Self, KindError >
   {
-    Ok( Self { value : Money::parse( text )? } )
+    Ok( Self { value : Decimal::< SCALE >::parse( text )? } )
+  }
+
+  /// The same price at scale `TO`, as [`Decimal::rescale`].
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< PriceAt< TO >, KindError >
+  {
+    Ok( PriceAt { value : self.value.rescale::< TO >( rounding )? } )
   }
 }
 
 /// Renders a price exactly as money of the same amount renders.
-impl fmt::Display for Price
+impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {

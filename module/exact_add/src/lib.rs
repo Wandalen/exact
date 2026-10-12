@@ -43,14 +43,14 @@
 //! assert_eq!( money_saturating_add( Money::MAX, Money::EPSILON ), Money::MAX );
 //! ```
 
-use exact_kind::{ KindError, Money, Price, Quantity };
+use exact_kind::{ Decimal, KindError, PriceAt, Qty };
 
 /// Add two money values.
 ///
 /// # Errors
 ///
 /// See [`exact_kind::Decimal::checked_add`].
-pub const fn money_add( a : Money, b : Money ) -> Result< Money, KindError >
+pub const fn money_add< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> Result< Decimal< S >, KindError >
 {
   a.checked_add( b )
 }
@@ -60,7 +60,7 @@ pub const fn money_add( a : Money, b : Money ) -> Result< Money, KindError >
 /// # Errors
 ///
 /// See [`exact_kind::Decimal::checked_sub`].
-pub const fn money_sub( a : Money, b : Money ) -> Result< Money, KindError >
+pub const fn money_sub< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> Result< Decimal< S >, KindError >
 {
   a.checked_sub( b )
 }
@@ -70,7 +70,7 @@ pub const fn money_sub( a : Money, b : Money ) -> Result< Money, KindError >
 /// # Errors
 ///
 /// See [`exact_kind::Qty::checked_add`].
-pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
+pub const fn qty_add< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Result< Qty< S >, KindError >
 {
   a.checked_add( b )
 }
@@ -80,7 +80,7 @@ pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 /// # Errors
 ///
 /// See [`exact_kind::Qty::checked_sub`].
-pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
+pub const fn qty_sub< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Result< Qty< S >, KindError >
 {
   a.checked_sub( b )
 }
@@ -89,8 +89,8 @@ pub const fn qty_sub( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 ///
 /// # Errors
 ///
-/// See [`exact_kind::Price::checked_add`].
-pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
+/// See [`exact_kind::PriceAt::checked_add`].
+pub const fn price_add< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> Result< PriceAt< S >, KindError >
 {
   a.checked_add( b )
 }
@@ -99,8 +99,8 @@ pub const fn price_add( a : Price, b : Price ) -> Result< Price, KindError >
 ///
 /// # Errors
 ///
-/// See [`exact_kind::Price::checked_sub`].
-pub const fn price_sub( a : Price, b : Price ) -> Result< Price, KindError >
+/// See [`exact_kind::PriceAt::checked_sub`].
+pub const fn price_sub< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> Result< PriceAt< S >, KindError >
 {
   a.checked_sub( b )
 }
@@ -110,27 +110,27 @@ pub const fn price_sub( a : Price, b : Price ) -> Result< Price, KindError >
 /// # Errors
 ///
 /// See [`exact_kind::Decimal::checked_neg`].
-pub const fn money_checked_neg( a : Money ) -> Result< Money, KindError >
+pub const fn money_checked_neg< const S : u32 >( a : Decimal< S > ) -> Result< Decimal< S >, KindError >
 {
   a.checked_neg()
 }
 
 /// Add two money values, clamping to the declared ceiling instead of refusing.
 ///
-/// Clamps to [`Money::MAX`]/[`Money::MIN`] — the declared ceiling, not the
-/// raw backing width — because a `Money` value is only ever constructible
+/// Clamps to [`Decimal::MAX`]/[`Decimal::MIN`] — the declared ceiling, not the
+/// raw backing width — because a `Decimal` value is only ever constructible
 /// inside that ceiling in the first place; a wider clamp would produce a
 /// minor count the type's own constructor would refuse to hold. The clamp
 /// direction is `b`'s sign: when `checked_add` fails, `a` and `b` necessarily
 /// share a sign (operands of opposite sign can never overflow a sum), so
 /// `b`'s sign is also the true mathematical sum's sign.
 #[ must_use ]
-pub const fn money_saturating_add( a : Money, b : Money ) -> Money
+pub const fn money_saturating_add< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> Decimal< S >
 {
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
+    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Decimal::< S >::MIN } else { Decimal::< S >::MAX },
   }
 }
 
@@ -139,11 +139,11 @@ pub const fn money_saturating_add( a : Money, b : Money ) -> Money
 /// Only the upper bound can ever clamp — two non-negative quantities never
 /// sum below zero.
 #[ must_use ]
-pub const fn qty_saturating_add( a : Quantity, b : Quantity ) -> Quantity
+pub const fn qty_saturating_add< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Qty< S >
 {
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => Quantity::MAX,
+    Err( _ ) => Qty::< S >::MAX,
   }
 }

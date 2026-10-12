@@ -1,8 +1,9 @@
-# 001: use exact_kind::{ KindError, Money, Quantity }
+# 001: use exact_kind::{ Decimal, KindError, Qty }
 
 ## Representation
 
-Brings the two conserved-value types this crate splits into scope, and
+Brings the two conserved-value types this crate splits into scope, in their
+generic form (→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)), and
 `KindError`, the error type of the `from_minor` constructor the generic
 helpers take as `make`.
 
@@ -15,7 +16,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_dust/src/lib.rs:60`
 
 ```rust
-use exact_kind::{ KindError, Money, Quantity };
+use exact_kind::{ Decimal, KindError, Qty };
 ```
 
 ## File Usage
@@ -24,7 +25,7 @@ use exact_kind::{ KindError, Money, Quantity };
 |------|---------|---------|
 | `src/lib.rs` | 60 | Declaration |
 | `src/lib.rs` | 161,179 | `KindError` in the `make : fn( i64 ) -> Result< T, KindError >` parameter of `split_with` and `split_into_with` (private) |
-| `src/lib.rs` | 207,209,218,220,231,243,245,253,255,263 | `Money`/`Quantity` parameter and return types on the 6 public split/remainder functions, and `Money::from_minor`/`Quantity::from_minor` passed as `make` |
+| `src/lib.rs` | 207,209,218,220,231,243,245,253,255,263 | `Decimal< S >`/`Qty< S >` parameter and return types on the 6 public split/remainder functions, and `Decimal::< S >::from_minor`/`Qty::< S >::from_minor` passed as `make` |
 
 `KindError` is named only in the type of `make`; no `KindError` value
 leaves this crate. Every one is folded into `DustError::Overflow` at the

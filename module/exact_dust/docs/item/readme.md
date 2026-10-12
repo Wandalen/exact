@@ -63,7 +63,7 @@ only the two trait impls on `DustError`.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{ Money, Quantity } | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{ Decimal, KindError, Qty } | Use Declaration | 🔄 |
 | use_declaration/002 | use exact_round::{ RoundError, Rounding } | Use Declaration | 🔄 |
 | enum/001 | DustTo | Enum | 🔄 |
 | enum/002 | DustError | Enum | 🔄 |
@@ -81,11 +81,12 @@ only the two trait impls on `DustError`.
 
 - **`money_dust_split` is the one function in this entire crate with a real
   production caller** — `smoke_exact_market_split::market_split`
-  (`smoke_exact_market_split/src/lib.rs:142`), reached through the
+  (`smoke_exact_market_split/src/lib.rs:144`), reached through the
   `exact_arith` facade re-export and confirmed via that crate's own
   `Cargo.toml` dependency, not assumed from the name match alone. It's also
-  the one function `exact_arith`'s own crate-doc doctest and test suite
-  genuinely call — unlike every sibling catalog built so far in this family
+  the one function `exact_arith`'s own crate-doc doctest and end-to-end test
+  genuinely call (its any-scale test calls `qty_dust_split` too, at scale 8)
+  — unlike every sibling catalog built so far in this family
   (`exact_add`/`exact_parse`/`exact_cmp`/`exact_snap`), where the facade's
   test bypasses the re-export entirely and calls `exact_kind` directly
   instead.

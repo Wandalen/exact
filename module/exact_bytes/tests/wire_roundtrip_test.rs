@@ -4,7 +4,8 @@
 //! hold.
 
 use exact_bytes::{ KIND_MONEY, KIND_PRICE, KIND_QTY, Wire, WireError, money_from_wire, money_to_wire, qty_from_wire, qty_to_wire, price_from_wire, price_to_wire };
-use exact_kind::{ Money, Quantity, Price };
+use exact_kind::{ Money, Price, PriceAt, Quantity };
+use exact_scale::MONEY_SCALE;
 
 /// A money value round-trips through the wire form unchanged.
 #[ test ]
@@ -41,10 +42,10 @@ fn price_round_trips_through_the_wire_form()
 fn a_wire_encoded_as_one_kind_is_refused_by_another_kind_s_decoder()
 {
   let money_wire = money_to_wire( Money::parse( "1" ).unwrap() );
-  assert_eq!( qty_from_wire( money_wire ), Err( WireError::BadKind ) );
+  assert_eq!( qty_from_wire::< MONEY_SCALE >( money_wire ), Err( WireError::BadKind ) );
 
   let qty_wire = qty_to_wire( Quantity::from_int( 1 ).unwrap() );
-  assert_eq!( money_from_wire( qty_wire ), Err( WireError::BadKind ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( qty_wire ), Err( WireError::BadKind ) );
 }
 
 /// A wrong scale byte is refused, independent of the kind byte being correct.
@@ -55,7 +56,7 @@ fn a_mismatched_scale_byte_is_refused()
   let mut bytes = wire.to_bytes();
   bytes[ 8 ] = 9; // a scale this family never uses
   let tampered = Wire::from_bytes( &bytes ).unwrap();
-  assert_eq!( money_from_wire( tampered ), Err( WireError::BadScale ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( tampered ), Err( WireError::BadScale ) );
 }
 
 /// A byte slice shorter than the encoded length is refused, not padded.
@@ -85,7 +86,7 @@ fn round_tripping_through_raw_bytes_preserves_the_value()
 fn a_decoded_value_past_the_ceiling_is_refused_as_overflow()
 {
   let past_ceiling = Wire::new( Money::MAX.minor() + 1, 6, KIND_MONEY );
-  assert_eq!( money_from_wire( past_ceiling ), Err( WireError::Overflow ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( past_ceiling ), Err( WireError::Overflow ) );
 }
 
 /// A decoded negative minor count is refused for a quantity, not for money.
@@ -93,10 +94,10 @@ fn a_decoded_value_past_the_ceiling_is_refused_as_overflow()
 fn a_decoded_negative_value_is_refused_only_for_a_non_negative_kind()
 {
   let negative = Wire::new( -1, 6, KIND_QTY );
-  assert!( matches!( qty_from_wire( negative ), Err( WireError::Negative { minor : -1 } ) ) );
+  assert!( matches!( qty_from_wire::< MONEY_SCALE >( negative ), Err( WireError::Negative { minor : -1 } ) ) );
 
   let money_negative = Wire::new( -1, 6, KIND_MONEY );
-  assert!( money_from_wire( money_negative ).is_ok() );
+  assert!( money_from_wire::< MONEY_SCALE >( money_negative ).is_ok() );
 }
 
 /// A negative price survives the wire, and a price decoder refuses a record
@@ -106,8 +107,8 @@ fn a_negative_price_round_trips_and_kinds_never_cross_decoders()
 {
   let v = Price::parse( "-0.05" ).unwrap();
   assert_eq!( price_from_wire( price_to_wire( v ) ).unwrap(), v );
-  assert_eq!( price_from_wire( money_to_wire( Money::parse( "1" ).unwrap() ) ), Err( WireError::BadKind ) );
-  assert_eq!( money_from_wire( price_to_wire( v ) ), Err( WireError::BadKind ) );
+  assert_eq!( price_from_wire::< MONEY_SCALE >( money_to_wire( Money::parse( "1" ).unwrap() ) ), Err( WireError::BadKind ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( price_to_wire( v ) ), Err( WireError::BadKind ) );
 }
 
 /// A kind byte no kind uses is refused by every decoder.
@@ -115,9 +116,9 @@ fn a_negative_price_round_trips_and_kinds_never_cross_decoders()
 fn an_unknown_kind_byte_is_refused_by_every_decoder()
 {
   let unknown = Wire::new( 0, 6, 7 );
-  assert_eq!( money_from_wire( unknown ), Err( WireError::BadKind ) );
-  assert_eq!( qty_from_wire( unknown ), Err( WireError::BadKind ) );
-  assert_eq!( price_from_wire( unknown ), Err( WireError::BadKind ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( unknown ), Err( WireError::BadKind ) );
+  assert_eq!( qty_from_wire::< MONEY_SCALE >( unknown ), Err( WireError::BadKind ) );
+  assert_eq!( price_from_wire::< MONEY_SCALE >( unknown ), Err( WireError::BadKind ) );
 }
 
 /// An encoded record carries the value's minor count, the family's scale,
@@ -134,7 +135,7 @@ fn an_encoded_record_carries_minor_scale_and_kind()
 fn a_decoded_value_below_the_negative_ceiling_is_refused_as_overflow()
 {
   let below = Wire::new( Money::MIN.minor() - 1, 6, KIND_MONEY );
-  assert_eq!( money_from_wire( below ), Err( WireError::Overflow ) );
+  assert_eq!( money_from_wire::< MONEY_SCALE >( below ), Err( WireError::Overflow ) );
 }
 
 /// An empty slice is truncated; a longer one decodes its first record and
@@ -147,4 +148,20 @@ fn an_empty_slice_is_truncated_and_a_longer_one_decodes_its_first_record()
   let mut longer = wire.to_bytes().to_vec();
   longer.push( 0xff );
   assert_eq!( Wire::from_bytes( &longer ).unwrap(), wire );
+}
+
+/// A price at a scale other than 6 round-trips — through the record and
+/// through raw bytes — and a reader at another scale refuses it.
+#[ test ]
+fn a_price_at_another_scale_round_trips_and_is_refused_at_the_wrong_one()
+{
+  let cents : PriceAt< 2 > = PriceAt::parse( "65000.25" ).unwrap();
+  let wire = price_to_wire( cents );
+  assert_eq!( wire.scale(), 2 );
+  assert_eq!( price_from_wire::< 2 >( wire ), Ok( cents ) );
+  assert_eq!( price_from_wire::< MONEY_SCALE >( wire ), Err( WireError::BadScale ) );
+
+  let fine : PriceAt< 8 > = PriceAt::parse( "0.00001234" ).unwrap();
+  let bytes = price_to_wire( fine ).to_bytes();
+  assert_eq!( price_from_wire( Wire::from_bytes( &bytes ).unwrap() ), Ok( fine ) );
 }

@@ -34,7 +34,7 @@ No file anywhere formats a `DustError` value — confirmed via a workspace-wide
 search for `to_string`/`format!`/`Display` near `DustError`, which returns
 nothing beyond the impl declaration itself. An honest empty finding: every
 real consumer compares `DustError` by `PartialEq` or discards it via
-`.expect(...)` (`smoke_exact_market_split/src/lib.rs:142`), never by
+`.expect(...)` (`smoke_exact_market_split/src/lib.rs:144`), never by
 rendering the message — the same pattern already recorded for
 `KindError`/`RatioError`/`SnapError`/`FmtError` across this family.
 

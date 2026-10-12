@@ -43,7 +43,7 @@ own; it brings the `Write` trait's `write_fmt` method into scope for the
 | `tests/fmt_test.rs:56` | — | Every kind, and a negative sign |
 | `tests/fmt_test.rs:73` | — | `BufFull` when the buffer runs out partway, after an earlier piece fit |
 | `tests/fmt_test.rs:96` | — | `BufFull` on a zero-length buffer |
-| `exact_arith/src/lib.rs:118` | — | Facade re-export |
+| `exact_arith/src/lib.rs:119` | — | Facade re-export |
 | `exact_arith/tests/no_alloc_test.rs:51,53-54,57` | — | Renders every kind into a stack buffer, checked to make no heap allocation |
 
 No production call site anywhere outside this crate's own tests — an honest

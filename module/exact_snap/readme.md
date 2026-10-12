@@ -33,7 +33,7 @@ for it.
 
 | File | Responsibility |
 |------|----------------|
-| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_round` |
+| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind`, `exact_round` and `exact_scale` |
 | [`src/lib.rs`](src/lib.rs) | `Tick`, `Lot`, `price_snap_tick`, `qty_snap_lot`, `SnapError` |
 | [`tests/snap_test.rs`](tests/snap_test.rs) | Construction refusal, `Down`/`Up`/`HalfEven` snapping, on-grid identity and negative ticks under all eight modes, and `Exact`'s refusal of a value off the grid |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |

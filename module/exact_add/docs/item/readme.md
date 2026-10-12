@@ -59,7 +59,7 @@ neither an Enum nor any Associated Item Kind.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{KindError, Money, Price, Quantity} | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{Decimal, KindError, PriceAt, Qty} | Use Declaration | 🔄 |
 | function/001 | money_add | Function | 🔄 |
 | function/002 | money_sub | Function | 🔄 |
 | function/003 | qty_add | Function | 🔄 |
@@ -86,7 +86,8 @@ neither an Enum nor any Associated Item Kind.
   `exact_add`'s re-exported free functions — confirmed by grep across that
   test file. The facade re-exports all 9 names (`src/lib.rs:103-111`) and a
   separate re-export-resolution test touches a representative name from
-  every other tier, but none of `exact_add`'s.
+  every other tier, but none of `exact_add`'s. The one facade-level call is
+  `price_add` at scale 2, in `tests/any_scale_test.rs`.
 - **Zero intra-crate call edges.** Every one of the 9 functions is a single
   expression dispatching into `exact_kind` (8 of them) or additionally into
   `exact_sign` (1 of them, `money_saturating_add`) — no function in this

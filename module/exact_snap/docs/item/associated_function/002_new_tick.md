@@ -1,4 +1,4 @@
-# 002: Tick::new
+# 002: TickAt::new
 
 ## Representation
 
@@ -16,17 +16,17 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:84-96`
+`module/exact_snap/src/lib.rs:89-101`
 
 ```rust
-pub const fn new( price : Price ) -> Result< Self, SnapError >
+pub const fn new( price : PriceAt< S > ) -> Result< Self, SnapError >
 {
   if price.minor() == 0
   {
     return Err( SnapError::ZeroTick );
   }
   // The price range is symmetric about zero, so the magnitude always fits.
-  match Price::from_minor( price.minor().abs() )
+  match PriceAt::< S >::from_minor( price.minor().abs() )
   {
     Ok( size ) => Ok( Self( size ) ),
     Err( _ ) => Err( SnapError::Overflow ),
@@ -38,9 +38,9 @@ pub const fn new( price : Price ) -> Result< Self, SnapError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 84-96 | Declaration |
+| `src/lib.rs` | 89-101 | Declaration |
 | `tests/snap_test.rs` | 13,22,34,43,52,101,158-160 | Zero-rejection check; the fixture every snap test builds before calling `price_snap_tick`; a tick of -5 stored as 5 and equal to a tick of 5 |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
 
 No production call site anywhere in the workspace outside `exact_snap`'s own
 tests — `exact_arith`'s own facade test suite never constructs a `Tick`

@@ -10,7 +10,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:276`
+`module/exact_kind/src/lib.rs:324`
 
 ```rust
 pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
@@ -28,7 +28,7 @@ pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 276,542 | Declaration; `Qty::checked_mul_int`'s delegation |
+| `src/lib.rs` | 324,602 | Declaration; `Qty::checked_mul_int`'s delegation |
 | `tests/checked_arithmetic_test.rs` | throughout | Overflow and ceiling-breach checks |
 
 No file outside `exact_kind` calls `Decimal::checked_mul_int` directly — an
@@ -43,11 +43,11 @@ integer (only `exact_ratio`'s rational scaling exists today).
 
 ## Caller Tree
 
-- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:542`)
+- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:602`)
 
 No external caller anywhere in the workspace.
 
 ## Callee Tree
 
 - **External:** `i64::checked_mul` — `self.minor().checked_mul( n )` (`exact_minor` has no multiply)
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:283`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:331`)

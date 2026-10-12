@@ -24,10 +24,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:203`
 
 ```rust
-pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< Price, RatioError >
+pub fn price_mul_ratio< const S : u32 >( v : PriceAt< S >, r : Ratio, rounding : Rounding ) -> Result< PriceAt< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
-  Price::from_minor( minor ).map_err( kind_error_to_ratio_error )
+  PriceAt::< S >::from_minor( minor ).map_err( kind_error_to_ratio_error )
 }
 ```
 
@@ -37,7 +37,7 @@ pub fn price_mul_ratio( v : Price, r : Ratio, rounding : Rounding ) -> Result< P
 |------|---------|---------|
 | `src/lib.rs` | 203-207 | Declaration |
 | `tests/ratio_and_div_round_test.rs` | 232,247,373 | `Down`/`Up`/`HalfEven` at both signs, refusal past the ceiling, and `Inexact` under `Exact` |
-| `exact_arith/src/lib.rs:110` | — | Facade re-export |
+| `exact_arith/src/lib.rs:111` | — | Facade re-export |
 
 ## Crate Usage
 

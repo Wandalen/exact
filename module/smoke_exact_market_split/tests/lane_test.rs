@@ -1,8 +1,9 @@
-//! The lane's six steps, driven without the binary.
+//! The lane's seven steps, driven without the binary.
 //!
 //! Ported from `smoke_exact_arithmetic/tests/lane_test.rs` — the first four
 //! tests carry forward unchanged except for the import path; the fifth is
-//! new, covering step 5's market split; the last two cover step 6's scenes.
+//! new, covering step 5's market split; the next two cover step 6's scenes;
+//! the last two cover step 7's trade at two scales.
 //!
 //! The lane is its own test — every claim it prints is an assertion — but
 //! that only holds while something runs it. No test suite can reach a bare
@@ -12,10 +13,10 @@
 //!
 //! [`run`]: smoke_exact_market_split::run
 
-use exact_arith::{ Decimal, Money, Price, Quantity, verify };
+use exact_arith::{ Decimal, Money, Price, Qty, Quantity, verify };
 use smoke_exact_market_split::
 {
-  REPEATS, checksum, exact_tenths, float_tenths, golden, ledger, market_split, run,
+  REPEATS, checksum, exact_tenths, float_tenths, golden, ledger, market_split, per_asset_trade, run,
 };
 
 /// Ten tenths added exactly are exactly one.
@@ -138,21 +139,20 @@ fn the_market_split_recombines_to_the_original_fill()
   assert!( shares[ 0 ] > shares[ 1 ], "the first share must absorb the remainder" );
 }
 
-/// Step 6 — every scene of `docs/scene/` lands on its golden value. Scenes
-/// 003 and 009 run on `Money`, whose scale is 6, so their values are the
-/// scale-6 spelling of the proposed `3.33`/`0.01` and `1000`.
+/// Step 6 — every scene of `docs/scene/` lands on its golden value, at
+/// scale 2 as proposed: `3.33`/`0.01` for the split and `1000` on the wire.
 #[ test ]
 fn the_scenes_land_on_their_golden_values()
 {
   let g = golden();
   assert_eq!( g.sum, Decimal::< 2 >::ZERO, "scene 002: 10.00 + 3.33 - 13.33" );
-  assert_eq!( g.parts, vec![ Money::from_minor( 3_333_333 ).unwrap(); 3 ], "scene 003: the parts" );
+  assert_eq!( g.parts, vec![ Decimal::< 2 >::parse( "3.33" ).unwrap(); 3 ], "scene 003: the parts" );
   assert_eq!( g.dust_minor, 1, "scene 003: the dust" );
   assert_eq!( g.tick, Price::parse( "1.25" ).unwrap(), "scene 004" );
   assert_eq!( g.lot, Quantity::from_int( 9 ).unwrap(), "scene 005" );
   assert!( g.extra, "scene 006" );
   assert!( g.overflow, "scene 008" );
-  assert_eq!( g.wire_minor, 10_000_000, "scene 009" );
+  assert_eq!( g.wire_minor, 1000, "scene 009: the scale-2 minor units of 10.00" );
 }
 
 /// Scene 010 — two runs produce the same checksum, and the checksum is not a
@@ -166,4 +166,33 @@ fn the_checksum_is_stable_across_calls_and_changes_with_any_value()
   let mut changed = g.clone();
   changed.dust_minor += 1;
   assert_ne!( checksum( &g ), checksum( &changed ) );
+}
+
+/// Step 7 — a price in cents times a quantity in satoshis costs exactly
+/// `8024.69`, and the same trade at one shared scale of 6 does not.
+///
+/// The one-scale arm is to step 7 what the `f64` arm is to step 2: rounding
+/// `0.12345679` to `0.123457` first prices the trade at `8024.70`, a cent
+/// off. If the two ever agreed, the step would no longer show why each asset
+/// keeps its own scale.
+#[ test ]
+fn a_trade_at_two_scales_is_priced_exactly_and_one_scale_is_a_cent_off()
+{
+  let t = per_asset_trade();
+  assert_eq!( t.cost, Decimal::< 2 >::parse( "8024.69" ).unwrap() );
+  assert_eq!( t.one_scale_cost, Decimal::< 2 >::parse( "8024.70" ).unwrap() );
+  assert_ne!( t.cost, t.one_scale_cost, "one shared scale must not price the trade exactly" );
+}
+
+/// Step 7 — the quantity keeps its scale on the wire, and its split
+/// conserves every satoshi, the leftover one landing on the first share.
+#[ test ]
+fn a_satoshi_quantity_keeps_its_scale_on_the_wire_and_splits_without_loss()
+{
+  let t = per_asset_trade();
+  assert_eq!( t.wire_scale, 8 );
+  let satoshis : Vec< i64 > = t.shares.iter().map( | q | q.minor() ).collect();
+  assert_eq!( satoshis, [ 4_115_227, 4_115_226, 4_115_226 ] );
+  let total = t.shares.iter().copied().try_fold( Qty::< 8 >::ZERO, | a, b | a.checked_add( b ) ).unwrap();
+  assert_eq!( total, Qty::< 8 >::parse( "0.12345679" ).unwrap() );
 }

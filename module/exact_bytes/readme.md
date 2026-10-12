@@ -36,7 +36,7 @@ with no range check of its own; see the disclosed deviation in
 
 | File | Responsibility |
 |------|----------------|
-| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_scale` |
+| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind`; `exact_scale` for tests only |
 | [`src/lib.rs`](src/lib.rs) | `Wire`, `money`/`qty`/`price_to_wire`/`from_wire`, `WireError` |
 | [`tests/wire_roundtrip_test.rs`](tests/wire_roundtrip_test.rs) | Round-tripping per kind, and every refusal: bad kind, bad scale, truncation, range |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |

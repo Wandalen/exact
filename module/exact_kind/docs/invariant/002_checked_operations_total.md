@@ -15,7 +15,7 @@ conditions, never a silent wrap, truncation, or rounding:
 
 - `Overflow { operation }` — the backing width itself was left (`Backing::MAX`/`MIN`).
 - `ExceedsCeiling { minor }` — in width, but past the declared ceiling re-exported from `exact_scale`.
-- `ExcessPrecision { digits, scale }` — a parsed string carried more fractional digits than `SCALE` holds.
+- `ExcessPrecision { digits, scale }` — a value carried more fractional digits than the target scale holds: a parsed string longer than `SCALE` allows, or a `rescale` to a coarser scale under `Rounding::Exact` that would drop a nonzero digit (`digits` is then the source scale).
 - `Malformed { reason }` — text outside the parser's grammar.
 - `Negative { minor }` — a `Qty` would have gone below zero (→ [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md)).
 
@@ -40,11 +40,11 @@ vice versa.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:68-116` | `KindError` — all five variants |
-| `src/lib.rs:199-206` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
-| `src/lib.rs:246-301` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
-| `src/lib.rs:314-370` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
-| `src/lib.rs:511-547` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
+| `src/lib.rs:72-120` | `KindError` — all five variants |
+| `src/lib.rs:208-216` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
+| `src/lib.rs:294-349` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
+| `src/lib.rs:362-418` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
+| `src/lib.rs:571-607` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
 
 ### Tests
 

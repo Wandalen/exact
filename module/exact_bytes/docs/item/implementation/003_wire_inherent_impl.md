@@ -12,7 +12,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:128-193`
+`module/exact_bytes/src/lib.rs:130-195`
 
 ```rust
 impl Wire
@@ -32,7 +32,7 @@ impl Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 128-193 | Declaration |
+| `src/lib.rs` | 130-195 | Declaration |
 
 ## Crate Usage
 

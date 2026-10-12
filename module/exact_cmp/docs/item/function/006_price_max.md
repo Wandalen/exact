@@ -16,7 +16,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ```rust
 #[ must_use ]
-pub fn price_max( a : Price, b : Price ) -> Price
+pub fn price_max< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> PriceAt< S >
 {
   a.max( b )
 }
@@ -28,7 +28,7 @@ pub fn price_max( a : Price, b : Price ) -> Price
 |------|---------|---------|
 | `src/lib.rs` | 71 | Declaration |
 | `tests/cmp_test.rs` | 51-52 | Both argument orderings, same expected result |
-| `exact_arith/src/lib.rs:137` | — | Facade re-export |
+| `exact_arith/src/lib.rs:138` | — | Facade re-export |
 
 ## Crate Usage
 
@@ -40,7 +40,7 @@ pub fn price_max( a : Price, b : Price ) -> Price
 ## Caller Tree
 
 No caller anywhere, intra-crate or external — an honest empty tree.
-`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:137`); no production call
+`exact_arith` only re-exports the name (`exact_arith/src/lib.rs:138`); no production call
 site exists anywhere else in the workspace, confirmed via
 `grep -rn 'price_max(' --include='*.rs' substrate/ module/` across the full
 tree, excluding `/target/`.

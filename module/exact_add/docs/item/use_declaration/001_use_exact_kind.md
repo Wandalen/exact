@@ -1,11 +1,12 @@
-# 001: use exact_kind::{ KindError, Money, Price, Quantity }
+# 001: use exact_kind::{ Decimal, KindError, PriceAt, Qty }
 
 ## Representation
 
-Imports the four conserved-value types and their shared error enum from
-`exact_kind` — every function in this crate operates on `Money`/`Quantity`/
-`Price` and returns `KindError` on failure, so all four names are needed at
-the crate's single `use` site.
+Imports the three conserved-value types, in their generic form, and their
+shared error enum from `exact_kind` — every function in this crate operates
+on `Decimal< S >`/`Qty< S >`/`PriceAt< S >` at any scale (→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)) and
+returns `KindError` on failure, so all four names are needed at the crate's
+single `use` site.
 
 ## Kind
 
@@ -16,7 +17,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_add/src/lib.rs:46`
 
 ```rust
-use exact_kind::{ KindError, Money, Price, Quantity };
+use exact_kind::{ Decimal, KindError, PriceAt, Qty };
 ```
 
 ## File Usage

@@ -5,6 +5,7 @@ Design documentation for `exact_snap`, as typed doc definitions.
 | Directory | Responsibility |
 |------|-----------------|
 | `invariant/` | A `Tick`/`Lot` grid spacing is never zero-sized |
+| `decisions/` | Why a tick and a lot carry their own scale |
 | `definition/` | Module Index — every public item in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |
 | `item/` | One page per declaration, with every file and crate that uses it |

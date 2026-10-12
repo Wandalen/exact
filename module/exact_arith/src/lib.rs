@@ -85,7 +85,7 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 
 pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
 
-pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
+pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity };
 
 pub use exact_add::
 {
@@ -107,6 +107,7 @@ pub use exact_ratio::
   money_div_round,
   money_mul_ratio,
   price_mul_qty,
+  price_mul_qty_to,
   price_mul_ratio,
   qty_div_round,
   qty_mul_ratio,
@@ -132,7 +133,7 @@ pub use exact_bytes::
   qty_to_wire,
 };
 
-pub use exact_snap::{ Lot, SnapError, Tick, price_snap_tick, qty_snap_lot };
+pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_snap_lot };
 
 pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_cmp };
 

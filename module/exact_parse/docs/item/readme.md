@@ -59,18 +59,24 @@ Enum is absent despite every sibling Tier-2 crate having one.
 
 - **None of the 3 functions have any production caller anywhere in the
   workspace** — an honest empty finding, grep-verified. `exact_arith` only
-  re-exports all three names (`exact_arith/src/lib.rs:116`); the facade's own test suite
-  (`exact_arith/tests/facade_test.rs`) parses values via
+  re-exports all three names (`exact_arith/src/lib.rs:117`); its end-to-end
+  test (`exact_arith/tests/facade_test.rs`) parses values via
   `exact_kind::Decimal::parse` (`Money::parse`) directly instead of through
   this crate's wrappers — the identical bypass pattern already found in
   [exact_add](../../../exact_add/docs/item/readme.md)'s own Notable Findings.
+  The one facade-level call is `price_from_str::< 2 >` in
+  `tests/any_scale_test.rs`.
+- **Each function's scale appears only in its return type**, so a call where
+  nothing else fixes the scale names it — `money_from_str::< MONEY_SCALE >( … )`,
+  as every call in `tests/from_str_test.rs` does
+  (→ [`exact_arith`'s ADR-001](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)).
 - **The compile-time assertion is this crate's only real cross-crate
   coupling check**: it is the one place in the workspace where
   `exact_kind::Money`'s scale and `exact_scale::MONEY_SCALE` are proven
   consistent against each other, rather than merely sharing a numeric
   literal at each definition site by convention.
 - **`qty_from_str` is the only function with a dedicated negative-value
-  test** (`tests/from_str_test.rs:19-22`) — `money_from_str`/`price_from_str`
+  test** (`tests/from_str_test.rs:20-23`) — `money_from_str`/`price_from_str`
   have no equivalent since `Money`/`Price` admit negative values by design.
 
 ### Regenerate

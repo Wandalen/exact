@@ -12,6 +12,8 @@
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
 | 001 | [Ratio Error Without Scale Mismatch Or Bad Rounding](001_ratio_error_without_scale_mismatch_or_bad_rounding.md) | Why `RatioError` drops two preferred-design variants and adds `Negative` (`Inexact` is recorded in `exact_round`'s ADR-004) | 🔄 |
+| 002 | [`price_mul_qty` Multiplies Across Two Scales](002_price_mul_qty_across_two_scales.md) | Why a trade's cost takes a price and a quantity at independent scales, and lands at the price's | 🔄 |
+| 003 | [A Trade's Cost Is Rounded Once, At The Scale The Caller Holds](003_cost_rounded_once_at_a_chosen_scale.md) | Why `price_mul_qty_to` takes the cost's scale, so it is not rounded twice | 🔄 |
 
 ### Regenerate
 
@@ -19,6 +21,6 @@
 cd "$(git rev-parse --show-toplevel)"/module/exact_ratio/docs/decisions
 printf 'instances:              '; ls [0-9][0-9][0-9]_*.md | wc -l
 printf 'rows in Overview Table: '; grep -E '^\| [0-9]{3} \|' readme.md | wc -l
-# instances:              1
-# rows in Overview Table: 1
+# instances:              3
+# rows in Overview Table: 3
 ```

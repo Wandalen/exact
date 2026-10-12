@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_ratio/src/lib.rs:177`
 
 ```rust
-pub fn money_mul_ratio( v : Money, r : Ratio, rounding : Rounding ) -> Result< Money, RatioError >
+pub fn money_mul_ratio< const S : u32 >( v : Decimal< S >, r : Ratio, rounding : Rounding ) -> Result< Decimal< S >, RatioError >
 {
   let minor = mul_ratio_minor( v.minor(), r, rounding )?;
   Money::from_minor( minor ).map_err( kind_error_to_ratio_error )
