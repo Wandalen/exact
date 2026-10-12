@@ -179,21 +179,26 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// One whole unit, in minor units.
   pub const ONE_MINOR : Backing = pow10( SCALE );
 
-  /// Zero — the one infallible constructor, representable at every scale.
-  pub const ZERO : Self = Self { minor : minor_zero() };
+  /// Fails the build for a scale whose whole unit, `10^SCALE`, does not fit
+  /// the backing integer — `pow10`'s own limit of 18 places. Every way to
+  /// build a `Decimal` evaluates it, so a scale past 18 cannot be built.
+  const REPRESENTABLE : () = assert!( Self::ONE_MINOR > 0 );
+
+  /// Zero — the one infallible constructor, representable at every valid scale.
+  pub const ZERO : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_zero() } };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
+  pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ) } };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
+  pub const MAX : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) } };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) };
+  pub const MIN : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) } };
 
   /// Build from a count of minor units.
   ///
@@ -202,6 +207,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// [`KindError::ExceedsCeiling`] when `|minor|` is past the ceiling.
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
+    let () = Self::REPRESENTABLE;
     if minor > CEILING_MINOR_UNITS || minor < -CEILING_MINOR_UNITS
     {
       return Err( KindError::ExceedsCeiling { minor } );
@@ -237,6 +243,15 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// and can only overflow; going coarser divides by `10^(SCALE - TO)` and
   /// rounds per `rounding` — [`Rounding::Exact`] refuses any digit that would
   /// be lost.
+  ///
+  /// `TO` is at most 18, like every scale: a coarser one does not compile.
+  ///
+  /// ```compile_fail
+  /// use exact_kind::Decimal;
+  /// use exact_round::Rounding;
+  /// let one = Decimal::< 6 >::from_minor( 1 ).unwrap();
+  /// let _ = one.rescale::< 20 >( Rounding::Exact ); // 10^20 does not fit the backing integer
+  /// ```
   ///
   /// # Errors
   ///
