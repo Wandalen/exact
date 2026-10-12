@@ -2,7 +2,7 @@
 
 ## Representation
 
-Where the remainder of an equal split goes: folded into the first part
+Where the remainder of a split — equal or weighted — goes: folded into the first part
 (`First`), held back and queried separately (`Sink`), or refused outright
 (`Reject`).
 
@@ -15,14 +15,15 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 `module/exact_dust/src/lib.rs:65-77`
 
 ```rust
-/// Where the remainder of an equal split goes.
+/// Where the remainder of a split goes.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum DustTo
 {
   /// Folded into the first part.
   First,
   /// Held back — not included in any output slot; query it separately via
-  /// [`money_dust_remainder`]/[`qty_dust_remainder`].
+  /// [`money_dust_remainder`]/[`qty_dust_remainder`], or, for a weighted
+  /// split, as the total minus the sum of the returned parts.
   Sink,
   /// A nonzero remainder is refused outright.
   Reject,

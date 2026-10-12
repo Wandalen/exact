@@ -17,7 +17,7 @@
 4. **Distribute** with `slot_minor`, unchanged from the equal split: `First` adds the leftover to slot 0; `Sink` leaves it out of every slot; `Reject` refuses a nonzero leftover with `DustError::Remainder`.
 5. **Build** each slot with `Decimal::< S >::from_minor`, which refuses a count past the ceiling as `DustError::Overflow`.
 
-Steps 2 and 4 each compute the shares — once to find the leftover, once to build the slots — rather than keeping them in a temporary `Vec`, so the only allocation is the returned one.
+Each share is computed once: built straight into the returned `Vec` in step 2 and summed on the way, so step 4 only rebuilds slot 0 and the returned `Vec` is the only allocation.
 
 **Example.** `$10.01` at weights `[ 70, 20, 10 ]`, `Rounding::Down`, `DustTo::First`:
 
@@ -53,4 +53,4 @@ As for the equal split: with `First` the parts sum to the total exactly; with `S
 
 | File | Relationship |
 |------|--------------|
-| `tests/weighted_split_test.rs` | Exact percentages; each `DustTo`; `Exact`; empty and zero weights; a zero weight; equal weights against the equal split; the total conserved over about 100 000 cases; no overflow at `Money::MAX` |
+| `tests/weighted_split_test.rs` | Exact percentages; each `DustTo`; `Exact`; `Reject` on a remainder, not a rounded share; empty and zero weights; a zero weight; signs under `TowardZero`; equal weights against the equal split; the total conserved over 70 035 cases, under `First` and `Sink`; no overflow at `Money::MAX` |

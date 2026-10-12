@@ -8,9 +8,11 @@ precedent of folding a reachable-but-rare condition into `Overflow` rather
 than adding a dedicated variant, and this crate matches it — see
 [money_dust_split](../function/001_money_dust_split.md)'s Representation for
 the specific negative-leftover scenario this covers. `Remainder` is reported
-both for `DustTo::Reject` and for `Rounding::Exact`, whose
-`exact_round::RoundError::Inexact` is the same fact — the split did not
-divide evenly.
+both for `DustTo::Reject` — the rounded parts leave a remainder — and for
+`Rounding::Exact`, whose `exact_round::RoundError::Inexact` means a share did
+not divide evenly. For the equal split the two are the same fact; a weighted
+split can round one share up and another down and leave no remainder, which
+`Reject` then accepts.
 
 ## Kind
 
@@ -25,10 +27,10 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum DustError
 {
-  /// Zero parts were requested.
+  /// Zero parts were requested — a part count of zero, or no nonzero weight.
   EmptyParts,
-  /// The split did not divide evenly and [`DustTo::Reject`] or
-  /// [`Rounding::Exact`] was asked.
+  /// The rounded parts left a remainder that [`DustTo::Reject`] refuses, or
+  /// a share did not divide evenly under [`Rounding::Exact`].
   Remainder,
   /// An operation left the representable or declared range.
   Overflow,

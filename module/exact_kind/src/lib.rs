@@ -422,7 +422,9 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
   /// Render exactly, with trailing fractional zeros trimmed — or, when the
   /// caller asks for a precision (`{:.2}`), with exactly that many digits
-  /// after the point.
+  /// after the point. A precision past the scale pads zeros that `parse` at
+  /// this scale refuses: `{:.4}` of a `Decimal< 2 >` `1.5` is `1.5000`, which
+  /// `Decimal::< 2 >::parse` rejects as `ExcessPrecision`.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     if let Some( places ) = f.precision()
