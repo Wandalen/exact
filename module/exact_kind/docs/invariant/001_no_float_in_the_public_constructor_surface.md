@@ -36,9 +36,9 @@ exactly how a float re-enters a system built to keep it out.
 | `src/lib.rs:42-53` | `use exact_minor::{ Backing, Minor, … }` — `Minor`, an `i64`, is the one count ever stored |
 | `src/lib.rs:208-233` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
 | `src/lib.rs:362-418` | `Decimal::parse` — the grammar, with no float spelling accepted |
-| `src/lib.rs:421-505` | `Decimal`'s `Display` impl and `fmt_at_precision` — integer division and modulo, no float intermediate, at any requested precision |
-| `src/lib.rs:538-574` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
-| `src/lib.rs:663-666` | `Qty::parse` |
+| `src/lib.rs:421-507` | `Decimal`'s `Display` impl and `fmt_at_precision` — integer division and modulo, no float intermediate, at any requested precision |
+| `src/lib.rs:540-576` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
+| `src/lib.rs:665-668` | `Qty::parse` |
 
 ### Tests
 

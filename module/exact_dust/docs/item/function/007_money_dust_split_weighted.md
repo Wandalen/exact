@@ -21,7 +21,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:308-332`
+`module/exact_dust/src/lib.rs:317-339`
 
 ```rust
 pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u32 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
@@ -53,8 +53,8 @@ pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 308-332 | Declaration |
-| `src/lib.rs` | 292-299 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
+| `src/lib.rs` | 317-339 | Declaration |
+| `src/lib.rs` | 299-306 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
 | `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, `Reject` on a remainder and not a rounded share, empty and zero weights, signs under `TowardZero`, equal weights against `money_dust_split`, conservation over 70 035 cases under `First` and `Sink`, no overflow at `Money::MAX` |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:75-83` | — | A fee in cents split 70/20/10 through the facade |
@@ -78,4 +78,4 @@ policy is decided.
   - **External:** `exact_round::round_div_wide`, on `total × weight` widened to `i128`
   - `round_error_to_dust_error` (`src/lib.rs:107`, private — no Item Instance of its own), via `.map_err(...)`
 - `slot_minor` (`src/lib.rs:142`, private — no Item Instance of its own), once, for slot 0 — the same leftover distribution the equal split uses
-- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:310`), `exact_kind::Decimal::from_minor` (`src/lib.rs:329`)
+- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:319,336`), `exact_kind::Decimal::from_minor` (`src/lib.rs:332,337`)

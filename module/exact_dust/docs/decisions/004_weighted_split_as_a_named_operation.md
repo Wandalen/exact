@@ -71,8 +71,9 @@ one without changing it.
 
 **Positive:**
 - A fee can be split by percentage with every cent accounted for: the parts
-  plus any held-back dust always equal the total, checked over about 100 000
-  totals, weight lists and rounding modes in `tests/weighted_split_test.rs`.
+  plus any held-back dust always equal the total, checked over 70 035
+  cases — 2 001 totals × 5 weight lists × 7 rounding modes — in
+  `tests/weighted_split_test.rs`.
 
 **Negative:**
 - `DustTo::First` can give the dust to a slot whose weight is zero. The

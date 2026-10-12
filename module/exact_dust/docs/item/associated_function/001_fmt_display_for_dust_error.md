@@ -17,7 +17,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 {
   match self
   {
-    Self::EmptyParts => write!( f, "cannot split into zero parts" ),
+    Self::EmptyParts => write!( f, "nothing to split into: no parts, or no nonzero weight" ),
     Self::Remainder => write!( f, "a remainder that DustTo::Reject or Rounding::Exact refuses" ),
     Self::Overflow => write!( f, "left the representable or declared range" ),
   }

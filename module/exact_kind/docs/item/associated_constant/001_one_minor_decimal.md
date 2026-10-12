@@ -21,7 +21,7 @@ pub const ONE_MINOR : Backing = pow10( SCALE );
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 180,227,284,412-413,433 | Declaration; `from_int`'s scaling multiply; `whole`'s divide; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
+| `src/lib.rs` | 180,227,284,412-413,435 | Declaration; `from_int`'s scaling multiply; `whole`'s divide; `parse`'s magnitude accumulation; `Display`'s whole/frac split |
 | `exact_parse/src/lib.rs:46` | — | **Production** — compile-time assert cross-checking `Money::ONE_MINOR` against `exact_scale::pow10( MONEY_SCALE )` directly |
 
 ## Crate Usage

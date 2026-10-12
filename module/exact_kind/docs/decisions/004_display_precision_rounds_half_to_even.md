@@ -61,16 +61,24 @@ feature 016's Design status), so the precision belongs there.
 
 **Positive:**
 - `format!( "{:.2}", amount )` prints money as money; the exchange's
-  `two_decimals()` can go.
+  `two_decimals()` can go for prices on a cent tick. It is not a one-for-one
+  swap for a finer price: `two_decimals()` only pads, so `100.125` stays
+  `100.125`, while `{:.2}` rounds it to `100.12`.
 - Rendering at a precision allocates nothing.
 
 **Negative:**
 - A printed value can differ from the stored one when fewer places are asked
   for — by design, as for every number type in Rust.
+- Printing past the scale does not round-trip: `{:.4}` of a `Decimal< 2 >`
+  `1.5` is `1.5000`, which `parse` at scale 2 refuses as `ExcessPrecision`.
+  Print at most the scale's places for text that will be parsed back.
 
 **Neutral:**
-- Width and alignment (`{:>10.2}`) are still ignored, as before; E5b asks only
-  for precision.
+- Every formatter flag except precision is still ignored, as before: sign
+  (`{:+.2}` of `1.5` is `1.50`), zero padding (`{:08.2}` of `-1.5` is
+  `-1.50`), width and alignment (`{:>10.2}` is `1.50`). E5b asks only for
+  precision; honouring the rest, for example through `Formatter::pad_integral`,
+  is a separate change.
 - `exact_kind` already depended on `exact_round` for `rescale`
   (→ [ADR-002](002_explicit_rescale_between_scales.md)); no new dependency.
 

@@ -43,7 +43,7 @@ pub enum DustError
 |------|---------|---------|
 | `src/lib.rs` | 81-90 | Declaration |
 | `src/lib.rs` | 92-103 | `Display` match arms |
-| `src/lib.rs` | 116-117,120,129,131,133-134,146,150,169,197,279,311,314,321,323,329 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own); and in `weighted_share` and `money_dust_split_weighted` — `EmptyParts` for no weight to split by (314), `Overflow` on a checked sum or the ceiling |
+| `src/lib.rs` | 116-117,120,129,131,133-134,146,150,169,197,279,320,323,331-332,335,337 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own); and in `weighted_share` and `money_dust_split_weighted` — `EmptyParts` for no weight to split by (323), `Overflow` on a checked sum or the ceiling |
 | `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
 | `tests/dust_split_test.rs:223,226,230,238,240` | — | `Remainder` under `Exact`, for an uneven split, buffer and remainder |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |

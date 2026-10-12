@@ -23,7 +23,7 @@ pub const fn whole( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 282,610 | Declaration; `Qty::whole`'s delegation |
+| `src/lib.rs` | 282,612 | Declaration; `Qty::whole`'s delegation |
 | `tests/parse_render_test.rs:112-116` | — | Truncation-toward-zero checks on `Money` values, both signs |
 
 No file outside `exact_kind` calls `Decimal::whole` — an honest empty finding
@@ -38,7 +38,7 @@ via grep).
 
 ## Caller Tree
 
-- [Qty::whole](015_whole_qty.md) (`src/lib.rs:610`)
+- [Qty::whole](015_whole_qty.md) (`src/lib.rs:612`)
 
 No external caller anywhere in the workspace.
 

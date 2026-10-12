@@ -45,7 +45,7 @@ As for the equal split: with `First` the parts sum to the total exactly; with `S
 | File | Relationship |
 |------|--------------|
 | `src/lib.rs:272-280` | `weighted_share` — step 2 |
-| `src/lib.rs:308-332` | `money_dust_split_weighted` — steps 1, 3 and 5 |
+| `src/lib.rs:317-339` | `money_dust_split_weighted` — steps 1, 3 and 5 |
 | `src/lib.rs:138-153` | `slot_minor` — step 4, shared with the equal split |
 | `../../../exact_round/src/lib.rs:171` | `round_div_wide` — the rounded `i128` division of step 2 |
 

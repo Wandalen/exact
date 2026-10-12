@@ -13,7 +13,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:426`
+`module/exact_kind/src/lib.rs:428`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -59,7 +59,7 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 426-462 | Declaration |
+| `src/lib.rs` | 428-464 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
 | `tests/display_precision_test.rs` | throughout | The precision branch, via `format!( "{:.N}", … )` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
@@ -75,12 +75,12 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 - **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:121`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
 
-- **Intra-crate:** [Display::fmt for Qty](022_fmt_display_for_qty.md) (`src/lib.rs:716`) and `Display::fmt` for `PriceAt` (`src/lib.rs:849`), each forwarding its own formatter so a precision reaches this one
+- **Intra-crate:** [Display::fmt for Qty](022_fmt_display_for_qty.md) (`src/lib.rs:718`) and `Display::fmt` for `PriceAt` (`src/lib.rs:851`), each forwarding its own formatter so a precision reaches this one
 
 ## Callee Tree
 
-- `fmt_at_precision` (`src/lib.rs:471`, private — no Item Instance of its own), when a precision is given
-  - **External:** `exact_round::round_div` under `Rounding::HalfEven`, when fewer places than `SCALE` are asked (`src/lib.rs:478`)
+- `fmt_at_precision` (`src/lib.rs:473`, private — no Item Instance of its own), when a precision is given
+  - **External:** `exact_round::round_div` under `Rounding::HalfEven`, when fewer places than `SCALE` are asked (`src/lib.rs:480`)
 - **External:** `i64::unsigned_abs` (×2 — magnitude and unit)
 - **External:** `fmt::Formatter::write_fmt` (via the three `write!` calls)
 - **External:** `u64::pow` — counting and removing trailing fractional zeros arithmetically, with no `String` allocated

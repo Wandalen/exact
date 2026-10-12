@@ -44,7 +44,7 @@ vice versa.
 | `src/lib.rs:208-216` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
 | `src/lib.rs:294-349` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
 | `src/lib.rs:362-418` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
-| `src/lib.rs:620-656` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
+| `src/lib.rs:622-658` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
 
 ### Tests
 

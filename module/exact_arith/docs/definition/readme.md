@@ -52,8 +52,8 @@ behaviour.
 | `KindError` | enum | `../../../exact_kind/src/lib.rs:72` | — |
 | `Money` | type alias | `../../../exact_kind/src/lib.rs:58` | — |
 | `Price` | type alias | `../../../exact_kind/src/lib.rs:64` | — |
-| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:760` | — |
-| `Qty` | struct | `../../../exact_kind/src/lib.rs:517` | — |
+| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:762` | — |
+| `Qty` | struct | `../../../exact_kind/src/lib.rs:519` | — |
 | `Quantity` | type alias | `../../../exact_kind/src/lib.rs:61` | — |
 | `money_add` | fn | `../../../exact_add/src/lib.rs:53` | — |
 | `money_checked_neg` | fn | `../../../exact_add/src/lib.rs:113` | — |
@@ -111,7 +111,7 @@ behaviour.
 | `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:234` | — |
 | `money_dust_split` | fn | `../../../exact_dust/src/lib.rs:210` | — |
 | `money_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:221` | — |
-| `money_dust_split_weighted` | fn | `../../../exact_dust/src/lib.rs:308` | — |
+| `money_dust_split_weighted` | fn | `../../../exact_dust/src/lib.rs:317` | — |
 | `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:266` | — |
 | `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:246` | — |
 | `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:256` | — |

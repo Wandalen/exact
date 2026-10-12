@@ -24,7 +24,7 @@ pub const fn minor( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 237,540,591 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
+| `src/lib.rs` | 237,542,593 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
 | `tests/*.rs` (all 3) | throughout | Minor-count assertions |
 | `exact_bytes/src/lib.rs:201,242` | — | `money_to_wire`/`price_to_wire` |
 | `exact_conserve/src/lib.rs:282` | — | `money_sum_assert_zero`'s per-leg accumulation |
@@ -41,8 +41,8 @@ pub const fn minor( self ) -> Backing
 
 ## Caller Tree
 
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:540`)
-- [Qty::minor](014_minor_qty.md) (`src/lib.rs:591`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:542`)
+- [Qty::minor](014_minor_qty.md) (`src/lib.rs:593`)
 - **External:** `exact_bytes::money_to_wire` (`:199`), `price_to_wire` (`:240`)
 - **External:** `exact_conserve::money_sum_assert_zero` (`:282`)
 - **External:** `exact_dust::money_dust_split` (`:209`), `money_dust_split_into` (`:220`), `money_dust_remainder` (`:233`)
