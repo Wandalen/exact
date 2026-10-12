@@ -2,7 +2,7 @@
 //! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all eight,
 //! and `Exact`'s refusal of a result that needs rounding.
 
-use exact_kind::{ Money, Price, Quantity };
+use exact_kind::{ Decimal, Money, Price, PriceAt, Qty, Quantity };
 use exact_ratio::
 {
   RatioError, money_div_round, money_mul_ratio, price_mul_qty, price_mul_ratio, qty_div_round, qty_mul_ratio,
@@ -468,3 +468,13 @@ const EVERY_MODE : [ Rounding; 8 ] =
   Rounding::HalfDown,
   Rounding::Exact,
 ];
+
+/// A price with more places than the quantity: `1.234567 × 3` is exactly
+/// `3.703701`, so `Exact` accepts it at the price's scale.
+#[ test ]
+fn a_price_finer_than_the_quantity_costs_exactly()
+{
+  let price : PriceAt< 6 > = PriceAt::parse( "1.234567" ).unwrap();
+  let qty : Qty< 0 > = Qty::parse( "3" ).unwrap();
+  assert_eq!( price_mul_qty( price, qty, Rounding::Exact ).unwrap(), Decimal::< 6 >::parse( "3.703701" ).unwrap() );
+}

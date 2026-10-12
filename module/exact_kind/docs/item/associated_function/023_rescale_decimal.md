@@ -50,7 +50,7 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal
 |------|---------|---------|
 | `src/lib.rs` | 261 | Declaration |
 | `src/lib.rs` | 553,789 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
-| `tests/rescale_test.rs` | 12,20,21,23,31,32,48 | Finer is exact; coarser rounds per the mode at both signs; `Exact` refuses a dropped digit; past the ceiling is refused |
+| `tests/rescale_test.rs` | 12,20,21,23,31,32,48,49 | Finer is exact; coarser rounds per the mode at both signs; `Exact` refuses a dropped digit; past the ceiling is refused — `ExceedsCeiling` within the backing width (48), `Overflow` past it (49) |
 | `tests/price_at_test.rs` | 47,50,51 | Through `PriceAt::rescale` |
 | `smoke_exact_market_split/src/lib.rs:400` | — | Step 7 narrows the one-scale arm's cost back to cents |
 

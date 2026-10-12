@@ -41,9 +41,10 @@ fn a_quantity_rescales_like_a_decimal()
   assert_eq!( satoshis.rescale::< 6 >( Rounding::Exact ), Err( KindError::ExcessPrecision { digits : 8, scale : 6 } ) );
 }
 
-/// Going finer past the ceiling is refused, not wrapped.
+/// Going finer past the ceiling is refused, not wrapped, with the error that says why.
 #[ test ]
 fn rescaling_past_the_ceiling_is_refused()
 {
-  assert!( Money::MAX.rescale::< 8 >( Rounding::Exact ).is_err() );
+  assert_eq!( Money::MAX.rescale::< 8 >( Rounding::Exact ), Err( KindError::ExceedsCeiling { minor : 900_000_000_000_000_000 } ) );
+  assert_eq!( Money::MAX.rescale::< 18 >( Rounding::Exact ), Err( KindError::Overflow { operation : "rescale" } ) );
 }
