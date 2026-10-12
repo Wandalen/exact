@@ -86,7 +86,7 @@ fn a_zero_weight_gets_a_zero_share()
 #[ test ]
 fn only_toward_zero_keeps_every_part_on_the_totals_side()
 {
-  let weight_lists : [ &[ u32 ]; 6 ] = [ &[ 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 9999, 1 ], &[ 0, 1, 1 ] ];
+  let weight_lists : [ &[ u64 ]; 6 ] = [ &[ 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 9999, 1 ], &[ 0, 1, 1 ] ];
   for weights in weight_lists
   {
     for total in -1000_i64 ..= 1000
@@ -122,7 +122,7 @@ fn equal_weights_match_the_equal_split()
 #[ test ]
 fn the_parts_always_add_back_to_the_total()
 {
-  let weight_lists : [ &[ u32 ]; 5 ] = [ &[ 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 9999, 1 ] ];
+  let weight_lists : [ &[ u64 ]; 5 ] = [ &[ 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 9999, 1 ] ];
   for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven, Rounding::TowardZero, Rounding::AwayFromZero, Rounding::HalfUp, Rounding::HalfDown ]
   {
     for weights in weight_lists
@@ -143,10 +143,24 @@ fn the_parts_always_add_back_to_the_total()
   }
 }
 
-/// Large totals and large weights cannot overflow the multiply.
+/// Large totals and large weights cannot overflow the multiply, and weights
+/// whose sum is past `u64::MAX` are still summed exactly.
 #[ test ]
 fn large_totals_and_weights_do_not_overflow()
 {
-  let parts = money_dust_split_weighted( Money::MAX, &[ u32::MAX, u32::MAX ], Rounding::Down, DustTo::First ).unwrap();
+  let parts = money_dust_split_weighted( Money::MAX, &[ u64::MAX, u64::MAX ], Rounding::Down, DustTo::First ).unwrap();
   assert_eq!( minors( &parts ).iter().sum::< i64 >(), Money::MAX.minor() );
+}
+
+/// Weights can be amounts in minor units: a fee spread over fills by what
+/// each fill was worth. `$10 000`, `$5 000` and `$1 000` at scale 6 are past
+/// `u32::MAX`, and a `$16.00` fee splits into `$10.00`, `$5.00` and `$1.00`.
+#[ test ]
+fn notional_weights_past_u32_split_a_fee()
+{
+  let notionals = [ 10_000_000_000_u64, 5_000_000_000, 1_000_000_000 ];
+  assert!( notionals[ 0 ] > u64::from( u32::MAX ) );
+  let fee = Money::parse( "16" ).unwrap();
+  let parts = money_dust_split_weighted( fee, &notionals, Rounding::TowardZero, DustTo::First ).unwrap();
+  assert_eq!( minors( &parts ), [ 10_000_000, 5_000_000, 1_000_000 ] );
 }

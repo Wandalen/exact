@@ -270,11 +270,12 @@ pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mod
 }
 
 /// Slot `i`'s share of a weighted split before any dust: `total × weight /
-/// Σ weights`, rounded under `mode`. Widened to `i128` first, so the multiply
-/// cannot overflow; the result is never larger than `total`, so it narrows back.
-fn weighted_share( total_minor : i64, weight : u32, sum : u64, mode : Rounding ) -> Result< i64, DustError >
+/// Σ weights`, rounded under `mode`. Widened to `i128` first — an `i64` times
+/// a `u64` stays inside it, so the multiply cannot overflow; the result is
+/// never larger than `total`, so it narrows back.
+fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding ) -> Result< i64, DustError >
 {
-  let wide = exact_round::round_div_wide( i128::from( total_minor ) * i128::from( weight ), i128::from( sum ), mode )
+  let wide = exact_round::round_div_wide( i128::from( total_minor ) * i128::from( weight ), sum, mode )
   .map_err( round_error_to_dust_error )?;
   i64::try_from( wide ).map_err( | _ | DustError::Overflow )
 }
@@ -284,9 +285,11 @@ fn weighted_share( total_minor : i64, weight : u32, sum : u64, mode : Rounding )
 /// remainder to `to`, exactly as [`money_dust_split`] does.
 ///
 /// Weights are whole numbers: percentages (`[ 70, 20, 10 ]`), basis points,
-/// or any ratio. A zero weight gets a zero share — though [`DustTo::First`]
-/// sends the dust to the first slot whatever its weight. With
-/// [`DustTo::Sink`] the held-back dust is `total` minus the sum of the parts.
+/// or amounts in minor units — a fee spread over fills by what each fill was
+/// worth, up to the ceiling and beyond `u32`. A zero weight gets a zero share
+/// — though [`DustTo::First`] sends the dust to the first slot whatever its
+/// weight. With [`DustTo::Sink`] the held-back dust is `total` minus the sum
+/// of the parts.
 ///
 /// Only [`Rounding::TowardZero`] keeps every part on the total's side of
 /// zero. Any other mode can round the shares past the total, and
@@ -314,10 +317,10 @@ fn weighted_share( total_minor : i64, weight : u32, sum : u64, mode : Rounding )
 /// still add up to `total` leave none — or when [`Rounding::Exact`] was asked
 /// and a share did not divide evenly. [`DustError::Overflow`] on overflow or
 /// ceiling breach.
-pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u32 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
+pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u64 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
 {
   let total_minor = total.minor();
-  let sum = weights.iter().try_fold( 0_u64, | acc, &w | acc.checked_add( u64::from( w ) ) ).ok_or( DustError::Overflow )?;
+  let sum = weights.iter().try_fold( 0_i128, | acc, &w | acc.checked_add( i128::from( w ) ) ).ok_or( DustError::Overflow )?;
   if sum == 0
   {
     return Err( DustError::EmptyParts );
