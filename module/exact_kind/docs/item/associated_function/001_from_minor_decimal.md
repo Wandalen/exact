@@ -6,17 +6,22 @@ Build from a count of minor units, refusing anything past the declared
 ceiling. The one range gate every other constructor and operation funnels
 through.
 
+Its first line evaluates the private `REPRESENTABLE` check, so building a
+`Decimal` at a scale past 18 — directly, through `Qty`/`PriceAt`, a wire
+decoder, or `rescale` — fails the build (→ [Every Scale Is At Most 18](../../invariant/003_every_scale_is_at_most_18.md)).
+
 ## Kind
 
 Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:203`
+`module/exact_kind/src/lib.rs:208`
 
 ```rust
 pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 {
+  let () = Self::REPRESENTABLE;
   if minor > CEILING_MINOR_UNITS || minor < -CEILING_MINOR_UNITS
   {
     return Err( KindError::ExceedsCeiling { minor } );
@@ -29,7 +34,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 203,226,283,297,316,331,402,491 | Range gate inside `from_int`, `checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`, `parse`, and `Qty::from_minor` |
+| `src/lib.rs` | 208,232,298,312,331,346,417,506 | Range gate inside `from_int`, `checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`, `parse`, and `Qty::from_minor` |
 | `tests/checked_arithmetic_test.rs` | throughout | Direct construction at and past boundaries |
 | `exact_bytes/src/lib.rs:214,253` | — | `money_from_wire`/`price_from_wire` |
 | `exact_dust/src/lib.rs:209,220` | — | `money_dust_split`/`money_dust_split_into`, passed as `make` to the private `split_with`/`split_into_with` |
@@ -44,13 +49,13 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- [Decimal::from_int](002_from_int_decimal.md) (`src/lib.rs:226`)
-- [Decimal::checked_add](005_checked_add_decimal.md) (`src/lib.rs:283`)
-- [Decimal::checked_sub](006_checked_sub_decimal.md) (`src/lib.rs:297`)
-- [Decimal::checked_mul_int](007_checked_mul_int_decimal.md) (`src/lib.rs:316`)
-- [Decimal::checked_neg](008_checked_neg_decimal.md) (`src/lib.rs:331`)
-- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:402`)
-- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:491`)
+- [Decimal::from_int](002_from_int_decimal.md) (`src/lib.rs:232`)
+- [Decimal::checked_add](005_checked_add_decimal.md) (`src/lib.rs:298`)
+- [Decimal::checked_sub](006_checked_sub_decimal.md) (`src/lib.rs:312`)
+- [Decimal::checked_mul_int](007_checked_mul_int_decimal.md) (`src/lib.rs:331`)
+- [Decimal::checked_neg](008_checked_neg_decimal.md) (`src/lib.rs:346`)
+- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:417`)
+- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:506`)
 - **External:** `exact_bytes::money_from_wire` (`exact_bytes/src/lib.rs:214`), `exact_bytes::price_from_wire` (`:251`)
 - **External:** `exact_dust::money_dust_split` (`exact_dust/src/lib.rs:209`), `money_dust_split_into` (`:220`), each passing it as `make`
 - **External:** `exact_ratio::money_mul_ratio` (`exact_ratio/src/lib.rs:180`), `price_mul_ratio` (`:206`), `money_div_round` (`:224`), `price_mul_qty` (`:258`)

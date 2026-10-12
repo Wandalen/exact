@@ -13,8 +13,8 @@
 //!   per grammar rule. `ExtraDigits` is `KindError::ExcessPrecision`, and
 //!   `Overflow` already exists under that name. `ScaleTooLarge` is
 //!   unreachable: `SCALE` is a compile-time const generic, so an
-//!   unrepresentable scale is already a compile error (`Decimal`'s own
-//!   `ONE_MINOR` associated const panics at const-eval time), never a value
+//!   unrepresentable scale is already a compile error (every `Decimal`
+//!   constructor checks `ONE_MINOR` at const-eval time), never a value
 //!   a running parse call could receive. Every function here therefore
 //!   returns [`exact_kind::KindError`] directly, matching `exact_add`'s
 //!   identical reasoning for dropping its own doc-specified error enum.

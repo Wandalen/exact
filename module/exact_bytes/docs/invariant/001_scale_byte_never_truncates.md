@@ -27,10 +27,11 @@ decodes at, so a scale the cast would cut fails the build before any cast
 runs. Every `*_to_wire` function writes `scale_byte::< S >()`, and every
 `*_from_wire` function compares a decoded record's `scale` byte against it.
 
-In practice no reachable scale comes close: `exact_scale::pow10` refuses any
-power above 18, so a `Decimal< S >` with `S > 18` cannot be used at all. The
-assertion guards the cast itself, so the guarantee does not depend on that
-other limit.
+In practice no reachable scale comes close: a `Decimal< S >` with `S > 18`
+cannot be built at all — every constructor fails the build for it
+(→ [`exact_kind`'s Every Scale Is At Most 18](../../../exact_kind/docs/invariant/003_every_scale_is_at_most_18.md)).
+The assertion here guards the cast itself, so the guarantee does not depend
+on that other limit.
 
 ### Rationale
 
