@@ -134,8 +134,11 @@ fn equal_weights_match_the_equal_split_toward_zero()
 
 /// With `DustTo::First` the parts always add back to exactly the total — for
 /// positive and negative totals, uneven weights, and every rounding mode that
-/// rounds rather than refuses. `DustTo::Sink` gives the same parts with the
-/// dust held back: only slot 0 differs, by exactly the dust.
+/// rounds rather than refuses. With `DustTo::Sink` the held-back dust is
+/// checked against the total itself: on the total's side of zero and never
+/// larger than it, so the parts never pay out more than the total. Only then
+/// is it compared with `First`: the same parts, slot 0 short by exactly the
+/// dust.
 #[ test ]
 fn the_parts_always_add_back_to_the_total()
 {
@@ -152,6 +155,7 @@ fn the_parts_always_add_back_to_the_total()
         assert_eq!( minors( &parts ).iter().sum::< i64 >(), total, "{total} by {weights:?} under {mode:?}" );
         let sink = minors( &money_dust_split_weighted( money, weights, mode, DustTo::Sink ).unwrap() );
         let dust = total - sink.iter().sum::< i64 >();
+        assert!( dust * total >= 0 && dust.abs() <= total.abs(), "Sink dust {dust}: {total} by {weights:?} under {mode:?}" );
         let mut first = minors( &parts );
         first[ 0 ] -= dust;
         assert_eq!( first, sink, "Sink: {total} by {weights:?} under {mode:?}" );
