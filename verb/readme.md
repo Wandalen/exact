@@ -20,7 +20,7 @@ on its own, which is why `verbs` (below) skips anything starting with `_`.
 prints the command(s) the verb would run without running them.
 
 This set mirrors `../../ring/verb/` (a sibling crate family under the same governance),
-with four of its verbs deliberately not carried over — see the table's own notes below
+with three of its verbs deliberately not carried over — see the table's own notes below
 for why each is inapplicable to this family rather than merely unported.
 
 No `verb.rulebook.md` exists in this repo to govern these, same as `ring`.
@@ -34,11 +34,13 @@ No `verb.rulebook.md` exists in this repo to govern these, same as `ring`.
 | `doc` | Rebuild rustdoc from a clean slate (`rm -rf target/doc` first — incremental `cargo doc` hides errors in unchanged crates) |
 | `clean` | Remove `target/` and this family's own `-NNNN_*` scratch logs |
 | `verify` | Full pre-push gate — alias for `test level::5` |
+| `publish_check` | Dry-run `cargo publish` for every publishable crate, in dependency order. `crate::<name>` narrows to one package |
+| `publish` | Really publish every publishable crate to crates.io, in dependency order, retrying on crates.io's own rate limit |
 | `verbs` | List all verbs with their purpose line |
 | `package_info` | Family manifest info as flat JSON — no single crate here is "the" package (16 peer members), so this describes the family the workspace root declares |
 | `_crate_dispatch` | Shared implementation behind every per-crate `verb/{test,test_only,lint,build}` wrapper. Not a verb — takes a verb name and crate name as its first two args, never invoked directly |
 
-### Four verbs ring has that this family doesn't
+### Three verbs ring has that this family doesn't
 
 - **`fmt`** — ring's applies `cargo +nightly fmt --all` against a committed `rustfmt.toml`.
   `CLAUDE.md` forbids `cargo fmt` for this project: its own custom codestyle uses own-line
@@ -55,9 +57,36 @@ No `verb.rulebook.md` exists in this repo to govern these, same as `ring`.
   crate — `docs/feature/022_bench_note_vs_f64.md` proposes one, but its own Design status
   (and [`docs/research/001_exact_vs_open_source_alternatives.md`](../docs/research/001_exact_vs_open_source_alternatives.md)'s
   Hot-Path Performance section) record that it was never built.
-- **`publish_check`** — ring's dry-runs `cargo publish` for every publishable crate. Every one
-  of this family's 16 manifests sets `publish = false` (confirmed via
-  `grep -l "publish = false" module/*/Cargo.toml`), so there is nothing publishable to check.
+
+### `publish`/`publish_check`, and one verb this family has that ring doesn't
+
+All 16 manifests used to set `publish = false`, which is why `publish_check` was on the
+list above as inapplicable. 15 of the 16 (every `exact_*` crate; `smoke_exact_market_split`
+stays private — it's a smoke-test binary, not a library) are public now, so `publish_check`
+was carried over from `../../ring/verb/publish_check` verbatim — it's fully generic, no
+ring-specific content to adapt.
+
+`publish` is new, and ring itself doesn't have it: it really uploads, wrapping
+`cargo publish --workspace --allow-dirty` with a retry loop that sleeps exactly the
+`Retry-After` crates.io's own 429 reports (burst 5 new-crate publishes per account, then
+1 every 10 minutes — confirmed against `rust-lang/crates.io`'s own
+`src/rate_limiter.rs`), rather than a guessed delay. `cargo publish --workspace` already
+handles the topological order and resolves not-yet-published siblings from a local temp
+registry during verify (confirmed empirically on cargo 1.98.0) — no hand-maintained
+per-crate wave list needed.
+
+Both verbs' exit codes, to make their Verb Protocol complete per
+`$GENAI/verb/verb.rulebook.md`'s VE003: `0` on success (every crate published, or a
+clean dry run), `1` on failure (`publish_check`: any crate's dry-run errored;
+`publish`: a non-rate-limit `cargo` failure, or `max_attempts` retries exhausted), `2`
+on an unrecognized parameter.
+
+Exception to `$GENAI/verb/verb.rulebook.md` § Implementation : exec Mandate · VE007:
+`publish`'s retry loop captures each attempt's output and exit code rather than
+`exec`-ing `cargo publish` directly. `exec` replaces the verb process on the first
+invocation, which rules out inspecting a 429 and sleeping before retrying — the
+loop's only reason to exist. `publish_check` has no retry loop and `exec`s its one
+invocation, VE007-compliant.
 
 ### Why `test` is leveled
 
