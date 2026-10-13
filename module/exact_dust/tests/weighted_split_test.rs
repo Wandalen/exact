@@ -70,6 +70,7 @@ fn no_weight_to_split_by_is_empty_parts()
 {
   assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[], Rounding::Down, DustTo::First ), Err( DustError::EmptyParts ) );
   assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[ 0, 0 ], Rounding::Down, DustTo::First ), Err( DustError::EmptyParts ) );
+  assert_eq!( DustError::EmptyParts.to_string(), "nothing to split into: no parts, or no nonzero weight" );
 }
 
 /// A zero weight gets a zero share — unless `DustTo::First` sends the dust to it.
@@ -171,6 +172,9 @@ fn large_totals_and_weights_do_not_overflow()
 {
   let parts = money_dust_split_weighted( Money::MAX, &[ u64::MAX, u64::MAX ], Rounding::Down, DustTo::First ).unwrap();
   assert_eq!( minors( &parts ).iter().sum::< i64 >(), Money::MAX.minor() );
+  let parts = money_dust_split_weighted( Money::MIN, &[ u64::MAX, 1, u64::MAX ], Rounding::Up, DustTo::First ).unwrap();
+  assert_eq!( minors( &parts ).iter().sum::< i64 >(), Money::MIN.minor() );
+  assert!( minors( &parts ).iter().all( | &p | p <= 0 ), "a negative total gives no positive part" );
 }
 
 /// Weights can be amounts in minor units: a fee spread over fills by what
