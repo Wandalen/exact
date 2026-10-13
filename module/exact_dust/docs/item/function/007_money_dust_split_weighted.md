@@ -3,7 +3,7 @@
 ## Representation
 
 Split a money value in proportion to whole-number weights — slot `i` gets
-`total × weights[ i ] / Σ weights`, rounded under `mode` — and send the
+`total × weights[ i ] / Σ weights`, rounded toward zero — and send the
 remainder to `to`, exactly as [money_dust_split](001_money_dust_split.md)
 does. Built for fees split by percentage (E4, for the exchange's X8): `$10.01`
 at `[ 70, 20, 10 ]` under `Down`/`First` is `[ 7.01, 2.00, 1.00 ]`. Weights
@@ -12,10 +12,11 @@ fills by what each was worth, past `u32`'s `$4 294.97` at scale 6. A
 separately named operation, as [ADR-002](../../decisions/002_equal_count_split_surface.md)
 required (→ [ADR-004](../../decisions/004_weighted_split_as_a_named_operation.md)).
 
-Only `TowardZero` keeps every part on the total's side of zero. Any other
-mode can round the shares past the total, and `First` then takes the excess
-from slot 0, even at weight 0: `0.01` at `[ 0, 1, 1 ]` under `Up` is
-`[ -0.01, 0.01, 0.01 ]`, and `Down` does the same to a negative total.
+The shares are rounded toward zero whatever `mode` is; `Exact` still refuses
+a share that is not whole. So every part keeps the total's sign and the parts
+never add up past it: under `HalfEven`, `0.03` at `[ 1, 1 ]` with `Sink` is
+`[ 0.01, 0.01 ]` plus `0.01` of dust, not `[ 0.02, 0.02 ]` — `0.04` out of
+`0.03`, as the first version gave.
 
 ## Kind
 
@@ -23,7 +24,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:320-342`
+`module/exact_dust/src/lib.rs:324-346`
 
 ```rust
 pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u64 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
@@ -55,9 +56,9 @@ pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 320-342 | Declaration |
-| `src/lib.rs` | 302-309 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
-| `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, `Reject` on a remainder and not a rounded share, empty and zero weights, signs under `TowardZero`, equal weights against `money_dust_split`, conservation over 70 035 cases under `First` and `Sink`, no overflow at `Money::MAX` and `u64::MAX` weights, notional weights past `u32` |
+| `src/lib.rs` | 324-346 | Declaration |
+| `src/lib.rs` | 307-314 | Doc example: `$10.00` at `[ 1, 1, 1 ]` is `[ 3.34, 3.33, 3.33 ]` |
+| `tests/weighted_split_test.rs` | throughout | Every `DustTo`, `Exact`, `Reject` on any remainder under every mode, empty and zero weights, no part and no sum past the total under every mode with `First` and `Sink`, equal weights against `money_dust_split` toward zero, conservation over 70 035 cases under `First` and `Sink`, no overflow at `Money::MAX` and `u64::MAX` weights, notional weights past `u32` |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:75-83` | — | A fee in cents split 70/20/10 through the facade |
 
@@ -76,8 +77,8 @@ policy is decided.
 
 ## Callee Tree
 
-- `weighted_share` (`src/lib.rs:276`, private — no Item Instance of its own), once per slot: each share is summed and built in one pass
+- `weighted_share` (`src/lib.rs:278`, private — no Item Instance of its own), once per slot: each share is summed and built in one pass
   - **External:** `exact_round::round_div_wide`, on `total × weight` widened to `i128`
   - `round_error_to_dust_error` (`src/lib.rs:107`, private — no Item Instance of its own), via `.map_err(...)`
 - `slot_minor` (`src/lib.rs:142`, private — no Item Instance of its own), once, for slot 0 — the same leftover distribution the equal split uses
-- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:322,339`), `exact_kind::Decimal::from_minor` (`src/lib.rs:335,340`)
+- **External:** `exact_kind::Decimal::minor` (`src/lib.rs:326,343`), `exact_kind::Decimal::from_minor` (`src/lib.rs:339,344`)

@@ -25,7 +25,7 @@ use exact_kind::{ Decimal, KindError, Qty };
 |------|---------|---------|
 | `src/lib.rs` | 62 | Declaration |
 | `src/lib.rs` | 164,182 | `KindError` in the `make : fn( i64 ) -> Result< T, KindError >` parameter of `split_with` and `split_into_with` (private) |
-| `src/lib.rs` | 210,212,221,223,234,246,248,256,258,266,320,335,340 | `Decimal< S >`/`Qty< S >` parameter and return types on the 6 public split/remainder functions, and `Decimal::< S >::from_minor`/`Qty::< S >::from_minor` passed as `make`; `Decimal< S >` in and out of `money_dust_split_weighted` |
+| `src/lib.rs` | 210,212,221,223,234,246,248,256,258,266,324,339,344 | `Decimal< S >`/`Qty< S >` parameter and return types on the 6 public split/remainder functions, and `Decimal::< S >::from_minor`/`Qty::< S >::from_minor` passed as `make`; `Decimal< S >` in and out of `money_dust_split_weighted` |
 
 `KindError` is named only in the type of `make`; no `KindError` value
 leaves this crate. Every one is folded into `DustError::Overflow` at the

@@ -12,8 +12,8 @@
 **Inputs.** A total (read at its raw minor-unit count), a weight list `weights: &[u64]` — percentages, basis points, or amounts in minor units — a `Rounding` mode, and a `DustTo` destination.
 
 1. **Sum the weights**, as `i128`, checked — the sum of `u64` weights can pass `u64::MAX`. A sum of `0` — no weights, or only zeros — is `DustError::EmptyParts`: there is nothing to split by.
-2. **Each slot's share**: `total × weight / sum`, widened to `i128` — an `i64` times a `u64` stays inside it, so the product cannot overflow — divided through `exact_round::round_div_wide` under `mode`, and narrowed back to `i64` — a share never exceeds the total. Under `Rounding::Exact` a share that is not whole is `DustError::Remainder`.
-3. **The leftover**: `total − Σ shares`, by checked subtraction — the cents the rounding of step 2 lost (or, for a mode that rounds away from zero, gained, as a negative leftover).
+2. **Each slot's share**: `total × weight / sum`, widened to `i128` — an `i64` times a `u64` stays inside it, so the product cannot overflow — divided through `exact_round::round_div_wide` **toward zero**, whatever `mode` is, and narrowed back to `i64` — a share never exceeds the total. Under `Rounding::Exact` a share that is not whole is `DustError::Remainder` instead. Toward zero, no share and no sum of shares can pass the total: a mode that rounded a share up could make the parts add up to more than there is.
+3. **The leftover**: `total − Σ shares`, by checked subtraction — the cents the rounding of step 2 lost. It is always on the total's side of zero and never larger than the total, and it is nonzero exactly when some share was not whole.
 4. **Distribute** with `slot_minor`, unchanged from the equal split: `First` adds the leftover to slot 0; `Sink` leaves it out of every slot; `Reject` refuses a nonzero leftover with `DustError::Remainder`.
 5. **Build** each slot with `Decimal::< S >::from_minor`, which refuses a count past the ceiling as `DustError::Overflow`.
 
@@ -31,7 +31,7 @@ Each share is computed once: built straight into the returned `Vec` in step 2 an
 
 ### Property — The Accounted Total Never Moves
 
-As for the equal split: with `First` the parts sum to the total exactly; with `Sink` the parts plus the held-back leftover do; `Reject` returns no parts at all. Equal weights reproduce `money_dust_split` exactly, under every mode.
+As for the equal split: with `First` the parts sum to the total exactly; with `Sink` the parts plus the held-back leftover do; `Reject` returns no parts at all. Beyond the equal split: every part has the total's sign and the parts never add up past the total, under every mode, so a zero-weight party is never charged and `Sink` never pays out more than it holds. Equal weights reproduce `money_dust_split` rounded toward zero (and under `Exact`, `money_dust_split` under `Exact`).
 
 ### Decisions
 
@@ -44,8 +44,8 @@ As for the equal split: with `First` the parts sum to the total exactly; with `S
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:272-281` | `weighted_share` — step 2 |
-| `src/lib.rs:320-342` | `money_dust_split_weighted` — steps 1, 3 and 5 |
+| `src/lib.rs:272-284` | `weighted_share` — step 2 |
+| `src/lib.rs:324-346` | `money_dust_split_weighted` — steps 1, 3 and 5 |
 | `src/lib.rs:138-153` | `slot_minor` — step 4, shared with the equal split |
 | `../../../exact_round/src/lib.rs:171` | `round_div_wide` — the rounded `i128` division of step 2 |
 
@@ -53,4 +53,4 @@ As for the equal split: with `First` the parts sum to the total exactly; with `S
 
 | File | Relationship |
 |------|--------------|
-| `tests/weighted_split_test.rs` | Exact percentages; each `DustTo`; `Exact`; `Reject` on a remainder, not a rounded share; empty and zero weights; a zero weight; signs under `TowardZero`; equal weights against the equal split; the total conserved over 70 035 cases, under `First` and `Sink`; no overflow at `Money::MAX` and `u64::MAX` weights; notional weights past `u32` |
+| `tests/weighted_split_test.rs` | Exact percentages; each `DustTo`; `Exact`; `Reject` on any remainder, under every mode; empty and zero weights; a zero weight; no part and no sum past the total under every mode, with `First` and `Sink`; equal weights against the equal split toward zero; the total conserved over 70 035 cases, under `First` and `Sink`; no overflow at `Money::MAX` and `u64::MAX` weights; notional weights past `u32` |

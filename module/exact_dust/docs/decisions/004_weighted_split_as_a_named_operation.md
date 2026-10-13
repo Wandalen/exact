@@ -21,10 +21,14 @@ its own loses or invents cents: `$10.00` split three ways is `3.33 × 3 = 9.99`.
 
 - A new function, `money_dust_split_weighted( total, weights : &[ u64 ], mode, to )`,
   beside `money_dust_split`, which is unchanged.
-- Slot `i` gets `total × weights[ i ] / Σ weights`, rounded under `mode`
-  through `exact_round::round_div_wide`. The leftover — `total − Σ shares` —
-  goes where `to` says, through the same `slot_minor` the equal split uses, so
-  `First`, `Sink` and `Reject` mean exactly what they already mean.
+- Slot `i` gets `total × weights[ i ] / Σ weights`, rounded **toward zero**
+  through `exact_round::round_div_wide`, whatever `mode` is; under
+  `Rounding::Exact` a share that is not whole is refused instead. Toward zero,
+  no share and no sum of shares can pass the total, so every part keeps the
+  total's sign and the leftover — `total − Σ shares` — is on the total's side
+  of zero. It goes where `to` says, through the same `slot_minor` the equal
+  split uses, so `First`, `Sink` and `Reject` mean exactly what they already
+  mean.
 - Weights are `u64` whole numbers — percentages, basis points, or amounts in
   minor units, never floats. An amount is the weight a fee split by notional
   needs: each fill's worth, up to the ceiling (about 9 × 10¹⁵), far past
@@ -38,9 +42,10 @@ its own loses or invents cents: `$10.00` split three ways is `3.33 × 3 = 9.99`.
   | no weights, or every weight `0` | `DustError::EmptyParts` |
   | a zero weight | a zero share — though `DustTo::First` puts the dust on slot 0 whatever its weight |
   | `Rounding::Exact` and a share that is not whole | `DustError::Remainder` |
-  | `DustTo::Reject` and a nonzero leftover | `DustError::Remainder` |
-  | `DustTo::Sink` | the dust is `total` minus the sum of the parts |
-  | equal weights | exactly what `money_dust_split` returns, under every mode |
+  | `DustTo::Reject` and a nonzero leftover — any share that is not whole | `DustError::Remainder` |
+  | `DustTo::Sink` | the dust is `total` minus the sum of the parts, on the total's side and never larger than it |
+  | a mode that rounds up — `Up`, `HalfEven`, … | the shares are still rounded toward zero: `0.03` at `[ 1, 1 ]` is `[ 0.01, 0.01 ]` plus `0.01` of dust, not `[ 0.02, 0.02 ]` |
+  | equal weights | exactly what `money_dust_split` returns under `TowardZero` (and under `Exact`, for `Exact`) |
 
 - Money only: no `qty_`, `_into` or `_remainder` variant until a caller needs
   one.
@@ -79,6 +84,22 @@ one fee over several fills by what each was worth, and any fill past
 `$4 294.97` at scale 6 does not fit a `u32`. Widening is a signature change —
 free before the first release, breaking after it.
 
+### Option 6: Round each share under `mode`
+
+What the first version did. Rejected in review (#7): a mode that rounds a
+share up can make the shares add up past the total. Under `HalfEven`, the
+family's default, `0.03` at `[ 0, 1, 1 ]` gave `[ -0.01, 0.02, 0.02 ]` with
+`First` — a zero-weight party charged a cent — and `0.03` at `[ 1, 1 ]` gave
+`[ 0.02, 0.02 ]` with `Sink`, paying out `0.04` from `0.03`.
+
+### Option 7: Keep `mode`, refuse a leftover against the total's sign
+
+Keeps rounding under `mode` and returns `DustError::Remainder` when the
+shares overshoot. Rejected: under the default `HalfEven` an ordinary split
+such as `0.03` at `[ 1, 1 ]` would fail, and `Remainder` would take on a
+second meaning. Rounding toward zero makes the overshoot impossible instead
+of reporting it.
+
 ## Consequences
 
 **Positive:**
@@ -86,10 +107,18 @@ free before the first release, breaking after it.
   plus any held-back dust always equal the total, checked over 70 035
   cases — 2 001 totals × 5 weight lists × 7 rounding modes — in
   `tests/weighted_split_test.rs`.
+- No part ever has the opposite sign to the total and the parts never add up
+  past it, under every mode, with `First` and with `Sink`: a zero-weight
+  party is never charged, and `Sink` never pays out more than it holds.
+- `Reject` means one thing: the split is exact. A remainder is left exactly
+  when a share is not whole.
 
 **Negative:**
 - `DustTo::First` can give the dust to a slot whose weight is zero. The
   caller orders the weights so the slot that should absorb dust comes first.
+- `mode` does less here than in the equal split: apart from `Exact`, every
+  mode gives the same shares. The weighted split and the equal split agree
+  only when the equal split rounds toward zero.
 
 **Neutral:**
 - E4 does not unblock X8 alone: fees also need a decided rate and schedule.

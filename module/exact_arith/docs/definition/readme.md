@@ -111,7 +111,7 @@ behaviour.
 | `money_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:234` | — |
 | `money_dust_split` | fn | `../../../exact_dust/src/lib.rs:210` | — |
 | `money_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:221` | — |
-| `money_dust_split_weighted` | fn | `../../../exact_dust/src/lib.rs:320` | — |
+| `money_dust_split_weighted` | fn | `../../../exact_dust/src/lib.rs:324` | — |
 | `qty_dust_remainder` | fn | `../../../exact_dust/src/lib.rs:266` | — |
 | `qty_dust_split` | fn | `../../../exact_dust/src/lib.rs:246` | — |
 | `qty_dust_split_into` | fn | `../../../exact_dust/src/lib.rs:256` | — |

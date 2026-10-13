@@ -8,11 +8,11 @@ precedent of folding a reachable-but-rare condition into `Overflow` rather
 than adding a dedicated variant, and this crate matches it — see
 [money_dust_split](../function/001_money_dust_split.md)'s Representation for
 the specific negative-leftover scenario this covers. `Remainder` is reported
-both for `DustTo::Reject` — the rounded parts leave a remainder — and for
+both for `DustTo::Reject` — the parts leave a remainder — and for
 `Rounding::Exact`, whose `exact_round::RoundError::Inexact` means a share did
-not divide evenly. For the equal split the two are the same fact; a weighted
-split can round one share up and another down and leave no remainder, which
-`Reject` then accepts.
+not divide evenly. For both splits the two are the same fact: the shares are
+rounded toward zero in the weighted split, so it leaves a remainder exactly
+when a share is not whole.
 
 ## Kind
 
@@ -43,7 +43,7 @@ pub enum DustError
 |------|---------|---------|
 | `src/lib.rs` | 81-90 | Declaration |
 | `src/lib.rs` | 92-103 | `Display` match arms |
-| `src/lib.rs` | 116-117,120,129,131,133-134,146,150,169,197,280,323,326,334-335,338,340 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own); and in `weighted_share` and `money_dust_split_weighted` — `EmptyParts` for no weight to split by (326), `Overflow` on a checked sum or the ceiling |
+| `src/lib.rs` | 116-117,120,129,131,133-134,146,150,169,197,283,327,330,338-339,342,344 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own); and in `weighted_share` and `money_dust_split_weighted` — `EmptyParts` for no weight to split by (330), `Overflow` on a checked sum or the ceiling |
 | `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
 | `tests/dust_split_test.rs:223,226,230,238,240` | — | `Remainder` under `Exact`, for an uneven split, buffer and remainder |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |
