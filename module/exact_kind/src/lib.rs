@@ -94,7 +94,7 @@ pub enum KindError
   /// silently; rounding invents a value the caller did not ask for.
   ExcessPrecision
   {
-    /// Fractional digits the input carried: typed in the text, or the source scale.
+    /// Fractional digits the input carried: as typed, or the value's own.
     digits : u32,
     /// Fractional digits the target type can hold.
     scale : u32,
@@ -269,7 +269,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
     {
       round_div( minor, pow10( SCALE - TO ), rounding ).map_err( | e | match e
       {
-        RoundError::Inexact => KindError::ExcessPrecision { digits : SCALE, scale : TO },
+        RoundError::Inexact => KindError::ExcessPrecision { digits : fraction_digits( minor, SCALE ), scale : TO },
         RoundError::DivZero | RoundError::Overflow => KindError::Overflow { operation : "rescale" },
       } )?
     };
@@ -889,4 +889,22 @@ impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
     // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
     fmt::Display::fmt( &self.value, f )
   }
+}
+
+/// The fractional digits `minor` has at `scale`, trailing zeros not counted:
+/// `1.005` held at scale 6 (`1_005_000`) has 3. What `rescale` reports when
+/// `Exact` refuses a dropped digit.
+//
+// Fix(exact_kind_rescale_reported_the_scale_as_its_digits): `rescale` set
+// `digits` to `SCALE`, so `1.005` held at scale 6 was refused as "6
+// fractional digits" while `parse` refuses the same text as 3.
+//
+// Root cause: the scale a value is stored at taken for the digits it has.
+// Pitfall: the two agree for a value with every place used, which is all the
+//   first tests checked.
+fn fraction_digits( minor : Backing, scale : u32 ) -> u32
+{
+  let frac = minor.unsigned_abs() % pow10( scale ).unsigned_abs();
+  let trailing_zeros = ( 1..=scale ).take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) ).last().unwrap_or( 0 );
+  scale - trailing_zeros
 }

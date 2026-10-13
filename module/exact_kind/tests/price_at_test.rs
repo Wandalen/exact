@@ -49,4 +49,6 @@ fn a_price_rescales_like_a_decimal()
   let fine = Price::parse( "12.345678" ).unwrap();
   assert_eq!( fine.rescale::< 2 >( Rounding::HalfEven ).unwrap(), PriceAt::< 2 >::parse( "12.35" ).unwrap() );
   assert_eq!( fine.rescale::< 2 >( Rounding::Exact ), Err( KindError::ExcessPrecision { digits : 6, scale : 2 } ) );
+  let short = Price::parse( "1.005" ).unwrap();
+  assert_eq!( short.rescale::< 2 >( Rounding::Exact ), Err( KindError::ExcessPrecision { digits : 3, scale : 2 } ), "the price's own digits, not its scale" );
 }
