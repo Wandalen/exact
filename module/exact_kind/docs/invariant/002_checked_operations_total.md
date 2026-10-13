@@ -15,7 +15,7 @@ conditions, never a silent wrap, truncation, or rounding:
 
 - `Overflow { operation }` — the backing width itself was left (`Backing::MAX`/`MIN`).
 - `ExceedsCeiling { minor }` — in width, but past the declared ceiling re-exported from `exact_scale`.
-- `ExcessPrecision { digits, scale }` — a value carried more fractional digits than the target scale holds: a parsed string longer than `SCALE` allows, or a `rescale` to a coarser scale under `Rounding::Exact` that would drop a nonzero digit (`digits` is then the source scale).
+- `ExcessPrecision { digits, scale }` — a value carried more fractional digits than the target scale holds: a parsed string longer than `SCALE` allows, or a `rescale` to a coarser scale under `Rounding::Exact` that would drop a nonzero digit (`digits` is then the value's own fractional digits — `3` for `1.005`, whatever scale holds it).
 - `Malformed { reason }` — text outside the parser's grammar.
 - `Negative { minor }` — a `Qty` would have gone below zero (→ [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md)).
 

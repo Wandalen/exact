@@ -58,7 +58,7 @@ why both are absent rather than merely unbuilt.
 | [`tests/non_negative_test.rs`](tests/non_negative_test.rs) | Test Matrix T05-T06 — the refusal, its exact boundary, and integer round-tripping, ported from `exact_qty` |
 | [`tests/price_test.rs`](tests/price_test.rs) | `Price` as its own kind — its range, exact arithmetic, text form, and ordering |
 | [`tests/price_at_test.rs`](tests/price_at_test.rs) | `PriceAt` at scale 2 — parse, add, render, the ceiling at every scale, and `rescale` |
-| [`tests/rescale_test.rs`](tests/rescale_test.rs) | `rescale` — finer is exact, coarser rounds per the mode, `Exact` refuses a dropped digit |
+| [`tests/rescale_test.rs`](tests/rescale_test.rs) | `rescale` — finer is exact, coarser rounds per the mode, `Exact` refuses a dropped digit and reports the value's own digits, as `parse` does |
 | [`tests/display_precision_test.rs`](tests/display_precision_test.rs) | `{:.N}` on `Decimal`, `Qty` and `PriceAt` — zero padding, half-even rounding, no `-0.00`, unchanged plain `{}` — and width, fill, alignment, `+` and `0`, checked against `f64`'s output for every flag |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Invariant, type, decisions, algorithm, and definition doc instances for this crate |

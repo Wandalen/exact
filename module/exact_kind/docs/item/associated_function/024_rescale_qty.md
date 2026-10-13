@@ -32,7 +32,7 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 641 | Declaration |
-| `tests/rescale_test.rs` | 40,41 | A quantity in satoshis rescaled to six places, under `Down` and `Exact` |
+| `tests/rescale_test.rs` | 40,41,63 | A quantity in satoshis rescaled to six places, under `Down` and `Exact`; `0.0000001` at 8 → 6 under `Exact` reports 7 digits |
 | `smoke_exact_market_split/src/lib.rs:401` | — | Step 7's one-scale arm rounds a satoshi quantity to six places |
 
 Outside `exact_kind`, only the demo lane calls it — no production caller yet.

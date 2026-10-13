@@ -27,7 +27,8 @@ ten by hand, and pick a rounding without anything naming it:
   - **Coarser** (`TO < SCALE`): divide by `pow10( SCALE - TO )` through
     `exact_round::round_div`, rounding per the caller's mode. Under
     `Rounding::Exact`, a dropped nonzero digit is
-    `KindError::ExcessPrecision { digits : SCALE, scale : TO }`.
+    `KindError::ExcessPrecision { digits, scale : TO }`, where `digits` is the
+    value's own fractional digits — `3` for `1.005`, whatever scale holds it.
   - The result goes through `Decimal::< TO >::from_minor`, so the ceiling holds
     at the new scale too.
 - `Qty::rescale` delegates to `Decimal::rescale` and re-checks non-negativity
@@ -71,8 +72,10 @@ Rejected: it would be a third copy of the sign-aware, tie-breaking division
 
 **Neutral:**
 - `rescale` reuses `KindError` rather than adding a `ScaleError`. In the
-  refusal, `ExcessPrecision`'s `digits` is the source scale — the digits the
-  value carried — not a count read from text.
+  refusal, `ExcessPrecision`'s `digits` counts the digits the value has, not
+  the scale it is stored at, so `1.005` held at scale 6 is refused as 3
+  digits, as `parse` refuses the same text. The first version reported the
+  source scale; review of #6 found the two disagree.
 - The ceiling is a count of minor units, the same at every scale, so the
   largest whole amount shrinks as the scale grows: a finer rescale of a large
   value can be refused as past the ceiling.
