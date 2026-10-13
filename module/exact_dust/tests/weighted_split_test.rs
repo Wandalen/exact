@@ -50,16 +50,18 @@ fn exact_refuses_an_uneven_share()
   assert_eq!( minors( &money_dust_split_weighted( cents( "9.00" ), &[ 1, 2 ], Rounding::Exact, DustTo::First ).unwrap() ), [ 300, 600 ] );
 }
 
-/// `DustTo::Reject` refuses a remainder, not a rounded share: 3.333… and
-/// 6.666… round to 3.33 and 6.67, which leave nothing over. Refusing the
-/// rounding itself is `Rounding::Exact`'s job.
+/// `DustTo::Reject` refuses any remainder. The shares are rounded toward
+/// zero, so a remainder is left exactly when a share is not whole — under
+/// every mode, `HalfEven` included: 3.333… and 6.666… become 3.33 and 6.66,
+/// a cent short.
 #[ test ]
-fn reject_refuses_a_remainder_not_a_rounded_share()
+fn reject_refuses_any_remainder_under_every_mode()
 {
-  assert_eq!( minors( &money_dust_split_weighted( cents( "10.00" ), &[ 1, 2 ], Rounding::HalfEven, DustTo::Reject ).unwrap() ), [ 333, 667 ] );
-  assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[ 1, 2 ], Rounding::Down, DustTo::Reject ), Err( DustError::Remainder ) );
-  assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[ 1, 1, 1 ], Rounding::HalfEven, DustTo::Reject ), Err( DustError::Remainder ) );
-  assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[ 1, 2 ], Rounding::Exact, DustTo::Reject ), Err( DustError::Remainder ) );
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven, Rounding::TowardZero, Rounding::AwayFromZero, Rounding::HalfUp, Rounding::HalfDown, Rounding::Exact ]
+  {
+    assert_eq!( money_dust_split_weighted( cents( "10.00" ), &[ 1, 2 ], mode, DustTo::Reject ), Err( DustError::Remainder ), "{mode:?}" );
+    assert_eq!( minors( &money_dust_split_weighted( cents( "9.00" ), &[ 1, 2 ], mode, DustTo::Reject ).unwrap() ), [ 300, 600 ], "{mode:?}" );
+  }
 }
 
 /// No weights, or only zero weights, give nothing to split by.
@@ -80,36 +82,51 @@ fn a_zero_weight_gets_a_zero_share()
   assert_eq!( minors( &first ), [ 1, 333, 666 ], "the first slot takes the dust whatever its weight" );
 }
 
-/// Under `TowardZero` every part keeps the total's sign. Under a mode that
-/// rounds the shares past the total, `First` takes the excess from slot 0 —
-/// pinned here so the documented behaviour cannot change unnoticed.
+/// Under every mode, with `First` and with `Sink`, every part keeps the
+/// total's sign and the parts never add up past the total — checked against
+/// the total itself, not against another split's output.
 #[ test ]
-fn only_toward_zero_keeps_every_part_on_the_totals_side()
+fn no_part_and_no_sum_passes_the_total_under_any_mode()
 {
-  let weight_lists : [ &[ u64 ]; 6 ] = [ &[ 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 9999, 1 ], &[ 0, 1, 1 ] ];
-  for weights in weight_lists
-  {
-    for total in -1000_i64 ..= 1000
-    {
-      let parts = money_dust_split_weighted( Money::from_minor( total ).unwrap(), weights, Rounding::TowardZero, DustTo::First ).unwrap();
-      assert!( parts.iter().all( | p | p.minor() * total >= 0 ), "{total} by {weights:?}" );
-    }
-  }
-  assert_eq!( minors( &money_dust_split_weighted( cents( "0.01" ), &[ 0, 1, 1 ], Rounding::Up, DustTo::First ).unwrap() ), [ -1, 1, 1 ] );
-  assert_eq!( minors( &money_dust_split_weighted( cents( "-0.01" ), &[ 0, 1, 1 ], Rounding::Down, DustTo::First ).unwrap() ), [ 1, -1, -1 ] );
-}
-
-/// Equal weights give exactly what the equal split gives, under every mode.
-#[ test ]
-fn equal_weights_match_the_equal_split()
-{
+  let weight_lists : [ &[ u64 ]; 6 ] = [ &[ 1 ], &[ 1, 1 ], &[ 1, 1, 1 ], &[ 70, 20, 10 ], &[ 3, 0, 7, 11 ], &[ 0, 1, 1 ] ];
   for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven, Rounding::TowardZero, Rounding::AwayFromZero, Rounding::HalfUp, Rounding::HalfDown ]
   {
+    for to in [ DustTo::First, DustTo::Sink ]
+    {
+      for weights in weight_lists
+      {
+        for total in -1000_i64 ..= 1000
+        {
+          let parts = minors( &money_dust_split_weighted( Money::from_minor( total ).unwrap(), weights, mode, to ).unwrap() );
+          let sum : i64 = parts.iter().sum();
+          assert!( parts.iter().all( | p | p * total >= 0 ), "{total} by {weights:?} under {mode:?}, {to:?}: {parts:?}" );
+          assert!( sum * total >= 0 && sum.abs() <= total.abs(), "{total} by {weights:?} under {mode:?}, {to:?}: sum {sum}" );
+        }
+      }
+    }
+  }
+  // The reviewers' cases: a zero-weight party is never charged, and `Sink`
+  // never pays out more than it holds.
+  assert_eq!( minors( &money_dust_split_weighted( cents( "0.03" ), &[ 0, 1, 1 ], Rounding::HalfEven, DustTo::First ).unwrap() ), [ 1, 1, 1 ] );
+  assert_eq!( minors( &money_dust_split_weighted( cents( "0.01" ), &[ 0, 1, 1 ], Rounding::Up, DustTo::First ).unwrap() ), [ 1, 0, 0 ] );
+  assert_eq!( minors( &money_dust_split_weighted( cents( "0.03" ), &[ 1, 1 ], Rounding::HalfEven, DustTo::Sink ).unwrap() ), [ 1, 1 ] );
+  assert_eq!( minors( &money_dust_split_weighted( cents( "0.01" ), &[ 1, 1 ], Rounding::Up, DustTo::Sink ).unwrap() ), [ 0, 0 ] );
+}
+
+/// Equal weights give exactly what the equal split gives when it rounds
+/// toward zero — the weighted split rounds its shares that way under every
+/// mode — and the same refusal under `Exact`.
+#[ test ]
+fn equal_weights_match_the_equal_split_toward_zero()
+{
+  for mode in [ Rounding::Down, Rounding::Up, Rounding::HalfEven, Rounding::TowardZero, Rounding::AwayFromZero, Rounding::HalfUp, Rounding::HalfDown, Rounding::Exact ]
+  {
+    let equal_mode = if matches!( mode, Rounding::Exact ) { Rounding::Exact } else { Rounding::TowardZero };
     for total in [ -1001, -10, -1, 0, 1, 10, 1001 ]
     {
       let money = Money::from_minor( total ).unwrap();
-      let weighted = money_dust_split_weighted( money, &[ 5, 5, 5 ], mode, DustTo::First ).unwrap();
-      let equal = money_dust_split( money, 3, mode, DustTo::First ).unwrap();
+      let weighted = money_dust_split_weighted( money, &[ 5, 5, 5 ], mode, DustTo::First );
+      let equal = money_dust_split( money, 3, equal_mode, DustTo::First );
       assert_eq!( weighted, equal, "{total} under {mode:?}" );
     }
   }

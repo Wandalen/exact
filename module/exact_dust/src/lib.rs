@@ -270,18 +270,21 @@ pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mod
 }
 
 /// Slot `i`'s share of a weighted split before any dust: `total × weight /
-/// Σ weights`, rounded under `mode`. Widened to `i128` first — an `i64` times
-/// a `u64` stays inside it, so the multiply cannot overflow; the result is
-/// never larger than `total`, so it narrows back.
+/// Σ weights`, rounded toward zero — or refused under [`Rounding::Exact`] when
+/// it is not whole. Toward zero, no share and no sum of shares can pass the
+/// total, so the leftover always has the total's sign. Widened to `i128`
+/// first — an `i64` times a `u64` stays inside it, so the multiply cannot
+/// overflow; the result is never larger than `total`, so it narrows back.
 fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding ) -> Result< i64, DustError >
 {
+  let mode = if matches!( mode, Rounding::Exact ) { Rounding::Exact } else { Rounding::TowardZero };
   let wide = exact_round::round_div_wide( i128::from( total_minor ) * i128::from( weight ), sum, mode )
   .map_err( round_error_to_dust_error )?;
   i64::try_from( wide ).map_err( | _ | DustError::Overflow )
 }
 
 /// Split a money value in proportion to `weights` — slot `i` gets
-/// `total × weights[ i ] / Σ weights`, rounded under `mode` — sending the
+/// `total × weights[ i ] / Σ weights`, rounded toward zero — sending the
 /// remainder to `to`, exactly as [`money_dust_split`] does.
 ///
 /// Weights are whole numbers: percentages (`[ 70, 20, 10 ]`), basis points,
@@ -291,12 +294,13 @@ fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding 
 /// weight. With [`DustTo::Sink`] the held-back dust is `total` minus the sum
 /// of the parts.
 ///
-/// Only [`Rounding::TowardZero`] keeps every part on the total's side of
-/// zero. Any other mode can round the shares past the total, and
-/// [`DustTo::First`] then takes the excess from slot 0, even at weight 0:
-/// `0.01` at `[ 0, 1, 1 ]` under `Up` is `[ -0.01, 0.01, 0.01 ]`, and `Down`
-/// does the same to a negative total. A fee split that must not charge a
-/// party uses `TowardZero`.
+/// The shares are always rounded toward zero, whatever `mode` is: a share
+/// rounded up could make the parts add up past the total — `0.03` at
+/// `[ 1, 1 ]` would pay out `0.02` twice. Toward zero, every part keeps the
+/// total's sign, the parts never add up past it, and the remainder is never
+/// negative. `mode` only decides whether a share that is not whole is
+/// allowed: [`Rounding::Exact`] refuses it, every other mode rounds it toward
+/// zero.
 ///
 /// ```
 /// use exact_dust::{ money_dust_split_weighted, DustTo };
@@ -313,10 +317,9 @@ fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding 
 ///
 /// [`DustError::EmptyParts`] when `weights` is empty or every weight is
 /// zero. [`DustError::Remainder`] when [`DustTo::Reject`] was asked and the
-/// rounded shares leave a remainder — shares rounded one up and one down that
-/// still add up to `total` leave none — or when [`Rounding::Exact`] was asked
-/// and a share did not divide evenly. [`DustError::Overflow`] on overflow or
-/// ceiling breach.
+/// shares leave a remainder — that is, when a share is not whole — or when
+/// [`Rounding::Exact`] was asked and a share did not divide evenly.
+/// [`DustError::Overflow`] on overflow or ceiling breach.
 pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u64 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
 {
   let total_minor = total.minor();
