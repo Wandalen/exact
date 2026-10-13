@@ -292,13 +292,14 @@ fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding 
 /// worth, up to the ceiling and beyond `u32`. A zero weight gets a zero share
 /// — though [`DustTo::First`] sends the dust to the first slot whatever its
 /// weight. With [`DustTo::Sink`] the held-back dust is `total` minus the sum
-/// of the parts.
+/// of the parts — on the total's side of zero and never larger than it,
+/// because the parts never add up past the total.
 ///
 /// The shares are always rounded toward zero, whatever `mode` is: a share
 /// rounded up could make the parts add up past the total — `0.03` at
 /// `[ 1, 1 ]` would pay out `0.02` twice. Toward zero, every part keeps the
-/// total's sign, the parts never add up past it, and the remainder is never
-/// negative. `mode` only decides whether a share that is not whole is
+/// total's sign, the parts never add up past it, and the remainder is on the
+/// total's side of zero. `mode` only decides whether a share that is not whole is
 /// allowed: [`Rounding::Exact`] refuses it, every other mode rounds it toward
 /// zero.
 ///
