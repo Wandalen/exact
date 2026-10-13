@@ -49,7 +49,7 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 261 | Declaration |
-| `src/lib.rs` | 604,841 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
+| `src/lib.rs` | 643,880 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
 | `tests/rescale_test.rs` | 12,20,21,23,31,32,48,49 | Finer is exact; coarser rounds per the mode at both signs; `Exact` refuses a dropped digit; past the ceiling is refused — `ExceedsCeiling` within the backing width (48), `Overflow` past it (49) |
 | `tests/price_at_test.rs` | 47,50,51 | Through `PriceAt::rescale` |
 | `smoke_exact_market_split/src/lib.rs:404` | — | Step 7 narrows the one-scale arm's cost back to cents |
@@ -65,7 +65,7 @@ Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 ## Caller Tree
 
-- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:604`), and `PriceAt::rescale` (`src/lib.rs:841`, a member listed on [PriceAt](../struct/003_price_at.md))
+- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:643`), and `PriceAt::rescale` (`src/lib.rs:880`, a member listed on [PriceAt](../struct/003_price_at.md))
 - **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:404`) — demo-lane code, not production
 
 ## Callee Tree

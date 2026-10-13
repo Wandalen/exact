@@ -20,7 +20,7 @@ pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 191,530 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
+| `src/lib.rs` | 191,569 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Boundary-adjacent values (`MAX.checked_add(EPSILON)` etc.) |
 | `exact_add/tests/checked_and_saturating_add_test.rs:60,61,62` | — | Saturation-boundary test inputs |
 | `exact_conserve/tests/conservation_test.rs:243` | — | Overflow-boundary test input |

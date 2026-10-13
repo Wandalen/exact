@@ -79,7 +79,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 362,667 | Declaration; `Qty::parse`'s delegation via `?` |
+| `src/lib.rs` | 362,706 | Declaration; `Qty::parse`'s delegation via `?` |
 | `tests/parse_render_test.rs`, `tests/checked_arithmetic_test.rs` | throughout | Grammar acceptance/rejection, round-trip |
 | `exact_parse/src/lib.rs:55,75` | — | `money_from_str`, `price_from_str` |
 
@@ -92,7 +92,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 ## Caller Tree
 
-- [Qty::parse](019_parse_qty.md) (`src/lib.rs:667` — via the `?` operator)
+- [Qty::parse](019_parse_qty.md) (`src/lib.rs:706` — via the `?` operator)
 - **External:** `exact_parse::money_from_str` (`exact_parse/src/lib.rs:55`), `price_from_str` (`:74`)
 
 ## Callee Tree

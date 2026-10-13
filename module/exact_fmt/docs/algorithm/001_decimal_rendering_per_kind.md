@@ -25,7 +25,7 @@ All three allocate a `String` and can never fail: `Display` for `Decimal`/`Qty` 
 
 ### A Requested Precision
 
-All three render through `Display`, so a caller wanting a fixed number of places formats the value directly: `format!( "{:.2}", price )`. Given a precision, `Display` prints exactly that many digits after the point — padding with zeros (`0.9` → `0.90`), or, for fewer places than the scale holds, rounding half to even (`1.005` → `1.00`, `1.015` → `1.02`). Only the text is rounded. `fmt_into( format_args!( "{v:.2}" ), &mut buf )` does the same into a caller's buffer with no allocation (`exact_arith/tests/no_alloc_test.rs`). `Qty` and `PriceAt` pass the formatter through, so the precision reaches the decimal they wrap (→ [`exact_kind`'s ADR-004](../../../exact_kind/docs/decisions/004_display_precision_rounds_half_to_even.md)).
+All three render through `Display`, so a caller wanting a fixed number of places formats the value directly: `format!( "{:.2}", price )`. Given a precision, `Display` prints exactly that many digits after the point — padding with zeros (`0.9` → `0.90`), or, for fewer places than the scale holds, rounding half to even (`1.005` → `1.00`, `1.015` → `1.02`). Only the text is rounded. `fmt_into( format_args!( "{v:.2}" ), &mut buf )` does the same into a caller's buffer with no allocation (`exact_arith/tests/no_alloc_test.rs`). Width, fill, alignment, `+` and `0` are honoured too, as for integers, so `format!( "{:>10.2}", price )` lines up in a table. `Qty` and `PriceAt` pass the formatter through, so every flag reaches the decimal they wrap (→ [`exact_kind`'s ADR-004](../../../exact_kind/docs/decisions/004_display_precision_rounds_half_to_even.md)).
 
 ### Buffer-Writing Primitive: `fmt_into`
 

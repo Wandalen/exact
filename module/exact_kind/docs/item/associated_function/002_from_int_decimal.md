@@ -29,7 +29,7 @@ pub const fn from_int( whole : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 225,571 | Declaration; `Qty::from_int`'s delegation |
+| `src/lib.rs` | 225,610 | Declaration; `Qty::from_int`'s delegation |
 | `tests/checked_arithmetic_test.rs` | throughout | Direct construction, overflow boundary |
 
 No file outside `exact_kind` calls `Decimal::from_int` directly — an honest
@@ -45,7 +45,7 @@ constructs one via [parse](009_parse_decimal.md) or
 
 ## Caller Tree
 
-- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:571`)
+- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:610`)
 
 No external caller anywhere in the workspace — an honest empty leaf, not an
 omission (confirmed via grep across all 10 downstream crates' `src/lib.rs`).

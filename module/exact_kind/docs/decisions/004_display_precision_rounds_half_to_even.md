@@ -20,14 +20,22 @@ it through them.
 ## Decision
 
 - **No precision** (`{}`): unchanged — exact, trailing zeros trimmed.
-- **A precision of N places** (`{:.N}`): exactly N digits after the point,
-  through a private, non-generic `fmt_at_precision`.
+- **A precision of N places** (`{:.N}`): exactly N digits after the point.
   - **More places than the scale holds** are zeros: `0.9` at `{:.4}` is `0.9000`.
   - **Fewer places** round the dropped digits **half to even**, through
     `exact_round::round_div`: `1.005` at `{:.2}` is `1.00`, `1.015` is `1.02`.
   - The sign is taken after rounding, so `-0.004` at `{:.2}` is `0.00`, never `-0.00`.
+- **Width, fill, alignment, `+` and `0`** are honoured the way they are for
+  integers, with or without a precision: `{:>10.2}` of `1.5` is `      1.50`,
+  `{:+.2}` is `+1.50`, `{:08.2}` of `-1.5` is `-0001.50`. Right-aligned by
+  default, as for every number; `0` puts the zeros after the sign.
+- **One renderer**, a private, non-generic `render`, serves both `{}` and
+  `{:.N}`: it works out the digits after the point — trimmed, or exactly N —
+  and then pads the text as `Formatter::pad_integral` pads an integer. It
+  writes straight into the formatter, so it needs no buffer and has no limit
+  on the precision.
 - `Qty` and `PriceAt` forward the formatter itself —
-  `fmt::Display::fmt( &self.value, f )` — so the precision reaches the decimal.
+  `fmt::Display::fmt( &self.value, f )` — so every flag reaches the decimal.
 - Only the text is rounded; the value is never changed. Nothing is allocated:
   digits and zeros are written straight into the formatter, checked by
   `exact_arith/tests/no_alloc_test.rs`.
@@ -57,6 +65,15 @@ Rejected: `{:.N}` is the standard way to ask, and `Display` lives on
 `exact_kind`'s types (`exact_fmt` cannot implement it, by Rust's orphan rule —
 feature 016's Design status), so the precision belongs there.
 
+### Option 5: Render into a stack buffer, then call `Formatter::pad_integral`
+
+Suggested in review (#7), and `pad_integral` gives the integer padding rules
+for free. Rejected for the streaming renderer: the text must fit one buffer,
+and a precision has no upper bound — `{:.40}` of a large value passes any
+fixed size, and growing the buffer allocates. `render` writes the same
+padding `pad_integral` would, straight into the formatter;
+`flags_match_f64_formatting` checks it against `f64` for every flag.
+
 ## Consequences
 
 **Positive:**
@@ -74,11 +91,11 @@ feature 016's Design status), so the precision belongs there.
   Print at most the scale's places for text that will be parsed back.
 
 **Neutral:**
-- Every formatter flag except precision is still ignored, as before: sign
-  (`{:+.2}` of `1.5` is `1.50`), zero padding (`{:08.2}` of `-1.5` is
-  `-1.50`), width and alignment (`{:>10.2}` is `1.50`). E5b asks only for
-  precision; honouring the rest, for example through `Formatter::pad_integral`,
-  is a separate change.
+- The flags other than precision were added in review (#7): E5b asked only
+  for precision, but the first real use of `{:.2}` is tables of amounts,
+  where `{:>10.2}` printing `1.50` unpadded misaligns every column. A value
+  formatted with a width but no other flag now pads, where it used to print
+  bare.
 - `exact_kind` already depended on `exact_round` for `rescale`
   (→ [ADR-002](002_explicit_rescale_between_scales.md)); no new dependency.
 

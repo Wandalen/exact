@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:665`
+`module/exact_kind/src/lib.rs:704`
 
 ```rust
 pub fn parse( text : &str ) -> Result< Self, KindError >
@@ -25,7 +25,7 @@ pub fn parse( text : &str ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 665 | Declaration |
+| `src/lib.rs` | 704 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Negative-string refusal, `"-0.0"` edge case |
 | `exact_parse/src/lib.rs:63,65` | — | `qty_from_str`'s entire body |
 
@@ -44,5 +44,5 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:667`, via the `?` operator)
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:667`)
+- [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:706`, via the `?` operator)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:706`)

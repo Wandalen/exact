@@ -34,7 +34,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 208,232,298,312,331,346,417,557 | Range gate inside `from_int`, `checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`, `parse`, and `Qty::from_minor` |
+| `src/lib.rs` | 208,232,298,312,331,346,417,596 | Range gate inside `from_int`, `checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`, `parse`, and `Qty::from_minor` |
 | `tests/checked_arithmetic_test.rs` | throughout | Direct construction at and past boundaries |
 | `exact_bytes/src/lib.rs:214,253` | — | `money_from_wire`/`price_from_wire` |
 | `exact_dust/src/lib.rs:212,223` | — | `money_dust_split`/`money_dust_split_into`, passed as `make` to the private `split_with`/`split_into_with` |
@@ -55,7 +55,7 @@ pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
 - [Decimal::checked_mul_int](007_checked_mul_int_decimal.md) (`src/lib.rs:331`)
 - [Decimal::checked_neg](008_checked_neg_decimal.md) (`src/lib.rs:346`)
 - [Decimal::parse](009_parse_decimal.md) (`src/lib.rs:417`)
-- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:557`)
+- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:596`)
 - **External:** `exact_bytes::money_from_wire` (`exact_bytes/src/lib.rs:214`), `exact_bytes::price_from_wire` (`:251`)
 - **External:** `exact_dust::money_dust_split` (`exact_dust/src/lib.rs:212`), `money_dust_split_into` (`:220`), each passing it as `make`
 - **External:** `exact_ratio::money_mul_ratio` (`exact_ratio/src/lib.rs:180`), `price_mul_ratio` (`:206`), `money_div_round` (`:224`), `price_mul_qty` (`:258`)

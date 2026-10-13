@@ -52,8 +52,8 @@ behaviour.
 | `KindError` | enum | `../../../exact_kind/src/lib.rs:72` | — |
 | `Money` | type alias | `../../../exact_kind/src/lib.rs:58` | — |
 | `Price` | type alias | `../../../exact_kind/src/lib.rs:64` | — |
-| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:762` | — |
-| `Qty` | struct | `../../../exact_kind/src/lib.rs:519` | — |
+| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:801` | — |
+| `Qty` | struct | `../../../exact_kind/src/lib.rs:558` | — |
 | `Quantity` | type alias | `../../../exact_kind/src/lib.rs:61` | — |
 | `money_add` | fn | `../../../exact_add/src/lib.rs:53` | — |
 | `money_checked_neg` | fn | `../../../exact_add/src/lib.rs:113` | — |

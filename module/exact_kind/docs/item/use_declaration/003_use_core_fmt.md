@@ -23,7 +23,7 @@ use core::fmt;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 122,124,135,137,421,428,464,473,480,713,715 | Every `fmt::Display`/`fmt::Formatter`/`fmt::Result` reference in the 3 `Display` impls and `fmt_at_precision` (`KindError`, `Decimal`, `Qty`) |
+| `src/lib.rs` | 122,124,135,137,421,430,450,458,506-508,513,517,543,752,754,757,885,887,890 | Every `fmt::` reference in the 4 `Display` impls (`KindError`, `Decimal`, `Qty`, `PriceAt`) and in `render` — `Formatter`, `Result`, `Error`, `Alignment`, and `Write::write_char` for the fill and the sign |
 
 No other file references this declaration — it is private and grants no
 external visibility.

@@ -8,9 +8,12 @@ trailing zeros stripped (omitted entirely when `SCALE == 0` or the fraction
 is zero). The inverse of `parse` for every value it produces.
 
 When the caller asks for a precision — `{:.2}` — it prints exactly that many
-digits after the point instead, through the private `fmt_at_precision`
-(`src/lib.rs:473-507`): extra places are zeros, fewer round half to even.
-Only the text is rounded, never the value, and nothing is allocated
+digits after the point instead: extra places are zeros, fewer round half to
+even. Either way the text is then padded to the formatter's width, fill and
+alignment, with `+` and `0` honoured, the way an integer is: `{:>10.2}` of
+`1.5` is `      1.50`. All of it is the private `render` (`src/lib.rs:450-546`),
+which writes straight into the formatter: only the text is rounded, never
+the value, and nothing is allocated
 (→ [ADR-004](../../decisions/004_display_precision_rounds_half_to_even.md)).
 
 ## Kind
@@ -19,52 +22,21 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:421-465`
+`module/exact_kind/src/lib.rs:421-434`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
   /// Render exactly, with trailing fractional zeros trimmed — or, when the
   /// caller asks for a precision (`{:.2}`), with exactly that many digits
-  /// after the point. A precision past the scale pads zeros that `parse` at
-  /// this scale refuses: `{:.4}` of a `Decimal< 2 >` `1.5` is `1.5000`, which
-  /// `Decimal::< 2 >::parse` rejects as `ExcessPrecision`.
+  /// after the point. Width, fill, alignment, `+` and `0` are honoured the way
+  /// they are for integers: `{:>10.2}` of `1.5` is `      1.50`. A precision
+  /// past the scale pads zeros that `parse` at this scale refuses: `{:.4}` of a
+  /// `Decimal< 2 >` `1.5` is `1.5000`, which `Decimal::< 2 >::parse` rejects as
+  /// `ExcessPrecision`.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    if let Some( places ) = f.precision()
-    {
-      return fmt_at_precision( self.minor(), SCALE, places, f );
-    }
-
-    let unit = Self::ONE_MINOR;
-    let magnitude = self.minor().unsigned_abs();
-    let unit_u = unit.unsigned_abs();
-    let whole = magnitude / unit_u;
-    let frac = magnitude % unit_u;
-
-    if self.minor() < 0
-    {
-      write!( f, "-" )?;
-    }
-    write!( f, "{whole}" )?;
-
-    if SCALE == 0 || frac == 0
-    {
-      return Ok( () );
-    }
-    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
-    // into a `String` with `format!` and then trimmed — one heap allocation
-    // per render, against feature 016's non-allocating display. The trailing
-    // zeros are now counted arithmetically and the digits written directly.
-    //
-    // Root cause: `format!` used as a scratch buffer inside `fmt`.
-    // Pitfall: `write!` into the formatter does not allocate but `format!`
-    //   does, and the rendered text is identical — output tests cannot tell.
-    let trailing_zeros = ( 1..=SCALE )
-    .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
-    .count();
-    let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
-    write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
+    render( self.minor(), SCALE, f )
   }
 }
 ```
@@ -73,10 +45,10 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 421-507 | Declaration |
+| `src/lib.rs` | 421-546 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
-| `tests/display_precision_test.rs` | throughout | `{:.N}`: padding, half-even rounding, negatives, `Qty`/`PriceAt` pass-through |
-| `exact_arith/tests/no_alloc_test.rs` | — | `{:.N}` rendered into a stack buffer with no allocation |
+| `tests/display_precision_test.rs` | throughout | `{:.N}`: padding, half-even rounding, negatives, `Qty`/`PriceAt` pass-through; width, fill, alignment, `+` and `0`, and every flag against `f64`'s output |
+| `exact_arith/tests/no_alloc_test.rs` | — | `{:.N}`, width, fill and `+` rendered into a stack buffer with no allocation |
 | `smoke_exact_market_split/src/lib.rs:444-445` | — | Step 7 prints its amounts in cents with `{:.2}` |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 

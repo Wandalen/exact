@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:713`
+`module/exact_kind/src/lib.rs:752`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
@@ -30,7 +30,7 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 713-720 | Declaration |
+| `src/lib.rs` | 752-759 | Declaration |
 | `tests/non_negative_test.rs:50` | — | `qty.to_string()` compared against the inner decimal's own rendering |
 | `tests/display_precision_test.rs` | — | A precision passed through to the decimal |
 | `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |

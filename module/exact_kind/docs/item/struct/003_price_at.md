@@ -16,7 +16,7 @@ Struct (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:762`
+`module/exact_kind/src/lib.rs:801`
 
 ```rust
 pub struct PriceAt< const SCALE : u32 >
@@ -29,15 +29,15 @@ pub struct PriceAt< const SCALE : u32 >
 
 | Member | Line | Delegates to |
 |--------|------|--------------|
-| `ZERO` | `src/lib.rs:770` | [`Decimal::ZERO`](../associated_constant/002_zero_decimal.md) |
-| `MAX` | `src/lib.rs:773` | [`Decimal::MAX`](../associated_constant/004_max_decimal.md) |
-| `from_minor` | `src/lib.rs:780` | [`Decimal::from_minor`](../associated_function/001_from_minor_decimal.md) |
-| `minor` | `src/lib.rs:791` | [`Decimal::minor`](../associated_function/003_minor_decimal.md) |
-| `checked_add` | `src/lib.rs:801` | [`Decimal::checked_add`](../associated_function/005_checked_add_decimal.md) |
-| `checked_sub` | `src/lib.rs:815` | [`Decimal::checked_sub`](../associated_function/006_checked_sub_decimal.md) |
-| `parse` | `src/lib.rs:829` | [`Decimal::parse`](../associated_function/009_parse_decimal.md) |
-| `rescale` | `src/lib.rs:839` | [`Decimal::rescale`](../associated_function/023_rescale_decimal.md) |
-| `Display` | `src/lib.rs:846` | [`Display` for `Decimal`](../implementation/004_display_for_decimal.md) |
+| `ZERO` | `src/lib.rs:809` | [`Decimal::ZERO`](../associated_constant/002_zero_decimal.md) |
+| `MAX` | `src/lib.rs:812` | [`Decimal::MAX`](../associated_constant/004_max_decimal.md) |
+| `from_minor` | `src/lib.rs:819` | [`Decimal::from_minor`](../associated_function/001_from_minor_decimal.md) |
+| `minor` | `src/lib.rs:830` | [`Decimal::minor`](../associated_function/003_minor_decimal.md) |
+| `checked_add` | `src/lib.rs:840` | [`Decimal::checked_add`](../associated_function/005_checked_add_decimal.md) |
+| `checked_sub` | `src/lib.rs:854` | [`Decimal::checked_sub`](../associated_function/006_checked_sub_decimal.md) |
+| `parse` | `src/lib.rs:868` | [`Decimal::parse`](../associated_function/009_parse_decimal.md) |
+| `rescale` | `src/lib.rs:878` | [`Decimal::rescale`](../associated_function/023_rescale_decimal.md) |
+| `Display` | `src/lib.rs:885` | [`Display` for `Decimal`](../implementation/004_display_for_decimal.md) |
 
 Only the members another crate uses exist, plus `rescale`; `Decimal`'s others
 (`from_int`, `whole`, `checked_mul_int`, `checked_neg`, `EPSILON`, `MIN`) have
@@ -47,9 +47,9 @@ no `PriceAt` caller.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 762-853 | Declaration, members and `Display` |
+| `src/lib.rs` | 801-892 | Declaration, members and `Display` |
 | `src/lib.rs` | 64 | The `Price` alias, `PriceAt< MONEY_SCALE >` |
-| `src/lib.rs` | 737-760 | `compile_fail` doctests: money plus a price, a price plus money, and two prices at different scales do not compile |
+| `src/lib.rs` | 776-799 | `compile_fail` doctests: money plus a price, a price plus money, and two prices at different scales do not compile |
 | `tests/parse_render_test.rs` | 10,131 | A price may be negative and renders back exactly |
 | `tests/price_test.rs` | throughout | Constants, range, exact arithmetic, parse/render and ordering of `Price` as its own kind |
 | `tests/price_at_test.rs` | throughout | A price in cents: parse, add, render, refuse a third place; the ceiling at every scale; `rescale` |

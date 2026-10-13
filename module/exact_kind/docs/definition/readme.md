@@ -33,32 +33,32 @@
 | `Decimal::checked_neg` | fn | `src/lib.rs:342` | [Checked Operations Total](../invariant/002_checked_operations_total.md) |
 | `Decimal::parse` | fn | `src/lib.rs:362` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
 | `Decimal`'s `Display` impl | trait impl | `src/lib.rs:421` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty<SCALE>` | struct | `src/lib.rs:519` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::ZERO` | assoc const | `src/lib.rs:527` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::EPSILON` | assoc const | `src/lib.rs:530` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::MAX` | assoc const | `src/lib.rs:533` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::from_decimal` | fn | `src/lib.rs:540` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::from_minor` | fn | `src/lib.rs:555` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::from_int` | fn | `src/lib.rs:569` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::as_decimal` | fn | `src/lib.rs:584` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::minor` | fn | `src/lib.rs:591` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::rescale` | fn | `src/lib.rs:602` | [Explicit Rescale Between Scales](../decisions/002_explicit_rescale_between_scales.md) |
-| `Qty::whole` | fn | `src/lib.rs:610` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `Qty::checked_add` | fn | `src/lib.rs:622` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::checked_sub` | fn | `src/lib.rs:636` | [Checked Sub Refuses Below Zero](../algorithm/001_checked_sub_refuses_below_zero.md) |
-| `Qty::checked_mul_int` | fn | `src/lib.rs:651` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty::parse` | fn | `src/lib.rs:665` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
-| `Qty`'s `Display` impl | trait impl | `src/lib.rs:713` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt<SCALE>` | struct | `src/lib.rs:762` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::ZERO` | assoc const | `src/lib.rs:770` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::MAX` | assoc const | `src/lib.rs:773` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::from_minor` | fn | `src/lib.rs:780` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::minor` | fn | `src/lib.rs:791` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::checked_add` | fn | `src/lib.rs:801` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::checked_sub` | fn | `src/lib.rs:815` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::parse` | fn | `src/lib.rs:829` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
-| `PriceAt::rescale` | fn | `src/lib.rs:839` | [Explicit Rescale Between Scales](../decisions/002_explicit_rescale_between_scales.md) |
-| `PriceAt`'s `Display` impl | trait impl | `src/lib.rs:846` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty<SCALE>` | struct | `src/lib.rs:558` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::ZERO` | assoc const | `src/lib.rs:566` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::EPSILON` | assoc const | `src/lib.rs:569` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::MAX` | assoc const | `src/lib.rs:572` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::from_decimal` | fn | `src/lib.rs:579` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::from_minor` | fn | `src/lib.rs:594` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::from_int` | fn | `src/lib.rs:608` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::as_decimal` | fn | `src/lib.rs:623` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::minor` | fn | `src/lib.rs:630` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::rescale` | fn | `src/lib.rs:641` | [Explicit Rescale Between Scales](../decisions/002_explicit_rescale_between_scales.md) |
+| `Qty::whole` | fn | `src/lib.rs:649` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `Qty::checked_add` | fn | `src/lib.rs:661` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::checked_sub` | fn | `src/lib.rs:675` | [Checked Sub Refuses Below Zero](../algorithm/001_checked_sub_refuses_below_zero.md) |
+| `Qty::checked_mul_int` | fn | `src/lib.rs:690` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty::parse` | fn | `src/lib.rs:704` | [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md) |
+| `Qty`'s `Display` impl | trait impl | `src/lib.rs:752` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt<SCALE>` | struct | `src/lib.rs:801` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::ZERO` | assoc const | `src/lib.rs:809` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::MAX` | assoc const | `src/lib.rs:812` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::from_minor` | fn | `src/lib.rs:819` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::minor` | fn | `src/lib.rs:830` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::checked_add` | fn | `src/lib.rs:840` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::checked_sub` | fn | `src/lib.rs:854` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::parse` | fn | `src/lib.rs:868` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
+| `PriceAt::rescale` | fn | `src/lib.rs:878` | [Explicit Rescale Between Scales](../decisions/002_explicit_rescale_between_scales.md) |
+| `PriceAt`'s `Display` impl | trait impl | `src/lib.rs:885` | [Conserved Value Type Family](../type/001_conserved_value_type_family.md) |
 
 `impl core::error::Error for KindError {}` (`src/lib.rs:137`) carries no
 associated item of its own, so it gets no row here — same treatment as every
