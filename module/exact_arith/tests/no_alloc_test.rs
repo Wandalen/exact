@@ -58,8 +58,9 @@ fn rendering_into_a_stack_buffer_does_not_allocate()
   assert_eq!( &buf[ .. len ], b"-1234.5" );
 }
 
-/// A requested precision allocates nothing either — padding with zeros and
-/// rounding dropped digits are both written straight into the formatter.
+/// A requested precision allocates nothing either — padding with zeros,
+/// rounding dropped digits, and width, fill and sign are all written straight
+/// into the formatter.
 #[ test ]
 fn rendering_at_a_precision_does_not_allocate()
 {
@@ -72,6 +73,8 @@ fn rendering_at_a_precision_does_not_allocate()
     fmt_into( format_args!( "{padded:.2}" ), &mut buf ).unwrap();
     fmt_into( format_args!( "{rounded:.2}" ), &mut buf ).unwrap();
     fmt_into( format_args!( "{qty:.4}" ), &mut buf ).unwrap();
+    fmt_into( format_args!( "{rounded:>+12.2}" ), &mut buf ).unwrap();
+    fmt_into( format_args!( "{padded:*^10}" ), &mut buf ).unwrap();
   } );
   assert_eq!( count, 0 );
   let len = fmt_into( format_args!( "{rounded:.2}" ), &mut buf ).unwrap();

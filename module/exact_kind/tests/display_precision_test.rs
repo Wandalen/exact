@@ -78,3 +78,56 @@ fn a_precision_rounds_the_text_never_the_value()
   assert_eq!( v.to_string(), "1.005" );
   assert_eq!( v.minor(), 1_005_000 );
 }
+
+/// Width, fill, alignment, `+` and `0` are honoured the way they are for
+/// numbers — with and without a precision, on all three types.
+#[ test ]
+fn width_fill_alignment_sign_and_zero_padding_are_honoured()
+{
+  let v = Decimal::< 2 >::parse( "1.5" ).unwrap();
+  let n = Decimal::< 2 >::parse( "-1.5" ).unwrap();
+  assert_eq!( format!( "[{v:>10.2}]" ), "[      1.50]" );
+  assert_eq!( format!( "[{v:+.2}]" ), "[+1.50]" );
+  assert_eq!( format!( "[{n:08.2}]" ), "[-0001.50]" );
+  assert_eq!( format!( "[{v:<8}]" ), "[1.5     ]" );
+  assert_eq!( format!( "[{v:^9.2}]" ), "[  1.50   ]" );
+  assert_eq!( format!( "[{v:*>8}]" ), "[*****1.5]" );
+  assert_eq!( format!( "[{v:+010}]" ), "[+0000001.5]" );
+  assert_eq!( format!( "[{v:2}]" ), "[1.5]", "a width narrower than the text changes nothing" );
+  assert_eq!( format!( "[{:>8.2}]", Qty::< 8 >::parse( "0.12345679" ).unwrap() ), "[    0.12]" );
+  assert_eq!( format!( "[{:+}]", PriceAt::< 2 >::parse( "65000" ).unwrap() ), "[+65000]" );
+  assert_eq!( format!( "[{v}]" ), "[1.5]", "no flags: unchanged" );
+}
+
+/// Every flag lands exactly where `f64` puts it, for quarter values — exact in
+/// binary and at scale 2, so both sides format the same number.
+#[ test ]
+fn flags_match_f64_formatting()
+{
+  macro_rules! same
+  {
+    ( $( $spec : literal ),* ) =>
+    {
+      for quarters in -400_i64 ..= 400
+      {
+        let d = Decimal::< 2 >::from_minor( quarters * 25 ).unwrap();
+        let x = quarters as f64 / 4.0;
+        $( assert_eq!( format!( $spec, d ), format!( $spec, x ), "{} of {x}", $spec ); )*
+      }
+    };
+  }
+  same!( "{}", "{:>10}", "{:<10}", "{:^10}", "{:*^11}", "{:+}", "{:010}", "{:+010}", "{:.2}", "{:>10.2}", "{:<9.3}", "{:^12.4}", "{:+.2}", "{:+012.3}" );
+}
+
+/// The edges of padding: long whole parts at both ends of the range, scale 0,
+/// a `+` on a negative that rounds to zero, and a precision far past the scale.
+#[ test ]
+fn padding_holds_at_the_edges()
+{
+  assert_eq!( format!( "[{:>14}]", Money::MAX ), "[    9000000000]" );
+  assert_eq!( format!( "[{:^25.2}]", Money::MIN ), format!( "[{:^25.2}]", -9_000_000_000.0_f64 ) );
+  assert_eq!( format!( "[{:>5}]", Decimal::< 0 >::parse( "5" ).unwrap() ), "[    5]" );
+  assert_eq!( format!( "[{:+.2}]", Money::parse( "-0.004" ).unwrap() ), "[+0.00]", "rounds to zero, so no minus sign" );
+  let long = format!( "{:>50.45}", Decimal::< 2 >::parse( "1.5" ).unwrap() );
+  assert_eq!( long, format!( "   1.5{}", "0".repeat( 44 ) ), "no limit on the precision" );
+}
