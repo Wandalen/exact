@@ -1,4 +1,4 @@
-//! Splitting a value into equal parts under a chosen rounding mode, giving
+//! Splitting a value into equal or weighted parts under a chosen rounding mode, giving
 //! the remainder ("dust") an explicit destination instead of letting it
 //! silently vanish into truncation.
 //!
@@ -21,7 +21,9 @@
 //!   The doc's `dust_split(total, parts, mode, to)` does not say which; a
 //!   count matches this family's existing `div_round`-style functions
 //!   (divide by an integer count, not a ratio) and keeps "dust" its plain,
-//!   documented meaning — the remainder of an equal integer division.
+//!   documented meaning — the remainder of an equal integer division. A
+//!   split in proportion to weights is its own, separately named operation,
+//!   [`money_dust_split_weighted`], as ADR-002 anticipated (→ ADR-004).
 //! - **No `price_dust_split`.** `exact_ratio` already set this precedent by
 //!   shipping `money_div_round`/`qty_div_round` with no `price_div_round` —
 //!   "splitting a total among parties" and "splitting a holding into lots"
@@ -60,14 +62,15 @@
 use exact_kind::{ Decimal, KindError, Qty };
 use exact_round::{ RoundError, Rounding };
 
-/// Where the remainder of an equal split goes.
+/// Where the remainder of a split goes.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum DustTo
 {
   /// Folded into the first part.
   First,
   /// Held back — not included in any output slot; query it separately via
-  /// [`money_dust_remainder`]/[`qty_dust_remainder`].
+  /// [`money_dust_remainder`]/[`qty_dust_remainder`], or, for a weighted
+  /// split, as the total minus the sum of the returned parts.
   Sink,
   /// A nonzero remainder is refused outright.
   Reject,
@@ -77,10 +80,10 @@ pub enum DustTo
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum DustError
 {
-  /// Zero parts were requested.
+  /// Zero parts were requested — a part count of zero, or no nonzero weight.
   EmptyParts,
-  /// The split did not divide evenly and [`DustTo::Reject`] or
-  /// [`Rounding::Exact`] was asked.
+  /// The rounded parts left a remainder that [`DustTo::Reject`] refuses, or
+  /// a share did not divide evenly under [`Rounding::Exact`].
   Remainder,
   /// An operation left the representable or declared range.
   Overflow,
@@ -92,7 +95,7 @@ impl core::fmt::Display for DustError
   {
     match self
     {
-      Self::EmptyParts => write!( f, "cannot split into zero parts" ),
+      Self::EmptyParts => write!( f, "nothing to split into: no parts, or no nonzero weight" ),
       Self::Remainder => write!( f, "a remainder that DustTo::Reject or Rounding::Exact refuses" ),
       Self::Overflow => write!( f, "left the representable or declared range" ),
     }
@@ -264,4 +267,80 @@ pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mod
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
   Ok( leftover )
+}
+
+/// Slot `i`'s share of a weighted split before any dust: `total × weight /
+/// Σ weights`, rounded toward zero — or refused under [`Rounding::Exact`] when
+/// it is not whole. Toward zero, no share and no sum of shares can pass the
+/// total, so the leftover always has the total's sign. Widened to `i128`
+/// first — an `i64` times a `u64` stays inside it, so the multiply cannot
+/// overflow; the result is never larger than `total`, so it narrows back.
+fn weighted_share( total_minor : i64, weight : u64, sum : i128, mode : Rounding ) -> Result< i64, DustError >
+{
+  let mode = if matches!( mode, Rounding::Exact ) { Rounding::Exact } else { Rounding::TowardZero };
+  let wide = exact_round::round_div_wide( i128::from( total_minor ) * i128::from( weight ), sum, mode )
+  .map_err( round_error_to_dust_error )?;
+  i64::try_from( wide ).map_err( | _ | DustError::Overflow )
+}
+
+/// Split a money value in proportion to `weights` — slot `i` gets
+/// `total × weights[ i ] / Σ weights`, rounded toward zero — sending the
+/// remainder to `to`, exactly as [`money_dust_split`] does.
+///
+/// Weights are whole numbers: percentages (`[ 70, 20, 10 ]`), basis points,
+/// or amounts in minor units — a fee spread over fills by what each fill was
+/// worth, up to the ceiling and beyond `u32`. A zero weight gets a zero share
+/// — though [`DustTo::First`] sends the dust to the first slot whatever its
+/// weight. With [`DustTo::Sink`] the held-back dust is `total` minus the sum
+/// of the parts — on the total's side of zero and never larger than it,
+/// because the parts never add up past the total.
+///
+/// The shares are always rounded toward zero, whatever `mode` is: a share
+/// rounded up could make the parts add up past the total — `0.03` at
+/// `[ 1, 1 ]` would pay out `0.02` twice. Toward zero, every part keeps the
+/// total's sign, the parts never add up past it, and the remainder is on the
+/// total's side of zero. `mode` only decides whether a share that is not whole is
+/// allowed: [`Rounding::Exact`] refuses it, every other mode rounds it toward
+/// zero.
+///
+/// ```
+/// use exact_dust::{ money_dust_split_weighted, DustTo };
+/// use exact_kind::Decimal;
+/// use exact_round::Rounding;
+///
+/// let fee : Decimal< 2 > = Decimal::parse( "10.00" ).unwrap();
+/// let parts = money_dust_split_weighted( fee, &[ 1, 1, 1 ], Rounding::Down, DustTo::First ).unwrap();
+/// let cents : Vec< i64 > = parts.iter().map( | p | p.minor() ).collect();
+/// assert_eq!( cents, [ 334, 333, 333 ] ); // the leftover cent goes to the first
+/// ```
+///
+/// # Errors
+///
+/// [`DustError::EmptyParts`] when `weights` is empty or every weight is
+/// zero. [`DustError::Remainder`] when [`DustTo::Reject`] was asked and the
+/// shares leave a remainder — that is, when a share is not whole — or when
+/// [`Rounding::Exact`] was asked and a share did not divide evenly.
+/// [`DustError::Overflow`] on overflow or ceiling breach.
+pub fn money_dust_split_weighted< const S : u32 >( total : Decimal< S >, weights : &[ u64 ], mode : Rounding, to : DustTo ) -> Result< Vec< Decimal< S > >, DustError >
+{
+  let total_minor = total.minor();
+  let sum = weights.iter().try_fold( 0_i128, | acc, &w | acc.checked_add( i128::from( w ) ) ).ok_or( DustError::Overflow )?;
+  if sum == 0
+  {
+    return Err( DustError::EmptyParts );
+  }
+  // Each share once, straight into the returned `Vec`, summed on the way.
+  let mut parts = Vec::with_capacity( weights.len() );
+  let mut allocated : i64 = 0;
+  for &w in weights
+  {
+    let share = weighted_share( total_minor, w, sum, mode )?;
+    allocated = allocated.checked_add( share ).ok_or( DustError::Overflow )?;
+    parts.push( Decimal::< S >::from_minor( share ).map_err( | _ | DustError::Overflow )? );
+  }
+  // The leftover goes where `to` says; only slot 0 can change.
+  let leftover = total_minor.checked_sub( allocated ).ok_or( DustError::Overflow )?;
+  let first = slot_minor( parts[ 0 ].minor(), leftover, to, 0 )?;
+  parts[ 0 ] = Decimal::< S >::from_minor( first ).map_err( | _ | DustError::Overflow )?;
+  Ok( parts )
 }

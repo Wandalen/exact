@@ -11,16 +11,17 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `DustTo` | enum | `src/lib.rs:65` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `DustError` | enum | `src/lib.rs:78` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
-| `DustError`'s `Display` impl | trait impl | `src/lib.rs:89` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
-| `money_dust_split` | fn | `src/lib.rs:207` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_split_into` | fn | `src/lib.rs:218` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `money_dust_remainder` | fn | `src/lib.rs:231` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split` | fn | `src/lib.rs:243` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_split_into` | fn | `src/lib.rs:253` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
-| `qty_dust_remainder` | fn | `src/lib.rs:263` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `DustTo` | enum | `src/lib.rs:67` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `DustError` | enum | `src/lib.rs:81` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
+| `DustError`'s `Display` impl | trait impl | `src/lib.rs:92` | [Leftover Correction via Raw Minor-Unit Reconstruction](../decisions/003_leftover_via_raw_minor_reconstruction.md) |
+| `money_dust_split` | fn | `src/lib.rs:210` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_split_into` | fn | `src/lib.rs:221` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_remainder` | fn | `src/lib.rs:234` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split` | fn | `src/lib.rs:246` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_split_into` | fn | `src/lib.rs:256` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `qty_dust_remainder` | fn | `src/lib.rs:266` | [Equal-Parts Dust Split](../algorithm/001_equal_parts_dust_split.md) |
+| `money_dust_split_weighted` | fn | `src/lib.rs:324` | [Weighted-Parts Dust Split](../algorithm/002_weighted_parts_dust_split.md) |
 
-`impl core::error::Error for DustError {}` (`src/lib.rs:102`) carries no associated item of its own, so it gets no row here — same treatment as every other marker trait impl in this family's `definition/` indexes.
+`impl core::error::Error for DustError {}` (`src/lib.rs:105`) carries no associated item of its own, so it gets no row here — same treatment as every other marker trait impl in this family's `definition/` indexes.
 
 No numbered instance file in this directory — this index is the whole of `definition/` for this crate.

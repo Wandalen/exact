@@ -420,39 +420,129 @@ impl< const SCALE : u32 > Decimal< SCALE >
 
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
-  /// Render exactly, with trailing fractional zeros trimmed.
+  /// Render exactly, with trailing fractional zeros trimmed — or, when the
+  /// caller asks for a precision (`{:.2}`), with exactly that many digits
+  /// after the point. Width, fill, alignment, `+` and `0` are honoured the way
+  /// they are for integers: `{:>10.2}` of `1.5` is `      1.50`. A precision
+  /// past the scale pads zeros that `parse` at this scale refuses: `{:.4}` of a
+  /// `Decimal< 2 >` `1.5` is `1.5000`, which `Decimal::< 2 >::parse` rejects as
+  /// `ExcessPrecision`.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    let unit = Self::ONE_MINOR;
-    let magnitude = self.minor().unsigned_abs();
-    let unit_u = unit.unsigned_abs();
-    let whole = magnitude / unit_u;
-    let frac = magnitude % unit_u;
-
-    if self.minor() < 0
-    {
-      write!( f, "-" )?;
-    }
-    write!( f, "{whole}" )?;
-
-    if SCALE == 0 || frac == 0
-    {
-      return Ok( () );
-    }
-    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
-    // into a `String` with `format!` and then trimmed — one heap allocation
-    // per render, against feature 016's non-allocating display. The trailing
-    // zeros are now counted arithmetically and the digits written directly.
-    //
-    // Root cause: `format!` used as a scratch buffer inside `fmt`.
-    // Pitfall: `write!` into the formatter does not allocate but `format!`
-    //   does, and the rendered text is identical — output tests cannot tell.
-    let trailing_zeros = ( 1..=SCALE )
-    .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
-    .count();
-    let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
-    write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
+    render( self.minor(), SCALE, f )
   }
+}
+
+/// The one renderer behind `Display` for `Decimal`, `Qty` and `PriceAt`.
+///
+/// The digits after the point are the scale's own with trailing zeros trimmed
+/// for `{}`, or exactly `places` for `{:.N}`: more places than the scale holds
+/// are zeros, fewer round the dropped digits half to even — the family's
+/// default, and the rule `{:.N}` follows for `f64`. Only the text is rounded,
+/// never the value. The sign is taken after rounding, so `-0.004` at `{:.2}`
+/// is `0.00`.
+///
+/// Then the text is padded as `Formatter::pad_integral` pads an integer: `+`
+/// adds a sign to a non-negative value, `0` puts zeros between the sign and
+/// the digits, and otherwise the fill goes where the alignment says, right by
+/// default. Everything is written straight into the formatter — no buffer, no
+/// allocation, and no limit on the precision.
+fn render( minor : Backing, scale : u32, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+{
+  let places = f.precision();
+  // Fewer places than the scale holds: round the dropped digits away first.
+  let ( shown, shown_scale ) = match places.map( u32::try_from )
+  {
+    Some( Ok( p ) ) if p < scale =>
+    (
+      round_div( minor, pow10( scale - p ), Rounding::HalfEven ).map_err( | _ | fmt::Error )?,
+      p,
+    ),
+    _ => ( minor, scale ),
+  };
+  let unit = pow10( shown_scale ).unsigned_abs();
+  let magnitude = shown.unsigned_abs();
+  let whole = magnitude / unit;
+  let ( frac, frac_width, extra_zeros ) = match places
+  {
+    // `{:.N}`: every digit the shown scale holds, then zeros up to `N`.
+    Some( places ) => ( magnitude % unit, shown_scale as usize, places.saturating_sub( shown_scale as usize ) ),
+    None =>
+    {
+      // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+      // into a `String` with `format!` and then trimmed — one heap allocation
+      // per render, against feature 016's non-allocating display. The trailing
+      // zeros are now counted arithmetically and the digits written directly.
+      //
+      // Root cause: `format!` used as a scratch buffer inside `fmt`.
+      // Pitfall: `write!` into the formatter does not allocate but `format!`
+      //   does, and the rendered text is identical — output tests cannot tell.
+      let frac = magnitude % unit;
+      let trailing_zeros = if frac == 0
+      {
+        shown_scale as usize
+      }
+      else
+      {
+        ( 1..=shown_scale ).take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) ).count()
+      };
+      ( frac / pow10( trailing_zeros as u32 ).unsigned_abs(), shown_scale as usize - trailing_zeros, 0 )
+    }
+  };
+  let point = frac_width + extra_zeros > 0;
+  let sign = if shown < 0 { Some( '-' ) } else if f.sign_plus() { Some( '+' ) } else { None };
+  let len = usize::from( sign.is_some() )
+  + whole.checked_ilog10().map_or( 1, | l | l as usize + 1 )
+  + if point { 1 + frac_width + extra_zeros } else { 0 };
+  let padding = f.width().map_or( 0, | w | w.saturating_sub( len ) );
+  let ( before, after, fill ) = if f.sign_aware_zero_pad()
+  {
+    ( 0, 0, '0' )
+  }
+  else
+  {
+    match f.align()
+    {
+      Some( fmt::Alignment::Left ) => ( 0, padding, f.fill() ),
+      Some( fmt::Alignment::Center ) => ( padding / 2, padding.div_ceil( 2 ), f.fill() ),
+      Some( fmt::Alignment::Right ) | None => ( padding, 0, f.fill() ),
+    }
+  };
+  for _ in 0..before
+  {
+    fmt::Write::write_char( f, fill )?;
+  }
+  if let Some( sign ) = sign
+  {
+    fmt::Write::write_char( f, sign )?;
+  }
+  // `0`: the zeros go between the sign and the digits.
+  if f.sign_aware_zero_pad()
+  {
+    for _ in 0..padding
+    {
+      f.write_str( "0" )?;
+    }
+  }
+  write!( f, "{whole}" )?;
+  if point
+  {
+    f.write_str( "." )?;
+    if frac_width > 0
+    {
+      write!( f, "{frac:0frac_width$}" )?;
+    }
+    // More places than the scale holds: the rest are zeros.
+    for _ in 0..extra_zeros
+    {
+      f.write_str( "0" )?;
+    }
+  }
+  for _ in 0..after
+  {
+    fmt::Write::write_char( f, fill )?;
+  }
+  Ok( () )
 }
 
 /// A non-negative quantity at a type-level scale.
@@ -663,7 +753,8 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }
 
@@ -795,6 +886,7 @@ impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }

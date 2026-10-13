@@ -25,8 +25,8 @@ pub type Quantity = Qty< MONEY_SCALE >;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 61,461-464 | Declaration; struct-doc-comment doctest on `Qty` |
-| `src/lib.rs` | 630-659 | Named by the `compile_fail` doctests: money and a quantity do not mix |
+| `src/lib.rs` | 61,551-554 | Declaration; struct-doc-comment doctest on `Qty` |
+| `src/lib.rs` | 720-749 | Named by the `compile_fail` doctests: money and a quantity do not mix |
 | `tests/non_negative_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 | `smoke_exact_market_split/src/lib.rs` | 51,161,201,202,204,302,303 | The demo lane's quantities and lot size, through `exact_arith` |

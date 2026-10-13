@@ -25,7 +25,7 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 | `src/lib.rs` | 84 | Declaration |
 | `src/lib.rs` | 21,33 | Module-level doc-test — `Rounding` |
 | `tests/facade_test.rs:10,38,56` | — | `Rounding`, `round_div` both exercised |
-| `tests/no_alloc_test.rs:14,72-73` | — | `Rounding` passed to both `*_dust_split_into` functions |
+| `tests/no_alloc_test.rs:14,95-96` | — | `Rounding` passed to both `*_dust_split_into` functions |
 | `smoke_exact_market_split/src/lib.rs:47` | — | **Demo-lane** — `Rounding` |
 
 `RoundError` and the 2 convenience functions (`rounding_default`,

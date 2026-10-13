@@ -4,7 +4,7 @@
 use exact_arith::
 {
   Decimal, DustTo, PriceAt, Qty, RatioError, Rounding, SnapError, TickAt, WireError,
-  money_from_wire, money_sum_assert_zero, money_to_wire, price_add, price_cmp, price_fmt,
+  money_dust_split_weighted, money_from_wire, money_sum_assert_zero, money_to_wire, price_add, price_cmp, price_fmt,
   price_from_str, price_mul_qty, price_snap_tick, qty_dust_split,
 };
 
@@ -70,4 +70,14 @@ fn the_wire_keeps_the_scale_and_refuses_another()
   assert_eq!( wire.scale(), 2 );
   assert_eq!( money_from_wire( wire ), Ok( v ) );
   assert_eq!( money_from_wire::< 6 >( wire ), Err( WireError::BadScale ) );
+}
+
+/// A fee in cents splits 70/20/10 through the facade, and the parts add back
+/// to the fee.
+#[ test ]
+fn a_fee_in_cents_splits_by_weight()
+{
+  let fee : Decimal< 2 > = Decimal::parse( "10.01" ).unwrap();
+  let parts = money_dust_split_weighted( fee, &[ 70, 20, 10 ], Rounding::Down, DustTo::First ).unwrap();
+  assert_eq!( parts.iter().map( | p | p.minor() ).collect::< Vec< _ > >(), [ 701, 200, 100 ] );
 }

@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its function/error surface (→ `../type/008_exact_dust_types.md`).
 
-**Design status**: implemented in [`exact_dust`](../../module/exact_dust/readme.md). Diverges from this proposal — it depends on `exact_kind` and `exact_round`, not `exact_ratio`: the actual need is `exact_round`'s integer-count, mode-driven division (the same primitive `exact_snap` depends on directly), and none of `exact_ratio`'s rational-multiplier surface is used — see [`exact_dust`'s dependency decision](../../module/exact_dust/docs/decisions/001_direct_exact_round_dependency.md) for the full account. Its function/error surface also diverges (→ `../type/008_exact_dust_types.md`).
+**Design status**: implemented in [`exact_dust`](../../module/exact_dust/readme.md). Diverges from this proposal — it depends on `exact_kind` and `exact_round`, not `exact_ratio`: the actual need is `exact_round`'s integer-count, mode-driven division (the same primitive `exact_snap` depends on directly), and none of `exact_ratio`'s rational-multiplier surface is used — see [`exact_dust`'s dependency decision](../../module/exact_dust/docs/decisions/001_direct_exact_round_dependency.md) for the full account. Its function/error surface also diverges (→ `../type/008_exact_dust_types.md`). It also ships a weighted split, `money_dust_split_weighted`, for fees divided by percentage ([`exact_dust`'s ADR-004](../../module/exact_dust/docs/decisions/004_weighted_split_as_a_named_operation.md)).
 
 ### Why It Exists
 

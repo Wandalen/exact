@@ -26,7 +26,7 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity }
 | `src/lib.rs` | 88 | Declaration |
 | `src/lib.rs` | 21-34 | Module-level doc-test — `Money`, `Quantity` |
 | `tests/facade_test.rs` | throughout | `Money`, `Quantity`, `KindError` used in both tests |
-| `tests/no_alloc_test.rs` | 14,43-45,66-69 | `Money`, `Quantity`, `Price` rendered and split without allocating |
+| `tests/no_alloc_test.rs` | 14,43-45,89-92 | `Money`, `Quantity`, `Price` rendered and split without allocating |
 | `tests/any_scale_test.rs` | throughout | `Decimal`, `PriceAt`, `Qty` at scales 2 and 8 |
 | `exchange_core/src/lib.rs:63-66` | — | **Production** — `KindError`, `Money`, `Quantity` re-exported one layer further |
 | `exchange_book`, `exchange_match`, `exchange_escrow`, `exchange_types` | `src/lib.rs` each | **Production** — `Money`/`Quantity` (every one of the 5 `substrate/exchange/` crates) |

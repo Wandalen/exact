@@ -8,7 +8,7 @@ Divide a quantity by `d`, rounding the remainder per `rounding`. Unlike
 
 **No production caller.** Verified via grep (`grep -rn qty_div_round` across the whole
 `module/` tree): the matches are this declaration, the `exact_arith`
-facade re-export, and one doc-comment mention in `exact_dust/src/lib.rs:26`
+facade re-export, and one doc-comment mention in `exact_dust/src/lib.rs:28`
 (prose explaining why `exact_dust` has no `price_dust_split`, not a call).
 No real call site outside this crate's own tests exercises it.
 

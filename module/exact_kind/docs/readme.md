@@ -6,7 +6,7 @@ Design documentation for `exact_kind`, as typed doc definitions.
 |------|-----------------|
 | `type/` | `Decimal`/`Qty`/`PriceAt` and the `Money`/`Quantity`/`Price` aliases built from them |
 | `invariant/` | No float anywhere, every checked operation total, and every scale at most 18, at the decimal/kind level |
-| `decisions/` | Why non-negativity is a separate wrapper type, why crossing scales is an explicit `rescale`, and why a price carries its own scale |
+| `decisions/` | Why non-negativity is a separate wrapper type, why crossing scales is an explicit `rescale`, why a price carries its own scale, and how a display precision rounds |
 | `algorithm/` | `Qty::checked_sub`'s exact below-zero procedure |
 | `definition/` | Module Index — every definition in this crate, in one place |
 | `workaround/` | External constraints this crate absorbs — none |

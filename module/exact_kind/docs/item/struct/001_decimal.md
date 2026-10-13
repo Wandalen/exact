@@ -30,18 +30,18 @@ pub struct Decimal< const SCALE : u32 >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58,143-150,161,177,198,201,208,225,237,261,276,282,294,298,308,312,324,331,342,346,362,417,421,468,470,489,491,493,506,520,533,535,712,718,721,730,779 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
+| `src/lib.rs` | 58,143-150,161,177,198,201,208,225,237,261,276,282,294,298,308,312,324,331,342,346,362,417,421,558,560,579,581,583,596,610,623,625,803,809,812,821,870 | Backs the `Money` alias and `PriceAt`'s `value` field; receiver/return type of every `Decimal` method, including `rescale`'s target; backs `Qty`'s `value` field |
 | `tests/*.rs` (5 files) | throughout | Direct `Decimal::< N >::parse`/`::from_minor` construction alongside `Money`, including `rescale_test.rs` and `price_at_test.rs` |
 | `exact_add/src/lib.rs:46,53,63,113,128,133` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add`, generic over the scale |
 | `exact_bytes/src/lib.rs:39,199,211,214` | — | `money_to_wire`/`money_from_wire` |
 | `exact_cmp/src/lib.rs:32,36,57` | — | `money_cmp`/`money_eq` |
 | `exact_conserve/src/lib.rs:83,255,277` | — | `money_conserve_into`/`money_sum_assert_zero` |
-| `exact_dust/src/lib.rs:60,207,209,218,220,231` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
+| `exact_dust/src/lib.rs:62,210,212,221,223,234` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
 | `exact_fmt/src/lib.rs:41,105` | — | `money_fmt` |
 | `exact_parse/src/lib.rs:39,53,55` | — | `money_from_str` |
 | `exact_ratio/src/lib.rs:47,177,180,221,224,258,289,304` | — | `money_mul_ratio`/`money_div_round`; `price_mul_qty`'s cost, and `price_mul_qty_to`'s at the scale `M` the caller picks |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:51,153,155,183,184,185,187,190,207,351,368,371` | — | The demo lane's scale-2 scenes — the sum, the dust split, the wire round trip — and step 7's cost in cents, through `exact_arith` |
+| `smoke_exact_market_split/src/lib.rs:51,153,155,183,184,185,187,190,207,351,372,375` | — | The demo lane's scale-2 scenes — the sum, the dust split, the wire round trip — and step 7's cost in cents, through `exact_arith` |
 
 ## Crate Usage
 

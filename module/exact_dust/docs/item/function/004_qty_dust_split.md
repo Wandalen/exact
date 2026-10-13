@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:243-246`
+`module/exact_dust/src/lib.rs:246-249`
 
 ```rust
 pub fn qty_dust_split< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding, to : DustTo ) -> Result< Vec< Qty< S > >, DustError >
@@ -24,7 +24,7 @@ pub fn qty_dust_split< const S : u32 >( total : Qty< S >, parts : usize, mode : 
 }
 ```
 
-The body is the private `split_with` (`src/lib.rs:152-168`), shared with
+The body is the private `split_with` (`src/lib.rs:155-171`), shared with
 [money_dust_split](001_money_dust_split.md): this function only supplies the
 total's minor count and `Quantity::from_minor` to build each slot.
 
@@ -32,11 +32,11 @@ total's minor count and `Quantity::from_minor` to build each slot.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 243-246 | Declaration |
+| `src/lib.rs` | 246-249 | Declaration |
 | `tests/dust_split_test.rs:97,136,152,230` | — | Parity with `qty_dust_split_into`, a clean `Down`-rounded split, the `Up`-rounded case that refuses a first slot that would go negative, and `Exact` refusing an uneven split |
 | `exact_arith/src/lib.rs:140` | — | Facade re-export |
 | `exact_arith/tests/any_scale_test.rs:50` | — | Splits a quantity in satoshis |
-| `smoke_exact_market_split/src/lib.rs:409` | — | Step 7 splits a satoshi quantity among three accounts |
+| `smoke_exact_market_split/src/lib.rs:413` | — | Step 7 splits a satoshi quantity among three accounts |
 
 Outside this crate's own tests, it is called only at other scales: at
 scale 8 by `exact_arith`'s any-scale test and by the demo lane's step 7.
@@ -52,15 +52,15 @@ scale 8 by `exact_arith`'s any-scale test and by the demo lane's step 7.
 
 ## Caller Tree
 
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:409`) — demo-lane code, not production
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:413`) — demo-lane code, not production
 
 No production caller.
 
 ## Callee Tree
 
-- `split_with` (`src/lib.rs:245`, private — no Item Instance of its own)
-  - `split_minor` (`src/lib.rs:164`, private — no Item Instance of its own)
-    - `round_error_to_dust_error` (`src/lib.rs:129`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_with` (`src/lib.rs:248`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:167`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:132`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
     - **External:** `exact_round::round_div`
-  - `slot_minor` (`src/lib.rs:166`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:245`), `exact_kind::Quantity::from_minor` (`src/lib.rs:245`, passed to `split_with` as `make`, called at `162`)
+  - `slot_minor` (`src/lib.rs:169`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:248`), `exact_kind::Quantity::from_minor` (`src/lib.rs:248`, passed to `split_with` as `make`, called at `162`)

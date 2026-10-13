@@ -32,7 +32,7 @@ smoke_exact_market_split — this family's slice, one process
   ok
 
   per asset      65000.00 x 0.12345679 BTC = 8024.69 (cents x satoshis)
-  one scale      the same trade at scale 6 = 8024.7 (a cent off)
+  one scale      the same trade at scale 6 = 8024.70 (a cent off)
   wire           a satoshi quantity carries scale byte 8
   split          0.12345679 BTC into 3 -> [0.04115227, 0.04115226, 0.04115226] (recombines exactly)
   audit          USD and BTC each net to zero, each at its own precision

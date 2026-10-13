@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_dust`'s own
-source tree — 13 instances across 5 Item Kinds, all in `src/lib.rs` (this
+source tree — 14 instances across 5 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against every crate
@@ -19,7 +19,7 @@ unused dependency on `exact_ratio`'s rational-multiplier surface.
 
 **Five private top-level functions are real call-graph hops, cataloged
 nowhere of their own** (`item_des.rulebook.md` § Instance Documentation :
-Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:104`),
+Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:107`),
 `split_minor` (`118`), `slot_minor` (`135`), and the generic `split_with`
 (`151`) and `split_into_with` (`169`), each taking the kind's `from_minor`
 as `make`. `split_minor` is called by the 2 `*_remainder` functions directly
@@ -50,8 +50,8 @@ shape across all 6.
 | Enum | `enum/` | 2 |
 | Implementation | `implementation/` | 2 |
 | Associated Function/Method | `associated_function/` | 1 |
-| Function | `function/` | 6 |
-| **Total** | | **13** |
+| Function | `function/` | 7 |
+| **Total** | | **14** |
 
 10 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Struct, Union, Constant, Static, Trait, External Block, Macro
@@ -76,6 +76,7 @@ only the two trait impls on `DustError`.
 | function/004 | qty_dust_split | Function | 🔄 |
 | function/005 | qty_dust_split_into | Function | 🔄 |
 | function/006 | qty_dust_remainder | Function | 🔄 |
+| function/007 | money_dust_split_weighted | Function | 🔄 |
 
 ### Notable Findings
 
@@ -92,7 +93,7 @@ only the two trait impls on `DustError`.
   instead.
 - **`qty_dust_split_into` has zero references anywhere** beyond its own
   declaration and the facade re-export — not even exercised by this crate's
-  own test suite, the only one of the 6 functions with that gap. Its
+  own test suite, the only one of the 7 functions with that gap. Its
   `Money`-side counterpart (`money_dust_split_into`) does have a test.
 - **`DustError::Display` is never rendered anywhere**, the same pattern
   already recorded for `KindError`/`RatioError`/`SnapError`/`FmtError`
@@ -101,7 +102,7 @@ only the two trait impls on `DustError`.
   discards the error via `.expect(...)`.
 - **The leftover is computed at the raw minor-unit level, not through each
   kind's checked arithmetic** — a deliberate choice disclosed in the module
-  doc comment (`src/lib.rs:36-45`) and worth citing on its own terms:
+  doc comment (`src/lib.rs:38-47`) and worth citing on its own terms:
   an `Up`/`HalfEven` rounding mode can make the per-share allocation exceed
   the total, requiring slot 0 to be *decreased*, which `Qty::checked_add`
   cannot express at all.
@@ -111,5 +112,5 @@ only the two trait impls on `DustError`.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_dust/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 13
+# → 14
 ```

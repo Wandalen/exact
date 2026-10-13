@@ -4,7 +4,7 @@
 
 Brings in the family's rounding mode, its rounded division and that division's
 error, for [Decimal::rescale](../associated_function/023_rescale_decimal.md)'s
-coarser branch — the same `round_div` `exact_ratio`, `exact_snap` and
+coarser branch, and for rounding a display precision half to even — the same `round_div` `exact_ratio`, `exact_snap` and
 `exact_dust` share, rather than a third copy here
 (→ [ADR-002](../../decisions/002_explicit_rescale_between_scales.md)).
 
@@ -25,8 +25,9 @@ use exact_round::{ RoundError, Rounding, round_div };
 | File | Line(s) | Context |
 |------|---------|---------|
 | `src/lib.rs` | 54 | Declaration |
-| `src/lib.rs` | 261,551,787 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
+| `src/lib.rs` | 261,641,878 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
 | `src/lib.rs` | 270-273 | `round_div` divides on the coarser branch; `RoundError`'s three variants map to `KindError` |
+| `src/lib.rs` | 458 | `round_div` under `Rounding::HalfEven` in `render`, when `{:.N}` asks for fewer places than `SCALE` |
 
 No external file references this `use` declaration directly — other crates
 depending on `exact_round` import it independently.
@@ -35,4 +36,4 @@ depending on `exact_round` import it independently.
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_kind` | `(defining crate)` | The rounding `rescale` takes and drives |
+| `exact_kind` | `(defining crate)` | The rounding `rescale` takes and drives, and a display precision's half-even rounding |

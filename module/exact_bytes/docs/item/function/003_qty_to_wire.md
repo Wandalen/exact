@@ -26,7 +26,7 @@ pub fn qty_to_wire< const S : u32 >( v : Qty< S > ) -> Wire
 | `src/lib.rs` | 219-222 | Declaration |
 | `tests/wire_roundtrip_test.rs:25,47` | — | Encoding in the quantity round-trip test and the cross-kind-rejection test |
 | `exact_arith/src/lib.rs:133` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:404` | — | Step 7 encodes a satoshi quantity, scale byte `8` |
+| `smoke_exact_market_split/src/lib.rs:408` | — | Step 7 encodes a satoshi quantity, scale byte `8` |
 
 Unlike [`money_to_wire`](001_money_to_wire.md), `exact_arith`'s own facade
 test does not call this function — only the Money roundtrip is exercised at
@@ -42,7 +42,7 @@ the facade level.
 
 ## Caller Tree
 
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:404`) — demo-lane code, not production
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:408`) — demo-lane code, not production
 
 No production caller, and no test-only exception in the facade's own test
 suite (contrast [money_to_wire](001_money_to_wire.md)).

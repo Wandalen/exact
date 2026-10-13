@@ -27,7 +27,7 @@ pub fn qty_from_wire< const S : u32 >( w : Wire ) -> Result< Qty< S >, WireError
 | `src/lib.rs` | 232-236 | Declaration |
 | `tests/wire_roundtrip_test.rs:27,45,97` | — | Decoding in the quantity round-trip, cross-kind-rejection, and negative-value tests |
 | `exact_arith/src/lib.rs:132` | — | Facade re-export |
-| `smoke_exact_market_split/src/lib.rs:405,406` | — | Step 7 decodes at scale 8, and is refused at scale 6 with `BadScale` |
+| `smoke_exact_market_split/src/lib.rs:409,410` | — | Step 7 decodes at scale 8, and is refused at scale 6 with `BadScale` |
 
 Unlike [`money_from_wire`](002_money_from_wire.md), `exact_arith`'s own
 facade test does not call this function.
@@ -42,7 +42,7 @@ facade test does not call this function.
 
 ## Caller Tree
 
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:405,406`) — demo-lane code, not production
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:409,410`) — demo-lane code, not production
 
 No production caller, and no test-only exception in the facade's own test
 suite.

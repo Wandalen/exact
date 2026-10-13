@@ -1,6 +1,6 @@
 # exact_dust
 
-Tier 3 — splitting a value into equal parts under a chosen rounding mode,
+Tier 3 — splitting a value into equal or weighted parts under a chosen rounding mode,
 giving the remainder ("dust") an explicit destination instead of letting it
 silently vanish into truncation.
 
@@ -37,8 +37,9 @@ anywhere in this codebase.
 | File | Responsibility |
 |------|-----------------|
 | [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_kind` and `exact_round` |
-| [`src/lib.rs`](src/lib.rs) | `DustTo`, `DustError`, `money`/`qty_dust_split`, `_into`, `_remainder` |
+| [`src/lib.rs`](src/lib.rs) | `DustTo`, `DustError`, `money`/`qty_dust_split`, `_into`, `_remainder`, and `money_dust_split_weighted` |
 | [`tests/dust_split_test.rs`](tests/dust_split_test.rs) | Even splits, remainder destinations, the non-negative kind's own negative-slot refusal under `Up`, and `Exact`'s refusal of an uneven split |
+| [`tests/weighted_split_test.rs`](tests/weighted_split_test.rs) | Weighted splits: exact percentages, the leftover routed by each `DustTo`, `Exact`'s refusal, `Reject` refusing any remainder under every mode, empty and zero weights, no part and no sum past the total under every mode with `First` and `Sink`, equal weights matching the equal split toward zero, no overflow at `Money::MAX` and `u64::MAX` weights, notional weights past `u32`, and a conservation sweep — 70 035 cases, 2 001 totals × 5 weight lists × 7 rounding modes, the parts always summing to the total under `First`, and under `Sink` a dust on the total's side that is exactly what `First` folds in |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Algorithm, decisions, and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

@@ -18,7 +18,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:551`
+`module/exact_kind/src/lib.rs:641`
 
 ```rust
 pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
@@ -31,9 +31,9 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 551 | Declaration |
+| `src/lib.rs` | 641 | Declaration |
 | `tests/rescale_test.rs` | 40,41 | A quantity in satoshis rescaled to six places, under `Down` and `Exact` |
-| `smoke_exact_market_split/src/lib.rs:397` | — | Step 7's one-scale arm rounds a satoshi quantity to six places |
+| `smoke_exact_market_split/src/lib.rs:401` | — | Step 7's one-scale arm rounds a satoshi quantity to six places |
 
 Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
@@ -46,7 +46,7 @@ Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 ## Caller Tree
 
-- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:397`) — demo-lane code, not production
+- **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:401`) — demo-lane code, not production
 
 No production caller.
 
