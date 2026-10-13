@@ -2,21 +2,23 @@
 //! end with a control arm, through `exact_arith` — the 14-crate facade —
 //! alone.
 //!
-//! Six steps in one process: a [`Money`] parsed and added by a fixed-point
+//! Seven steps in one process: a [`Money`] parsed and added by a fixed-point
 //! decimal type, a [`Quantity`] refusing to go below zero, a log audited by a
 //! conservation auditor, a market fill split among several accounts with the
 //! dust accounted for and the split proven to conserve, the ten scenes of
-//! `docs/scene/` printed in their golden-print shape, and every one of
-//! those names imported from `exact_arith` and from nowhere else — which is
-//! what makes the facade's completeness a thing this lane tests rather than
-//! a thing its documentation claims.
+//! `docs/scene/` printed in their golden-print shape, a trade whose price and
+//! quantity each keep their own scale, and every one of those names imported
+//! from `exact_arith` and from nowhere else — which is what makes the
+//! facade's completeness a thing this lane tests rather than a thing its
+//! documentation claims.
 //!
 //! Ported from `smoke_exact_arithmetic`, this family's demo lane before the
 //! 15-crate migration — steps 1 through 4 carry its exact content forward
 //! unchanged; step 5 is new, added because a lane named for a market split
 //! ought to run one, exercising `exact_dust` and `exact_conserve` together in
 //! a way neither crate's own unit tests do on their own; step 6 runs the
-//! proposed lane's scenes ([`golden`], [`checksum`]).
+//! proposed lane's scenes ([`golden`], [`checksum`]); step 7 prices a trade
+//! in cents and satoshis at once ([`per_asset_trade`]).
 //!
 //! # The control arm
 //!
@@ -45,8 +47,8 @@
 use exact_arith::
 {
   money_dust_remainder, money_dust_split, money_from_wire, money_to_wire, minor_checked_add, minor_from_i64,
-  price_snap_tick, qty_snap_lot, verify,
-  Decimal, DustTo, Entry, KindError, Lot, Money, Price, Quantity, Rounding, Tick,
+  price_mul_qty, price_snap_tick, qty_dust_split, qty_from_wire, qty_snap_lot, qty_to_wire, verify,
+  Decimal, DustTo, Entry, KindError, Lot, Money, Price, PriceAt, Qty, Quantity, Rounding, Tick, WireError,
 };
 
 /// How many times the tenth is added, in both arms.
@@ -96,7 +98,7 @@ pub fn float_tenths() -> f64
 /// every call in this lane passes `0` or `1`, so the panic is reachable only
 /// by a future caller supplying an unrealistic leak, never by `run` itself.
 #[ must_use ]
-pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry >
+pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry< &'static str, &'static str > >
 {
   // Fix(smoke_exact_arithmetic_ledger_leak_minor_subtraction_overflow): the
   // "seller" posting computed `amount.minor() - leak_minor` with a bare `-`
@@ -124,8 +126,8 @@ pub fn ledger( amount : Money, leak_minor : i64 ) -> Vec< Entry >
 
   vec!
   [
-    Entry::new( "buyer", -amount.minor() ),
-    Entry::new( "seller", seller_minor ),
+    Entry::new( "buyer", "cash", -amount.minor() ),
+    Entry::new( "seller", "cash", seller_minor ),
   ]
 }
 
@@ -149,8 +151,8 @@ pub struct Golden
 {
   /// Scenes 001-002: `10.00 + 3.33 - 13.33`, at scale 2.
   pub sum : Decimal< 2 >,
-  /// Scene 003: `10` split into 3, rounded down, the dust held back.
-  pub parts : Vec< Money >,
+  /// Scene 003: `10.00` split into 3, rounded down, the dust held back.
+  pub parts : Vec< Decimal< 2 > >,
   /// Scene 003: the held-back dust, in minor units.
   pub dust_minor : i64,
   /// Scene 004: `1.26` snapped to a `0.05` tick.
@@ -161,15 +163,15 @@ pub struct Golden
   pub extra : bool,
   /// Scene 008: whether an add at `i64::MAX` was refused.
   pub overflow : bool,
-  /// Scene 009: the minor units of `10` after a wire round trip.
+  /// Scene 009: the minor units of `10.00` after a wire round trip.
   pub wire_minor : i64,
 }
 
 /// Run scenes 001 to 009 and return what each produced.
 ///
-/// Scenes 001, 002 and 006 run at scale 2, as proposed. Scenes 003 and 009
-/// run on `Money`, whose scale is fixed at 6, because `exact_dust` and
-/// `exact_bytes` take `Money` only.
+/// Every scene that holds an amount runs at scale 2, as proposed — the dust
+/// split and the wire round trip included, since every operation takes a
+/// value at any scale.
 ///
 /// # Panics
 ///
@@ -185,7 +187,7 @@ pub fn golden() -> Golden
   assert_eq!( sum, Decimal::< 2 >::ZERO, "10.00 + 3.33 - 13.33 must be exactly zero" );
 
   // Scene 003: split, hold the dust back, and lose nothing.
-  let ten = Money::from_int( 10 ).expect( "10 is representable" );
+  let ten = Decimal::< 2 >::from_int( 10 ).expect( "10.00 is representable" );
   let parts = money_dust_split( ten, 3, Rounding::Down, DustTo::Sink ).expect( "10 splits within range" );
   let dust_minor = money_dust_remainder( ten, 3, Rounding::Down ).expect( "10 splits within range" );
   let parts_minor : i64 = parts.iter().map( | p | p.minor() ).sum();
@@ -232,7 +234,7 @@ pub fn checksum( g : &Golden ) -> u64
   hash
 }
 
-/// Run the six steps, print what each found, and assert every claim.
+/// Run the seven steps, print what each found, and assert every claim.
 ///
 /// # Panics
 ///
@@ -241,7 +243,8 @@ pub fn checksum( g : &Golden ) -> u64
 /// stopped disagreeing, a withdrawal below zero that is permitted, a
 /// balanced log reported as leaking, a leak whose signed magnitude is not
 /// named, a market split that does not recombine to the original total, a
-/// scene whose assertion fails, or two runs whose checksums differ.
+/// scene whose assertion fails, two runs whose checksums differ, or a
+/// per-asset trade that lands where a single shared scale would.
 pub fn run()
 {
   println!( "smoke_exact_market_split — this family's slice, one process" );
@@ -253,10 +256,12 @@ pub fn run()
   step_4_audit( exact );
   step_5_market_split();
   step_6_golden_print();
+  step_7_per_asset_scales();
 
   println!();
   println!( "VERDICT: reached — exact arithmetic holds across the full facade," );
-  println!( "         the floating-point control arm does not, and a market split conserves." );
+  println!( "         the floating-point control arm does not, a market split conserves," );
+  println!( "         and each asset keeps its own precision." );
 }
 
 /// Step 1: parse and round-trip, through the exact decimal type.
@@ -316,7 +321,7 @@ fn step_4_audit( exact : Money )
   // debited, so value vanished. The sign is the difference between a leak
   // and a forgery, and an auditor that reported only a magnitude would lose
   // it.
-  assert_eq!( leaky.discrepancy_minor(), -1, "the discrepancy must be named, not just flagged" );
+  assert_eq!( leaky.discrepancy_minor( "cash" ), Some( -1 ), "the discrepancy must be named, not just flagged" );
   println!( "  audit, leaky   {leaky}" );
 }
 
@@ -343,7 +348,7 @@ fn step_6_golden_print()
   let g = golden();
   println!();
   println!( "  sum={}", g.sum );
-  let dust = Money::from_minor( g.dust_minor ).expect( "the dust is below one share" );
+  let dust = Decimal::< 2 >::from_minor( g.dust_minor ).expect( "the dust is below one share" );
   println!( "  parts={},{},{} dust={dust}", g.parts[ 0 ], g.parts[ 1 ], g.parts[ 2 ] );
   println!( "  tick={} lot={}", g.tick, g.lot );
   println!( "  extra={} overflow={}", u8::from( g.extra ), u8::from( g.overflow ) );
@@ -352,4 +357,93 @@ fn step_6_golden_print()
   assert_eq!( a, b, "two runs must produce the same checksum" );
   println!( "  a=0x{a:016x} b=0x{b:016x}" );
   println!( "  ok" );
+}
+
+/// Step 7's trade: a price in cents times a quantity in satoshis, each at its
+/// own scale, beside the same trade forced onto one shared scale.
+#[ derive( Debug, Clone, PartialEq, Eq ) ]
+pub struct PerAsset
+{
+  /// The price, in cents.
+  pub price : PriceAt< 2 >,
+  /// The quantity, in satoshis.
+  pub qty : Qty< 8 >,
+  /// `65000.00 × 0.12345679`, each value at its own scale, in cents.
+  pub cost : Decimal< 2 >,
+  /// The same trade at one shared scale of 6 — the quantity rounded to
+  /// `0.123457` first — with the cost rounded back to cents.
+  pub one_scale_cost : Decimal< 2 >,
+  /// The scale byte a quantity in satoshis is written with.
+  pub wire_scale : u8,
+  /// The quantity split among three accounts, the satoshi of dust on the first.
+  pub shares : Vec< Qty< 8 > >,
+}
+
+/// Price, encode, split and audit one trade whose two sides have different
+/// precision: dollars to the cent, bitcoin to the satoshi.
+///
+/// # Panics
+///
+/// If any step's assertion fails: the wire losing the quantity's scale, a
+/// split that does not recombine, or a two-asset log that does not balance.
+#[ must_use ]
+pub fn per_asset_trade() -> PerAsset
+{
+  let price : PriceAt< 2 > = PriceAt::parse( "65000.00" ).expect( "65000.00 fits scale 2" );
+  let btc : Qty< 8 > = Qty::parse( "0.12345679" ).expect( "0.12345679 fits scale 8" );
+
+  // Each value at its own scale: 65000.00 × 0.12345679 = 8024.69135, to the cent.
+  let cost = price_mul_qty( price, btc, Rounding::HalfEven ).expect( "a small trade fits" );
+
+  // One shared scale of 6, the only option before every operation took a
+  // scale: the quantity loses two digits before the multiply.
+  let price_6 = price.rescale::< 6 >( Rounding::Exact ).expect( "cents widen to six places exactly" );
+  let btc_6 = btc.rescale::< 6 >( Rounding::HalfEven ).expect( "a small quantity fits at six places" );
+  let one_scale_cost = price_mul_qty( price_6, btc_6, Rounding::HalfEven )
+  .expect( "a small trade fits" )
+  .rescale::< 2 >( Rounding::HalfEven )
+  .expect( "a small cost narrows to cents" );
+
+  // The wire carries the quantity's own scale, and a reader at another scale refuses it.
+  let wire = qty_to_wire( btc );
+  assert_eq!( qty_from_wire::< 8 >( wire ), Ok( btc ), "a satoshi quantity must round-trip at scale 8" );
+  assert_eq!( qty_from_wire::< 6 >( wire ), Err( WireError::BadScale ), "a reader at scale 6 must refuse it" );
+
+  // Split among three in satoshis; the leftover satoshi goes to the first share.
+  let shares = qty_dust_split( btc, 3, Rounding::Down, DustTo::First ).expect( "a small quantity splits" );
+  let recombined = shares.iter().copied().try_fold( Qty::< 8 >::ZERO, | a, b | a.checked_add( b ) )
+  .expect( "three small shares recombine within range" );
+  assert_eq!( recombined, btc, "a satoshi split must conserve the quantity exactly" );
+
+  // Settle it: each asset nets to zero at its own precision.
+  let log =
+  [
+    Entry::new( "buyer", "USD", -cost.minor() ),
+    Entry::new( "seller", "USD", cost.minor() ),
+    Entry::new( "seller", "BTC", -btc.minor() ),
+    Entry::new( "buyer", "BTC", btc.minor() ),
+  ];
+  let report = verify( &log ).expect( "a four-posting log cannot overflow i128" );
+  assert!( report.is_balanced(), "a settled two-asset trade must balance per asset" );
+
+  PerAsset { price, qty : btc, cost, one_scale_cost, wire_scale : wire.scale(), shares }
+}
+
+/// Step 7: one trade, two precisions — and the one-scale arm that must disagree.
+fn step_7_per_asset_scales()
+{
+  let t = per_asset_trade();
+  assert_ne!
+  (
+    t.cost, t.one_scale_cost,
+    "pricing at one shared scale agreed with per-asset scales, so this step no longer shows why each \
+     asset keeps its own precision and must not pass",
+  );
+  println!();
+  // `{:.2}`: amounts in cents always show both digits — `8024.70`, not `8024.7`.
+  println!( "  per asset      {:.2} x {} BTC = {:.2} (cents x satoshis)", t.price, t.qty, t.cost );
+  println!( "  one scale      the same trade at scale 6 = {:.2} (a cent off)", t.one_scale_cost );
+  println!( "  wire           a satoshi quantity carries scale byte {}", t.wire_scale );
+  println!( "  split          {} BTC into 3 -> [{}, {}, {}] (recombines exactly)", t.qty, t.shares[ 0 ], t.shares[ 1 ], t.shares[ 2 ] );
+  println!( "  audit          USD and BTC each net to zero, each at its own precision" );
 }

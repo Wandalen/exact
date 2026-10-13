@@ -7,7 +7,7 @@
 - **In Scope**: Instrument tick/lot snapping.
 - **Out of Scope**: The order book itself (workstream 002, outside this family).
 
-**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md) as specified — `Tick(Price)`, `Lot(Quantity)`, `price_snap_tick`, and `qty_snap_lot` all match the proposal, with grid-spacing rounding driven by the shared `Rounding` enum from `exact_round` rather than a separate mode type, realizing the proposal's own framing. Holds as stated, with no real deviation.
+**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md) as specified — `Tick(Price)`, `Lot(Quantity)`, `price_snap_tick`, and `qty_snap_lot` all match the proposal — `Tick` and `Lot` are now aliases of `TickAt< MONEY_SCALE >`/`LotAt< MONEY_SCALE >`, so a grid can be declared at any scale ([`exact_snap`'s ADR-001](../../module/exact_snap/docs/decisions/001_tick_and_lot_generic_over_scale.md)), with grid-spacing rounding driven by the shared `Rounding` enum from `exact_round` rather than a separate mode type, realizing the proposal's own framing. Holds as stated, with no real deviation.
 
 ### Statement
 

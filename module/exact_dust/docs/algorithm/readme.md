@@ -12,6 +12,7 @@
 | ID | Name | Purpose | Status |
 |----|------|---------|--------|
 | 001 | [Equal-Parts Dust Split](001_equal_parts_dust_split.md) | Divide a conserved value into equal integer shares with an explicit remainder destination | 🔄 |
+| 002 | [Weighted-Parts Dust Split](002_weighted_parts_dust_split.md) | Divide money in proportion to whole-number weights, with the same explicit remainder destinations | 🔄 |
 
 ### Regenerate
 
@@ -19,6 +20,6 @@
 cd "$(git rev-parse --show-toplevel)"/module/exact_dust/docs/algorithm
 printf 'instances:              '; ls [0-9][0-9][0-9]_*.md | wc -l
 printf 'rows in Overview Table: '; grep -E '^\| [0-9]{3} \|' readme.md | wc -l
-# instances:              1
-# rows in Overview Table: 1
+# instances:              2
+# rows in Overview Table: 2
 ```

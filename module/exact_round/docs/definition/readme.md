@@ -12,13 +12,13 @@
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
 | `Rounding` | enum | `src/lib.rs:38` | [Rounding Mode](../type/001_rounding_mode.md) |
-| `rounding_default` | fn | `src/lib.rs:78` | [Half-Even As The Default](../decisions/001_half_even_as_the_unbiased_default.md) |
-| `rounding_name` | fn | `src/lib.rs:88` | [Rounding Mode](../type/001_rounding_mode.md) |
-| `RoundError` | enum | `src/lib.rs:104` | [Rounding Division](../algorithm/001_rounding_division.md) |
-| `RoundError`'s `Display` impl | trait impl | `src/lib.rs:113` | [Rounding Division](../algorithm/001_rounding_division.md) |
-| `RoundError`'s `Error` impl | trait impl | `src/lib.rs:125` | [Rounding Division](../algorithm/001_rounding_division.md) |
-| `round_div` | fn | `src/lib.rs:136` | [Rounding Division](../algorithm/001_rounding_division.md) |
-| `round_div_wide` | fn | `src/lib.rs:158` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `rounding_default` | fn | `src/lib.rs:83` | [Half-Even As The Default](../decisions/001_half_even_as_the_unbiased_default.md) |
+| `rounding_name` | fn | `src/lib.rs:93` | [Rounding Mode](../type/001_rounding_mode.md) |
+| `RoundError` | enum | `src/lib.rs:110` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `RoundError`'s `Display` impl | trait impl | `src/lib.rs:121` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `RoundError`'s `Error` impl | trait impl | `src/lib.rs:134` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `round_div` | fn | `src/lib.rs:147` | [Rounding Division](../algorithm/001_rounding_division.md) |
+| `round_div_wide` | fn | `src/lib.rs:171` | [Rounding Division](../algorithm/001_rounding_division.md) |
 
 No numbered instance file in this directory — this index is the whole of
 `definition/` for this crate.

@@ -2,8 +2,9 @@
 
 ## Representation
 
-Re-exports the family's core conserved-value types — `Decimal`, `Money`,
-`Price`, `Quantity`, `Qty`, and their shared `KindError`. The most widely
+Re-exports the family's core conserved-value types — the generic `Decimal`,
+`Qty` and `PriceAt`, their standard-scale aliases `Money`, `Quantity` and
+`Price`, and their shared `KindError`. The most widely
 consumed re-export block in this entire facade by a wide margin.
 
 ## Kind
@@ -15,7 +16,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_arith/src/lib.rs:88`
 
 ```rust
-pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
+pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity };
 ```
 
 ## File Usage
@@ -25,7 +26,8 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
 | `src/lib.rs` | 88 | Declaration |
 | `src/lib.rs` | 21-34 | Module-level doc-test — `Money`, `Quantity` |
 | `tests/facade_test.rs` | throughout | `Money`, `Quantity`, `KindError` used in both tests |
-| `tests/no_alloc_test.rs` | 14,43-45,66-69 | `Money`, `Quantity`, `Price` rendered and split without allocating |
+| `tests/no_alloc_test.rs` | 14,43-45,89-92 | `Money`, `Quantity`, `Price` rendered and split without allocating |
+| `tests/any_scale_test.rs` | throughout | `Decimal`, `PriceAt`, `Qty` at scales 2 and 8 |
 | `exchange_core/src/lib.rs:63-66` | — | **Production** — `KindError`, `Money`, `Quantity` re-exported one layer further |
 | `exchange_book`, `exchange_match`, `exchange_escrow`, `exchange_types` | `src/lib.rs` each | **Production** — `Money`/`Quantity` (every one of the 5 `substrate/exchange/` crates) |
 | `exchange_match/src/lib.rs:70` | — | **Production** — `KindError` specifically |
@@ -42,7 +44,7 @@ exclusively through the 3 named aliases.
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
-| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs`, `tests/no_alloc_test.rs` | **Exercised** |
+| `exact_arith` | `src/lib.rs`, `tests/facade_test.rs`, `tests/no_alloc_test.rs`, `tests/any_scale_test.rs` | **Exercised** |
 | `exchange_core` | `src/lib.rs` | **Production** — re-exported one layer further |
 | `exchange_book` | `src/lib.rs` | **Production** |
 | `exchange_match` | `src/lib.rs` | **Production** |

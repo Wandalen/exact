@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_dust`'s own
-source tree — 13 instances across 5 Item Kinds, all in `src/lib.rs` (this
+source tree — 14 instances across 5 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against every crate
@@ -17,13 +17,15 @@ the preferred design's own `exact_kind, exact_ratio` listing, matching
 `exact_snap`'s identical precedent for reaching `round_div` without an
 unused dependency on `exact_ratio`'s rational-multiplier surface.
 
-**Four private top-level functions are real call-graph hops, cataloged
+**Five private top-level functions are real call-graph hops, cataloged
 nowhere of their own** (`item_des.rulebook.md` § Instance Documentation :
-Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:103`),
-`split_minor` (`118`), `slot_minor` (`135`), and `fill_minor` (`149`).
-`split_minor` is called by all 6 public functions; `slot_minor` by the 2
-`*_split_into` functions directly and by `fill_minor`; `fill_minor` only by
-the 2 `*_split` functions — never by the 2 `*_remainder` functions — each function's own
+Caller Tree Content): `round_error_to_dust_error` (`src/lib.rs:107`),
+`split_minor` (`118`), `slot_minor` (`135`), and the generic `split_with`
+(`151`) and `split_into_with` (`169`), each taking the kind's `from_minor`
+as `make`. `split_minor` is called by the 2 `*_remainder` functions directly
+and by both generic helpers; `slot_minor` by both generic helpers;
+`split_with` only by the 2 `*_split` functions and `split_into_with` only by
+the 2 `*_split_into` functions — never by the 2 `*_remainder` functions — each function's own
 Callee Tree reflects this exactly rather than repeating one copy-pasted
 shape across all 6.
 
@@ -48,8 +50,8 @@ shape across all 6.
 | Enum | `enum/` | 2 |
 | Implementation | `implementation/` | 2 |
 | Associated Function/Method | `associated_function/` | 1 |
-| Function | `function/` | 6 |
-| **Total** | | **13** |
+| Function | `function/` | 7 |
+| **Total** | | **14** |
 
 10 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Struct, Union, Constant, Static, Trait, External Block, Macro
@@ -61,7 +63,7 @@ only the two trait impls on `DustError`.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{ Money, Quantity } | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{ Decimal, KindError, Qty } | Use Declaration | 🔄 |
 | use_declaration/002 | use exact_round::{ RoundError, Rounding } | Use Declaration | 🔄 |
 | enum/001 | DustTo | Enum | 🔄 |
 | enum/002 | DustError | Enum | 🔄 |
@@ -74,22 +76,24 @@ only the two trait impls on `DustError`.
 | function/004 | qty_dust_split | Function | 🔄 |
 | function/005 | qty_dust_split_into | Function | 🔄 |
 | function/006 | qty_dust_remainder | Function | 🔄 |
+| function/007 | money_dust_split_weighted | Function | 🔄 |
 
 ### Notable Findings
 
 - **`money_dust_split` is the one function in this entire crate with a real
   production caller** — `smoke_exact_market_split::market_split`
-  (`smoke_exact_market_split/src/lib.rs:142`), reached through the
+  (`smoke_exact_market_split/src/lib.rs:144`), reached through the
   `exact_arith` facade re-export and confirmed via that crate's own
   `Cargo.toml` dependency, not assumed from the name match alone. It's also
-  the one function `exact_arith`'s own crate-doc doctest and test suite
-  genuinely call — unlike every sibling catalog built so far in this family
+  the one function `exact_arith`'s own crate-doc doctest and end-to-end test
+  genuinely call (its any-scale test calls `qty_dust_split` too, at scale 8)
+  — unlike every sibling catalog built so far in this family
   (`exact_add`/`exact_parse`/`exact_cmp`/`exact_snap`), where the facade's
   test bypasses the re-export entirely and calls `exact_kind` directly
   instead.
 - **`qty_dust_split_into` has zero references anywhere** beyond its own
   declaration and the facade re-export — not even exercised by this crate's
-  own test suite, the only one of the 6 functions with that gap. Its
+  own test suite, the only one of the 7 functions with that gap. Its
   `Money`-side counterpart (`money_dust_split_into`) does have a test.
 - **`DustError::Display` is never rendered anywhere**, the same pattern
   already recorded for `KindError`/`RatioError`/`SnapError`/`FmtError`
@@ -98,7 +102,7 @@ only the two trait impls on `DustError`.
   discards the error via `.expect(...)`.
 - **The leftover is computed at the raw minor-unit level, not through each
   kind's checked arithmetic** — a deliberate choice disclosed in the module
-  doc comment (`src/lib.rs:36-45`) and worth citing on its own terms:
+  doc comment (`src/lib.rs:38-47`) and worth citing on its own terms:
   an `Up`/`HalfEven` rounding mode can make the per-share allocation exceed
   the total, requiring slot 0 to be *decreased*, which `Qty::checked_add`
   cannot express at all.
@@ -108,5 +112,5 @@ only the two trait impls on `DustError`.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_dust/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 13
+# → 14
 ```

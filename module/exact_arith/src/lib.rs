@@ -27,7 +27,7 @@
 //! let held = Quantity::parse( "2.5" ).unwrap();
 //! let cost = price_mul_qty( price, held, Rounding::HalfEven ).unwrap();
 //! assert_eq!( cost, Money::parse( "3.125" ).unwrap() );
-//! assert!( verify( &[ Entry::new( "a", 5 ), Entry::new( "b", -5 ) ] ).unwrap().is_balanced() );
+//! assert!( verify( &[ Entry::new( "a", "cash", 5 ), Entry::new( "b", "cash", -5 ) ] ).unwrap().is_balanced() );
 //!
 //! let total = Money::from_minor( 11 ).unwrap();
 //! let shares = money_dust_split( total, 4, Rounding::Down, DustTo::First ).unwrap();
@@ -85,7 +85,7 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 
 pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
 
-pub use exact_kind::{ Decimal, KindError, Money, Price, Qty, Quantity };
+pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity };
 
 pub use exact_add::
 {
@@ -107,6 +107,7 @@ pub use exact_ratio::
   money_div_round,
   money_mul_ratio,
   price_mul_qty,
+  price_mul_qty_to,
   price_mul_ratio,
   qty_div_round,
   qty_mul_ratio,
@@ -132,10 +133,10 @@ pub use exact_bytes::
   qty_to_wire,
 };
 
-pub use exact_snap::{ Lot, SnapError, Tick, price_snap_tick, qty_snap_lot };
+pub use exact_snap::{ Lot, LotAt, SnapError, Tick, TickAt, price_snap_tick, qty_snap_lot };
 
 pub use exact_cmp::{ money_cmp, money_eq, price_cmp, price_max, price_min, qty_cmp };
 
-pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
+pub use exact_dust::{ DustError, DustTo, money_dust_remainder, money_dust_split, money_dust_split_into, money_dust_split_weighted, qty_dust_remainder, qty_dust_split, qty_dust_split_into };
 
-pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, qty_sum_assert_zero, verify };
+pub use exact_conserve::{ ConservationError, Entry, Report, money_conserve_into, money_sum_assert_zero, qty_conserve_into, verify };

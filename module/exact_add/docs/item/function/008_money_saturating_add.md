@@ -21,12 +21,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:128`
 
 ```rust
-pub const fn money_saturating_add( a : Money, b : Money ) -> Money
+pub const fn money_saturating_add< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> Decimal< S >
 {
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Money::MIN } else { Money::MAX },
+    Err( _ ) => if exact_sign::sign_is_negative( b.minor() ) { Decimal::< S >::MIN } else { Decimal::< S >::MAX },
   }
 }
 ```

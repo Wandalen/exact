@@ -125,8 +125,8 @@ real, current 14-crate source rather than carried forward unexamined:
    (`Report::is_balanced`, zero-tolerance equality) and names a discrepancy's
    signed magnitude (`discrepancy_minor`) — `conservation_test.rs`'s
    million-unit-turnover case keeps one leaked minor unit visible. It does
-   **not** pinpoint which entry caused a discrepancy: `Report` carries only an
-   aggregate `net_minor` over the whole log. The predecessor `exact_audit`'s
+   **not** pinpoint which entry caused a discrepancy: `Report` carries only
+   one aggregate net per asset over the whole log. The predecessor `exact_audit`'s
    own position-tracking `AccumulatorOverflow { at_entry }` field was dropped
    rather than carried forward — a disclosed deviation in `exact_conserve`'s
    own module doc, which states plainly that a caller needing to bisect a

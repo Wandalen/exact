@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_ratio`'s
-own source tree — 17 instances across 6 Item Kinds, all in `src/lib.rs` (this
+own source tree — 18 instances across 6 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the one crate
@@ -12,9 +12,9 @@ closures.
 
 `exact_ratio` is Tier 2, depending on `exact_kind` and `exact_round`. Net-new:
 no real precedent exists for either rational-multiply or mode-driven integer
-division (module doc comment, `src/lib.rs:9-12`). The crate also declares 3
-private free functions (`kind_error_to_ratio_error`, `mul_ratio_minor`,
-`div_round_minor`) that get **no Item Instance of their own**
+division (module doc comment, `src/lib.rs:9-12`). The crate also declares 4
+private free functions (`kind_error_to_ratio_error`, `round_error_to_ratio_error`,
+`mul_ratio_minor`, `div_round_minor`) that get **no Item Instance of their own**
 (`item_des.rulebook.md` line 243: a private/`pub(crate)`/`pub(super)` helper
 is a real call-graph hop, not a catalogable Item) — they appear only as plain
 `file:line` citations inside the Callee Trees of the public functions that
@@ -42,9 +42,9 @@ call them.
 | Enum | `enum/` | 1 |
 | Struct | `struct/` | 1 |
 | Implementation | `implementation/` | 3 |
-| Function | `function/` | 7 |
+| Function | `function/` | 8 |
 | Associated Function/Method | `associated_function/` | 3 |
-| **Total** | | **17** |
+| **Total** | | **18** |
 
 Nine of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration,
 Type Alias, Union, Constant, Static, Trait, External Block, Macro
@@ -72,6 +72,7 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 | function/005 | money_div_round | Function | 🔄 |
 | function/006 | qty_div_round | Function | 🔄 |
 | function/007 | price_mul_qty | Function | 🔄 |
+| function/008 | price_mul_qty_to | Function | 🔄 |
 | associated_function/001 | Display::fmt for RatioError | Associated Function/Method | 🔄 |
 | associated_function/002 | Ratio::n | Associated Function/Method | 🔄 |
 | associated_function/003 | Ratio::d | Associated Function/Method | 🔄 |
@@ -80,7 +81,7 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 
 - **Almost no intra-workspace callers.** The one production call between
   this crate's own functions is [price_mul_qty](function/007_price_mul_qty.md)
-  calling [ratio_new](function/001_ratio_new.md); outside the crate, only
+  calling [price_mul_qty_to](function/008_price_mul_qty_to.md); outside the crate, only
   `exact_arith` calls into it — `price_mul_qty`, in its crate-doc example and
   `tests/facade_test.rs`. No other workspace crate depends on `exact_ratio`
   at all today (`grep -rl exact_ratio --include=Cargo.toml` returns only
@@ -109,5 +110,5 @@ generated, not hand-written `impl` blocks, and are not cataloged.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_ratio/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 17 (excludes the 3 private helper functions, which get no Item Instance)
+# → 18 (excludes the 3 private helper functions, which get no Item Instance)
 ```

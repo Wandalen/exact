@@ -11,10 +11,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:234-237`
+`module/exact_conserve/src/lib.rs:266-269`
 
 ```rust
-pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, ConservationError >
+pub fn qty_conserve_into< const S : u32 >( acc : Qty< S >, leg : Qty< S > ) -> Result< Qty< S >, ConservationError >
 {
   exact_add::qty_add( acc, leg ).map_err( kind_error_to_conservation_error )
 }
@@ -24,9 +24,9 @@ pub fn qty_conserve_into( acc : Quantity, leg : Quantity ) -> Result< Quantity, 
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 234-237 | Declaration |
-| `tests/conservation_test.rs:137-143` | — | `try_fold` usage |
-| `exact_arith/src/lib.rs:141` | — | Facade re-export |
+| `src/lib.rs` | 266-269 | Declaration |
+| `tests/conservation_test.rs:247-253` | — | `try_fold` usage |
+| `exact_arith/src/lib.rs:142` | — | Facade re-export |
 
 Confirmed via a full-workspace grep: no call site anywhere outside this
 crate's own tests.
@@ -45,4 +45,4 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 ## Callee Tree
 
 - **External:** `exact_add::qty_add` (`exact_add/src/lib.rs:73`)
-- `kind_error_to_conservation_error` (`src/lib.rs:134`, private — no Item Instance of its own)
+- `kind_error_to_conservation_error` (`src/lib.rs:149`, private — no Item Instance of its own)

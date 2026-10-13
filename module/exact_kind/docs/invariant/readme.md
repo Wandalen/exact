@@ -13,6 +13,7 @@
 |----|------|---------|--------|
 | 001 | [No Float In The Public Constructor Surface](001_no_float_in_the_public_constructor_surface.md) | No `f32`/`f64` anywhere in `Decimal`/`Qty`'s construction, inspection, or rendering | 🔄 |
 | 002 | [Checked Operations Total](002_checked_operations_total.md) | Every arithmetic method and constructor returns `Result<Self, KindError>` and never panics | 🔄 |
+| 003 | [Every Scale Is At Most 18](003_every_scale_is_at_most_18.md) | No value can be built at a scale past 18 — a compile error on every constructor, `rescale` included | 🔄 |
 
 ### Regenerate
 
@@ -20,6 +21,6 @@
 cd "$(git rev-parse --show-toplevel)"/module/exact_kind/docs/invariant
 printf 'instances:              '; ls [0-9][0-9][0-9]_*.md | wc -l
 printf 'rows in Overview Table: '; grep -E '^\| [0-9]{3} \|' readme.md | wc -l
-# instances:              2
-# rows in Overview Table: 2
+# instances:              3
+# rows in Overview Table: 3
 ```

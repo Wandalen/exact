@@ -1,5 +1,6 @@
 //! Tick/lot construction, and snapping a price or quantity onto the grid
-//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all seven.
+//! under `Down`, `Up` and `HalfEven`, with mode-independent cases under all eight,
+//! and `Exact`'s refusal of a value off the grid.
 
 use exact_kind::{ Price, Quantity };
 use exact_round::Rounding;
@@ -183,8 +184,34 @@ fn qty_snap_lot_reports_overflow_rounding_up_past_the_ceiling()
   assert_eq!( qty_snap_lot( near_ceiling, lot, Rounding::Up ), Err( SnapError::Overflow ) );
 }
 
+/// Under `Exact` a value already on the grid is returned unchanged, and one
+/// off it is refused as `OffGrid` rather than snapped either way — for a price
+/// on a tick and a quantity on a lot.
+#[ test ]
+fn exact_keeps_a_value_on_the_grid_and_refuses_one_off_it()
+{
+  let tick = Tick::new( Price::from_minor( 5 ).unwrap() ).unwrap();
+  let on_grid = Price::from_minor( -15 ).unwrap();
+  assert_eq!( price_snap_tick( on_grid, tick, Rounding::Exact ), Ok( on_grid ) );
+  for off in [ 17, 18, -17 ]
+  {
+    let price = Price::from_minor( off ).unwrap();
+    assert_eq!( price_snap_tick( price, tick, Rounding::Exact ), Err( SnapError::OffGrid ), "{off}" );
+  }
+  let lot = Lot::new( Quantity::from_minor( 3 ).unwrap() ).unwrap();
+  assert_eq!( qty_snap_lot( Quantity::from_minor( 9 ).unwrap(), lot, Rounding::Exact ).unwrap().minor(), 9 );
+  assert_eq!( qty_snap_lot( Quantity::from_minor( 10 ).unwrap(), lot, Rounding::Exact ), Err( SnapError::OffGrid ) );
+}
+
+/// The off-grid message names the refused value and the mode that refused it.
+#[ test ]
+fn the_off_grid_message_names_the_refusal()
+{
+  assert_eq!( SnapError::OffGrid.to_string(), "the value is not on the grid and Rounding::Exact was requested" );
+}
+
 /// Every rounding mode, for the tests that must hold under each of them.
-const EVERY_MODE : [ Rounding; 7 ] =
+const EVERY_MODE : [ Rounding; 8 ] =
 [
   Rounding::Down,
   Rounding::Up,
@@ -193,4 +220,5 @@ const EVERY_MODE : [ Rounding; 7 ] =
   Rounding::AwayFromZero,
   Rounding::HalfUp,
   Rounding::HalfDown,
+  Rounding::Exact,
 ];

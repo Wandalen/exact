@@ -46,7 +46,7 @@ disclosed deviation), which is why Implementation and Enum are both absent.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{ Money, Price, Quantity } | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{ Decimal, PriceAt, Qty } | Use Declaration | 🔄 |
 | function/001 | money_cmp | Function | 🔄 |
 | function/002 | qty_cmp | Function | 🔄 |
 | function/003 | price_cmp | Function | 🔄 |
@@ -64,11 +64,12 @@ disclosed deviation), which is why Implementation and Enum are both absent.
   `money_max`, `qty_min`, or `qty_max` — the gap is the crate's actual shipped
   surface, not a missed catalog entry.
 - **Every one of the 6 functions has an honest empty Caller Tree.** All 6 are
-  re-exported by `exact_arith` (`exact_arith/src/lib.rs:137`) but never called by the
-  facade's own test or by any other crate in `substrate/` or `module/` —
-  confirmed via `grep -rn '<fn>(' --include='*.rs'` across the full
-  workspace for each function individually. Every call site that exists
-  anywhere is inside `exact_cmp`'s own `tests/cmp_test.rs`.
+  re-exported by `exact_arith` (`exact_arith/src/lib.rs:138`) but never called in
+  production by any crate in `substrate/` or `module/` — confirmed via
+  `grep -rn '<fn>(' --include='*.rs'` across the full workspace for each
+  function individually. Every test call is inside `exact_cmp`'s own
+  `tests/cmp_test.rs`, except `price_cmp` at scale 2 in
+  `exact_arith/tests/any_scale_test.rs`.
 - **Every function is a one-line dispatch to `exact_kind`'s derived traits**
   (`Ord`/`PartialEq`) — none contains independent comparison logic, matching
   the module doc comment's own disclosed reasoning for why no `CmpError` or

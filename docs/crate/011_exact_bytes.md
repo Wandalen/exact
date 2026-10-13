@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its struct/function/error surface (→ `../type/011_exact_bytes_types.md`).
 
-**Design status**: implemented in [`exact_bytes`](../../module/exact_bytes/readme.md). Dependencies match as specified (`exact_kind`, `exact_scale`); its error surface adds two variants beyond this proposal's three — see [`type/011_exact_bytes_types.md`](../type/011_exact_bytes_types.md) and [`exact_bytes`'s own decision](../../module/exact_bytes/docs/decisions/001_wire_error_overflow_and_negative_variants.md) for the full account.
+**Design status**: implemented in [`exact_bytes`](../../module/exact_bytes/readme.md). Dependencies deviate: it depends on `exact_kind` alone — a record's scale byte is the encoded type's own scale, so `exact_scale` is a dev-dependency only ([ADR-002](../../module/exact_bytes/docs/decisions/002_scale_byte_from_the_type.md)); its error surface adds two variants beyond this proposal's three — see [`type/011_exact_bytes_types.md`](../type/011_exact_bytes_types.md) and [`exact_bytes`'s own decision](../../module/exact_bytes/docs/decisions/001_wire_error_overflow_and_negative_variants.md) for the full account.
 
 ### Why It Exists
 

@@ -23,7 +23,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:68`
+`module/exact_kind/src/lib.rs:72`
 
 ```rust
 pub enum KindError
@@ -40,13 +40,14 @@ pub enum KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 68,118,124-129,133,199,203,212,215,220,241,243,246,251,255,258,260,265,269,273,276,281,286,288,290,294,299,301,309,311,312,314,324,331,335,339,345,350,360,367,369,438,440,445,448,453,455,456,461,467,469,470,476,481,482,485,507,509,511,516,518,522,524,525,530,532,536,538,540,545,547,551,553,554,557 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries |
+| `src/lib.rs` | 72,122,128-133,137,208,213,222,225,230,261,266,272,273,289,291,294,299,303,306,308,313,317,321,324,329,334,336,338,342,347,349,357,359,360,362,372,379,383,387,393,398,408,415,417,576,578,583,586,591,593,594,599,605,607,608,614,619,620,623,641,657,659,661,666,668,672,674,675,680,682,686,688,690,695,697,701,703,704,707,878 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
 | `tests/*.rs` (4 files) | throughout | Matched against specific variants |
-| `exact_parse/src/lib.rs:38,52-74` | — | `use` import; return type of all 3 `*_from_str` functions |
-| `exact_bytes/src/lib.rs:39,96-98` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
-| `exact_conserve/src/lib.rs:77` | — | `use` import |
+| `exact_parse/src/lib.rs:39,53-75` | — | `use` import; return type of all 3 `*_from_str` functions |
+| `exact_bytes/src/lib.rs:39,98-100` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |
+| `exact_conserve/src/lib.rs:83` | — | `use` import |
+| `exact_dust/src/lib.rs:62,164,182` | — | `use` import; the error type of the `make` parameter of the private `split_with`/`split_into_with`, folded into `DustError::Overflow` |
 | `exact_add/src/lib.rs:46` | — | `use` import; return type of every `money_*`/`qty_*`/`price_*` checked function |
-| `exact_ratio/src/lib.rs:46,84-86` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
+| `exact_ratio/src/lib.rs:47,88-90` | — | `use` import; matched variant by variant in `kind_error_to_ratio_error` — `Negative` to `RatioError::Negative`, the other four to `RatioError::Overflow` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |
 
 ## Crate Usage
@@ -57,4 +58,5 @@ pub enum KindError
 | `exact_parse`, `exact_add` | `src/lib.rs` | Direct return type — these crates' own errors are `KindError`, not a wrapping type |
 | `exact_bytes`, `exact_ratio` | `src/lib.rs` | Mapped into a crate-local error type (`WireError`, `RatioError`) via an explicit match, not a `From` impl |
 | `exact_conserve` | `src/lib.rs` | Imported; used in error-path construction |
+| `exact_dust` | `src/lib.rs` | Imported; names the `make` constructor's error type, every value folded into `DustError::Overflow` |
 | `exact_arith` | `src/lib.rs` | Re-export only |

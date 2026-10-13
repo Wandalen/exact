@@ -4,7 +4,7 @@
 
 The remainder a [qty_dust_split](004_qty_dust_split.md) would hold back. As
 [money_dust_remainder](003_money_dust_remainder.md), never calls
-`fill_minor` — only the leftover is needed.
+`split_with` — only the leftover is needed.
 
 ## Kind
 
@@ -12,10 +12,10 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:253-257`
+`module/exact_dust/src/lib.rs:266-270`
 
 ```rust
-pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) -> Result< i64, DustError >
+pub fn qty_dust_remainder< const S : u32 >( total : Qty< S >, parts : usize, mode : Rounding ) -> Result< i64, DustError >
 {
   let ( _share, leftover ) = split_minor( total.minor(), parts, mode )?;
   Ok( leftover )
@@ -26,9 +26,10 @@ pub fn qty_dust_remainder( total : Quantity, parts : usize, mode : Rounding ) ->
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 253-257 | Declaration |
+| `src/lib.rs` | 266-270 | Declaration |
 | `tests/dust_split_test.rs:162` | — | Confirms the held-back amount matches the `Money` case's figure (identical minor-unit arithmetic) |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `tests/dust_split_test.rs:240` | — | Refused under `Exact` when uneven |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 
 No call site anywhere outside this crate's own single test — an honest
 empty finding. `exact_arith` only re-exports the name.
@@ -46,10 +47,10 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:255`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+- `split_minor` (`src/lib.rs:268`, private — no Item Instance of its own)
+  - `round_error_to_dust_error` (`src/lib.rs:132`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
   - **External:** `exact_round::round_div`
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:255`)
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:268`)
 
-No call to `fill_minor`, the same structural omission as
+No call to `split_with` or `split_into_with`, the same structural omission as
 `money_dust_remainder`'s Callee Tree.

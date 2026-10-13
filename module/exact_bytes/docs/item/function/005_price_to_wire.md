@@ -10,12 +10,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_bytes/src/lib.rs:238-241`
+`module/exact_bytes/src/lib.rs:240-243`
 
 ```rust
-pub fn price_to_wire( v : Price ) -> Wire
+pub fn price_to_wire< const S : u32 >( v : PriceAt< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_PRICE }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_PRICE }
 }
 ```
 
@@ -23,9 +23,10 @@ pub fn price_to_wire( v : Price ) -> Wire
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 238-241 | Declaration |
-| `tests/wire_roundtrip_test.rs:34` | — | Encoding in the price round-trip test |
-| `exact_arith/src/lib.rs:130` | — | Facade re-export |
+| `src/lib.rs` | 240-243 | Declaration |
+| `tests/wire_roundtrip_test.rs:35` | — | Encoding in the price round-trip test |
+| `tests/wire_roundtrip_test.rs:159,165` | — | A price at scale 2 and at scale 8, encoded with its own scale byte |
+| `exact_arith/src/lib.rs:131` | — | Facade re-export |
 
 `exact_arith`'s own facade test does not call this function — only the Money
 roundtrip is exercised at the facade level.
@@ -43,4 +44,5 @@ No caller anywhere, intra-crate or external — an honest empty tree.
 
 ## Callee Tree
 
-- **External:** `exact_kind::Price::minor` (`v.minor()`, `src/lib.rs:240`)
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the record's scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
+- **External:** `exact_kind::PriceAt::minor` (`v.minor()`, `src/lib.rs:242`)

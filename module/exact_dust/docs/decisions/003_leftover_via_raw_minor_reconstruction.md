@@ -10,7 +10,7 @@ Under `DustTo::First`, slot `0` must absorb `leftover` on top of its plain `shar
 
 ## Decision
 
-Slot 0's correction (`share.checked_add(leftover)`, where `leftover` may be negative) is computed at the raw `i64` minor-unit level, inside `fill_minor`, and only converted back to a typed `Money`/`Quantity` afterward via `from_minor`. `DustError` keeps exactly the three declared variants — a `Quantity` slot that would go negative is reported as `DustError::Overflow`, with no dedicated variant.
+Slot 0's correction (`share.checked_add(leftover)`, where `leftover` may be negative) is computed at the raw `i64` minor-unit level, inside `slot_minor` (called for each slot by `split_with`/`split_into_with`), and only converted back to a typed `Money`/`Quantity` afterward via `from_minor`. `DustError` keeps exactly the three declared variants — a `Quantity` slot that would go negative is reported as `DustError::Overflow`, with no dedicated variant.
 
 ## Alternatives Considered
 
@@ -25,7 +25,7 @@ Declare something like `DustError::NegativeAdjustment` distinct from `Overflow`.
 ## Consequences
 
 **Positive:**
-- One leftover-correction code path handles `Money` (signed, so the correction is a plain addition either way) and `Quantity` (non-negative, so a would-be-negative correction must be refused) without a kind-specific branch in `fill_minor` itself — the branch happens later, for free, inside `from_minor`'s own range check.
+- One leftover-correction code path handles `Money` (signed, so the correction is a plain addition either way) and `Quantity` (non-negative, so a would-be-negative correction must be refused) without a kind-specific branch in `split_with`/`split_into_with` themselves — the branch happens later, for free, inside `from_minor`'s own range check.
 - Consistent with `exact_snap`'s already-established `Overflow`-folding convention, so a caller who has already learned what `Overflow` means from one crate does not need a second mental model for the other.
 
 **Negative:**

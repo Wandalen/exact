@@ -39,9 +39,9 @@ preferred design nor this crate's own `SnapError` names a variant for it. A
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:74-92` | `Tick::new` — the zero check and refusal |
-| `src/lib.rs:108-120` | `Lot::new` — the same check and refusal |
-| `src/lib.rs:54-66` | `round_error_to_snap_error` — the comment on why `RoundError::DivZero` is unreachable through this crate's public API once this invariant holds |
+| `src/lib.rs:83-101` | `Tick::new` — the zero check and refusal |
+| `src/lib.rs:121-133` | `Lot::new` — the same check and refusal |
+| `src/lib.rs:58-71` | `round_error_to_snap_error` — the comment on why `RoundError::DivZero` is unreachable through this crate's public API once this invariant holds |
 
 ### Tests
 

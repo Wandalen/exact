@@ -4,7 +4,7 @@
 
 - **Purpose**: State the properties this crate holds regardless of caller behavior, so a consumer can rely on them without re-checking.
 - **Responsibility**: The exact-zero conservation guarantee every audit path in this crate enforces.
-- **In Scope**: `verify`, `Report::is_balanced`, `money_sum_assert_zero`, `qty_sum_assert_zero`.
+- **In Scope**: `verify`, `Report::is_balanced`, `money_sum_assert_zero`.
 - **Out of Scope**: Attribution of a non-zero result to a specific transaction or account, which this crate deliberately does not compute (→ `../algorithm/001_conservation_verification_fold.md`).
 
 ### Overview Table

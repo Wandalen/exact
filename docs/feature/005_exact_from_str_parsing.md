@@ -7,7 +7,7 @@
 - **In Scope**: `"1.23"` → minor units; rejecting extra digits beyond the declared scale.
 - **Out of Scope**: Display, the inverse direction (→ `exact_fmt`).
 
-**Design status**: implemented in [`exact_parse`](../../module/exact_parse/readme.md) as specified for the function surface — `money_from_str`, `qty_from_str`, `price_from_str` all exist under these exact names and never route through a float. Diverges on the error type: there is no `ParseError` — every function returns `exact_kind::KindError` directly, since each of the proposal's named `ParseError` variants either already exists under `KindError` or is unreachable under this family's compile-time scale — see [`exact_parse`'s own algorithm doc](../../module/exact_parse/docs/algorithm/001_decimal_parsing_per_kind.md)'s "Why No `ParseError`" section for the full account.
+**Design status**: implemented in [`exact_parse`](../../module/exact_parse/readme.md) as specified for the function surface — `money_from_str`, `qty_from_str`, `price_from_str` all exist under these exact names and never route through a float. Diverges on the error type: there is no `ParseError` — every function returns `exact_kind::KindError` directly, since each of the proposal's named `ParseError` variants either already exists under `KindError` or is unreachable under this family's compile-time scale — see [`exact_parse`'s own algorithm doc](../../module/exact_parse/docs/algorithm/001_decimal_parsing_per_kind.md)'s "Why No `ParseError`" section for the full account. All three parse at any scale; a call where nothing else fixes the scale names it, `money_from_str::< MONEY_SCALE >( … )` (→ [`exact_arith`'s ADR-001](../../module/exact_arith/docs/decisions/001_operations_generic_over_scale.md)).
 
 ### Statement
 

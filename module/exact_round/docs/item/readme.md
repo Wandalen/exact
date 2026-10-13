@@ -77,7 +77,7 @@ error-rendering machinery).
   variant literally rather than calling `rounding_default()`. A real,
   individually grep-verified gap, not an omission.
 - **`RoundError`'s `Display` is rendered only by this crate's own tests**,
-  which pin both messages — every consumer (`exact_dust`, `exact_snap`,
+  which pin all three messages — every consumer (`exact_dust`, `exact_snap`,
   `exact_ratio`) maps it into its own local error type via `match`, never by
   formatting the message. Same pattern as
   [`exact_kind::KindError`](../../../exact_kind/docs/item/enum/001_kind_error.md).

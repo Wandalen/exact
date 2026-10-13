@@ -7,7 +7,7 @@
 - **In Scope**: `Tick(Price)`, `Lot(Qty)`, and `snap_mode` (driven by `Rounding`).
 - **Out of Scope**: The order book that consumes snapped values (workstream 002, out of this family entirely).
 
-**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md) as specified — `Tick(Price)`, `Lot(Quantity)`, `price_snap_tick`, and `qty_snap_lot` all match the proposal; the grid-spacing `rounding: Rounding` parameter is driven by the same `Rounding` enum the rest of the family shares (`exact_round`), realizing the proposal's own "driven by `Rounding`" framing of `snap_mode` rather than naming a separate mode type.
+**Design status**: implemented in [`exact_snap`](../../module/exact_snap/readme.md) as specified — `Tick(Price)`, `Lot(Quantity)`, `price_snap_tick`, and `qty_snap_lot` all match the proposal — `Tick` and `Lot` are now aliases of `TickAt< MONEY_SCALE >`/`LotAt< MONEY_SCALE >`, so a grid can be declared at any scale ([`exact_snap`'s ADR-001](../../module/exact_snap/docs/decisions/001_tick_and_lot_generic_over_scale.md)); the grid-spacing `rounding: Rounding` parameter is driven by the same `Rounding` enum the rest of the family shares (`exact_round`), realizing the proposal's own "driven by `Rounding`" framing of `snap_mode` rather than naming a separate mode type.
 
 ### Statement
 

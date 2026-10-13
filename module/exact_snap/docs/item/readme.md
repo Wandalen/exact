@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_snap`'s own
-source tree — 16 instances across 6 Item Kinds, all in `src/lib.rs` (this
+source tree — 19 instances across 7 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against every crate in
@@ -9,7 +9,7 @@ the workspace, every file and crate that uses it. Callable Kinds (Function,
 Associated Function/Method) additionally carry their Caller/Callee Tree
 closures.
 
-`exact_snap` is Tier 2, depending on `exact_kind` and `exact_round`. Net-new:
+`exact_snap` is Tier 2, depending on `exact_kind`, `exact_round` and `exact_scale`. Net-new:
 no real precedent exists in the 5 original crates for `Tick`, `Lot`, or grid
 snapping itself (module doc comment, `src/lib.rs:9-10`).
 
@@ -31,18 +31,18 @@ snapping itself (module doc comment, `src/lib.rs:9-10`).
 
 | Kind | Directory | Instances |
 |------|-----------|-----------|
-| Use Declaration | `use_declaration/` | 2 |
+| Use Declaration | `use_declaration/` | 3 |
+| Type Alias | `type_alias/` | 2 |
 | Enum | `enum/` | 1 |
 | Struct | `struct/` | 2 |
 | Implementation | `implementation/` | 4 |
 | Associated Function/Method | `associated_function/` | 5 |
 | Function | `function/` | 2 |
-| **Total** | | **16** |
+| **Total** | | **19** |
 
-9 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration, Type
-Alias, Union, Constant, Static, Trait, External Block, Macro
+8 of the 15 taxonomy Kinds are absent: Module, Extern Crate Declaration, Union, Constant, Static, Trait, External Block, Macro
 Definition/Invocation. One private free function, `round_error_to_snap_error`
-(`src/lib.rs:54`), is deliberately excluded from this count — a
+(`src/lib.rs:58`), is deliberately excluded from this count — a
 private/`pub(crate)`/`pub(super)` function gets no Item Instance of its own
 (`item_des.rulebook.md` line 243), but it IS a real call-graph hop and
 appears as a plain `file:line` citation in both [price_snap_tick](function/001_price_snap_tick.md)'s
@@ -52,20 +52,23 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
 
 | ID | Name | Kind | Status |
 |----|------|------|--------|
-| use_declaration/001 | use exact_kind::{ Price, Quantity } | Use Declaration | 🔄 |
+| use_declaration/001 | use exact_kind::{ PriceAt, Qty } | Use Declaration | 🔄 |
 | use_declaration/002 | use exact_round::Rounding | Use Declaration | 🔄 |
+| use_declaration/003 | use exact_scale::MONEY_SCALE | Use Declaration | 🔄 |
+| type_alias/001 | Tick | Type Alias | 🔄 |
+| type_alias/002 | Lot | Type Alias | 🔄 |
 | enum/001 | SnapError | Enum | 🔄 |
-| struct/001 | Tick | Struct | 🔄 |
-| struct/002 | Lot | Struct | 🔄 |
+| struct/001 | TickAt | Struct | 🔄 |
+| struct/002 | LotAt | Struct | 🔄 |
 | implementation/001 | Display for SnapError | Implementation | 🔄 |
 | implementation/002 | Error for SnapError | Implementation | 🔄 |
-| implementation/003 | Tick inherent impl | Implementation | 🔄 |
-| implementation/004 | Lot inherent impl | Implementation | 🔄 |
+| implementation/003 | TickAt inherent impl | Implementation | 🔄 |
+| implementation/004 | LotAt inherent impl | Implementation | 🔄 |
 | associated_function/001 | Display::fmt for SnapError | Associated Function/Method | 🔄 |
-| associated_function/002 | Tick::new | Associated Function/Method | 🔄 |
-| associated_function/003 | Tick::price | Associated Function/Method | 🔄 |
-| associated_function/004 | Lot::new | Associated Function/Method | 🔄 |
-| associated_function/005 | Lot::qty | Associated Function/Method | 🔄 |
+| associated_function/002 | TickAt::new | Associated Function/Method | 🔄 |
+| associated_function/003 | TickAt::price | Associated Function/Method | 🔄 |
+| associated_function/004 | LotAt::new | Associated Function/Method | 🔄 |
+| associated_function/005 | LotAt::qty | Associated Function/Method | 🔄 |
 | function/001 | price_snap_tick | Function | 🔄 |
 | function/002 | qty_snap_lot | Function | 🔄 |
 
@@ -77,24 +80,23 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
   (`associated_function/002_new_tick.md` / `004_new_lot.md`), applied
   consistently to every method on both types (including `price`/`qty`, which
   don't themselves collide) for naming uniformity within the catalog.
-- **`Tick::price` and `Lot::qty` are dead code in production** — the
+- **`TickAt::price` and `LotAt::qty` are dead code in production** — the
   sharpest finding in this crate. Both accessors are public, re-exported by
   the facade, and uncalled outside one test, including by this crate's own
   `price_snap_tick`/`qty_snap_lot`, which bypass them via direct `.0`
   tuple-field access instead (legal — same defining module). Verified by
   grepping `.price()`/`.qty()` across `src/lib.rs` and `tests/snap_test.rs`:
-  the only matches are the size test's `tests/snap_test.rs:157-158,161`.
-- **Both snap functions have zero callers anywhere in the workspace** —
-  `exact_arith` re-exports both but its own facade test suite never calls
-  either, the same bypass pattern already found independently in
-  `exact_add`/`exact_parse`'s catalogs. All real exercise is confined to this
-  crate's own `tests/snap_test.rs`.
+  the only matches are the size test's `tests/snap_test.rs:158-159,162`.
+- **Both snap functions have zero production callers anywhere in the
+  workspace** — `exact_arith` re-exports both; outside this crate's own
+  `tests/snap_test.rs`, the only call is `price_snap_tick` at scale 2 in
+  `exact_arith/tests/any_scale_test.rs`.
 - **`SnapError::Display` is never rendered anywhere** — mirrors the identical
   finding already recorded for `exact_kind::KindError`, `exact_ratio::RatioError`.
 - **The `RoundError::DivZero` arm `round_error_to_snap_error` maps is
   currently unreachable** through this crate's own public API (`Tick::new`/
   `Lot::new` already refuse a zero-sized grid before any division happens) —
-  the function's own comment (`src/lib.rs:58-62`) discloses this, calling it
+  the function's own comment (`src/lib.rs:62-66`) discloses this, calling it
   the same defensive-but-unreachable pattern `exact_kind::Decimal::checked_neg`
   already uses.
 - **One identifier collision correctly excluded per OT012**: `demiurg_log`
@@ -108,5 +110,5 @@ and [qty_snap_lot](function/002_qty_snap_lot.md)'s Callee Trees.
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_snap/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 16
+# → 19
 ```

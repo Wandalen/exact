@@ -14,7 +14,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:73`
 
 ```rust
-pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindError >
+pub const fn qty_add< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Result< Qty< S >, KindError >
 {
   a.checked_add( b )
 }
@@ -26,7 +26,7 @@ pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 |------|---------|---------|
 | `src/lib.rs` | 73 | Declaration |
 | `tests/checked_and_saturating_add_test.rs:30,82` | — | Non-negativity refusal carried through; cross-check against `qty_saturating_add` in range |
-| `exact_conserve/src/lib.rs:236` | — | `qty_conserve_into`'s own body |
+| `exact_conserve/src/lib.rs:268` | — | `qty_conserve_into`'s own body |
 | `exact_arith/src/lib.rs:98` | — | Facade re-export |
 
 ## Crate Usage
@@ -39,7 +39,7 @@ pub const fn qty_add( a : Quantity, b : Quantity ) -> Result< Quantity, KindErro
 
 ## Caller Tree
 
-- **External:** `exact_conserve::qty_conserve_into` (`exact_conserve/src/lib.rs:236`)
+- **External:** `exact_conserve::qty_conserve_into` (`exact_conserve/src/lib.rs:268`)
 
 No intra-crate caller.
 

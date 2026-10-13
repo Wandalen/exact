@@ -1,8 +1,8 @@
 //! `Wire`, a fixed-width byte encoding for a conserved value, and its
 //! to/from conversions per kind.
 //!
-//! Tier 2, depending on `exact_kind` for the conserved value types and
-//! `exact_scale` for the scale this family's wire encoding carries.
+//! Tier 2, depending on `exact_kind` alone: a record carries the scale of
+//! the type it was encoded from, not a constant from `exact_scale`.
 //!
 //! Net-new: no real precedent exists in the 5 real crates — the closest is
 //! the real codebase's own `format/001_transaction_log_encoding.md`, which
@@ -36,20 +36,22 @@
 //! assert_eq!( money_from_wire( decoded ).unwrap(), v );
 //! ```
 
-use exact_kind::{ KindError, Money, Price, Quantity };
+use exact_kind::{ Decimal, KindError, PriceAt, Qty };
 
-/// The wire discriminator for [`Money`].
+/// The wire discriminator for money ([`Decimal`]).
 pub const KIND_MONEY : u8 = 0;
-/// The wire discriminator for [`Quantity`].
+/// The wire discriminator for [`Qty`].
 pub const KIND_QTY : u8 = 1;
-/// The wire discriminator for [`Price`].
+/// The wire discriminator for [`PriceAt`].
 pub const KIND_PRICE : u8 = 2;
 
-const _ : () = assert!( exact_scale::MONEY_SCALE <= u8::MAX as u32 );
-
-/// The scale every kind is written at, as the one byte a wire record stores —
-/// the assertion above proves the cast keeps it whole.
-const SCALE_BYTE : u8 = exact_scale::MONEY_SCALE as u8;
+/// The scale `S` a value is written at, as the one byte a wire record
+/// stores — the assertion fails the build for a scale the cast would cut.
+const fn scale_byte< const S : u32 >() -> u8
+{
+  const { assert!( S <= u8::MAX as u32 ) };
+  S as u8
+}
 
 /// Why a `Wire` could not be decoded, or a decoded value could not be
 /// turned into a specific kind.
@@ -102,13 +104,13 @@ fn kind_error_to_wire_error( e : KindError ) -> WireError
 /// A record's kind and scale, checked before its `minor` is trusted — the
 /// kind first, so a record of another kind is refused as `BadKind` whatever
 /// its scale.
-fn check_header( w : Wire, kind : u8 ) -> Result< (), WireError >
+fn check_header( w : Wire, kind : u8, scale : u8 ) -> Result< (), WireError >
 {
   if w.kind != kind
   {
     return Err( WireError::BadKind );
   }
-  if w.scale != SCALE_BYTE
+  if w.scale != scale
   {
     return Err( WireError::BadScale );
   }
@@ -194,9 +196,9 @@ impl Wire
 
 /// Encode a money value to its wire form.
 #[ must_use ]
-pub fn money_to_wire( v : Money ) -> Wire
+pub fn money_to_wire< const S : u32 >( v : Decimal< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_MONEY }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_MONEY }
 }
 
 /// Decode a money value from its wire form.
@@ -205,18 +207,18 @@ pub fn money_to_wire( v : Money ) -> Wire
 ///
 /// [`WireError::BadKind`] when `w` was not encoded as [`KIND_MONEY`].
 /// [`WireError::BadScale`] when `w`'s scale does not match
-/// [`exact_scale::MONEY_SCALE`]. [`WireError::Overflow`] on ceiling breach.
-pub fn money_from_wire( w : Wire ) -> Result< Money, WireError >
+/// `S`. [`WireError::Overflow`] on ceiling breach.
+pub fn money_from_wire< const S : u32 >( w : Wire ) -> Result< Decimal< S >, WireError >
 {
-  check_header( w, KIND_MONEY )?;
-  Money::from_minor( w.minor ).map_err( kind_error_to_wire_error )
+  check_header( w, KIND_MONEY, scale_byte::< S >() )?;
+  Decimal::< S >::from_minor( w.minor ).map_err( kind_error_to_wire_error )
 }
 
 /// Encode a quantity to its wire form.
 #[ must_use ]
-pub fn qty_to_wire( v : Quantity ) -> Wire
+pub fn qty_to_wire< const S : u32 >( v : Qty< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_QTY }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_QTY }
 }
 
 /// Decode a quantity from its wire form.
@@ -227,17 +229,17 @@ pub fn qty_to_wire( v : Quantity ) -> Wire
 /// [`WireError::BadScale`] on a scale mismatch. [`WireError::Negative`] when
 /// the decoded value is below zero. [`WireError::Overflow`] on ceiling
 /// breach.
-pub fn qty_from_wire( w : Wire ) -> Result< Quantity, WireError >
+pub fn qty_from_wire< const S : u32 >( w : Wire ) -> Result< Qty< S >, WireError >
 {
-  check_header( w, KIND_QTY )?;
-  Quantity::from_minor( w.minor ).map_err( kind_error_to_wire_error )
+  check_header( w, KIND_QTY, scale_byte::< S >() )?;
+  Qty::< S >::from_minor( w.minor ).map_err( kind_error_to_wire_error )
 }
 
 /// Encode a price to its wire form.
 #[ must_use ]
-pub fn price_to_wire( v : Price ) -> Wire
+pub fn price_to_wire< const S : u32 >( v : PriceAt< S > ) -> Wire
 {
-  Wire { minor : v.minor(), scale : SCALE_BYTE, kind : KIND_PRICE }
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_PRICE }
 }
 
 /// Decode a price from its wire form.
@@ -245,8 +247,8 @@ pub fn price_to_wire( v : Price ) -> Wire
 /// # Errors
 ///
 /// As [`money_from_wire`], checked against [`KIND_PRICE`] instead.
-pub fn price_from_wire( w : Wire ) -> Result< Price, WireError >
+pub fn price_from_wire< const S : u32 >( w : Wire ) -> Result< PriceAt< S >, WireError >
 {
-  check_header( w, KIND_PRICE )?;
-  Price::from_minor( w.minor ).map_err( kind_error_to_wire_error )
+  check_header( w, KIND_PRICE, scale_byte::< S >() )?;
+  PriceAt::< S >::from_minor( w.minor ).map_err( kind_error_to_wire_error )
 }

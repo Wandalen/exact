@@ -15,13 +15,14 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:173`
+`module/exact_kind/src/lib.rs:177`
 
 ```rust
 impl< const SCALE : u32 > Decimal< SCALE >
 {
   // 5 associated constants, 9 associated functions/methods — see
-  // associated_constant/001-005 and associated_function/001-009.
+  // associated_constant/001-005 and associated_function/001-009 — plus
+  // the private `REPRESENTABLE` check every constructor evaluates.
 }
 ```
 
@@ -29,7 +30,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 173-371 | Declaration — the block spans every `Decimal` member |
+| `src/lib.rs` | 177-419 | Declaration — the block spans every `Decimal` member |
 
 ## Crate Usage
 

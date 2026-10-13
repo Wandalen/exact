@@ -1,4 +1,4 @@
-# 003: Tick::price
+# 003: TickAt::price
 
 ## Representation
 
@@ -14,7 +14,7 @@ crate's one consumer of a `Tick`) reads the wrapped value via `tick.0.minor()`
 — direct tuple-field access, legal because `price_snap_tick` shares `Tick`'s
 defining module — rather than `tick.price().minor()` through this accessor.
 Verified by grepping `src/lib.rs` and `tests/snap_test.rs` for `.price()`: the
-only matches are `tests/snap_test.rs:157-158`.
+only matches are `tests/snap_test.rs:158-159`.
 
 ## Kind
 
@@ -22,11 +22,11 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_snap/src/lib.rs:96-99`
+`module/exact_snap/src/lib.rs:105-108`
 
 ```rust
 #[ must_use ]
-pub const fn price( self ) -> Price
+pub const fn price( self ) -> PriceAt< S >
 {
   self.0
 }
@@ -36,9 +36,9 @@ pub const fn price( self ) -> Price
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 96-99 | Declaration |
-| `tests/snap_test.rs` | 157-158 | A tick built from 5 and one built from -5 both report a size of 5 |
-| `exact_arith/src/lib.rs:135` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
+| `src/lib.rs` | 105-108 | Declaration |
+| `tests/snap_test.rs` | 158-159 | A tick built from 5 and one built from -5 both report a size of 5 |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export (via `Tick`'s re-export; the method itself is not separately named in the `pub use`) |
 
 No production call site anywhere — an honest empty finding, and the
 sharpest one in this crate: the accessor exists and is part of the public

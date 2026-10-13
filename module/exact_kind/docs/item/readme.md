@@ -1,7 +1,7 @@
 # Item Entity
 
 Catalog of every Rust Item and Associated Item declared in `exact_kind`'s own
-source tree — 45 instances across 7 Item Kinds, all in `src/lib.rs` (this
+source tree — 49 instances across 7 Item Kinds, all in `src/lib.rs` (this
 crate's only source file). One file per declaration, classified by the
 closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
 records where the Item is declared and, grep-verified against the 10 crates
@@ -14,7 +14,7 @@ Method) additionally carry their Caller/Callee Tree closures.
 `exact_kind` is the merge point of the family's migration: `exact_decimal`'s
 signed `Decimal< const SCALE >` and `exact_qty`'s non-negative `Qty< const
 SCALE >` both live here now, behaviourally unchanged, with `Money` aliasing the
-former, `Quantity` aliasing the latter, and `Price` a struct wrapping a `Money`. This makes it the
+former, `Quantity` aliasing the latter, and `Price` aliasing `PriceAt< SCALE >`, a struct wrapping a `Decimal`. This makes it the
 single largest catalog in the family — nearly the sum of `exact_decimal`'s 29
 and `exact_qty`'s 26 instances — and the crate where identifier collisions
 are sharpest: `Decimal` and `Qty` each declare `minor`, `whole`, `from_minor`,
@@ -40,14 +40,14 @@ Associated Function/Method filenames disambiguate with an explicit
 
 | Kind | Directory | Instances |
 |------|-----------|-----------|
-| Use Declaration | `use_declaration/` | 3 |
-| Type Alias | `type_alias/` | 2 |
+| Use Declaration | `use_declaration/` | 4 |
+| Type Alias | `type_alias/` | 3 |
 | Enum | `enum/` | 1 |
 | Struct | `struct/` | 3 |
 | Implementation | `implementation/` | 6 |
 | Associated Constant | `associated_constant/` | 8 |
-| Associated Function/Method | `associated_function/` | 22 |
-| **Total** | | **45** |
+| Associated Function/Method | `associated_function/` | 24 |
+| **Total** | | **49** |
 
 Eight of the 15 taxonomy Kinds are absent from this crate: Module, Extern
 Crate Declaration, Function, Union, Static, Trait, External Block, Macro
@@ -62,12 +62,14 @@ these.
 | use_declaration/001 | use exact_minor::{ Backing, Minor, … } | Use Declaration | 🔄 |
 | use_declaration/002 | use exact_scale::{..} | Use Declaration | 🔄 |
 | use_declaration/003 | use core::fmt | Use Declaration | 🔄 |
+| use_declaration/004 | use exact_round::{ RoundError, Rounding, round_div } | Use Declaration | 🔄 |
 | type_alias/001 | Money | Type Alias | 🔄 |
+| type_alias/002 | Price | Type Alias | 🔄 |
 | type_alias/003 | Quantity | Type Alias | 🔄 |
 | enum/001 | KindError | Enum | 🔄 |
 | struct/001 | Decimal | Struct | 🔄 |
 | struct/002 | Qty | Struct | 🔄 |
-| struct/003 | Price | Struct | 🔄 |
+| struct/003 | PriceAt | Struct | 🔄 |
 | implementation/001 | Display for KindError | Implementation | 🔄 |
 | implementation/002 | Error for KindError | Implementation | 🔄 |
 | implementation/003 | Decimal inherent impl | Implementation | 🔄 |
@@ -104,18 +106,21 @@ these.
 | associated_function/020 | Display::fmt for KindError | Associated Function/Method | 🔄 |
 | associated_function/021 | Display::fmt for Decimal | Associated Function/Method | 🔄 |
 | associated_function/022 | Display::fmt for Qty | Associated Function/Method | 🔄 |
+| associated_function/023 | Decimal::rescale | Associated Function/Method | 🔄 |
+| associated_function/024 | Qty::rescale | Associated Function/Method | 🔄 |
 
 ### Notable Findings
 
 - **Two true choke points**: [Decimal::from_minor](associated_function/001_from_minor_decimal.md) and [Qty::from_decimal](associated_function/010_from_decimal_qty.md) are each called by every other constructor/operation on their respective type — the range gate and the non-negativity gate, respectively.
 - **Honest empty Caller Trees**: `Decimal::from_int`, `Decimal::checked_mul_int`, `Decimal::whole`, `Qty::from_int`, `Qty::as_decimal`, `Qty::whole`, `Qty::checked_mul_int`, and `Display::fmt for KindError` have zero callers anywhere outside `exact_kind`'s own tests (several have zero callers at all) — real gaps, not omissions, each individually grep-verified.
 - **`KindError`'s `Display` is never rendered anywhere** in the current workspace — confirmed by grep. Every downstream crate that touches `KindError` reconstructs its own local error type via `match`, never by formatting the message.
-- **`Price` is its own struct, but its members have no pages of their own** — each one only delegates to the matching `Money` member, so [its struct page](struct/003_price.md) lists them in one table.
+- **`PriceAt` is its own struct, but its members have no pages of their own** — each one only delegates to the matching `Decimal` member, so [its struct page](struct/003_price_at.md) lists them in one table. `Price` is its alias at the standard scale ([type_alias/002](type_alias/002_price.md)).
+- **`rescale` has no caller outside this crate yet** — [Decimal::rescale](associated_function/023_rescale_decimal.md) is reached only through `Qty::rescale`, `PriceAt::rescale` and this crate's own tests.
 
 ### Regenerate
 
 ```bash
 # Confirm instance-file count matches this readme's Overview Table row count
 find module/exact_kind/docs/item -name '*.md' -not -name readme.md | wc -l
-# → 45
+# → 49
 ```

@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_round/src/lib.rs:115`
+`module/exact_round/src/lib.rs:123`
 
 ```rust
 fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
@@ -21,6 +21,7 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
   {
     Self::DivZero => write!( f, "a zero divisor was supplied" ),
     Self::Overflow => write!( f, "the quotient does not fit the integer type" ),
+    Self::Inexact => write!( f, "the division left a remainder and Rounding::Exact was requested" ),
   }
 }
 ```
@@ -29,8 +30,8 @@ fn fmt( &self, f : &mut core::fmt::Formatter< '_ > ) -> core::fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 115-122 | Declaration |
-| `tests/round_div_test.rs` | 248,255 | Both messages, via `.to_string()` |
+| `src/lib.rs` | 123-131 | Declaration |
+| `tests/round_div_test.rs` | 280,288,295 | All three messages, via `.to_string()` |
 
 No production file calls this method — every downstream crate maps
 `RoundError` by `match`, never by rendering it (see
@@ -44,7 +45,7 @@ No production file calls this method — every downstream crate maps
 
 ## Caller Tree
 
-- **Test-only:** `the_overflow_message_names_the_real_cause`, `the_div_zero_message_names_the_zero_divisor` (`tests/round_div_test.rs:248,255`)
+- **Test-only:** `the_overflow_message_names_the_real_cause`, `the_inexact_message_names_the_refused_remainder`, `the_div_zero_message_names_the_zero_divisor` (`tests/round_div_test.rs:280,288,295`)
 
 ## Callee Tree
 

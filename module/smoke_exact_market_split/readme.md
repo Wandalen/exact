@@ -19,20 +19,27 @@ smoke_exact_market_split — this family's slice, one process
   quantity       hold 3, withdraw 5 -> -2000000 minor units is below zero, which this kind cannot hold
 
   audit, clean   balanced: entries 2, net 0
-  audit, leaky   UNBALANCED: entries 2, net -1 minor units
+  audit, leaky   UNBALANCED: entries 2, net cash -1 minor units
 
   market split   100.000001 into 3 -> [33.333335, 33.333333, 33.333333] (recombines exactly)
 
   sum=0
-  parts=3.333333,3.333333,3.333333 dust=0.000001
+  parts=3.33,3.33,3.33 dust=0.01
   tick=1.25 lot=9
   extra=1 overflow=1
-  wire=10000000
-  a=0x3f95a355a4945bbd b=0x3f95a355a4945bbd
+  wire=1000
+  a=0x7a10e52b936be89f b=0x7a10e52b936be89f
   ok
 
+  per asset      65000.00 x 0.12345679 BTC = 8024.69 (cents x satoshis)
+  one scale      the same trade at scale 6 = 8024.70 (a cent off)
+  wire           a satoshi quantity carries scale byte 8
+  split          0.12345679 BTC into 3 -> [0.04115227, 0.04115226, 0.04115226] (recombines exactly)
+  audit          USD and BTC each net to zero, each at its own precision
+
 VERDICT: reached — exact arithmetic holds across the full facade,
-         the floating-point control arm does not, and a market split conserves.
+         the floating-point control arm does not, a market split conserves,
+         and each asset keeps its own precision.
 ```
 
 ## Replaces `smoke_exact_arithmetic`
@@ -43,10 +50,12 @@ exact content forward unchanged (including its fix-documented
 `exact_dust` and recombined with `exact_conserve`, exercising a pairing
 neither crate's own unit tests cover; step 6 is new too — the ten scenes of
 [`docs/scene/`](../../docs/scene/readme.md) in their proposed golden-print
-shape. Scenes 001, 002 and 006 run at scale 2 through `Decimal< 2 >`; scenes
-003 and 009 run on `Money`, fixed at scale 6, because `exact_dust` and
-`exact_bytes` take `Money` only — so they print `3.333333`/`0.000001` and
-`10000000` where the proposal printed `3.33`/`0.01` and `1000`.
+shape, every amount at scale 2 through `Decimal< 2 >` — so it prints the
+proposal's `3.33`/`0.01` and `1000` line for line. Step 7 is new as well: one
+trade priced in cents and sized in satoshis, each at its own scale
+([`per_asset_trade`](src/lib.rs)) — encoded, split and settled per asset —
+beside the same trade forced onto one shared scale of 6, which the lane
+**asserts is a cent off**, the way step 2 asserts the `f64` arm is wrong.
 
 ## The control arm
 

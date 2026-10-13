@@ -11,7 +11,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:227`
+`module/exact_kind/src/lib.rs:237`
 
 ```rust
 pub const fn minor( self ) -> Backing
@@ -24,13 +24,13 @@ pub const fn minor( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 227,443,494 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
+| `src/lib.rs` | 237,581,632 | Declaration; `Qty::from_decimal`'s negativity check; `Qty::minor`'s delegation |
 | `tests/*.rs` (all 3) | throughout | Minor-count assertions |
-| `exact_bytes/src/lib.rs:199,240` | — | `money_to_wire`/`price_to_wire` |
-| `exact_conserve/src/lib.rs:250` | — | `money_sum_assert_zero`'s per-leg accumulation |
-| `exact_dust/src/lib.rs:164,179,205` | — | `money_dust_split`/`_into`/`_remainder` |
-| `exact_snap/src/lib.rs:82,87,147-148` | — | `Tick::new`'s zero check and magnitude; `price_snap_tick` (price and tick) |
-| `exact_ratio/src/lib.rs:164,189,209` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
+| `exact_bytes/src/lib.rs:201,242` | — | `money_to_wire`/`price_to_wire` |
+| `exact_conserve/src/lib.rs:282` | — | `money_sum_assert_zero`'s per-leg accumulation |
+| `exact_dust/src/lib.rs:212,223,236` | — | `money_dust_split`/`_into`/`_remainder` |
+| `exact_snap/src/lib.rs:91,96,161-162` | — | `Tick::new`'s zero check and magnitude; `price_snap_tick` (price and tick) |
+| `exact_ratio/src/lib.rs:179,206,223` | — | `money_mul_ratio`, `price_mul_ratio`, `money_div_round` |
 
 ## Crate Usage
 
@@ -41,13 +41,13 @@ pub const fn minor( self ) -> Backing
 
 ## Caller Tree
 
-- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:443`)
-- [Qty::minor](014_minor_qty.md) (`src/lib.rs:494`)
+- [Qty::from_decimal](010_from_decimal_qty.md) (`src/lib.rs:581`)
+- [Qty::minor](014_minor_qty.md) (`src/lib.rs:632`)
 - **External:** `exact_bytes::money_to_wire` (`:199`), `price_to_wire` (`:240`)
-- **External:** `exact_conserve::money_sum_assert_zero` (`:250`)
-- **External:** `exact_dust::money_dust_split` (`:164`), `money_dust_split_into` (`:179`), `money_dust_remainder` (`:205`)
-- **External:** `exact_snap::Tick::new` (`:82,87`), `price_snap_tick` (`:147-148`)
-- **External:** `exact_ratio::money_mul_ratio` (`:164`), `price_mul_ratio` (`:188`), `money_div_round` (`:209`)
+- **External:** `exact_conserve::money_sum_assert_zero` (`:282`)
+- **External:** `exact_dust::money_dust_split` (`:209`), `money_dust_split_into` (`:220`), `money_dust_remainder` (`:233`)
+- **External:** `exact_snap::Tick::new` (`:86,91`), `price_snap_tick` (`:152-153`)
+- **External:** `exact_ratio::money_mul_ratio` (`:179`), `price_mul_ratio` (`:205`), `money_div_round` (`:223`)
 
 ## Callee Tree
 

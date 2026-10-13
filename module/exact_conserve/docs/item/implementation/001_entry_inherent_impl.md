@@ -2,7 +2,8 @@
 
 ## Representation
 
-The one hand-written impl on `Entry`, providing its constructor.
+The one hand-written impl on `Entry< K, A >`, providing its constructor for
+any account type `K` and asset key type `A`, neither bounded.
 
 ## Kind
 
@@ -10,14 +11,14 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:96-104`
+`module/exact_conserve/src/lib.rs:111-119`
 
 ```rust
-impl Entry
+impl< K, A > Entry< K, A >
 {
-  pub fn new( account : impl Into< String >, amount_minor : i64 ) -> Self
+  pub fn new( account : K, asset : A, amount_minor : i64 ) -> Self
   {
-    Self { account : account.into(), amount_minor }
+    Self { account, asset, amount_minor }
   }
 }
 ```
@@ -26,7 +27,7 @@ impl Entry
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 96-104 | Declaration |
+| `src/lib.rs` | 111-119 | Declaration |
 
 ## Crate Usage
 

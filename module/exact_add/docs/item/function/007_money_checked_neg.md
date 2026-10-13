@@ -15,7 +15,7 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:113`
 
 ```rust
-pub const fn money_checked_neg( a : Money ) -> Result< Money, KindError >
+pub const fn money_checked_neg< const S : u32 >( a : Decimal< S > ) -> Result< Decimal< S >, KindError >
 {
   a.checked_neg()
 }

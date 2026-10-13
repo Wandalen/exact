@@ -2,11 +2,11 @@
 
 ## Representation
 
-A value at the standard money scale — `Decimal< MONEY_SCALE >`. The
-concrete, consumer-facing name every downstream crate (`exact_add`,
-`exact_parse`, `exact_fmt`, `exact_bytes`, `exact_snap`, `exact_cmp`,
-`exact_ratio`, `exact_dust`, `exact_conserve`) actually imports — the generic
-`Decimal< const SCALE >` itself is rarely named outside this crate.
+A value at the standard money scale — `Decimal< MONEY_SCALE >`. The name a
+caller uses for money at the standard scale. The family's `money_*` functions
+no longer name it: since
+[`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)
+each takes `Decimal< S >`, and a `Money` reaches it as `S = MONEY_SCALE`.
 
 ## Kind
 
@@ -14,7 +14,7 @@ Type Alias (§ Item Kind Taxonomy : Stable Item Kinds #5)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:57`
+`module/exact_kind/src/lib.rs:58`
 
 ```rust
 pub type Money = Decimal< MONEY_SCALE >;
@@ -24,22 +24,20 @@ pub type Money = Decimal< MONEY_SCALE >;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 57,642,648,651,660,709 | Declaration; `Price`'s wrapped `value` and the members that delegate to it (`ZERO`, `MAX`, `from_minor`, `parse`); also named by the `compile_fail` doctests on `Display for Qty` and `Price` |
+| `src/lib.rs` | 58 | Declaration |
+| `src/lib.rs` | 720-750,777-787 | Named by the `compile_fail` doctests: money and a quantity, and money and a price, do not mix |
 | `tests/checked_arithmetic_test.rs`, `tests/parse_render_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
-| `tests/price_test.rs` | 6,13,21,45 | `Price`'s range checked against `Money`'s |
-| `exact_parse/src/lib.rs:45,52,54` | — | Compile-time `ONE_MINOR` assert; `money_from_str`'s parameter/return/body |
-| `exact_bytes/src/lib.rs:197,209,212` | — | `money_to_wire`/`money_from_wire` signatures and bodies |
-| `exact_conserve/src/lib.rs:223,245` | — | `money_conserve_into`/`money_sum_assert_zero` signatures |
-| `exact_dust/src/lib.rs:162,167,177,191,203` | — | `money_dust_split`/`money_dust_split_into`/`money_dust_remainder` |
-| `exact_add/src/lib.rs:53,63,113,128` | — | `money_add`/`money_sub`/`money_checked_neg`/`money_saturating_add` |
-| `exact_fmt/src/lib.rs`, `exact_cmp/src/lib.rs` | — | Imported (`use exact_kind::{ Money, .. }`); re-exported `Display`/derived `Ord` exercised through it |
-| `exact_ratio/src/lib.rs:162,165,207,210` | — | `money_mul_ratio`/`money_div_round` |
+| `tests/price_test.rs` | 6,8,13,21,45 | `Price`'s range checked against `Money`'s |
+| `tests/rescale_test.rs` | 4,12,19,22,30,48 | The scale-6 side of every `rescale` |
+| `exact_parse/src/lib.rs:39,46` | — | Compile-time assert that `Money::ONE_MINOR` matches `exact_scale::MONEY_SCALE` |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export (`pub use exact_kind::{ .., Money, .. }`) |
+| `smoke_exact_market_split/src/lib.rs` | 51,65,67,68,101,142,270,277,281,311,331,333 | The demo lane's money values, through `exact_arith` — steps 1 to 5; its scenes and step 7 run at other scales |
 
 ## Crate Usage
 
 | Crate | Via File | Purpose |
 |-------|----------|---------|
 | `exact_kind` | `(defining crate)` | Declared here; exercised by its own tests |
-| `exact_parse`, `exact_bytes`, `exact_conserve`, `exact_dust`, `exact_add`, `exact_fmt`, `exact_cmp`, `exact_ratio` | `src/lib.rs` | The standard money type every one of these 8 Tier-2/3 crates' `money_*` functions operates on |
-| `exact_arith` | `src/lib.rs` | Re-export only |
+| `exact_parse` | `src/lib.rs` | The cross-crate scale-consistency assert |
+| `exact_arith` | `src/lib.rs` | Re-export |
+| `smoke_exact_market_split` | `src/lib.rs` | Money at the standard scale, through `exact_arith` |

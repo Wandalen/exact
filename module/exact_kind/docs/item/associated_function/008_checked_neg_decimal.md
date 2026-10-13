@@ -13,7 +13,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:294`
+`module/exact_kind/src/lib.rs:342`
 
 ```rust
 pub const fn checked_neg( self ) -> Result< Self, KindError >
@@ -30,7 +30,7 @@ pub const fn checked_neg( self ) -> Result< Self, KindError >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 294 | Declaration — `Qty` has no `checked_neg` (negating a non-negative value is not a `Qty`-shaped operation) |
+| `src/lib.rs` | 342 | Declaration — `Qty` has no `checked_neg` (negating a non-negative value is not a `Qty`-shaped operation) |
 | `tests/checked_arithmetic_test.rs` | throughout | Round-trip negate, boundary checks at `MAX`/`MIN` |
 | `exact_add/src/lib.rs:115` | — | `money_checked_neg`'s entire body |
 | `exact_add/tests/checked_and_saturating_add_test.rs:60` | — | `Money::EPSILON.checked_neg()` |
@@ -52,4 +52,4 @@ crate's own `Qty` wrapper reaches this function.
 ## Callee Tree
 
 - **External:** `exact_minor::minor_checked_neg` — `minor_checked_neg( self.minor )`, then `minor_to_i64`; a failure goes through the private `kind_overflow`
-- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:298`)
+- [Decimal::from_minor](001_from_minor_decimal.md) (`src/lib.rs:346`)

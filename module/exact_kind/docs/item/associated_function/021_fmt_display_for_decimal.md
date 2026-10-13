@@ -2,9 +2,11 @@
 
 ## Representation
 
-Renders exactly, with trailing fractional zeros trimmed. See
-[impl Display for Decimal](../implementation/004_display_for_decimal.md) for
-the full body.
+Renders exactly, with trailing fractional zeros trimmed — or, given a
+precision (`{:.2}`), with exactly that many digits after the point — padded
+to the formatter's width, fill, alignment, `+` and `0` as an integer is. The
+whole body is one call to the private `render`; see
+[impl Display for Decimal](../implementation/004_display_for_decimal.md).
 
 ## Kind
 
@@ -12,40 +14,12 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:376`
+`module/exact_kind/src/lib.rs:430`
 
 ```rust
 fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 {
-  let unit = Self::ONE_MINOR;
-  let magnitude = self.minor().unsigned_abs();
-  let unit_u = unit.unsigned_abs();
-  let whole = magnitude / unit_u;
-  let frac = magnitude % unit_u;
-
-  if self.minor() < 0
-  {
-    write!( f, "-" )?;
-  }
-  write!( f, "{whole}" )?;
-
-  if SCALE == 0 || frac == 0
-  {
-    return Ok( () );
-  }
-  // Fix(exact_kind_display_allocated_per_render): the fraction was padded
-  // into a `String` with `format!` and then trimmed — one heap allocation
-  // per render, against feature 016's non-allocating display. The trailing
-  // zeros are now counted arithmetically and the digits written directly.
-  //
-  // Root cause: `format!` used as a scratch buffer inside `fmt`.
-  // Pitfall: `write!` into the formatter does not allocate but `format!`
-  //   does, and the rendered text is identical — output tests cannot tell.
-  let trailing_zeros = ( 1..=SCALE )
-  .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
-  .count();
-  let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
-  write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
+  render( self.minor(), SCALE, f )
 }
 ```
 
@@ -53,8 +27,9 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 376-407 | Declaration |
+| `src/lib.rs` | 430-433 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render, called via `.to_string()` |
+| `tests/display_precision_test.rs` | throughout | `{:.N}` and the width, fill, alignment, `+` and `0` flags, via `format!`, and against `f64`'s output |
 | `exact_fmt/src/lib.rs:107,121` | — | `money_fmt`/`price_fmt`'s `v.to_string()` |
 
 ## Crate Usage
@@ -68,11 +43,11 @@ fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
 
 - **External:** `exact_fmt::money_fmt` (`exact_fmt/src/lib.rs:107`), `price_fmt` (`:121`) — both via `v.to_string()`, the standard library's blanket `ToString` bridging to this `Display` impl
 
-No intra-crate caller (this crate's own tests invoke it only via
-`.to_string()` in test-context, out of Caller Tree scope per OT012).
+- **Intra-crate:** [Display::fmt for Qty](022_fmt_display_for_qty.md) (`src/lib.rs:757`) and `Display::fmt` for `PriceAt` (`src/lib.rs:890`), each forwarding its own formatter so a precision reaches this one
 
 ## Callee Tree
 
-- **External:** `i64::unsigned_abs` (×2 — magnitude and unit)
-- **External:** `fmt::Formatter::write_fmt` (via the three `write!` calls)
-- **External:** `u64::pow` — counting and removing trailing fractional zeros arithmetically, with no `String` allocated
+- `render` (`src/lib.rs:450-546`, private — no Item Instance of its own), for every render, with or without a precision
+  - **External:** `exact_round::round_div` under `Rounding::HalfEven`, when fewer places than `SCALE` are asked (`src/lib.rs:458`)
+  - **External:** `fmt::Formatter::precision`, `width`, `fill`, `align`, `sign_plus`, `sign_aware_zero_pad` — the flags
+  - **External:** `fmt::Write::write_char` (fill and sign), `fmt::Formatter::write_str` and `write_fmt` (via `write!`) — the digits, written straight in with no `String` allocated

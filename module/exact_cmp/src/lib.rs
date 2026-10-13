@@ -29,46 +29,46 @@
 //! assert_eq!( price_min( Price::parse( "1" ).unwrap(), Price::parse( "2" ).unwrap() ).to_string(), "1" );
 //! ```
 
-use exact_kind::{ Money, Price, Quantity };
+use exact_kind::{ Decimal, PriceAt, Qty };
 
 /// Compare two money values.
 #[ must_use ]
-pub fn money_cmp( a : Money, b : Money ) -> core::cmp::Ordering
+pub fn money_cmp< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }
 
 /// Compare two quantities.
 #[ must_use ]
-pub fn qty_cmp( a : Quantity, b : Quantity ) -> core::cmp::Ordering
+pub fn qty_cmp< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }
 
 /// Compare two prices.
 #[ must_use ]
-pub fn price_cmp( a : Price, b : Price ) -> core::cmp::Ordering
+pub fn price_cmp< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> core::cmp::Ordering
 {
   a.cmp( &b )
 }
 
 /// Whether two money values are equal.
 #[ must_use ]
-pub fn money_eq( a : Money, b : Money ) -> bool
+pub fn money_eq< const S : u32 >( a : Decimal< S >, b : Decimal< S > ) -> bool
 {
   a == b
 }
 
 /// The lesser of two prices.
 #[ must_use ]
-pub fn price_min( a : Price, b : Price ) -> Price
+pub fn price_min< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> PriceAt< S >
 {
   a.min( b )
 }
 
 /// The greater of two prices.
 #[ must_use ]
-pub fn price_max( a : Price, b : Price ) -> Price
+pub fn price_max< const S : u32 >( a : PriceAt< S >, b : PriceAt< S > ) -> PriceAt< S >
 {
   a.max( b )
 }

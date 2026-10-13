@@ -11,28 +11,18 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:229-246`
+`module/exact_dust/src/lib.rs:256-259`
 
 ```rust
-pub fn qty_dust_split_into( total : Quantity, mode : Rounding, to : DustTo, out : &mut [ Quantity ] ) -> Result< (), DustError >
+pub fn qty_dust_split_into< const S : u32 >( total : Qty< S >, mode : Rounding, to : DustTo, out : &mut [ Qty< S > ] ) -> Result< (), DustError >
 {
-  let ( share, leftover ) = split_minor( total.minor(), out.len(), mode )?;
-  // Fix(exact_dust_split_into_allocated): every slot's count used to be
-  // collected into a `Vec` by `fill_minor` and then copied into `out` — one
-  // heap allocation per call, against type/008's "does not allocate". Each
-  // slot is now computed in place by `slot_minor`.
-  //
-  // Root cause: the `_into` variant reused the allocating `_split` helper.
-  // Pitfall: a helper shared by an allocating and a non-allocating variant
-  //   gives both the allocation, and the output is the same either way.
-  for ( i, slot ) in out.iter_mut().enumerate()
-  {
-    let minor = slot_minor( share, leftover, to, i )?;
-    *slot = Quantity::from_minor( minor ).map_err( | _ | DustError::Overflow )?;
-  }
-  Ok( () )
+  split_into_with( total.minor(), mode, to, out, Qty::< S >::from_minor )
 }
 ```
+
+The body is the private `split_into_with` (`src/lib.rs:173-200`), shared
+with [money_dust_split_into](002_money_dust_split_into.md); the `Fix(exact_dust_split_into_allocated)` comment lives
+there, above the per-slot loop.
 
 The same per-slot shape as
 [money_dust_split_into](002_money_dust_split_into.md): no intermediate `Vec`,
@@ -42,11 +32,11 @@ so no heap allocation, and a refusal on slot 0 leaves `out` untouched.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 229-246 | Declaration |
+| `src/lib.rs` | 256-259 | Declaration |
 | `tests/dust_split_test.rs:94` | — | Writes the same shares as the allocating `qty_dust_split` — under `Up`, where slot 0 absorbs a negative leftover |
 | `tests/dust_split_test.rs:167` | — | An empty buffer is refused as `EmptyParts` |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
-| `exact_arith/tests/no_alloc_test.rs:73` | — | Test-only call checking the split makes no heap allocation |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
+| `exact_arith/tests/no_alloc_test.rs:96` | — | Test-only call checking the split makes no heap allocation |
 
 No production call site outside this crate — not `exact_arith`'s crate-doc
 example, not `smoke_exact_market_split`; only `exact_arith`'s
@@ -65,8 +55,9 @@ example, not `smoke_exact_market_split`; only `exact_arith`'s
 
 ## Callee Tree
 
-- `split_minor` (`src/lib.rs:231`, private — no Item Instance of its own)
-  - `round_error_to_dust_error` (`src/lib.rs:125`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
-  - **External:** `exact_round::round_div`
-- `slot_minor` (`src/lib.rs:242`, private — no Item Instance of its own), once per slot
-- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:231`), `exact_kind::Quantity::from_minor` (`src/lib.rs:243`)
+- `split_into_with` (`src/lib.rs:258`, private — no Item Instance of its own)
+  - `split_minor` (`src/lib.rs:185`, private — no Item Instance of its own)
+    - `round_error_to_dust_error` (`src/lib.rs:132`, private — no Item Instance of its own, invoked via `.map_err(...)` on `round_div`'s result)
+    - **External:** `exact_round::round_div`
+  - `slot_minor` (`src/lib.rs:196`, private — no Item Instance of its own), once per slot
+- **External:** `exact_kind::Quantity::minor` (`src/lib.rs:258`), `exact_kind::Quantity::from_minor` (`src/lib.rs:258`, passed to `split_into_with` as `make`, called at `190`)

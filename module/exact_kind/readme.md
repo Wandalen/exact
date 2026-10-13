@@ -31,8 +31,10 @@ established.
 `Qty` stays a genuinely separate type, not an alias: its refusal to hold a
 negative value is real, tested, behaviourally-distinguishing logic, carried
 forward unchanged from the real `exact_qty`. `Price` is a separate type too —
-a struct wrapping a `Money` — so a price and an amount of money cannot be
-mixed.
+an alias of `PriceAt< SCALE >`, a struct wrapping a `Decimal` — so a price and
+an amount of money cannot be mixed, and a price can be held at its market's
+own scale. `rescale` crosses from one scale to another, explicitly and with a
+rounding mode.
 
 ## What it does not do
 
@@ -49,12 +51,15 @@ why both are absent rather than merely unbuilt.
 
 | File | Responsibility |
 |------|----------------|
-| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_minor` and `exact_scale` |
-| [`src/lib.rs`](src/lib.rs) | `Decimal`, `Qty`, `Price`, the `Money`/`Quantity` aliases, `KindError` |
+| [`Cargo.toml`](Cargo.toml) | Manifest — depends on `exact_minor`, `exact_round` and `exact_scale` |
+| [`src/lib.rs`](src/lib.rs) | `Decimal`, `Qty`, `PriceAt`, the `Money`/`Quantity`/`Price` aliases, `KindError` |
 | [`tests/checked_arithmetic_test.rs`](tests/checked_arithmetic_test.rs) | Test Matrix T02-T04 — exactness and refusal at the edge, ported from `exact_decimal` |
 | [`tests/parse_render_test.rs`](tests/parse_render_test.rs) | Test Matrix T01 — round-tripping through text, ported from `exact_decimal` |
 | [`tests/non_negative_test.rs`](tests/non_negative_test.rs) | Test Matrix T05-T06 — the refusal, its exact boundary, and integer round-tripping, ported from `exact_qty` |
 | [`tests/price_test.rs`](tests/price_test.rs) | `Price` as its own kind — its range, exact arithmetic, text form, and ordering |
+| [`tests/price_at_test.rs`](tests/price_at_test.rs) | `PriceAt` at scale 2 — parse, add, render, the ceiling at every scale, and `rescale` |
+| [`tests/rescale_test.rs`](tests/rescale_test.rs) | `rescale` — finer is exact, coarser rounds per the mode, `Exact` refuses a dropped digit |
+| [`tests/display_precision_test.rs`](tests/display_precision_test.rs) | `{:.N}` on `Decimal`, `Qty` and `PriceAt` — zero padding, half-even rounding, no `-0.00`, unchanged plain `{}` — and width, fill, alignment, `+` and `0`, checked against `f64`'s output for every flag |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Invariant, type, decisions, algorithm, and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

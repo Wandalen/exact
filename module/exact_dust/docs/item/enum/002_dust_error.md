@@ -7,7 +7,12 @@ preferred design doesn't name separately: `exact_snap` already set the
 precedent of folding a reachable-but-rare condition into `Overflow` rather
 than adding a dedicated variant, and this crate matches it — see
 [money_dust_split](../function/001_money_dust_split.md)'s Representation for
-the specific negative-leftover scenario this covers.
+the specific negative-leftover scenario this covers. `Remainder` is reported
+both for `DustTo::Reject` — the parts leave a remainder — and for
+`Rounding::Exact`, whose `exact_round::RoundError::Inexact` means a share did
+not divide evenly. For both splits the two are the same fact: the shares are
+rounded toward zero in the weighted split, so it leaves a remainder exactly
+when a share is not whole.
 
 ## Kind
 
@@ -15,16 +20,17 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_dust/src/lib.rs:76-86`
+`module/exact_dust/src/lib.rs:79-90`
 
 ```rust
 /// Why a split could not be computed.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
 pub enum DustError
 {
-  /// Zero parts were requested.
+  /// Zero parts were requested — a part count of zero, or no nonzero weight.
   EmptyParts,
-  /// [`DustTo::Reject`] was asked and the split did not divide evenly.
+  /// The rounded parts left a remainder that [`DustTo::Reject`] refuses, or
+  /// a share did not divide evenly under [`Rounding::Exact`].
   Remainder,
   /// An operation left the representable or declared range.
   Overflow,
@@ -35,11 +41,12 @@ pub enum DustError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 78-86 | Declaration |
-| `src/lib.rs` | 88-99 | `Display` match arms |
-| `src/lib.rs` | 112-113,122,124,126-127,139,143,167,191,220,243 | Constructed across `round_error_to_dust_error`, `split_minor`, `slot_minor` (all private — no Item Instance of their own), and the 4 split/split-into functions' `.map_err` closures |
+| `src/lib.rs` | 81-90 | Declaration |
+| `src/lib.rs` | 92-103 | `Display` match arms |
+| `src/lib.rs` | 116-117,120,129,131,133-134,146,150,169,197,283,327,330,338-339,342,344 | Constructed across `round_error_to_dust_error` (`Inexact` → `Remainder` at 117), `split_minor`, `slot_minor`, and the `.map_err` closures of `split_with` and `split_into_with` (all private — no Item Instance of their own); and in `weighted_share` and `money_dust_split_weighted` — `EmptyParts` for no weight to split by (330), `Overflow` on a checked sum or the ceiling |
 | `tests/dust_split_test.rs:58,75,152` | — | Asserts the exact variant returned for `Remainder`, `EmptyParts`, and `Overflow` respectively |
-| `exact_arith/src/lib.rs:139` | — | Facade re-export |
+| `tests/dust_split_test.rs:223,226,230,238,240` | — | `Remainder` under `Exact`, for an uneven split, buffer and remainder |
+| `exact_arith/src/lib.rs:140` | — | Facade re-export |
 
 No production call site anywhere constructs or matches `DustError` outside
 `exact_dust` itself — an honest empty finding; `exact_arith` only re-exports

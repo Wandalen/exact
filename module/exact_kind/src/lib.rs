@@ -1,8 +1,8 @@
 //! The conserved value type family: `Money`, `Qty`, and `Price`, each a
 //! fixed-point decimal whose scale lives in the type.
 //!
-//! Tier 1 of the family, depending on `exact_minor` for the backing integer
-//! and `exact_scale` for the power-of-ten table and the declared ceiling.
+//! Tier 1 of the family, depending on `exact_minor` for the backing integer,
+//! `exact_scale` for powers of ten and the ceiling, `exact_round` for `rescale`.
 //! Consolidates what the real codebase built as two separate crates —
 //! `exact_decimal`'s signed `Decimal< SCALE >` and `exact_qty`'s
 //! non-negative `Qty< SCALE >` — into the one crate the preferred design
@@ -51,6 +51,7 @@ use exact_minor::
   minor_to_i64,
   minor_zero,
 };
+use exact_round::{ RoundError, Rounding, round_div };
 use exact_scale::{ CEILING_MINOR_UNITS, MONEY_SCALE, pow10 };
 
 /// A value at the standard money scale.
@@ -58,6 +59,9 @@ pub type Money = Decimal< MONEY_SCALE >;
 
 /// A non-negative quantity at the standard money scale.
 pub type Quantity = Qty< MONEY_SCALE >;
+
+/// A price at the standard money scale.
+pub type Price = PriceAt< MONEY_SCALE >;
 
 /// Why a value could not be constructed, or an operation could not be completed.
 ///
@@ -84,15 +88,15 @@ pub enum KindError
     /// The offending count of minor units.
     minor : Backing,
   },
-  /// A decimal string with more fractional digits than the type's scale.
-  ///
-  /// Rejected rather than repaired. Truncating destroys the excess
-  /// silently; rounding invents a value the caller did not write.
+  /// A value with more fractional digits than the target scale can hold:
+  /// text given to `parse`, or a value `rescale` narrows under `Exact`.
+  /// Rejected rather than repaired — truncating destroys the excess
+  /// silently; rounding invents a value the caller did not ask for.
   ExcessPrecision
   {
-    /// Fractional digits the text carried.
+    /// Fractional digits the input carried: typed in the text, or the source scale.
     digits : u32,
-    /// Fractional digits the type can hold.
+    /// Fractional digits the target type can hold.
     scale : u32,
   },
   /// Text the grammar does not accept.
@@ -175,21 +179,26 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// One whole unit, in minor units.
   pub const ONE_MINOR : Backing = pow10( SCALE );
 
-  /// Zero — the one infallible constructor, representable at every scale.
-  pub const ZERO : Self = Self { minor : minor_zero() };
+  /// Fails the build for a scale whose whole unit, `10^SCALE`, does not fit
+  /// the backing integer — `pow10`'s own limit of 18 places. Every way to
+  /// build a `Decimal` evaluates it, so a scale past 18 cannot be built.
+  const REPRESENTABLE : () = assert!( Self::ONE_MINOR > 0 );
+
+  /// Zero — the one infallible constructor, representable at every valid scale.
+  pub const ZERO : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_zero() } };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = Self { minor : minor_from_i64( 1 ) };
+  pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ) } };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) };
+  pub const MAX : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) } };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) };
+  pub const MIN : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) } };
 
   /// Build from a count of minor units.
   ///
@@ -198,6 +207,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
   /// [`KindError::ExceedsCeiling`] when `|minor|` is past the ceiling.
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
+    let () = Self::REPRESENTABLE;
     if minor > CEILING_MINOR_UNITS || minor < -CEILING_MINOR_UNITS
     {
       return Err( KindError::ExceedsCeiling { minor } );
@@ -228,6 +238,44 @@ impl< const SCALE : u32 > Decimal< SCALE >
   {
     minor_to_i64( self.minor )
   }
+
+  /// The same value at scale `TO`. Going finer multiplies by `10^(TO - SCALE)`
+  /// and can only overflow; going coarser divides by `10^(SCALE - TO)` and
+  /// rounds per `rounding` — [`Rounding::Exact`] refuses any digit that would
+  /// be lost.
+  ///
+  /// `TO` is at most 18, like every scale: a coarser one does not compile.
+  ///
+  /// ```compile_fail
+  /// use exact_kind::Decimal;
+  /// use exact_round::Rounding;
+  /// let one = Decimal::< 6 >::from_minor( 1 ).unwrap();
+  /// let _ = one.rescale::< 20 >( Rounding::Exact ); // 10^20 does not fit the backing integer
+  /// ```
+  ///
+  /// # Errors
+  ///
+  /// [`KindError::Overflow`] or [`KindError::ExceedsCeiling`] when the value
+  /// does not fit at scale `TO`. [`KindError::ExcessPrecision`] when
+  /// `rounding` is [`Rounding::Exact`] and going coarser would drop a digit.
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal< TO >, KindError >
+  {
+    let minor = self.minor();
+    let rescaled = if TO >= SCALE
+    {
+      minor.checked_mul( pow10( TO - SCALE ) ).ok_or( KindError::Overflow { operation : "rescale" } )?
+    }
+    else
+    {
+      round_div( minor, pow10( SCALE - TO ), rounding ).map_err( | e | match e
+      {
+        RoundError::Inexact => KindError::ExcessPrecision { digits : SCALE, scale : TO },
+        RoundError::DivZero | RoundError::Overflow => KindError::Overflow { operation : "rescale" },
+      } )?
+    };
+    Decimal::< TO >::from_minor( rescaled )
+  }
+
 
   /// The whole-unit part, truncated toward zero.
   #[ must_use ]
@@ -372,39 +420,129 @@ impl< const SCALE : u32 > Decimal< SCALE >
 
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 {
-  /// Render exactly, with trailing fractional zeros trimmed.
+  /// Render exactly, with trailing fractional zeros trimmed — or, when the
+  /// caller asks for a precision (`{:.2}`), with exactly that many digits
+  /// after the point. Width, fill, alignment, `+` and `0` are honoured the way
+  /// they are for integers: `{:>10.2}` of `1.5` is `      1.50`. A precision
+  /// past the scale pads zeros that `parse` at this scale refuses: `{:.4}` of a
+  /// `Decimal< 2 >` `1.5` is `1.5000`, which `Decimal::< 2 >::parse` rejects as
+  /// `ExcessPrecision`.
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    let unit = Self::ONE_MINOR;
-    let magnitude = self.minor().unsigned_abs();
-    let unit_u = unit.unsigned_abs();
-    let whole = magnitude / unit_u;
-    let frac = magnitude % unit_u;
-
-    if self.minor() < 0
-    {
-      write!( f, "-" )?;
-    }
-    write!( f, "{whole}" )?;
-
-    if SCALE == 0 || frac == 0
-    {
-      return Ok( () );
-    }
-    // Fix(exact_kind_display_allocated_per_render): the fraction was padded
-    // into a `String` with `format!` and then trimmed — one heap allocation
-    // per render, against feature 016's non-allocating display. The trailing
-    // zeros are now counted arithmetically and the digits written directly.
-    //
-    // Root cause: `format!` used as a scratch buffer inside `fmt`.
-    // Pitfall: `write!` into the formatter does not allocate but `format!`
-    //   does, and the rendered text is identical — output tests cannot tell.
-    let trailing_zeros = ( 1..=SCALE )
-    .take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) )
-    .count();
-    let digits = frac / pow10( trailing_zeros as u32 ).unsigned_abs();
-    write!( f, ".{digits:0width$}", width = SCALE as usize - trailing_zeros )
+    render( self.minor(), SCALE, f )
   }
+}
+
+/// The one renderer behind `Display` for `Decimal`, `Qty` and `PriceAt`.
+///
+/// The digits after the point are the scale's own with trailing zeros trimmed
+/// for `{}`, or exactly `places` for `{:.N}`: more places than the scale holds
+/// are zeros, fewer round the dropped digits half to even — the family's
+/// default, and the rule `{:.N}` follows for `f64`. Only the text is rounded,
+/// never the value. The sign is taken after rounding, so `-0.004` at `{:.2}`
+/// is `0.00`.
+///
+/// Then the text is padded as `Formatter::pad_integral` pads an integer: `+`
+/// adds a sign to a non-negative value, `0` puts zeros between the sign and
+/// the digits, and otherwise the fill goes where the alignment says, right by
+/// default. Everything is written straight into the formatter — no buffer, no
+/// allocation, and no limit on the precision.
+fn render( minor : Backing, scale : u32, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+{
+  let places = f.precision();
+  // Fewer places than the scale holds: round the dropped digits away first.
+  let ( shown, shown_scale ) = match places.map( u32::try_from )
+  {
+    Some( Ok( p ) ) if p < scale =>
+    (
+      round_div( minor, pow10( scale - p ), Rounding::HalfEven ).map_err( | _ | fmt::Error )?,
+      p,
+    ),
+    _ => ( minor, scale ),
+  };
+  let unit = pow10( shown_scale ).unsigned_abs();
+  let magnitude = shown.unsigned_abs();
+  let whole = magnitude / unit;
+  let ( frac, frac_width, extra_zeros ) = match places
+  {
+    // `{:.N}`: every digit the shown scale holds, then zeros up to `N`.
+    Some( places ) => ( magnitude % unit, shown_scale as usize, places.saturating_sub( shown_scale as usize ) ),
+    None =>
+    {
+      // Fix(exact_kind_display_allocated_per_render): the fraction was padded
+      // into a `String` with `format!` and then trimmed — one heap allocation
+      // per render, against feature 016's non-allocating display. The trailing
+      // zeros are now counted arithmetically and the digits written directly.
+      //
+      // Root cause: `format!` used as a scratch buffer inside `fmt`.
+      // Pitfall: `write!` into the formatter does not allocate but `format!`
+      //   does, and the rendered text is identical — output tests cannot tell.
+      let frac = magnitude % unit;
+      let trailing_zeros = if frac == 0
+      {
+        shown_scale as usize
+      }
+      else
+      {
+        ( 1..=shown_scale ).take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) ).count()
+      };
+      ( frac / pow10( trailing_zeros as u32 ).unsigned_abs(), shown_scale as usize - trailing_zeros, 0 )
+    }
+  };
+  let point = frac_width + extra_zeros > 0;
+  let sign = if shown < 0 { Some( '-' ) } else if f.sign_plus() { Some( '+' ) } else { None };
+  let len = usize::from( sign.is_some() )
+  + whole.checked_ilog10().map_or( 1, | l | l as usize + 1 )
+  + if point { 1 + frac_width + extra_zeros } else { 0 };
+  let padding = f.width().map_or( 0, | w | w.saturating_sub( len ) );
+  let ( before, after, fill ) = if f.sign_aware_zero_pad()
+  {
+    ( 0, 0, '0' )
+  }
+  else
+  {
+    match f.align()
+    {
+      Some( fmt::Alignment::Left ) => ( 0, padding, f.fill() ),
+      Some( fmt::Alignment::Center ) => ( padding / 2, padding.div_ceil( 2 ), f.fill() ),
+      Some( fmt::Alignment::Right ) | None => ( padding, 0, f.fill() ),
+    }
+  };
+  for _ in 0..before
+  {
+    fmt::Write::write_char( f, fill )?;
+  }
+  if let Some( sign ) = sign
+  {
+    fmt::Write::write_char( f, sign )?;
+  }
+  // `0`: the zeros go between the sign and the digits.
+  if f.sign_aware_zero_pad()
+  {
+    for _ in 0..padding
+    {
+      f.write_str( "0" )?;
+    }
+  }
+  write!( f, "{whole}" )?;
+  if point
+  {
+    f.write_str( "." )?;
+    if frac_width > 0
+    {
+      write!( f, "{frac:0frac_width$}" )?;
+    }
+    // More places than the scale holds: the rest are zeros.
+    for _ in 0..extra_zeros
+    {
+      f.write_str( "0" )?;
+    }
+  }
+  for _ in 0..after
+  {
+    fmt::Write::write_char( f, fill )?;
+  }
+  Ok( () )
 }
 
 /// A non-negative quantity at a type-level scale.
@@ -493,6 +631,18 @@ impl< const SCALE : u32 > Qty< SCALE >
   {
     self.value.minor()
   }
+
+  /// The same quantity at scale `TO`, as [`Decimal::rescale`] — still
+  /// non-negative, since every mode rounds a non-negative value to one.
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
+  {
+    Qty::from_decimal( self.value.rescale::< TO >( rounding )? )
+  }
+
 
   /// The whole-unit part, truncated.
   #[ must_use ]
@@ -603,11 +753,13 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }
 
-/// A price at the standard money scale.
+/// A price at scale `SCALE` — [`Price`] is the one at the standard money
+/// scale.
 ///
 /// A type of its own, so a price cannot stand in for money, or money for a
 /// price. Like [`Money`] it may be negative — a discount. Same-kind
@@ -636,19 +788,28 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 /// let price = Price::parse( "1.25" ).unwrap();
 /// let _ = price.checked_add( cash );
 /// ```
+///
+/// Nor two prices at different scales:
+///
+/// ```compile_fail
+/// use exact_kind::PriceAt;
+/// let cents : PriceAt< 2 > = PriceAt::parse( "1.25" ).unwrap();
+/// let fine : PriceAt< 6 > = PriceAt::parse( "1.25" ).unwrap();
+/// let _ = cents.checked_add( fine );
+/// ```
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Price
+pub struct PriceAt< const SCALE : u32 >
 {
-  value : Money,
+  value : Decimal< SCALE >,
 }
 
-impl Price
+impl< const SCALE : u32 > PriceAt< SCALE >
 {
   /// No price at all.
-  pub const ZERO : Self = Self { value : Money::ZERO };
+  pub const ZERO : Self = Self { value : Decimal::< SCALE >::ZERO };
 
   /// The largest price this type can hold — exactly the declared ceiling.
-  pub const MAX : Self = Self { value : Money::MAX };
+  pub const MAX : Self = Self { value : Decimal::< SCALE >::MAX };
 
   /// Build from a count of minor units.
   ///
@@ -657,7 +818,7 @@ impl Price
   /// As [`Decimal::from_minor`].
   pub const fn from_minor( minor : Backing ) -> Result< Self, KindError >
   {
-    match Money::from_minor( minor )
+    match Decimal::< SCALE >::from_minor( minor )
     {
       Ok( value ) => Ok( Self { value } ),
       Err( e ) => Err( e ),
@@ -706,15 +867,26 @@ impl Price
   /// As [`Decimal::parse`].
   pub fn parse( text : &str ) -> Result< Self, KindError >
   {
-    Ok( Self { value : Money::parse( text )? } )
+    Ok( Self { value : Decimal::< SCALE >::parse( text )? } )
+  }
+
+  /// The same price at scale `TO`, as [`Decimal::rescale`].
+  ///
+  /// # Errors
+  ///
+  /// As [`Decimal::rescale`].
+  pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< PriceAt< TO >, KindError >
+  {
+    Ok( PriceAt { value : self.value.rescale::< TO >( rounding )? } )
   }
 }
 
 /// Renders a price exactly as money of the same amount renders.
-impl fmt::Display for Price
+impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
-    write!( f, "{}", self.value )
+    // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
+    fmt::Display::fmt( &self.value, f )
   }
 }

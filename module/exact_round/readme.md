@@ -47,7 +47,7 @@ multiply, whose product of two `i64` values no `i64` can hold.
 | [`Cargo.toml`](Cargo.toml) | Manifest — zero workspace dependencies, by design as a tier-0 root |
 | [`src/lib.rs`](src/lib.rs) | `Rounding`, `rounding_default`, `rounding_name`, `round_div`, `round_div_wide`, `RoundError` |
 | [`tests/rounding_mode_test.rs`](tests/rounding_mode_test.rs) | The default policy, stable names, and value semantics |
-| [`tests/round_div_test.rs`](tests/round_div_test.rs) | `round_div` under every rounding mode, at both signs |
+| [`tests/round_div_test.rs`](tests/round_div_test.rs) | `round_div` under every rounding mode, at both signs, and `Exact`'s refusal of a remainder |
 | [`tests/manual/`](tests/manual/readme.md) | Manual-check plan and run record for this crate |
 | [`docs/`](docs/readme.md) | Type, algorithm, decisions, and definition doc instances for this crate |
 | [`verb/`](verb/readme.md) | Crate-scoped test/lint/build verb scripts |

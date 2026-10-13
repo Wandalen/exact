@@ -2,8 +2,12 @@
 
 ## Representation
 
-Audit a log of postings for conservation: fold every `amount_minor` into an
-`i128`-widened net total, and report it. The crate's single most
+Audit a log of postings for conservation: fold each `amount_minor` into its
+own asset's `i128`-widened net total, and report every asset's net — amounts
+of different assets are never added together. Generic over the caller's
+asset key `A : Ord + Clone`: `Ord` to keep the nets in a `BTreeMap`, `Clone`
+to store a key the first time its asset appears. The account type `K` carries
+no bound: `verify` never reads `account`. The crate's single most
 production-critical export.
 
 ## Kind
@@ -12,23 +16,26 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 
 ## Definition
 
-`module/exact_conserve/src/lib.rs:205-215`
+`module/exact_conserve/src/lib.rs:234-247`
 
 ```rust
-pub fn verify( entries : &[ Entry ] ) -> Result< Report, ConservationError >
+pub fn verify< K, A : Ord + Clone >( entries : &[ Entry< K, A > ] ) -> Result< Report< A >, ConservationError >
 {
-  let mut net : i128 = 0;
+  let mut nets : BTreeMap< A, i128 > = BTreeMap::new();
   for entry in entries
   {
-    net = net
-    .checked_add( i128::from( entry.amount_minor ) )
-    .ok_or( ConservationError::Overflow )?;
+    let amount = i128::from( entry.amount_minor );
+    match nets.get_mut( &entry.asset )
+    {
+      Some( net ) => *net = net.checked_add( amount ).ok_or( ConservationError::Overflow )?,
+      None => { nets.insert( entry.asset.clone(), amount ); }
+    }
   }
-  Ok( Report { entries : entries.len(), net_minor : net } )
+  Ok( Report { entries : entries.len(), nets } )
 }
 ```
 
-Carries its own doc-test (`src/lib.rs:192-200`), which runs as a real
+Carries its own doc-test (`src/lib.rs:221-229`), which runs as a real
 `cargo test --doc` execution, demonstrating both a balanced log and a
 one-unit leak.
 
@@ -36,8 +43,8 @@ one-unit leak.
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 205-215 | Declaration |
-| `src/lib.rs` | 192-200 | Own doc-test |
+| `src/lib.rs` | 234-247 | Declaration |
+| `src/lib.rs` | 221-229 | Own doc-test |
 | `tests/conservation_test.rs` | throughout | Every test in the file |
 | `exact_arith/src/lib.rs:30` | — | Facade's own module-level doc-test |
 | `exact_arith/tests/facade_test.rs:29` | — | Facade integration test |
@@ -45,7 +52,7 @@ one-unit leak.
 | `cluster_economy/tests/economy_test.rs:263-264` | — | Reconciliation assertions |
 | `exchange_core/tests/submission_test.rs:257` | — | Integration test |
 | `smoke_exchange_core/src/lib.rs:105` | — | Demo-lane settlement audit |
-| `smoke_exact_market_split/src/lib.rs:308,313`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test) |
+| `smoke_exact_market_split/src/lib.rs:313,318,426`, `tests/lane_test.rs:63,66` | — | Demo-lane ledger checks (incl. the ported `bug_reproducer` regression test), and step 7's two-asset settlement — USD and BTC, each at its own scale |
 
 Confirmed via a full-workspace grep (not limited to `exact_conserve`'s direct
 `Cargo.toml` dependents) — the same wider sweep that corrected this
@@ -71,6 +78,6 @@ No intra-crate caller.
 
 ## Callee Tree
 
-No callee of its own — folds via `i128::from`/`i128::checked_add` directly
-and constructs [Report](../struct/002_report.md); no further hop into
-another Item Instance.
+No callee of its own — folds via `BTreeMap::get_mut`/`insert`, `i128::from`
+and `i128::checked_add` directly, one accumulator per asset, and constructs
+[Report](../struct/002_report.md); no further hop into another Item Instance.

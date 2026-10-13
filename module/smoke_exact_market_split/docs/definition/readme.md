@@ -11,15 +11,17 @@
 
 | Item | Kind | Declared | Documented in |
 |------|------|----------|----------------|
-| `REPEATS` | const | `../../src/lib.rs:53` | — |
-| `exact_tenths` | fn | `../../src/lib.rs:63` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md) |
-| `float_tenths` | fn | `../../src/lib.rs:76` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md) |
-| `ledger` | fn | `../../src/lib.rs:99` | [Unchecked Subtraction In Demo Ledger](../pitfall/001_unchecked_subtraction_in_demo_ledger.md) |
-| `market_split` | fn | `../../src/lib.rs:140` | — |
-| `Golden` | struct | `../../src/lib.rs:148` | [Scene Doc Definition](../../../../docs/scene/readme.md) |
-| `golden` | fn | `../../src/lib.rs:178` | [Scene Doc Definition](../../../../docs/scene/readme.md) |
-| `checksum` | fn | `../../src/lib.rs:221` | [Checksum Equality Across Calls](../../../../docs/scene/010_checksum_equality_across_calls.md) |
-| `run` | fn | `../../src/lib.rs:245` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md), [Library Not Bare Main](../decisions/002_library_not_bare_main.md) |
+| `REPEATS` | const | `../../src/lib.rs:55` | — |
+| `exact_tenths` | fn | `../../src/lib.rs:65` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md) |
+| `float_tenths` | fn | `../../src/lib.rs:78` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md) |
+| `ledger` | fn | `../../src/lib.rs:101` | [Unchecked Subtraction In Demo Ledger](../pitfall/001_unchecked_subtraction_in_demo_ledger.md) |
+| `market_split` | fn | `../../src/lib.rs:142` | — |
+| `Golden` | struct | `../../src/lib.rs:150` | [Scene Doc Definition](../../../../docs/scene/readme.md) |
+| `golden` | fn | `../../src/lib.rs:180` | [Scene Doc Definition](../../../../docs/scene/readme.md) |
+| `checksum` | fn | `../../src/lib.rs:223` | [Checksum Equality Across Calls](../../../../docs/scene/010_checksum_equality_across_calls.md) |
+| `run` | fn | `../../src/lib.rs:248` | [Control Arm Must Disagree](../decisions/001_control_arm_must_disagree.md), [Library Not Bare Main](../decisions/002_library_not_bare_main.md) |
+| `PerAsset` | struct | `../../src/lib.rs:365` | [Every Operation Is Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) |
+| `per_asset_trade` | fn | `../../src/lib.rs:390` | [Every Operation Is Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) |
 
 ### Regenerate
 
@@ -27,6 +29,6 @@
 cd "$(git rev-parse --show-toplevel)"/module/smoke_exact_market_split
 printf 'pub items in src/lib.rs: '; grep -cE '^pub (const|fn|struct) ' src/lib.rs
 printf 'rows in Module Index:    '; grep -cE '^\| `' docs/definition/readme.md
-# pub items in src/lib.rs: 9
-# rows in Module Index:    9
+# pub items in src/lib.rs: 11
+# rows in Module Index:    11
 ```

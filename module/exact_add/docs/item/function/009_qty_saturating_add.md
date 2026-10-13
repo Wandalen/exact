@@ -16,12 +16,12 @@ Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
 `module/exact_add/src/lib.rs:142`
 
 ```rust
-pub const fn qty_saturating_add( a : Quantity, b : Quantity ) -> Quantity
+pub const fn qty_saturating_add< const S : u32 >( a : Qty< S >, b : Qty< S > ) -> Qty< S >
 {
   match a.checked_add( b )
   {
     Ok( sum ) => sum,
-    Err( _ ) => Quantity::MAX,
+    Err( _ ) => Qty::< S >::MAX,
   }
 }
 ```

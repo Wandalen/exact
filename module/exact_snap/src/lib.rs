@@ -1,10 +1,10 @@
 //! Snapping a price or a quantity to the nearest point on a grid — a tick
 //! size for price, a lot size for quantity.
 //!
-//! Tier 2, depending on `exact_kind` for the conserved value types and
-//! `exact_round` for [`exact_round::round_div`], the sign-handling,
-//! tie-breaking division this crate's snap is built from — shared with
-//! `exact_ratio` rather than duplicated here.
+//! Tier 2, depending on `exact_kind` for the conserved value types,
+//! `exact_scale` for the scale `Tick`/`Lot` are fixed at, and `exact_round`
+//! for [`exact_round::round_div`], the tie-breaking division this crate's
+//! snap is built from — shared with `exact_ratio` rather than duplicated.
 //!
 //! Net-new: no real precedent exists for either `Tick`, `Lot`, or snapping
 //! itself.
@@ -21,8 +21,9 @@
 //! assert_eq!( price_snap_tick( between, tick, Rounding::Down ).unwrap().minor(), 15 );
 //! ```
 
-use exact_kind::{ Price, Quantity };
+use exact_kind::{ PriceAt, Qty };
 use exact_round::Rounding;
+use exact_scale::MONEY_SCALE;
 
 /// Why a tick/lot could not be constructed, or a snap could not complete.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq ) ]
@@ -34,6 +35,8 @@ pub enum SnapError
   ZeroLot,
   /// The snapped result left the representable or declared range.
   Overflow,
+  /// The value is not on the grid and [`Rounding::Exact`] was asked.
+  OffGrid,
 }
 
 impl core::fmt::Display for SnapError
@@ -45,6 +48,7 @@ impl core::fmt::Display for SnapError
       Self::ZeroTick => write!( f, "a zero-sized tick was supplied" ),
       Self::ZeroLot => write!( f, "a zero-sized lot was supplied" ),
       Self::Overflow => write!( f, "the snapped result left the representable or declared range" ),
+      Self::OffGrid => write!( f, "the value is not on the grid and Rounding::Exact was requested" ),
     }
   }
 }
@@ -62,14 +66,19 @@ fn round_error_to_snap_error( e : exact_round::RoundError, zero : SnapError ) ->
     // pattern `exact_kind::Decimal::checked_neg` already uses.
     exact_round::RoundError::DivZero => zero,
     exact_round::RoundError::Overflow => SnapError::Overflow,
+    exact_round::RoundError::Inexact => SnapError::OffGrid,
   }
 }
 
-/// A price grid's spacing — the smallest meaningful price increment.
+/// A price grid's spacing — the smallest meaningful price increment — at
+/// scale `S`. [`Tick`] is the one at the standard money scale.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Tick( Price );
+pub struct TickAt< const S : u32 >( PriceAt< S > );
 
-impl Tick
+/// A tick at the standard money scale.
+pub type Tick = TickAt< MONEY_SCALE >;
+
+impl< const S : u32 > TickAt< S >
 {
   /// Build a tick size, refusing zero. A negative price is kept as its
   /// magnitude: a tick of -5 marks the same grid as a tick of 5.
@@ -77,14 +86,14 @@ impl Tick
   /// # Errors
   ///
   /// [`SnapError::ZeroTick`] when `price` is exactly zero.
-  pub const fn new( price : Price ) -> Result< Self, SnapError >
+  pub const fn new( price : PriceAt< S > ) -> Result< Self, SnapError >
   {
     if price.minor() == 0
     {
       return Err( SnapError::ZeroTick );
     }
     // The price range is symmetric about zero, so the magnitude always fits.
-    match Price::from_minor( price.minor().abs() )
+    match PriceAt::< S >::from_minor( price.minor().abs() )
     {
       Ok( size ) => Ok( Self( size ) ),
       Err( _ ) => Err( SnapError::Overflow ),
@@ -93,24 +102,28 @@ impl Tick
 
   /// The tick size as a price.
   #[ must_use ]
-  pub const fn price( self ) -> Price
+  pub const fn price( self ) -> PriceAt< S >
   {
     self.0
   }
 }
 
-/// A quantity grid's spacing — the smallest meaningful quantity increment.
+/// A quantity grid's spacing — the smallest meaningful quantity increment —
+/// at scale `S`. [`Lot`] is the one at the standard money scale.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Lot( Quantity );
+pub struct LotAt< const S : u32 >( Qty< S > );
 
-impl Lot
+/// A lot at the standard money scale.
+pub type Lot = LotAt< MONEY_SCALE >;
+
+impl< const S : u32 > LotAt< S >
 {
   /// Build a lot size, refusing zero.
   ///
   /// # Errors
   ///
   /// [`SnapError::ZeroLot`] when `qty` is exactly zero.
-  pub const fn new( qty : Quantity ) -> Result< Self, SnapError >
+  pub const fn new( qty : Qty< S > ) -> Result< Self, SnapError >
   {
     if qty.minor() == 0
     {
@@ -121,7 +134,7 @@ impl Lot
 
   /// The lot size as a quantity.
   #[ must_use ]
-  pub const fn qty( self ) -> Quantity
+  pub const fn qty( self ) -> Qty< S >
   {
     self.0
   }
@@ -132,8 +145,9 @@ impl Lot
 /// # Errors
 ///
 /// [`SnapError::Overflow`] when the snapped result leaves the representable
-/// or declared range.
-pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Result< Price, SnapError >
+/// or declared range. [`SnapError::OffGrid`] when `rounding` is
+/// [`Rounding::Exact`] and the price is not already on the grid.
+pub fn price_snap_tick< const S : u32 >( price : PriceAt< S >, tick : TickAt< S >, rounding : Rounding ) -> Result< PriceAt< S >, SnapError >
 {
   // Fix(exact_snap_negative_tick_reversed_rounding): the price used to be
   // divided by the signed tick, so for a tick of -5 the count was rounded on
@@ -148,7 +162,7 @@ pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Res
   let q = exact_round::round_div( price.minor(), spacing, rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
   let snapped = q.checked_mul( spacing ).ok_or( SnapError::Overflow )?;
-  Price::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
+  PriceAt::< S >::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
 }
 
 /// Snap a quantity to the nearest multiple of `lot`, per `rounding`.
@@ -156,11 +170,12 @@ pub fn price_snap_tick( price : Price, tick : Tick, rounding : Rounding ) -> Res
 /// # Errors
 ///
 /// [`SnapError::Overflow`] when the snapped result leaves the representable
-/// or declared range.
-pub fn qty_snap_lot( qty : Quantity, lot : Lot, rounding : Rounding ) -> Result< Quantity, SnapError >
+/// or declared range. [`SnapError::OffGrid`] when `rounding` is
+/// [`Rounding::Exact`] and the quantity is not already on the grid.
+pub fn qty_snap_lot< const S : u32 >( qty : Qty< S >, lot : LotAt< S >, rounding : Rounding ) -> Result< Qty< S >, SnapError >
 {
   let q = exact_round::round_div( qty.minor(), lot.0.minor(), rounding )
   .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroLot ) )?;
   let snapped = q.checked_mul( lot.0.minor() ).ok_or( SnapError::Overflow )?;
-  Quantity::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
+  Qty::< S >::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
 }

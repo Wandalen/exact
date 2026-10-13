@@ -10,7 +10,7 @@
 **Design status**: implemented. The real lane, [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md), keeps the proposed name and the "headless, one file, no seed" shape, and its step 6 prints this proposal's golden print line for line, with every pass criterion asserted. It differs in two ways:
 
 - it runs five steps of its own before the scenes — its central claim is a control arm that runs the exact path and `f64` side by side and **asserts the two disagree** — so the golden print below is the tail of a longer output, quoted in full in `../../module/smoke_exact_market_split/readme.md`
-- two lines print a scale-6 number, because `exact_dust` and `exact_bytes` take `Money`, fixed at scale 6: `parts=3.333333,3.333333,3.333333 dust=0.000001` instead of `parts=3.33,3.33,3.33 dust=0.01`, and `wire=10000000` instead of `wire=1000` — while `sum=0` and `extra=1` stay at scale 2 through `Decimal< 2 >`, since `Money` has no selectable scale
+- it runs a seventh step after the scenes: one trade priced in cents and sized in satoshis, each at its own scale, asserted to differ from the same trade at one shared scale of 6 ([`exact_arith`'s ADR-001](../../module/exact_arith/docs/decisions/001_operations_generic_over_scale.md)). Every amount in the scenes runs at scale 2, as proposed — `parts=3.33,3.33,3.33 dust=0.01` and `wire=1000` — since every operation takes a value at any scale
 
 ### Preconditions
 

@@ -72,13 +72,13 @@ exact_minor
 exact_scale
 exact_round
 exact_sign                  → exact_minor
-exact_kind                  → exact_minor, exact_scale
+exact_kind                  → exact_minor, exact_round, exact_scale
 exact_add                   → exact_kind, exact_sign
 exact_ratio                 → exact_kind, exact_round
 exact_parse                 → exact_kind, exact_scale
 exact_fmt                   → exact_kind
-exact_bytes                 → exact_kind, exact_scale
-exact_snap                  → exact_kind, exact_round
+exact_bytes                 → exact_kind
+exact_snap                  → exact_kind, exact_round, exact_scale
 exact_cmp                   → exact_kind
 exact_dust                  → exact_kind, exact_round
 exact_conserve              → exact_add, exact_kind
@@ -97,6 +97,14 @@ depends on `exact_round` directly for the same `round_div` this crate needs,
 and none of `exact_ratio`'s rational-multiplier surface is used — disclosed
 in full in
 [`exact_dust`'s own decision record](../../module/exact_dust/docs/decisions/001_direct_exact_round_dependency.md).
+
+Three more edges differ since every value type and operation became generic
+over the scale. `exact_kind` depends on `exact_round`, for the rounded division
+`rescale` drives ([its ADR-002](../../module/exact_kind/docs/decisions/002_explicit_rescale_between_scales.md)).
+`exact_snap` depends on `exact_scale`, for the `MONEY_SCALE` its `Tick`/`Lot`
+aliases are fixed at ([its ADR-001](../../module/exact_snap/docs/decisions/001_tick_and_lot_generic_over_scale.md)).
+`exact_bytes` no longer depends on `exact_scale`: a record's scale byte is the
+encoded type's own scale ([its ADR-002](../../module/exact_bytes/docs/decisions/002_scale_byte_from_the_type.md)).
 
 ### Where to Start Reading
 
