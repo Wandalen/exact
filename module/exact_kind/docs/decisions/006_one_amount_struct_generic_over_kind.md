@@ -12,10 +12,10 @@ each held a `Decimal` as a `value` field
 ([ADR-001](001_non_negativity_enforced_at_construction.md),
 [ADR-003](003_price_generic_over_scale.md)).
 
-A generic `impl` cannot cover three different structs, so `+` and `-` were
-written by a macro, `checked_operators!`
-([ADR-005](005_checked_operators_return_a_result.md)): twelve `impl` blocks,
-four per kind, that differ only in the kind's name. Rust has no
+A generic `impl` cannot cover three different structs, so `+` and `-`
+([ADR-005](005_checked_operators_return_a_result.md)) on them would take
+twelve `impl` blocks, four per kind, that differ only in the kind's name —
+written out, or by a macro from one template. Rust has no
 `impl< T > Add for T` — the orphan rule (E0210) refuses a blanket impl of a
 foreign trait on any `T` — but it does accept a blanket impl over every
 `K` of one local generic struct, `impl< K > Add for Amount< K, SCALE >`.
@@ -43,13 +43,13 @@ foreign trait on any `T` — but it does accept a blanket impl over every
   rule — refused at construction, reported as `KindError::Negative` — holds as
   written. Only its shape changes: `Qty` is no longer "a distinct struct
   wrapping one `Decimal`", but `Amount` of its own kind.
-- **`+` and `-`: four generic impls instead of a macro.**
+- **`+` and `-`: four generic impls, not twelve.**
   `impl< K : Kind, const SCALE : u32 > Add for Amount< K, SCALE >`, its `Sub`
   twin, and the two impls with a `Result` on the left. Each calls
   `K::checked_add` or `K::checked_sub`: a per-kind hook that calls that
   kind's own inherent `checked_add`/`checked_sub`, so `-` on a `Qty` still
   refuses a value below zero. ADR-005's operators, `Output` types and chains
-  are unchanged. `checked_operators!` is deleted.
+  are exactly as it decides them.
 - **`Kind` is sealed.** `pub trait Kind : sealed::Sealed {}`, with `Sealed` in
   a private module. Outside this crate no one can add a fourth kind — one that
   brings its own `checked_add`, past the ceiling and the non-negativity
@@ -65,11 +65,11 @@ foreign trait on any `T` — but it does accept a blanket impl over every
 
 ## Alternatives Considered
 
-### Option 1: Keep three structs and the macro
+### Option 1: Keep three structs, with a macro writing the twelve impls
 
-What ADR-005 chose. Rejected: the twelve impls exist only because three
-structs repeat one shape. A reader has to expand a template to see them, and
-a fourth operator means a fourth block in the template, not one generic impl.
+Rejected: the twelve impls exist only because three structs repeat one
+shape. A reader has to expand a template to see them, and a fourth operator
+means a fourth block in the template, not one generic impl.
 
 ### Option 2: Three structs plus a trait with a blanket impl
 
@@ -118,8 +118,7 @@ the output changes for every `{:?}` in every test and log.
 - ADR-001 says `Qty` is "a distinct struct wrapping one `Decimal< SCALE >`
   field", and ADR-003 says the same of `PriceAt`. Their text is not edited:
   the rule each records still holds, and this decision replaces only the
-  shape. ADR-005's macro is replaced by the generic impls; its operators are
-  kept.
+  shape.
 
 **Neutral:**
 - No new dependency and no new error variant. The size of every type is
@@ -129,5 +128,5 @@ the output changes for every `{:?}` in every test and log.
 
 - [ADR-001](001_non_negativity_enforced_at_construction.md) — the non-negativity rule, kept; its struct shape replaced
 - [ADR-003](003_price_generic_over_scale.md) — `PriceAt< SCALE >`, kept as an alias
-- [ADR-005](005_checked_operators_return_a_result.md) — `+` and `-` return a `Result`, kept; the macro replaced
+- [ADR-005](005_checked_operators_return_a_result.md) — `+` and `-` return a `Result`; this decision is how they are written once
 - [Amount](../item/struct/001_amount.md), [Kind](../item/trait/001_kind.md) — the new items

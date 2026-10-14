@@ -61,8 +61,8 @@ file). Private items get no page, as for every crate in the family: the
 `value()`/`from_value()`, and the three `Sealed` impls are listed on the
 public page that uses them — [Kind](trait/001_kind.md) and
 [Amount](struct/001_amount.md). The three `impl Kind` are empty and are
-listed on [Kind](trait/001_kind.md). Macro Definition and Macro Invocation
-are gone: `checked_operators!` was replaced by four generic impls
+listed on [Kind](trait/001_kind.md). `+` and `-` are four generic impls on
+`Amount`, not a macro, so there is no Macro Definition or Macro Invocation
 ([ADR-006](../decisions/006_one_amount_struct_generic_over_kind.md)).
 
 ### Overview Table

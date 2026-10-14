@@ -34,10 +34,11 @@ like arithmetic.
 - **Same kind, same scale only.** Both sides are `Kind< SCALE >`, so
   `Decimal< 2 >` plus `Decimal< 8 >`, or a price plus a quantity, does not
   compile — the same rules as `checked_add`.
-- **Written once, by a macro.** The twelve impls — four per kind — differ only
-  in the kind's name, so a private `checked_operators!` writes them from one
-  template, and `checked_operators!( Decimal, Qty, PriceAt )` expands it. A
-  fix to the template reaches all three kinds at once.
+- **Written once, for every kind.** Four generic impls on `Amount< K, SCALE >`
+  — the one struct `Decimal`, `Qty` and `PriceAt` are aliases of — each
+  calling the kind's own `checked_add` or `checked_sub`
+  (→ [ADR-006](006_one_amount_struct_generic_over_kind.md)). A fix to one impl
+  reaches all three kinds at once.
 - `money_add`/`qty_add`/`price_add`, their `_sub` twins and the `checked_*`
   methods stay. The operators add a spelling; they replace nothing.
 
@@ -68,18 +69,21 @@ Smaller, but every chain then needs a `?` per step:
 `( ( a + b )? + c )?`. The impls on `Result` are what make a chain read as
 arithmetic.
 
-### Option 5: `Decimal` only, four plain `impl` blocks
+### Option 5: `Decimal` only
 
-Smaller and needs no macro. Rejected: quantities are summed too — the fills
+Smaller: four impls on one kind. Rejected: quantities are summed too — the fills
 of one order — and `-` on `Qty` is where a checked operator matters most,
 since a quantity below zero is refused as `Negative`. One rule for all three
 kinds keeps `+` from meaning something on money that it does not mean on a
 quantity.
 
-### Option 6: The twelve impls written out
+### Option 6: Twelve impls, four per kind
 
-No macro to read through. Rejected: twelve blocks that differ in one word,
-where a fix made to one kind's blocks is easy to miss in another's.
+With three separate structs, `+` and `-` take four impls each — written out,
+or written by a macro from one template. Rejected: twelve blocks that differ
+in one word, where a fix made to one kind's blocks is easy to miss in
+another's. One struct with the kind as a type parameter needs four
+([ADR-006](006_one_amount_struct_generic_over_kind.md)).
 
 ### Option 7: `*` and `/`
 
@@ -101,8 +105,8 @@ Not done: they need a rounding mode, and an operator has no place for one.
 - `a + b` is a `Result`, not a number, which surprises a reader expecting the
   usual `+`. `( a + b )?` is the price.
 - `a + ( b + c )` does not compile: only left-to-right chains have an impl.
-- The impls are written by a macro, so reading them means reading the
-  template once and the invocation's list of kinds.
+- The impls are generic over the kind, so finding what `+` does for one kind
+  means following its private hook to that kind's own `checked_add`.
 - `docs/crate/006_exact_add.md` says arithmetic is not left to operator
   overloading. Its text is the original proposal and is not edited; its
   Design status line records this decision.
@@ -114,5 +118,5 @@ Not done: they need a rounding mode, and an operator has no place for one.
 
 ## Related
 
-- [ADR-006](006_one_amount_struct_generic_over_kind.md) — the macro and its twelve impls are now four generic impls on `Amount`: [`+`](../item/implementation/008_add_for_amount.md), [`+` on a `Result`](../item/implementation/009_add_for_result.md), [`-`](../item/implementation/010_sub_for_amount.md), [`-` on a `Result`](../item/implementation/011_sub_for_result.md)
+- [ADR-006](006_one_amount_struct_generic_over_kind.md) — how the impls are written once, as four generic impls on `Amount`: [`+`](../item/implementation/008_add_for_amount.md), [`+` on a `Result`](../item/implementation/009_add_for_result.md), [`-`](../item/implementation/010_sub_for_amount.md), [`-` on a `Result`](../item/implementation/011_sub_for_result.md)
 - [`exact_add`'s ADR-002](../../../exact_add/docs/decisions/002_no_panicking_variant_yet.md) — no panicking arithmetic; these operators do not panic
