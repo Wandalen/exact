@@ -3,8 +3,10 @@
 ## Representation
 
 Prints an amount under its kind's own name — `Decimal { minor: Minor(12340000) }`,
-`Qty { minor: Minor(50000000) }`, `PriceAt { minor: Minor(-125) }` — exactly
-as each printed when it was a struct of its own. Written by hand rather than
+`Qty { minor: Minor(50000000) }`, `PriceAt { minor: Minor(-125) }`. For
+`Decimal` that is its output as a struct of its own, unchanged; `Qty` and
+`PriceAt`, which were wrappers, printed `Qty { value: Decimal { minor: … } }`
+and now print one level, without the nested `Decimal`. Written by hand rather than
 derived: a derived `Debug` would print `Amount { minor: …, kind: PhantomData<…> }`,
 hiding the kind in a type name. The name is the kind's private `Sealed::NAME`,
 which is why the bound is `K : Kind`

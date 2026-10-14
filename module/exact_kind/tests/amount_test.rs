@@ -3,7 +3,7 @@
 //! still prints its own name, and a quantity still passes through
 //! `from_decimal` to exist.
 
-use exact_kind::{ Amount, Decimal, KindError, Money, MoneyKind, Price, PriceAt, PriceKind, Qty, QtyKind, Quantity };
+use exact_kind::{ Amount, Decimal, Kind, KindError, Money, MoneyKind, Price, PriceAt, PriceKind, Qty, QtyKind, Quantity };
 
 /// The kind is zero-sized: every amount, at every scale, is one `i64`.
 #[ test ]
@@ -29,8 +29,8 @@ fn each_alias_is_amount_of_its_kind()
   assert_eq!( quantity.minor(), price.minor() );
 }
 
-/// `Debug` names the kind, as each did when it was a struct of its own; the
-/// zero-sized label is not printed.
+/// `Debug` names the kind and prints its one count; the zero-sized label is not
+/// printed. (As structs, `Qty` and `PriceAt` printed a nested `Decimal`.)
 #[ test ]
 fn debug_names_the_kind()
 {
@@ -60,4 +60,26 @@ fn one_kind_orders_by_value()
   let high = Price::parse( "1.10" ).unwrap();
   assert!( low < high );
   assert_eq!( [ high, low ].iter().min(), Some( &low ) );
+}
+
+/// Code generic over the kind gets every derive `Amount` has: `Kind` implies
+/// `Copy`, `Ord`, `Hash` and `Debug`, so `K : Kind` is the only bound needed.
+#[ test ]
+fn generic_code_over_any_kind_gets_the_derives()
+{
+  fn largest< K : Kind, const S : u32 >( items : &[ Amount< K, S > ] ) -> Option< Amount< K, S > >
+  {
+    items.iter().copied().max()
+  }
+  fn distinct< K : Kind, const S : u32 >( items : &[ Amount< K, S > ] ) -> usize
+  {
+    items.iter().collect::< std::collections::HashSet< _ > >().len()
+  }
+  let low = Quantity::from_int( 1 ).unwrap();
+  let high = Quantity::from_int( 2 ).unwrap();
+  assert_eq!( largest( &[ low, high, low ] ), Some( high ) );
+  assert_eq!( distinct( &[ low, high, low ] ), 2 );
+  let price = Price::parse( "1.25" ).unwrap();
+  assert_eq!( largest( &[ price ] ), Some( price ) );
+  assert_eq!( format!( "{:?}", largest::< MoneyKind, 6 >( &[] ) ), "None" );
 }

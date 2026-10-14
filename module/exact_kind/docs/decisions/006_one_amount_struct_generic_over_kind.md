@@ -56,10 +56,16 @@ foreign trait on any `T` — but it does accept a blanket impl over every
   check — and no one can call the per-kind hooks directly. `Sealed : Sized`
   because `Amount< Self, SCALE >` in the hooks needs `Self : Sized`, the bound
   every type parameter has by default. Two `compile_fail` doctests pin both.
+- **`Kind` implies `Copy + Ord + Hash + Debug`.** `Amount`'s derives require
+  `K` to have each trait they derive, so without these supertraits code
+  generic over `K : Kind` could not copy, order or hash an `Amount< K, S >`.
+  `Kind` is sealed, so the bound can change without breaking any caller.
 - **`Debug` is written by hand.** A derived `Debug` would print
   `Amount { minor: …, kind: PhantomData<exact_kind::QtyKind> }`. The
-  hand-written one prints `Qty { minor: Minor(…) }`, as when each kind was a
-  struct of its own; the name comes from the hook's `NAME`.
+  hand-written one prints the kind's name, from the hook's `NAME`, and its one
+  count. That is `Decimal`'s output unchanged, but a new shape for the two
+  kinds that were wrappers: `Qty { value: Decimal { minor: Minor(…) } }`
+  becomes `Qty { minor: Minor(…) }`, and the same for `PriceAt`.
 - `exact_arith` re-exports `Amount`, `Kind` and the three kinds with the rest
   of `exact_kind`'s public items.
 
@@ -106,13 +112,18 @@ the output changes for every `{:?}` in every test and log.
   struct, not three.
 - No caller changes. Every other crate in the family compiles unchanged, and
   all existing tests pass unchanged.
-- The `Qty` choke point, the per-kind API and the `Debug` output are as they
-  were; the seal keeps the set of kinds closed.
+- The `Qty` choke point and the per-kind API are as they were; the seal
+  keeps the set of kinds closed.
 
 **Negative:**
 - A compiler message or `rustdoc` now names `Amount< QtyKind, 8 >` where it
   named `Qty< 8 >`.
 - One more public trait (`Kind`), three markers and a private module to read.
+- `{:?}` of a `Qty` or a `PriceAt` changes shape: it no longer nests a
+  `Decimal`. No code in the family parses `Debug` text, but a test or a log
+  that compared it would see the new form.
+- `Amount` is also the name of `exchange_order::Amount`, an alias of `Money`
+  in the exchange. The two never meet in one scope today.
 - `Qty` and `PriceAt` read `self.value()` and `Self::from_value( … )` instead
   of the `value` field.
 - ADR-001 says `Qty` is "a distinct struct wrapping one `Decimal< SCALE >`
