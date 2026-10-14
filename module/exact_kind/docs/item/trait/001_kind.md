@@ -5,8 +5,15 @@
 One kind of amount: money, a quantity or a price. The bound on `Amount`'s
 `K` wherever an `impl` needs to know the kind — its `Debug` and its `+` and
 `-`. `Kind` has no items of its own; everything it carries comes from its
-supertrait `sealed::Sealed`, which lives in a private module
-(→ [ADR-006](../../decisions/006_one_amount_struct_generic_over_kind.md)):
+supertraits: `Copy`, `Ord`, `Hash` and `Debug`, and `sealed::Sealed`, which
+lives in a private module
+(→ [ADR-006](../../decisions/006_one_amount_struct_generic_over_kind.md)).
+
+The four standard supertraits are there for `Amount`'s derives: a derive on
+`Amount< K, SCALE >` requires `K` to have the trait it derives, so code
+generic over `K : Kind` — `items.iter().copied().max()`, a `HashSet` of
+amounts — compiles only because `Kind` promises them. Every kind derives all
+four. The private `Sealed` carries the rest:
 
 | Private `Sealed` item | What it is for |
 |---|---|
@@ -41,7 +48,7 @@ Trait (§ Item Kind Taxonomy : Stable Item Kinds #10)
 `module/exact_kind/src/lib.rs:179`
 
 ```rust
-pub trait Kind : sealed::Sealed {}
+pub trait Kind : sealed::Sealed + Copy + Ord + core::hash::Hash + fmt::Debug {}
 ```
 
 ## File Usage
@@ -52,6 +59,7 @@ pub trait Kind : sealed::Sealed {}
 | `src/lib.rs` | 165-170 | `compile_fail` doctest: a type outside this crate cannot implement `Kind` |
 | `src/lib.rs` | 175-178 | `compile_fail` doctest: `MoneyKind::checked_add` cannot be called outside this crate |
 | `src/lib.rs` | 193-195 | The three implementations |
+| `tests/amount_test.rs` | 6, 65-85 | Code generic over `K : Kind` copies, orders, hashes and prints amounts of any kind |
 | `src/lib.rs` | 231 | The bound on `Debug` for `Amount` |
 | `src/lib.rs` | 1037,1048,1059,1070 | The bound on each of the four `+`/`-` impls |
 | `exact_arith/src/lib.rs:88` | — | Facade re-export |

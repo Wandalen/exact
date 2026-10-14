@@ -27,7 +27,8 @@ pub struct PriceKind;
 ```
 
 The derives are there for `Amount`'s own: `#[ derive ]` on
-`Amount< K, SCALE >` requires `K` to implement each trait it derives.
+`Amount< K, SCALE >` requires `K` to implement each trait it derives, and
+[`Kind`](../trait/001_kind.md) requires `Copy`, `Ord`, `Hash` and `Debug`.
 
 ## File Usage
 
