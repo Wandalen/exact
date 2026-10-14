@@ -29,7 +29,7 @@ pub type Backing = i64;
 | `src/lib.rs` | 39,51,110 | Declaration; the field `Minor` wraps; the target of `TryFrom< MinorWide >`'s narrowing |
 | `tests/checked_arithmetic_test.rs`, `tests/saturating_arithmetic_test.rs` | throughout | `Backing::MAX`/`MIN` boundary literals |
 | `exact_sign/src/lib.rs:21,39,57,64,78` | — | **Production** — parameter type of every one of `exact_sign`'s 4 public functions |
-| `exact_kind/src/lib.rs:42` (+18 more sites) | — | **Production** — the raw-integer parameter/return type threaded through nearly every `Decimal`/`Qty` method (see `exact_kind`'s own `docs/item/use_declaration/001_use_exact_minor.md`) |
+| `exact_kind/src/lib.rs:43` (+18 more sites) | — | **Production** — the raw-integer parameter/return type threaded through nearly every `Decimal`/`Qty` method (see `exact_kind`'s own `docs/item/use_declaration/001_use_exact_minor.md`) |
 | `exact_kind/tests/checked_arithmetic_test.rs:15`, `tests/non_negative_test.rs:8` | — | `Backing::MAX`/`MIN` boundary literals |
 | `exact_arith/src/lib.rs` | — | Re-exported as part of the facade's pure `pub use exact_minor::{ .. }` |
 

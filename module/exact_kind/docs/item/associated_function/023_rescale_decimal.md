@@ -23,7 +23,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:261`
+`module/exact_kind/src/lib.rs:357`
 
 ```rust
 pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal< TO >, KindError >
@@ -49,8 +49,8 @@ pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Decimal
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 261 | Declaration |
-| `src/lib.rs` | 643,880 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
+| `src/lib.rs` | 357 | Declaration |
+| `src/lib.rs` | 735,968 | `Qty::rescale` and `PriceAt::rescale` delegate to it |
 | `tests/rescale_test.rs` | 12,20,21,23,31,32,48,49,59,60,61 | Finer is exact; coarser rounds per the mode at both signs; `Exact` refuses a dropped digit; past the ceiling is refused — `ExceedsCeiling` within the backing width (48), `Overflow` past it (49); `Exact` reports the value's own digits — `1.005` as 3, at both signs |
 | `tests/price_at_test.rs` | 47,50,51,53 | Through `PriceAt::rescale`, including `1.005` refused as 3 digits |
 | `smoke_exact_market_split/src/lib.rs:404` | — | Step 7 narrows the one-scale arm's cost back to cents |
@@ -66,11 +66,11 @@ Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 ## Caller Tree
 
-- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:643`), and `PriceAt::rescale` (`src/lib.rs:880`, a member listed on [PriceAt](../struct/003_price_at.md))
+- **Intra-crate:** [Qty::rescale](024_rescale_qty.md) (`src/lib.rs:735`), and `PriceAt::rescale` (`src/lib.rs:968`, a member listed on [PriceAt](../type_alias/006_price_at.md))
 - **External:** `smoke_exact_market_split::per_asset_trade` (`smoke_exact_market_split/src/lib.rs:404`) — demo-lane code, not production
 
 ## Callee Tree
 
 - **Intra-crate:** [Decimal::minor](003_minor_decimal.md), [Decimal::from_minor](001_from_minor_decimal.md) at scale `TO`
 - **External:** `exact_scale::pow10`; `exact_round::round_div` on the coarser branch (→ [use exact_round](../use_declaration/004_use_exact_round.md))
-- `fraction_digits` (`src/lib.rs:990`, private — no Item Instance of its own), when `Exact` refuses: the value's own fractional digits, trailing zeros not counted
+- `fraction_digits` (`src/lib.rs:1091`, private — no Item Instance of its own), when `Exact` refuses: the value's own fractional digits, trailing zeros not counted

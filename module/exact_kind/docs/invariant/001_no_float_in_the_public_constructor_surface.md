@@ -10,8 +10,9 @@
 ### Statement
 
 No float appears in an input or an output position anywhere in this crate's
-public surface. `Decimal<SCALE>` stores exactly one `exact_minor::Minor` (an
-`i64`), and `Qty<SCALE>` and `PriceAt<SCALE>` each store one wrapped value of it; every constructor takes
+public surface. `Decimal<SCALE>`, `Qty<SCALE>` and `PriceAt<SCALE>` are one
+struct, `Amount<K, SCALE>`, which stores exactly one `exact_minor::Minor` (an
+`i64`) and a zero-sized kind; every constructor takes
 an integer (`from_minor`, `from_int`), a string (`parse`), or another value of
 the family's own types (`from_decimal`); every accessor returns `Backing` or
 `Self`; and `Display` renders by integer division and modulo against
@@ -33,12 +34,12 @@ exactly how a float re-enters a system built to keep it out.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:42-53` | `use exact_minor::{ Backing, Minor, … }` — `Minor`, an `i64`, is the one count ever stored |
-| `src/lib.rs:208-233` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
-| `src/lib.rs:362-418` | `Decimal::parse` — the grammar, with no float spelling accepted |
-| `src/lib.rs:421-546` | `Decimal`'s `Display` impl and its renderer `render` — integer division and modulo, no float intermediate, at any requested precision |
-| `src/lib.rs:579-615` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
-| `src/lib.rs:704-707` | `Qty::parse` |
+| `src/lib.rs:43-54` | `use exact_minor::{ Backing, Minor, … }` — `Minor`, an `i64`, is the one count ever stored |
+| `src/lib.rs:304-329` | `Decimal::from_minor`, `Decimal::from_int` — integer in, `Result<Self, KindError>` out |
+| `src/lib.rs:458-514` | `Decimal::parse` — the grammar, with no float spelling accepted |
+| `src/lib.rs:517-642` | `Decimal`'s `Display` impl and its renderer `render` — integer division and modulo, no float intermediate, at any requested precision |
+| `src/lib.rs:671-707` | `Qty::from_decimal`, `Qty::from_minor`, `Qty::from_int` — the mirrored constructors |
+| `src/lib.rs:796-799` | `Qty::parse` |
 
 ### Tests
 

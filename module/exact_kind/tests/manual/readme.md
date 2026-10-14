@@ -14,8 +14,8 @@ copy.
 ### M1 — Two different `SCALE` values are two different types, not a runtime check
 
 `Decimal<const SCALE: u32>` carries its scale as a const generic parameter
-(`src/lib.rs:157`), and `Qty<const SCALE: u32>` the same way (`:405`). `Money`
-is `Decimal<MONEY_SCALE>` (`:56`) — a scale-6 decimal and a scale-2 decimal
+(`src/lib.rs:260`), and `Qty<const SCALE: u32>` the same way (`:653`). `Money`
+is `Decimal<MONEY_SCALE>` (`:59`) — a scale-6 decimal and a scale-2 decimal
 are therefore different monomorphized types at compile time. This is why the
 family carries no `ScaleMismatch` runtime error anywhere: the mismatch never
 reaches runtime at all. A test cannot assert this; the proof is that the

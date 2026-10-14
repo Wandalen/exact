@@ -4,7 +4,9 @@
 
 Re-exports the family's core conserved-value types — the generic `Decimal`,
 `Qty` and `PriceAt`, their standard-scale aliases `Money`, `Quantity` and
-`Price`, and their shared `KindError`. The most widely
+`Price`, their shared `KindError`, and the one struct the three are aliases
+of, `Amount< K, SCALE >`, with its sealed `Kind` trait and the three kinds
+`MoneyKind`, `QtyKind` and `PriceKind` (→ [`exact_kind`'s ADR-006](../../../../exact_kind/docs/decisions/006_one_amount_struct_generic_over_kind.md)). The most widely
 consumed re-export block in this entire facade by a wide margin.
 
 ## Kind
@@ -16,7 +18,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 `module/exact_arith/src/lib.rs:88`
 
 ```rust
-pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity };
+pub use exact_kind::{ Amount, Decimal, Kind, KindError, Money, MoneyKind, Price, PriceAt, PriceKind, Qty, QtyKind, Quantity };
 ```
 
 ## File Usage
@@ -34,11 +36,15 @@ pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity }
 | `cluster_economy` | `src/lib.rs` | **Production** — `Money`/`Quantity` |
 | `smoke_cluster_economy_market`, `smoke_module_cluster_integration` | `src/lib.rs` each | **Demo-lane** — `Money`/`Quantity` (grading lanes per their own module doc comments: "Headless smoke lane grading...") |
 
-`Decimal` and `Qty` themselves (the generic backing types, as opposed to
-the `Money`/`Quantity` aliases and the `Price` struct) have no confirmed caller anywhere
+`Decimal` and `Qty` themselves (the generic aliases, as opposed to
+the `Money`/`Quantity`/`Price` aliases at the standard scale) have no confirmed caller anywhere
 outside `exact_kind`'s own tests and this facade's declaration — every real
 consumer, inside and outside `module/`, reaches the family
-exclusively through the 3 named aliases.
+exclusively through the 3 named aliases. `Amount`, `Kind` and the three
+kinds have no caller outside `exact_kind` either: they are re-exported
+because this facade re-exports every public item, so a name that appears in
+`Decimal`'s own type — `Amount< MoneyKind, SCALE >` in a compiler message or
+`rustdoc` — can be named through the facade too.
 
 ## Crate Usage
 

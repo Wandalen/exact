@@ -46,9 +46,9 @@ stays in one place, `pow10`.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:182-185` | `REPRESENTABLE` — the check |
-| `src/lib.rs:187-201` | `ZERO`, `EPSILON`, `MAX`, `MIN` — each evaluates it |
-| `src/lib.rs:208-211` | `from_minor` — evaluates it first |
+| `src/lib.rs:278-281` | `REPRESENTABLE` — the check |
+| `src/lib.rs:283-297` | `ZERO`, `EPSILON`, `MAX`, `MIN` — each evaluates it |
+| `src/lib.rs:304-307` | `from_minor` — evaluates it first |
 | `../../../exact_scale/src/lib.rs:64-67` | `pow10` — the limit itself |
 
 ### Tests

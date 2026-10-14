@@ -5,7 +5,7 @@
 - **Purpose**: Index every public definition reachable through this crate in one place, so a reader can find where something is actually declared without grepping.
 - **Responsibility**: A flat module index — one row per public item, not a duplicate explanation of each.
 - **In Scope**: Every `pub` item named in `src/lib.rs`'s `pub use` lists.
-- **Out of Scope**: Rationale and invariants for any one item — link to the owning leaf crate's own doc definition instead of restating it here; this crate has no `impl` blocks of its own, so there are no associated items to enumerate beyond the 102 top-level names below.
+- **Out of Scope**: Rationale and invariants for any one item — link to the owning leaf crate's own doc definition instead of restating it here; this crate has no `impl` blocks of its own, so there are no associated items to enumerate beyond the 107 top-level names below.
 
 ### Module Index
 
@@ -48,13 +48,18 @@ behaviour.
 | `sign_is_zero` | fn | `../../../exact_sign/src/lib.rs:64` | — |
 | `sign_neg_allowed` | fn | `../../../exact_sign/src/lib.rs:78` | — |
 | `sign_of` | fn | `../../../exact_sign/src/lib.rs:39` | — |
-| `Decimal` | struct | `../../../exact_kind/src/lib.rs:161` | — |
-| `KindError` | enum | `../../../exact_kind/src/lib.rs:72` | — |
-| `Money` | type alias | `../../../exact_kind/src/lib.rs:58` | — |
-| `Price` | type alias | `../../../exact_kind/src/lib.rs:64` | — |
-| `PriceAt` | struct | `../../../exact_kind/src/lib.rs:801` | — |
-| `Qty` | struct | `../../../exact_kind/src/lib.rs:558` | — |
-| `Quantity` | type alias | `../../../exact_kind/src/lib.rs:61` | — |
+| `Amount` | struct | `../../../exact_kind/src/lib.rs:204` | — |
+| `Decimal` | type alias | `../../../exact_kind/src/lib.rs:260` | — |
+| `Kind` | trait | `../../../exact_kind/src/lib.rs:179` | — |
+| `KindError` | enum | `../../../exact_kind/src/lib.rs:73` | — |
+| `Money` | type alias | `../../../exact_kind/src/lib.rs:59` | — |
+| `MoneyKind` | struct | `../../../exact_kind/src/lib.rs:183` | — |
+| `Price` | type alias | `../../../exact_kind/src/lib.rs:65` | — |
+| `PriceAt` | type alias | `../../../exact_kind/src/lib.rs:892` | — |
+| `PriceKind` | struct | `../../../exact_kind/src/lib.rs:191` | — |
+| `Qty` | type alias | `../../../exact_kind/src/lib.rs:653` | — |
+| `QtyKind` | struct | `../../../exact_kind/src/lib.rs:187` | — |
+| `Quantity` | type alias | `../../../exact_kind/src/lib.rs:62` | — |
 | `money_add` | fn | `../../../exact_add/src/lib.rs:53` | — |
 | `money_checked_neg` | fn | `../../../exact_add/src/lib.rs:113` | — |
 | `money_saturating_add` | fn | `../../../exact_add/src/lib.rs:128` | — |
@@ -130,5 +135,5 @@ cd "$(git rev-parse --show-toplevel)"/module/exact_arith
 printf 'pub use statements in src/lib.rs: '; grep -c '^pub use' src/lib.rs
 printf 'rows in Module Index:             '; grep -cE '^\| `' docs/definition/readme.md
 # pub use statements in src/lib.rs: 14
-# rows in Module Index:             102
+# rows in Module Index:             107
 ```

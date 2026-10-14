@@ -7,7 +7,7 @@
 - **In Scope**: The arithmetic sequence and its exact-zero pass criterion.
 - **Out of Scope**: The parse step that produces these values (→ `001_parse_money_at_scale_two.md`).
 
-**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — the two scale-2 values are added with `checked_add`, `"13.33"` is subtracted with `checked_sub`, and the result is asserted equal to `Decimal::< 2 >::ZERO`; the lane prints `sum=0`. The per-kind `money_add`/`money_sub` of [`exact_add`](../../module/exact_add/readme.md) take `Money` (scale 6) only, so the scale-2 values use `Decimal`'s own checked methods, which those functions dispatch to.
+**Design status**: exercised by step 6 of [`smoke_exact_market_split`](../../module/smoke_exact_market_split/readme.md) (`golden`, asserted in `tests/lane_test.rs`'s `the_scenes_land_on_their_golden_values`) — the lane writes the scene as `( a + b - total )`: the two scale-2 values are added and `"13.33"` subtracted with `exact_kind`'s `+` and `-`, which are `checked_add` and `checked_sub` returning a `Result` ([`exact_kind`'s ADR-005](../../module/exact_kind/docs/decisions/005_checked_operators_return_a_result.md)), and the result is asserted equal to `Decimal::< 2 >::ZERO`; the lane prints `sum=0`. [`exact_add`](../../module/exact_add/readme.md)'s `money_add`/`money_sub` would give the same result at any scale.
 
 ### Procedure
 

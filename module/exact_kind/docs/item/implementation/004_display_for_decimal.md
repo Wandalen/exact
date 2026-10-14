@@ -11,7 +11,7 @@ When the caller asks for a precision — `{:.2}` — it prints exactly that many
 digits after the point instead: extra places are zeros, fewer round half to
 even. Either way the text is then padded to the formatter's width, fill and
 alignment, with `+` and `0` honoured, the way an integer is: `{:>10.2}` of
-`1.5` is `      1.50`. All of it is the private `render` (`src/lib.rs:450-546`),
+`1.5` is `      1.50`. All of it is the private `render` (`src/lib.rs:546-642`),
 which writes straight into the formatter: only the text is rounded, never
 the value, and nothing is allocated
 (→ [ADR-004](../../decisions/004_display_precision_rounds_half_to_even.md)).
@@ -22,7 +22,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:421-434`
+`module/exact_kind/src/lib.rs:517-530`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
@@ -45,7 +45,7 @@ impl< const SCALE : u32 > fmt::Display for Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 421-546 | Declaration |
+| `src/lib.rs` | 517-642 | Declaration |
 | `tests/parse_render_test.rs` | throughout | Round-trip parse/render checks |
 | `tests/display_precision_test.rs` | throughout | `{:.N}`: padding, half-even rounding, negatives, `Qty`/`PriceAt` pass-through; width, fill, alignment, `+` and `0`, and every flag against `f64`'s output |
 | `exact_arith/tests/no_alloc_test.rs` | — | `{:.N}`, width, fill and `+` rendered into a stack buffer with no allocation |

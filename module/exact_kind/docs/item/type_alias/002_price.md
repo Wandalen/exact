@@ -15,7 +15,7 @@ Type Alias (§ Item Kind Taxonomy : Stable Item Kinds #5)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:64`
+`module/exact_kind/src/lib.rs:65`
 
 ```rust
 pub type Price = PriceAt< MONEY_SCALE >;
@@ -25,8 +25,8 @@ pub type Price = PriceAt< MONEY_SCALE >;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 64 | Declaration |
-| `src/lib.rs` | 769-770,777-779,786-788 | Doctests on `PriceAt`: same-kind arithmetic, and money/price mixing refused |
+| `src/lib.rs` | 65 | Declaration |
+| `src/lib.rs` | 861-862,869-871,878-880 | Doctests on `PriceAt`: same-kind arithmetic, and money/price mixing refused |
 | `tests/parse_render_test.rs` | 10,131 | A negative price round-trips |
 | `tests/price_test.rs` | throughout | `Price` as its own kind at the standard scale |
 | `tests/price_at_test.rs` | 4,11,37,47,49,52 | `Price` is `PriceAt< 6 >`; rescaling to and from it, and a short price's own digits under `Exact` |

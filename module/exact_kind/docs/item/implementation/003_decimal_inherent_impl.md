@@ -15,7 +15,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:177`
+`module/exact_kind/src/lib.rs:273`
 
 ```rust
 impl< const SCALE : u32 > Decimal< SCALE >
@@ -30,7 +30,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 177-419 | Declaration — the block spans every `Decimal` member |
+| `src/lib.rs` | 273-515 | Declaration — the block spans every `Decimal` member |
 
 ## Crate Usage
 

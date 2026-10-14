@@ -25,7 +25,7 @@ pub const fn minor_from_i64( v : i64 ) -> Minor
 |------|---------|---------|
 | `src/lib.rs` | 55-58 | Declaration |
 | `tests/` | throughout | Every test builds its inputs with it; round trip in `tests/conversion_test.rs` |
-| `exact_kind/src/lib.rs:191,198,201,215` | — | **Production** — `Decimal`'s `EPSILON`, `MAX`, `MIN` and `from_minor` build their stored `Minor` |
+| `exact_kind/src/lib.rs:287,294,297,311` | — | **Production** — `Decimal`'s `EPSILON`, `MAX`, `MIN` and `from_minor` build their stored `Minor` |
 | `exact_arith/src/lib.rs:74` | — | Facade re-export |
 
 ## Crate Usage
@@ -38,7 +38,7 @@ pub const fn minor_from_i64( v : i64 ) -> Minor
 
 ## Caller Tree
 
-- **External:** `exact_kind::Decimal::from_minor` and `Decimal`'s `EPSILON`/`MAX`/`MIN` (`exact_kind/src/lib.rs:191,198,201,215`)
+- **External:** `exact_kind::Decimal::from_minor` and `Decimal`'s `EPSILON`/`MAX`/`MIN` (`exact_kind/src/lib.rs:287,294,297,311`)
 
 ## Callee Tree
 

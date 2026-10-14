@@ -10,17 +10,17 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:191`
+`module/exact_kind/src/lib.rs:287`
 
 ```rust
-pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ) } };
+pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ), kind : PhantomData } };
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 191,569 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
+| `src/lib.rs` | 287,661 | Declaration; `Qty::EPSILON`'s own definition wraps this value |
 | `tests/checked_arithmetic_test.rs` | throughout | Boundary-adjacent values (`MAX.checked_add(EPSILON)` etc.) |
 | `exact_add/tests/checked_and_saturating_add_test.rs:60,61,62` | — | Saturation-boundary test inputs |
 | `exact_conserve/tests/conservation_test.rs:243` | — | Overflow-boundary test input |

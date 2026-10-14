@@ -12,7 +12,7 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:579`
+`module/exact_kind/src/lib.rs:671`
 
 ```rust
 pub const fn from_decimal( value : Decimal< SCALE > ) -> Result< Self, KindError >
@@ -21,7 +21,7 @@ pub const fn from_decimal( value : Decimal< SCALE > ) -> Result< Self, KindError
   {
     return Err( KindError::Negative { minor : value.minor() } );
   }
-  Ok( Self { value } )
+  Ok( Self::from_value( value ) )
 }
 ```
 
@@ -29,7 +29,7 @@ pub const fn from_decimal( value : Decimal< SCALE > ) -> Result< Self, KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 579,598,612,706 | Declaration; `from_minor`, `from_int`, `parse`'s delegation |
+| `src/lib.rs` | 671,690,704,798 | Declaration; `from_minor`, `from_int`, `parse`'s delegation |
 | `tests/non_negative_test.rs` | throughout | Direct negativity-refusal checks |
 
 No file outside `exact_kind` calls `Qty::from_decimal` directly — an honest
@@ -44,12 +44,12 @@ gap. Every downstream crate reaches a `Quantity` through
 
 ## Caller Tree
 
-- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:598`)
-- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:612`)
-- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:665`)
-- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:679`)
-- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:694`)
-- [Qty::parse](019_parse_qty.md) (`src/lib.rs:706`)
+- [Qty::from_minor](011_from_minor_qty.md) (`src/lib.rs:690`)
+- [Qty::from_int](012_from_int_qty.md) (`src/lib.rs:704`)
+- [Qty::checked_add](016_checked_add_qty.md) (`src/lib.rs:757`)
+- [Qty::checked_sub](017_checked_sub_qty.md) (`src/lib.rs:771`)
+- [Qty::checked_mul_int](018_checked_mul_int_qty.md) (`src/lib.rs:786`)
+- [Qty::parse](019_parse_qty.md) (`src/lib.rs:798`)
 
 No external caller anywhere in the workspace — every public `Qty` entry
 point funnels through this, making it (alongside
@@ -58,4 +58,5 @@ points of the crate.
 
 ## Callee Tree
 
-- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:581`, the negativity check)
+- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:673`, the negativity check)
+- The private `from_value` (`src/lib.rs:677`) — the same count as a quantity, once the check has passed; private, so it has no page of its own (→ [Amount](../struct/001_amount.md))

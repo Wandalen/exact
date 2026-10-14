@@ -15,7 +15,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:42`
+`module/exact_kind/src/lib.rs:43`
 
 ```rust
 use exact_minor::
@@ -36,11 +36,11 @@ use exact_minor::
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 89,118,180,208,225,237,282,324,396,400,407,594,608,630,649,690,819,830,990 | `Backing`: every constructor/operation's raw-integer parameter and return, the `KindError` fields, and `fraction_digits`'s input |
-| `src/lib.rs` | 163 | `Minor`: the type of `Decimal`'s stored count |
-| `src/lib.rs` | 168,172 | `MinorError`: turned into `KindError::Overflow` by `kind_overflow` |
-| `src/lib.rs` | 296,310,344 | `minor_checked_add`/`_sub`/`_neg`: `Decimal`'s `checked_add`/`checked_sub`/`checked_neg` |
-| `src/lib.rs` | 188,191,198,201,215,239,298,312,346 | `minor_zero`, `minor_from_i64`, `minor_to_i64`: in and out of the stored `Minor` |
+| `src/lib.rs` | 90,119,276,304,321,333,378,420,492,496,503,686,700,722,741,782,907,918,1091 | `Backing`: every constructor/operation's raw-integer parameter and return, the `KindError` fields, and `fraction_digits`'s input |
+| `src/lib.rs` | 260 | `Minor`: the type of `Decimal`'s stored count |
+| `src/lib.rs` | 264,268 | `MinorError`: turned into `KindError::Overflow` by `kind_overflow` |
+| `src/lib.rs` | 392,406,440 | `minor_checked_add`/`_sub`/`_neg`: `Decimal`'s `checked_add`/`checked_sub`/`checked_neg` |
+| `src/lib.rs` | 284,287,294,297,311,335,394,408,442 | `minor_zero`, `minor_from_i64`, `minor_to_i64`: in and out of the stored `Minor` |
 
 No external file references this `use` declaration directly — it is private
 to this module; other crates reach these names by depending on `exact_minor`
