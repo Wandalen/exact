@@ -85,7 +85,7 @@ pub use exact_round::{ Rounding, RoundError, round_div, round_div_wide, rounding
 
 pub use exact_sign::{ Sign, sign_is_negative, sign_is_zero, sign_neg_allowed, sign_of };
 
-pub use exact_kind::{ Decimal, KindError, Money, Price, PriceAt, Qty, Quantity };
+pub use exact_kind::{ Amount, Decimal, Kind, KindError, Money, MoneyKind, Price, PriceAt, PriceKind, Qty, QtyKind, Quantity };
 
 pub use exact_add::
 {

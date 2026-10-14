@@ -65,6 +65,6 @@ being rounded to six places.
 ## Related
 
 - [ADR-002](002_explicit_rescale_between_scales.md) — `rescale`, which `PriceAt` delegates to
-- [PriceAt](../item/struct/003_price_at.md) and [the `Price` alias](../item/type_alias/002_price.md) — the items this changes
+- [PriceAt](../item/type_alias/006_price_at.md) and [the `Price` alias](../item/type_alias/002_price.md) — the items this changes
 - [Feature 003](../../../../docs/feature/003_newtypes_money_qty_price.md) — the requirement for a distinct price type; its Design status records this
 - [Operations Are Generic Over The Scale](../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md) — the family's functions that take a `PriceAt< S >`

@@ -3,7 +3,7 @@
 ### Scope
 
 - **Purpose**: Guarantee that arithmetic on a conserved value never silently loses or invents quantity, so a caller can treat `Err` as the only way range failure ever presents.
-- **Responsibility**: Every arithmetic method (`checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`) and every constructor (`from_minor`, `from_int`, `parse`, `from_decimal`) on `Decimal<SCALE>` and `Qty<SCALE>`.
+- **Responsibility**: Every arithmetic method (`checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg`), the `+` and `-` operators on `Decimal`, `Qty` and `PriceAt` that spell `checked_add` and `checked_sub`, and every constructor (`from_minor`, `from_int`, `parse`, `from_decimal`) on `Decimal<SCALE>` and `Qty<SCALE>`.
 - **In Scope**: The full error surface — `KindError`'s five variants — and which operations can produce each.
 - **Out of Scope**: The raw backing width's own totality, one tier down (→ [`exact_minor`'s instance](../../../exact_minor/docs/invariant/002_checked_operations_total.md)) — this crate implements its own checked arithmetic directly against `Backing`'s own `checked_add`/`checked_sub`/`checked_neg` rather than calling `exact_minor`'s wrapper functions, so this is this crate's own independently-grounded instance of the same property, over a different (and additionally ceiling-constrained) operation surface; the saturating variants, which exist one tier up in `exact_add`, not here.
 
@@ -15,7 +15,7 @@ conditions, never a silent wrap, truncation, or rounding:
 
 - `Overflow { operation }` — the backing width itself was left (`Backing::MAX`/`MIN`).
 - `ExceedsCeiling { minor }` — in width, but past the declared ceiling re-exported from `exact_scale`.
-- `ExcessPrecision { digits, scale }` — a value carried more fractional digits than the target scale holds: a parsed string longer than `SCALE` allows, or a `rescale` to a coarser scale under `Rounding::Exact` that would drop a nonzero digit (`digits` is then the source scale).
+- `ExcessPrecision { digits, scale }` — a value carried more fractional digits than the target scale holds: a parsed string longer than `SCALE` allows, or a `rescale` to a coarser scale under `Rounding::Exact` that would drop a nonzero digit (`digits` is then the value's own fractional digits — `3` for `1.005`, whatever scale holds it).
 - `Malformed { reason }` — text outside the parser's grammar.
 - `Negative { minor }` — a `Qty` would have gone below zero (→ [Non-Negativity Enforced At Construction](../decisions/001_non_negativity_enforced_at_construction.md)).
 
@@ -40,11 +40,12 @@ vice versa.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:72-120` | `KindError` — all five variants |
-| `src/lib.rs:208-216` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
-| `src/lib.rs:294-349` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
-| `src/lib.rs:362-418` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
-| `src/lib.rs:661-697` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
+| `src/lib.rs:73-121` | `KindError` — all five variants |
+| `src/lib.rs:304-312` | `Decimal::from_minor` — the `ExceedsCeiling` choke point every other constructor routes through |
+| `src/lib.rs:390-445` | `Decimal::checked_add`, `checked_sub`, `checked_mul_int`, `checked_neg` |
+| `src/lib.rs:458-514` | `Decimal::parse` — `Malformed`/`ExcessPrecision`/`Overflow` paths |
+| `src/lib.rs:753-789` | `Qty::checked_add`, `checked_sub`, `checked_mul_int` — the same contract, plus `Negative` |
+| `src/lib.rs:985-1078` | The four generic impls of `+` and `-` on `Amount`, and on a `Result` on the left, through each kind's private `Sealed` hook — `checked_add`/`checked_sub` spelled as operators, so the same contract: a `Result`, never a panic or a wrapped value (→ [ADR-005](../decisions/005_checked_operators_return_a_result.md), [ADR-006](../decisions/006_one_amount_struct_generic_over_kind.md)) |
 
 ### Tests
 
@@ -53,3 +54,4 @@ vice versa.
 | `tests/checked_arithmetic_test.rs` | T02-T04: exactness, refusal one unit past the ceiling (both signs), refusal at the backing width, and `overflow_is_unreachable_through_add_sub_and_neg_at_the_widest_operands` pinning down the claim above |
 | `tests/parse_render_test.rs` | T01: `a_digit_past_the_scale_is_an_error_rather_than_a_rounding`, `float_spellings_and_malformed_text_are_all_refused` |
 | `tests/non_negative_test.rs` | T05-T06: `Negative` distinguished from `ExceedsCeiling` |
+| `tests/operator_test.rs` | `+` and `-` on all three kinds equal `checked_add`/`checked_sub`; a chain stops at the first error; `Qty`'s `-` is `Negative` below zero, and its `+` past the ceiling `ExceedsCeiling` |

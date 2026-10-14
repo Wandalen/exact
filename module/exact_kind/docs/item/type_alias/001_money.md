@@ -14,7 +14,7 @@ Type Alias (§ Item Kind Taxonomy : Stable Item Kinds #5)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:58`
+`module/exact_kind/src/lib.rs:59`
 
 ```rust
 pub type Money = Decimal< MONEY_SCALE >;
@@ -24,8 +24,8 @@ pub type Money = Decimal< MONEY_SCALE >;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 58 | Declaration |
-| `src/lib.rs` | 720-750,777-787 | Named by the `compile_fail` doctests: money and a quantity, and money and a price, do not mix |
+| `src/lib.rs` | 59 | Declaration |
+| `src/lib.rs` | 812-842,869-879 | Named by the `compile_fail` doctests: money and a quantity, and money and a price, do not mix |
 | `tests/checked_arithmetic_test.rs`, `tests/parse_render_test.rs` | throughout | Concrete type exercised by this crate's own test suite |
 | `tests/price_test.rs` | 6,8,13,21,45 | `Price`'s range checked against `Money`'s |
 | `tests/rescale_test.rs` | 4,12,19,22,30,48 | The scale-6 side of every `rescale` |

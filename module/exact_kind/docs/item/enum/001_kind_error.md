@@ -23,7 +23,7 @@ Enum (§ Item Kind Taxonomy : Stable Item Kinds #7)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:72`
+`module/exact_kind/src/lib.rs:73`
 
 ```rust
 pub enum KindError
@@ -40,7 +40,7 @@ pub enum KindError
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 72,122,128-133,137,208,213,222,225,230,261,266,272,273,289,291,294,299,303,306,308,313,317,321,324,329,334,336,338,342,347,349,357,359,360,362,372,379,383,387,393,398,408,415,417,576,578,583,586,591,593,594,599,605,607,608,614,619,620,623,641,657,659,661,666,668,672,674,675,680,682,686,688,690,695,697,701,703,704,707,878 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772) |
+| `src/lib.rs` | 73,123,129-134,138,304,309,318,321,326,357,362,368,369,385,387,390,395,399,402,404,409,413,417,420,425,430,432,434,438,443,445,453,455,456,458,468,475,479,483,489,494,504,511,513,668,670,675,678,683,685,686,691,697,699,700,706,711,712,715,733,749,751,753,758,760,764,766,767,772,774,778,780,782,787,789,793,795,796,799,966,1014,1021,1043,1043,1043,1043,1043,1043 | Return type / constructed variant across every fallible constructor and operation on both `Decimal` and `Qty`, and the `Display`/`Error` impls it carries; `rescale` on `Decimal`/`Qty`/`PriceAt` — `Overflow` past the backing width, and `ExcessPrecision` when `Exact` refuses a dropped digit (246-258, 536, 772); the error in the `Output` of the `+` and `-` impls `checked_operators!` writes, and in the `Result` the chaining impls take on the left |
 | `tests/*.rs` (4 files) | throughout | Matched against specific variants |
 | `exact_parse/src/lib.rs:39,53-75` | — | `use` import; return type of all 3 `*_from_str` functions |
 | `exact_bytes/src/lib.rs:39,98-100` | — | `use` import; matched variant by variant in `kind_error_to_wire_error` — `Negative` to `WireError::Negative`, the other four to `WireError::Overflow` |

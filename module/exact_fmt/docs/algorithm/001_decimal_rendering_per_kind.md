@@ -19,7 +19,7 @@ The preferred design for this crate states `Display` as "only as a wrapper over 
 |----------|---------|-----------|
 | `money_fmt` | `Decimal<S>` — `Money` at the standard scale | `v.to_string()`, which calls `Decimal`'s `Display` impl |
 | `qty_fmt` | `Qty<S>` — `Quantity` at the standard scale | `v.to_string()`, which calls `Qty`'s `Display` impl — itself a pass-through to the inner `Decimal`'s |
-| `price_fmt` | `PriceAt<S>` (`exact_kind`'s struct wrapping a `Decimal<S>`) — `Price` at the standard scale | Same rendering as `money_fmt` — `PriceAt`'s `Display` renders the wrapped `Decimal` |
+| `price_fmt` | `PriceAt<S>` (`exact_kind`'s `Amount` of the price kind) — `Price` at the standard scale | Same rendering as `money_fmt` — `PriceAt`'s `Display` renders the same count as a `Decimal` |
 
 All three allocate a `String` and can never fail: `Display` for `Decimal`/`Qty` has no error path — trailing fractional zeros are trimmed, the sign is printed only when negative, and a zero-`SCALE` value prints no `.` at all.
 

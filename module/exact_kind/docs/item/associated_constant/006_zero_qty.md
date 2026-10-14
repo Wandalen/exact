@@ -11,17 +11,17 @@ Associated Constant (§ Item Kind Taxonomy : Associated Item Kinds #2)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:566`
+`module/exact_kind/src/lib.rs:658`
 
 ```rust
-pub const ZERO : Self = Self { value : Decimal::ZERO };
+pub const ZERO : Self = Self::from_value( Decimal::ZERO );
 ```
 
 ## File Usage
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 566 | Declaration |
+| `src/lib.rs` | 658 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Accumulator seed, boundary comparisons |
 | `exact_conserve/tests/conservation_test.rs:251` | — | `try_fold` seed |
 | `exact_snap/tests/snap_test.rs:13,14,131` | — | `Tick`/`Lot` zero-rejection and zero-result checks |

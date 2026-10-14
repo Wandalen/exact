@@ -13,12 +13,12 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:623`
+`module/exact_kind/src/lib.rs:715`
 
 ```rust
 pub const fn as_decimal( self ) -> Decimal< SCALE >
 {
-  self.value
+  self.value()
 }
 ```
 
@@ -26,7 +26,7 @@ pub const fn as_decimal( self ) -> Decimal< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 623 | Declaration |
+| `src/lib.rs` | 715 | Declaration |
 | `tests/non_negative_test.rs:149` | — | Extracts the inner decimal to negate it (testing that negating a non-negative-derived `Qty`'s decimal and re-wrapping correctly fails) |
 
 No file outside `exact_kind` calls `Qty::as_decimal` — an honest empty
@@ -46,4 +46,4 @@ omission.
 
 ## Callee Tree
 
-- None — a pure field access.
+- The private `value()` (`src/lib.rs:717`) — the same count of minor units, as money; private, so it has no page of its own (→ [Amount](../struct/001_amount.md))

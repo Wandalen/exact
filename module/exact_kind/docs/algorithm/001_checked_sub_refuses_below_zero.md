@@ -9,7 +9,7 @@
 
 ### Procedure
 
-1. Delegate to the wrapped `Decimal::checked_sub(self.value, rhs.value)`.
+1. Delegate to `Decimal::checked_sub(self.value(), rhs.value())` — the same counts, as money.
 2. If that leaves the backing width or breaches the declared ceiling, propagate `KindError::Overflow`/`ExceedsCeiling` unchanged — a signed `Decimal` subtraction going below zero is not itself a range failure, so neither error fires on that account.
 3. Otherwise, route the (possibly negative) `Decimal` result through `Self::from_decimal`, which is the sole point checking `minor() < 0`.
 4. A negative result at step 3 returns `KindError::Negative { minor }` — the exact count of minor units the failed subtraction would have produced — never a wrapped, saturated, or zero-clamped value.
@@ -28,9 +28,9 @@ against a physical count.
 
 | File | Relationship |
 |------|--------------|
-| `src/lib.rs:670-682` | `Qty::checked_sub` — delegates to `Decimal::checked_sub` then `Self::from_decimal` |
-| `src/lib.rs:72-120` | `KindError` — `Negative` distinguished from `Overflow`/`ExceedsCeiling` |
-| `src/lib.rs:574-586` | `Qty::from_decimal` — the choke point `checked_sub` routes through |
+| `src/lib.rs:762-774` | `Qty::checked_sub` — delegates to `Decimal::checked_sub` then `Self::from_decimal` |
+| `src/lib.rs:73-121` | `KindError` — `Negative` distinguished from `Overflow`/`ExceedsCeiling` |
+| `src/lib.rs:666-678` | `Qty::from_decimal` — the choke point `checked_sub` routes through |
 
 ### Tests
 

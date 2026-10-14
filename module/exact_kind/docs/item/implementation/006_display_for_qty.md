@@ -2,7 +2,7 @@
 
 ## Representation
 
-Delegates entirely to the wrapped `Decimal`'s own `Display` — a non-negative
+Delegates entirely to the same count as a `Decimal` (the private `value()`) and its own `Display` — a non-negative
 quantity renders identically to the signed decimal it holds (which is always
 `>= 0`). It passes the formatter itself through, not `"{}"`, so a requested
 precision (`{:.2}`) reaches the decimal.
@@ -13,7 +13,7 @@ Implementation (§ Item Kind Taxonomy : Stable Item Kinds #12)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:752`
+`module/exact_kind/src/lib.rs:844`
 
 ```rust
 impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
@@ -21,7 +21,7 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
-    fmt::Display::fmt( &self.value, f )
+    fmt::Display::fmt( &self.value(), f )
   }
 }
 ```
@@ -30,7 +30,7 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 752-759 | Declaration |
+| `src/lib.rs` | 844-851 | Declaration |
 | `tests/non_negative_test.rs:50` | — | `qty.to_string()` compared against the inner decimal's own rendering |
 | `tests/display_precision_test.rs` | — | A precision passed through to the decimal |
 | `exact_fmt/src/lib.rs:114` | — | `qty_fmt`'s `v.to_string()` |

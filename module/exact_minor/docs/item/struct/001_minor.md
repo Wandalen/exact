@@ -27,7 +27,7 @@ pub struct Minor( Backing );
 |------|---------|---------|
 | `src/lib.rs` | throughout | Parameter and return type of every `minor_*` function; `minor_from_i64` takes an `i64` and `minor_to_i64` returns one, and the `minor_wide_*` functions take `MinorWide` |
 | `tests/*.rs` | throughout | Every test builds its inputs with `minor_from_i64` |
-| `exact_kind/src/lib.rs:163` | — | **Production** — the type of `Decimal`'s stored count |
+| `exact_kind/src/lib.rs:260` | — | **Production** — the type of `Decimal`'s stored count |
 | `exact_arith/src/lib.rs:69` | — | Facade re-export |
 
 ## Crate Usage

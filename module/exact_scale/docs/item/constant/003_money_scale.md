@@ -30,7 +30,7 @@ pub const MONEY_SCALE : u32 = 6;
 | `exact_snap/src/lib.rs:26,79,117` | — | **Production** — fixes the `Tick`/`Lot` aliases' scale |
 | `exact_arith/src/lib.rs:82` | — | Facade re-export |
 | `exact_arith/tests/facade_test.rs:52,53,54` | — | Direct value check and cross-checks via the re-exported name |
-| `exact_kind/src/lib.rs:55,58,61,64` | — | **Production** — fixes `Money`/`Quantity`/`Price`'s type-level scale |
+| `exact_kind/src/lib.rs:56,59,62,65` | — | **Production** — fixes `Money`/`Quantity`/`Price`'s type-level scale |
 
 ## Crate Usage
 

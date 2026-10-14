@@ -39,6 +39,7 @@
 //! of ten come from `exact_scale`.
 
 use core::fmt;
+use core::marker::PhantomData;
 use exact_minor::
 {
   Backing,
@@ -94,7 +95,7 @@ pub enum KindError
   /// silently; rounding invents a value the caller did not ask for.
   ExcessPrecision
   {
-    /// Fractional digits the input carried: typed in the text, or the source scale.
+    /// Fractional digits the input carried: as typed, or the value's own.
     digits : u32,
     /// Fractional digits the target type can hold.
     scale : u32,
@@ -136,6 +137,105 @@ impl fmt::Display for KindError
 
 impl core::error::Error for KindError {}
 
+mod sealed
+{
+  use super::{ Amount, KindError };
+
+  /// Keeps the set of kinds closed — only this crate can add one — and carries
+  /// each kind's own `checked_add` and `checked_sub` to the one generic `+` and
+  /// `-`, out of reach outside this crate.
+  pub trait Sealed : Sized
+  {
+    /// The name `Debug` prints for this kind — the alias a caller writes.
+    const NAME : &'static str;
+    /// This kind's own `checked_add`.
+    fn checked_add< const SCALE : u32 >( a : Amount< Self, SCALE >, b : Amount< Self, SCALE > ) -> Result< Amount< Self, SCALE >, KindError >;
+    /// This kind's own `checked_sub`.
+    fn checked_sub< const SCALE : u32 >( a : Amount< Self, SCALE >, b : Amount< Self, SCALE > ) -> Result< Amount< Self, SCALE >, KindError >;
+  }
+}
+
+/// One kind of amount — [`MoneyKind`], [`QtyKind`] or [`PriceKind`], the only
+/// three, as `Kind` is sealed. Two kinds are two [`Amount`] types and never mix.
+/// `Copy + Ord + Hash + Debug`, so generic code over `K : Kind` gets `Amount`'s.
+///
+/// No crate but this one can add a kind — a fourth one could bring its own
+/// `checked_add`, past the ceiling and the non-negativity checks:
+///
+/// ```compile_fail
+/// use exact_kind::Kind;
+/// #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+/// struct Loose;
+/// impl Kind for Loose {}
+/// ```
+///
+/// And the hooks that take each kind's own `checked_add` to `+` stay inside
+/// it — they are not another public way to add:
+///
+/// ```compile_fail
+/// use exact_kind::{ Money, MoneyKind };
+/// let _ = MoneyKind::checked_add( Money::ZERO, Money::ZERO );
+/// ```
+pub trait Kind : sealed::Sealed + Copy + Ord + core::hash::Hash + fmt::Debug {}
+
+/// The kind of [`Decimal`]: money, which may be negative.
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct MoneyKind;
+
+/// The kind of [`Qty`]: a quantity, never below zero.
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct QtyKind;
+
+/// The kind of [`PriceAt`]: a price, which may be negative — a discount.
+#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct PriceKind;
+
+impl Kind for MoneyKind {}
+impl Kind for QtyKind {}
+impl Kind for PriceKind {}
+
+/// A fixed-point amount of kind `K`, carrying its scale in its type.
+///
+/// One struct for every kind: [`Decimal`], [`Qty`] and [`PriceAt`] are its
+/// aliases, one per kind. The kind costs nothing at run time — `PhantomData`
+/// is zero-sized, so every amount is one `i64` — but two kinds are two types,
+/// so they still never mix.
+#[ derive( Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
+pub struct Amount< K, const SCALE : u32 >
+{
+  minor : Minor,
+  kind : PhantomData< K >,
+}
+
+impl< K, const SCALE : u32 > Amount< K, SCALE >
+{
+  /// The same count of minor units as money — what `Qty` and `PriceAt` held
+  /// as their `value` field when each was a struct of its own.
+  const fn value( self ) -> Decimal< SCALE >
+  {
+    Amount { minor : self.minor, kind : PhantomData }
+  }
+
+  /// Money's count of minor units as this kind, unchecked: each kind's own
+  /// constructor decides when it may be called — for `Qty`, only after
+  /// `from_decimal` has refused a negative value.
+  const fn from_value( value : Decimal< SCALE > ) -> Self
+  {
+    Amount { minor : value.minor, kind : PhantomData }
+  }
+}
+
+/// `Debug` names the kind — `Qty { minor: Minor(50000000) }` — not a derived
+/// `Amount { minor: …, kind: PhantomData<…> }` that hides it in a type name. As
+/// structs, `Qty` and `PriceAt` printed `Qty { value: Decimal { minor: … } }`.
+impl< K : Kind, const SCALE : u32 > fmt::Debug for Amount< K, SCALE >
+{
+  fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
+  {
+    f.debug_struct( K::NAME ).field( "minor", &self.minor ).finish()
+  }
+}
+
 /// A fixed-point decimal carrying its scale in its type.
 ///
 /// `SCALE` is the number of decimal places. The stored integer counts minor
@@ -157,11 +257,7 @@ impl core::error::Error for KindError {}
 /// let two : Decimal< 2 > = Decimal::from_int( 1 ).unwrap();
 /// let _ = six.checked_add( two );
 /// ```
-#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Decimal< const SCALE : u32 >
-{
-  minor : Minor,
-}
+pub type Decimal< const SCALE : u32 > = Amount< MoneyKind, SCALE >;
 
 /// Report a failure of `exact_minor`'s arithmetic as this crate's own
 /// overflow, keeping the name of the operation that failed.
@@ -185,20 +281,20 @@ impl< const SCALE : u32 > Decimal< SCALE >
   const REPRESENTABLE : () = assert!( Self::ONE_MINOR > 0 );
 
   /// Zero — the one infallible constructor, representable at every valid scale.
-  pub const ZERO : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_zero() } };
+  pub const ZERO : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_zero(), kind : PhantomData } };
 
   /// The smallest non-zero magnitude this type can express.
-  pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ) } };
+  pub const EPSILON : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( 1 ), kind : PhantomData } };
 
   /// The largest value this type can hold — exactly the declared ceiling.
   ///
   /// The clamp target for saturating arithmetic: a wider clamp (to the raw
   /// backing width rather than the declared ceiling) would produce a minor
   /// count this type's own `from_minor` would refuse to hold.
-  pub const MAX : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( CEILING_MINOR_UNITS ) } };
+  pub const MAX : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( CEILING_MINOR_UNITS ), kind : PhantomData } };
 
   /// The smallest (most negative) value this type can hold.
-  pub const MIN : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ) } };
+  pub const MIN : Self = { let () = Self::REPRESENTABLE; Self { minor : minor_from_i64( -CEILING_MINOR_UNITS ), kind : PhantomData } };
 
   /// Build from a count of minor units.
   ///
@@ -212,7 +308,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
     {
       return Err( KindError::ExceedsCeiling { minor } );
     }
-    Ok( Self { minor : minor_from_i64( minor ) } )
+    Ok( Self { minor : minor_from_i64( minor ), kind : PhantomData } )
   }
 
   /// Build from a whole number of units.
@@ -269,7 +365,7 @@ impl< const SCALE : u32 > Decimal< SCALE >
     {
       round_div( minor, pow10( SCALE - TO ), rounding ).map_err( | e | match e
       {
-        RoundError::Inexact => KindError::ExcessPrecision { digits : SCALE, scale : TO },
+        RoundError::Inexact => KindError::ExcessPrecision { digits : fraction_digits( minor, SCALE ), scale : TO },
         RoundError::DivZero | RoundError::Overflow => KindError::Overflow { operation : "rescale" },
       } )?
     };
@@ -554,22 +650,18 @@ fn render( minor : Backing, scale : u32, f : &mut fmt::Formatter< '_ > ) -> fmt:
 /// let taken = Quantity::from_int( 5 ).unwrap();
 /// assert!( held.checked_sub( taken ).is_err() );
 /// ```
-#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct Qty< const SCALE : u32 >
-{
-  value : Decimal< SCALE >,
-}
+pub type Qty< const SCALE : u32 > = Amount< QtyKind, SCALE >;
 
 impl< const SCALE : u32 > Qty< SCALE >
 {
   /// Nothing held — the one infallible constructor.
-  pub const ZERO : Self = Self { value : Decimal::ZERO };
+  pub const ZERO : Self = Self::from_value( Decimal::ZERO );
 
   /// The smallest non-zero quantity this type can express.
-  pub const EPSILON : Self = Self { value : Decimal::EPSILON };
+  pub const EPSILON : Self = Self::from_value( Decimal::EPSILON );
 
   /// The largest quantity this type can hold — exactly the declared ceiling.
-  pub const MAX : Self = Self { value : Decimal::MAX };
+  pub const MAX : Self = Self::from_value( Decimal::MAX );
 
   /// Wrap a decimal, refusing a negative one.
   ///
@@ -582,7 +674,7 @@ impl< const SCALE : u32 > Qty< SCALE >
     {
       return Err( KindError::Negative { minor : value.minor() } );
     }
-    Ok( Self { value } )
+    Ok( Self::from_value( value ) )
   }
 
   /// Build from a count of minor units.
@@ -622,14 +714,14 @@ impl< const SCALE : u32 > Qty< SCALE >
   #[ must_use ]
   pub const fn as_decimal( self ) -> Decimal< SCALE >
   {
-    self.value
+    self.value()
   }
 
   /// The count of minor units held.
   #[ must_use ]
   pub const fn minor( self ) -> Backing
   {
-    self.value.minor()
+    self.value().minor()
   }
 
   /// The same quantity at scale `TO`, as [`Decimal::rescale`] — still
@@ -640,7 +732,7 @@ impl< const SCALE : u32 > Qty< SCALE >
   /// As [`Decimal::rescale`].
   pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< Qty< TO >, KindError >
   {
-    Qty::from_decimal( self.value.rescale::< TO >( rounding )? )
+    Qty::from_decimal( self.value().rescale::< TO >( rounding )? )
   }
 
 
@@ -648,7 +740,7 @@ impl< const SCALE : u32 > Qty< SCALE >
   #[ must_use ]
   pub const fn whole( self ) -> Backing
   {
-    self.value.whole()
+    self.value().whole()
   }
 
   /// Add two quantities.
@@ -660,7 +752,7 @@ impl< const SCALE : u32 > Qty< SCALE >
   /// zero.
   pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
   {
-    match self.value.checked_add( rhs.value )
+    match self.value().checked_add( rhs.value() )
     {
       Ok( value ) => Self::from_decimal( value ),
       Err( e ) => Err( e ),
@@ -674,7 +766,7 @@ impl< const SCALE : u32 > Qty< SCALE >
   /// [`KindError::Negative`] when `rhs` exceeds `self`.
   pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
   {
-    match self.value.checked_sub( rhs.value )
+    match self.value().checked_sub( rhs.value() )
     {
       Ok( value ) => Self::from_decimal( value ),
       Err( e ) => Err( e ),
@@ -689,7 +781,7 @@ impl< const SCALE : u32 > Qty< SCALE >
   /// errors on overflow or ceiling breach.
   pub const fn checked_mul_int( self, n : Backing ) -> Result< Self, KindError >
   {
-    match self.value.checked_mul_int( n )
+    match self.value().checked_mul_int( n )
     {
       Ok( value ) => Self::from_decimal( value ),
       Err( e ) => Err( e ),
@@ -754,7 +846,7 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
-    fmt::Display::fmt( &self.value, f )
+    fmt::Display::fmt( &self.value(), f )
   }
 }
 
@@ -797,19 +889,15 @@ impl< const SCALE : u32 > fmt::Display for Qty< SCALE >
 /// let fine : PriceAt< 6 > = PriceAt::parse( "1.25" ).unwrap();
 /// let _ = cents.checked_add( fine );
 /// ```
-#[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
-pub struct PriceAt< const SCALE : u32 >
-{
-  value : Decimal< SCALE >,
-}
+pub type PriceAt< const SCALE : u32 > = Amount< PriceKind, SCALE >;
 
 impl< const SCALE : u32 > PriceAt< SCALE >
 {
   /// No price at all.
-  pub const ZERO : Self = Self { value : Decimal::< SCALE >::ZERO };
+  pub const ZERO : Self = Self::from_value( Decimal::< SCALE >::ZERO );
 
   /// The largest price this type can hold — exactly the declared ceiling.
-  pub const MAX : Self = Self { value : Decimal::< SCALE >::MAX };
+  pub const MAX : Self = Self::from_value( Decimal::< SCALE >::MAX );
 
   /// Build from a count of minor units.
   ///
@@ -820,7 +908,7 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   {
     match Decimal::< SCALE >::from_minor( minor )
     {
-      Ok( value ) => Ok( Self { value } ),
+      Ok( value ) => Ok( Self::from_value( value ) ),
       Err( e ) => Err( e ),
     }
   }
@@ -829,7 +917,7 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   #[ must_use ]
   pub const fn minor( self ) -> Backing
   {
-    self.value.minor()
+    self.value().minor()
   }
 
   /// Add two prices.
@@ -839,9 +927,9 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   /// As [`Decimal::checked_add`].
   pub const fn checked_add( self, rhs : Self ) -> Result< Self, KindError >
   {
-    match self.value.checked_add( rhs.value )
+    match self.value().checked_add( rhs.value() )
     {
-      Ok( value ) => Ok( Self { value } ),
+      Ok( value ) => Ok( Self::from_value( value ) ),
       Err( e ) => Err( e ),
     }
   }
@@ -853,9 +941,9 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   /// As [`Decimal::checked_sub`].
   pub const fn checked_sub( self, rhs : Self ) -> Result< Self, KindError >
   {
-    match self.value.checked_sub( rhs.value )
+    match self.value().checked_sub( rhs.value() )
     {
-      Ok( value ) => Ok( Self { value } ),
+      Ok( value ) => Ok( Self::from_value( value ) ),
       Err( e ) => Err( e ),
     }
   }
@@ -867,7 +955,7 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   /// As [`Decimal::parse`].
   pub fn parse( text : &str ) -> Result< Self, KindError >
   {
-    Ok( Self { value : Decimal::< SCALE >::parse( text )? } )
+    Ok( Self::from_value( Decimal::< SCALE >::parse( text )? ) )
   }
 
   /// The same price at scale `TO`, as [`Decimal::rescale`].
@@ -877,7 +965,7 @@ impl< const SCALE : u32 > PriceAt< SCALE >
   /// As [`Decimal::rescale`].
   pub fn rescale< const TO : u32 >( self, rounding : Rounding ) -> Result< PriceAt< TO >, KindError >
   {
-    Ok( PriceAt { value : self.value.rescale::< TO >( rounding )? } )
+    Ok( PriceAt::from_value( self.value().rescale::< TO >( rounding )? ) )
   }
 }
 
@@ -887,6 +975,125 @@ impl< const SCALE : u32 > fmt::Display for PriceAt< SCALE >
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
   {
     // Forward the formatter itself, not `"{}"`, so a precision reaches the decimal.
-    fmt::Display::fmt( &self.value, f )
+    fmt::Display::fmt( &self.value(), f )
   }
+}
+
+// Each kind's own `checked_add` and `checked_sub`, handed to the one generic
+// `+` and `-` below. The inherent methods stay where they are; these only
+// point at them.
+impl sealed::Sealed for MoneyKind
+{
+  const NAME : &'static str = "Decimal";
+  fn checked_add< const SCALE : u32 >( a : Decimal< SCALE >, b : Decimal< SCALE > ) -> Result< Decimal< SCALE >, KindError > { a.checked_add( b ) }
+  fn checked_sub< const SCALE : u32 >( a : Decimal< SCALE >, b : Decimal< SCALE > ) -> Result< Decimal< SCALE >, KindError > { a.checked_sub( b ) }
+}
+
+impl sealed::Sealed for QtyKind
+{
+  const NAME : &'static str = "Qty";
+  fn checked_add< const SCALE : u32 >( a : Qty< SCALE >, b : Qty< SCALE > ) -> Result< Qty< SCALE >, KindError > { a.checked_add( b ) }
+  fn checked_sub< const SCALE : u32 >( a : Qty< SCALE >, b : Qty< SCALE > ) -> Result< Qty< SCALE >, KindError > { a.checked_sub( b ) }
+}
+
+impl sealed::Sealed for PriceKind
+{
+  const NAME : &'static str = "PriceAt";
+  fn checked_add< const SCALE : u32 >( a : PriceAt< SCALE >, b : PriceAt< SCALE > ) -> Result< PriceAt< SCALE >, KindError > { a.checked_add( b ) }
+  fn checked_sub< const SCALE : u32 >( a : PriceAt< SCALE >, b : PriceAt< SCALE > ) -> Result< PriceAt< SCALE >, KindError > { a.checked_sub( b ) }
+}
+
+/// `+` and `-` for every kind at one scale — `Decimal`, `Qty` and `PriceAt` —
+/// each that kind's own `checked_add`/`checked_sub` spelled as an operator. The
+/// `Output` is a `Result`: nothing panics and nothing wraps, so a sum past the
+/// ceiling, or a quantity below zero, is an error the caller must handle. The
+/// impls with a `Result` on the left let a chain carry on: `( a + b + c )?`
+/// takes one `?` and stops at the first error.
+///
+/// ```
+/// use exact_kind::{ Decimal, KindError, Qty };
+/// let a : Decimal< 2 > = Decimal::parse( "1.00" ).unwrap();
+/// let b : Decimal< 2 > = Decimal::parse( "2.00" ).unwrap();
+/// let c : Decimal< 2 > = Decimal::parse( "0.50" ).unwrap();
+/// assert_eq!( ( a + b + c ).unwrap(), Decimal::parse( "3.50" ).unwrap() );
+/// let one = Qty::< 8 >::parse( "1" ).unwrap();
+/// let two = Qty::< 8 >::parse( "2" ).unwrap();
+/// assert!( matches!( one - two, Err( KindError::Negative { .. } ) ) );
+/// ```
+///
+/// Two scales, or two kinds, do not add:
+///
+/// ```compile_fail
+/// use exact_kind::Decimal;
+/// let cents : Decimal< 2 > = Decimal::parse( "1.50" ).unwrap();
+/// let sats : Decimal< 8 > = Decimal::parse( "0.00000001" ).unwrap();
+/// let _ = cents + sats;
+/// ```
+///
+/// ```compile_fail
+/// use exact_kind::{ Price, Quantity };
+/// let _ = Price::parse( "65000" ).unwrap() + Quantity::parse( "0.5" ).unwrap();
+/// ```
+impl< K : Kind, const SCALE : u32 > core::ops::Add for Amount< K, SCALE >
+{
+  type Output = Result< Self, KindError >;
+
+  fn add( self, rhs : Self ) -> Self::Output
+  {
+    K::checked_add( self, rhs )
+  }
+}
+
+/// `( a + b ) + c`: an error on the left is passed on; otherwise `c` is added.
+impl< K : Kind, const SCALE : u32 > core::ops::Add< Amount< K, SCALE > > for Result< Amount< K, SCALE >, KindError >
+{
+  type Output = Result< Amount< K, SCALE >, KindError >;
+
+  fn add( self, rhs : Amount< K, SCALE > ) -> Self::Output
+  {
+    K::checked_add( self?, rhs )
+  }
+}
+
+/// `a - b`: the checked subtraction, spelled as an operator.
+impl< K : Kind, const SCALE : u32 > core::ops::Sub for Amount< K, SCALE >
+{
+  type Output = Result< Self, KindError >;
+
+  fn sub( self, rhs : Self ) -> Self::Output
+  {
+    K::checked_sub( self, rhs )
+  }
+}
+
+/// `( a + b ) - c`: an error on the left is passed on; otherwise `c` is subtracted.
+impl< K : Kind, const SCALE : u32 > core::ops::Sub< Amount< K, SCALE > > for Result< Amount< K, SCALE >, KindError >
+{
+  type Output = Result< Amount< K, SCALE >, KindError >;
+
+  fn sub( self, rhs : Amount< K, SCALE > ) -> Self::Output
+  {
+    K::checked_sub( self?, rhs )
+  }
+}
+
+/// The fractional digits `minor` has at `scale`, trailing zeros not counted:
+/// `1.005` held at scale 6 (`1_005_000`) has 3. What `rescale` reports when
+/// `Exact` refuses a dropped digit.
+//
+// Fix(exact_kind_rescale_reported_the_scale_as_its_digits): `rescale` set
+// `digits` to `SCALE`, so `1.005` held at scale 6 was refused as "6
+// fractional digits" while `parse` refuses the same text as 3.
+//
+// Root cause: the scale a value is stored at taken for the digits it has.
+// Pitfall: the two agree for a value with every place used, which is all the
+//   first tests checked.
+//
+// Pure scale math, yet private here: `rescale` is its one caller. It moves to
+// `exact_scale` when a second crate needs it (wanguardd, rounds 2-3 of #10).
+fn fraction_digits( minor : Backing, scale : u32 ) -> u32
+{
+  let frac = minor.unsigned_abs() % pow10( scale ).unsigned_abs();
+  let trailing_zeros = ( 1..=scale ).take_while( | &k | frac.is_multiple_of( pow10( k ).unsigned_abs() ) ).last().unwrap_or( 0 );
+  scale - trailing_zeros
 }

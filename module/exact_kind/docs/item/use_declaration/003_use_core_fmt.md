@@ -3,7 +3,7 @@
 ## Representation
 
 Brings the `core::fmt` module into scope under its own name, so the crate's
-two `Display` implementations can write `fmt::Display`/`fmt::Formatter`/
+`Display` and `Debug` implementations can write `fmt::Display`/`fmt::Formatter`/
 `fmt::Result` instead of the fully qualified path. Private — not re-exported
 — so it has no existence outside this file.
 
@@ -23,7 +23,7 @@ use core::fmt;
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 122,124,135,137,421,430,450,458,506-508,513,517,543,752,754,757,885,887,890 | Every `fmt::` reference in the 4 `Display` impls (`KindError`, `Decimal`, `Qty`, `PriceAt`) and in `render` — `Formatter`, `Result`, `Error`, `Alignment`, and `Write::write_char` for the fill and the sign |
+| `src/lib.rs` | 123,125,179,231,233,517,526,546,554,602-604,609,613,639,844,846,849,973,975,978 | Every `fmt::` reference in the 4 `Display` impls (`KindError`, `Decimal`, `Qty`, `PriceAt`), in `Debug` for `Amount` and `Kind`'s `fmt::Debug` bound, and in `render` — `Formatter`, `Result`, `Error`, `Alignment`, and `Write::write_char` for the fill and the sign |
 
 No other file references this declaration — it is private and grants no
 external visibility.

@@ -7,7 +7,7 @@
 - **In Scope**: `Deps`, `Boundary`, hard problems and features this crate would own.
 - **Out of Scope**: Its function/error surface (→ `../type/006_exact_add_types.md`).
 
-**Design status**: implemented in [`exact_add`](../../module/exact_add/readme.md). Dependencies match exactly (`exact_kind`, `exact_sign`). Checked and saturating add/sub are built as specified; the panicking variant named among this crate's owned features was deferred as YAGNI — no consumer calls for it yet — see [`exact_add`'s decision](../../module/exact_add/docs/decisions/002_no_panicking_variant_yet.md).
+**Design status**: implemented in [`exact_add`](../../module/exact_add/readme.md). Dependencies match exactly (`exact_kind`, `exact_sign`). Checked and saturating add/sub are built as specified; the panicking variant named among this crate's owned features was deferred as YAGNI — no consumer calls for it yet — see [`exact_add`'s decision](../../module/exact_add/docs/decisions/002_no_panicking_variant_yet.md). Diverges from "named explicitly rather than left to operator overloading" below: `a + b` and `a - b` are now operators on `exact_kind`'s `Decimal`, `Qty` and `PriceAt`, but they return a `Result` through `checked_add`/`checked_sub`, so nothing panics or wraps, and the named functions here stay — see [`exact_kind`'s ADR-005](../../module/exact_kind/docs/decisions/005_checked_operators_return_a_result.md).
 
 ### Why It Exists
 

@@ -14,7 +14,7 @@ Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:54`
+`module/exact_kind/src/lib.rs:55`
 
 ```rust
 use exact_round::{ RoundError, Rounding, round_div };
@@ -24,10 +24,10 @@ use exact_round::{ RoundError, Rounding, round_div };
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 54 | Declaration |
-| `src/lib.rs` | 261,641,878 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
-| `src/lib.rs` | 270-273 | `round_div` divides on the coarser branch; `RoundError`'s three variants map to `KindError` |
-| `src/lib.rs` | 458 | `round_div` under `Rounding::HalfEven` in `render`, when `{:.N}` asks for fewer places than `SCALE` |
+| `src/lib.rs` | 55 | Declaration |
+| `src/lib.rs` | 357,733,966 | `Rounding` — the `rounding` parameter of `Decimal`/`Qty`/`PriceAt::rescale` |
+| `src/lib.rs` | 366-369 | `round_div` divides on the coarser branch; `RoundError`'s three variants map to `KindError` |
+| `src/lib.rs` | 554 | `round_div` under `Rounding::HalfEven` in `render`, when `{:.N}` asks for fewer places than `SCALE` |
 
 No external file references this `use` declaration directly — other crates
 depending on `exact_round` import it independently.

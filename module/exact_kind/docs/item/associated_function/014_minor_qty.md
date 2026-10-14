@@ -2,7 +2,7 @@
 
 ## Representation
 
-The count of minor units held, delegating to the wrapped decimal.
+The count of minor units held, delegating to the same count as a `Decimal`, through the private `value()`.
 
 ## Kind
 
@@ -10,12 +10,12 @@ Associated Function/Method (§ Item Kind Taxonomy : Associated Item Kinds #1)
 
 ## Definition
 
-`module/exact_kind/src/lib.rs:630`
+`module/exact_kind/src/lib.rs:722`
 
 ```rust
 pub const fn minor( self ) -> Backing
 {
-  self.value.minor()
+  self.value().minor()
 }
 ```
 
@@ -23,7 +23,7 @@ pub const fn minor( self ) -> Backing
 
 | File | Line(s) | Context |
 |------|---------|---------|
-| `src/lib.rs` | 630 | Declaration |
+| `src/lib.rs` | 722 | Declaration |
 | `tests/non_negative_test.rs` | throughout | Minor-count assertions |
 | `exact_bytes/src/lib.rs:221` | — | `qty_to_wire` |
 | `exact_dust/src/lib.rs:248,258,268` | — | `qty_dust_split`/`_into`/`_remainder` |
@@ -48,4 +48,4 @@ No intra-crate caller.
 
 ## Callee Tree
 
-- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:632`)
+- [Decimal::minor](003_minor_decimal.md) (`src/lib.rs:724`)
