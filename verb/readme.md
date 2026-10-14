@@ -75,6 +75,16 @@ handles the topological order and resolves not-yet-published siblings from a loc
 registry during verify (confirmed empirically on cargo 1.98.0) — no hand-maintained
 per-crate wave list needed.
 
+A bare retry of that same command is not itself resumable, though — confirmed
+empirically, not assumed: a real run published 5 crates, 429'd on the 6th, and the
+immediate retry died re-attempting the 1st with `error: crate ... already exists on
+... index`. `cargo publish --workspace` has no built-in skip for a sibling already
+live on the registry. So before every attempt, `publish` checks crates.io directly
+(one request per publishable workspace member, from `cargo metadata`) for which ones
+are already live at their current version, and passes `--exclude` for each — the
+command it actually runs shrinks attempt over attempt as crates land, rather than
+staying the fixed command the family's own first run showed is unsafe to replay.
+
 Both verbs' exit codes, to make their Verb Protocol complete per
 `$GENAI/verb/verb.rulebook.md`'s VE003: `0` on success (every crate published, or a
 clean dry run), `1` on failure (`publish_check`: any crate's dry-run errored;
