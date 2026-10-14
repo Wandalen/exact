@@ -68,7 +68,7 @@ pub fn exact_tenths() -> Money
   let mut total = Money::ZERO;
   for _ in 0..REPEATS
   {
-    total = total.checked_add( tenth ).expect( "one whole unit is far below the ceiling" );
+    total = ( total + tenth ).expect( "one whole unit is far below the ceiling" );
   }
   total
 }
@@ -183,7 +183,7 @@ pub fn golden() -> Golden
   let a = Decimal::< 2 >::parse( "10.00" ).expect( "10.00 fits scale 2" );
   let b = Decimal::< 2 >::parse( "3.33" ).expect( "3.33 fits scale 2" );
   let total = Decimal::< 2 >::parse( "13.33" ).expect( "13.33 fits scale 2" );
-  let sum = a.checked_add( b ).and_then( | s | s.checked_sub( total ) ).expect( "small values fit" );
+  let sum = ( a + b - total ).expect( "small values fit" );
   assert_eq!( sum, Decimal::< 2 >::ZERO, "10.00 + 3.33 - 13.33 must be exactly zero" );
 
   // Scene 003: split, hold the dust back, and lose nothing.
@@ -301,7 +301,7 @@ fn step_3_quantity_refuses_below_zero()
 {
   let held = Quantity::from_int( 3 ).expect( "3 units is representable" );
   let taken = Quantity::from_int( 5 ).expect( "5 units is representable" );
-  let short = held.checked_sub( taken );
+  let short = held - taken;
   assert!( short.is_err(), "withdrawing more than is held must be refused" );
   println!();
   println!( "  quantity       hold {held}, withdraw {taken} -> {}", short.unwrap_err() );
@@ -330,7 +330,7 @@ fn step_5_market_split()
 {
   let fill = Money::parse( "100.000001" ).expect( "parses" );
   let shares = market_split( fill, 3 );
-  let recombined = shares.iter().copied().try_fold( Money::ZERO, | a, b | a.checked_add( b ) )
+  let recombined = shares.iter().copied().try_fold( Money::ZERO, | a, b | a + b )
   .expect( "three small shares recombine within range" );
   assert_eq!( recombined, fill, "a market split must conserve the original fill exactly, dust included" );
   println!();
@@ -411,7 +411,7 @@ pub fn per_asset_trade() -> PerAsset
 
   // Split among three in satoshis; the leftover satoshi goes to the first share.
   let shares = qty_dust_split( btc, 3, Rounding::Down, DustTo::First ).expect( "a small quantity splits" );
-  let recombined = shares.iter().copied().try_fold( Qty::< 8 >::ZERO, | a, b | a.checked_add( b ) )
+  let recombined = shares.iter().copied().try_fold( Qty::< 8 >::ZERO, | a, b | a + b )
   .expect( "three small shares recombine within range" );
   assert_eq!( recombined, btc, "a satoshi split must conserve the quantity exactly" );
 
