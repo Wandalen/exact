@@ -73,4 +73,4 @@ Outside `exact_kind`, only the demo lane calls it — no production caller yet.
 
 - **Intra-crate:** [Decimal::minor](003_minor_decimal.md), [Decimal::from_minor](001_from_minor_decimal.md) at scale `TO`
 - **External:** `exact_scale::pow10`; `exact_round::round_div` on the coarser branch (→ [use exact_round](../use_declaration/004_use_exact_round.md))
-- `fraction_digits` (`src/lib.rs:1091`, private — no Item Instance of its own), when `Exact` refuses: the value's own fractional digits, trailing zeros not counted
+- `fraction_digits` (`src/lib.rs:1094`, private — no Item Instance of its own), when `Exact` refuses: the value's own fractional digits, trailing zeros not counted

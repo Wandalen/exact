@@ -155,9 +155,9 @@ mod sealed
   }
 }
 
-/// One kind of amount: money, a quantity, or a price. The kind is a type
-/// parameter of [`Amount`], so two kinds are two types and never mix. Sealed:
-/// [`MoneyKind`], [`QtyKind`] and [`PriceKind`] are the only kinds.
+/// One kind of amount — [`MoneyKind`], [`QtyKind`] or [`PriceKind`], the only
+/// three, as `Kind` is sealed. Two kinds are two [`Amount`] types and never mix.
+/// `Copy + Ord + Hash + Debug`, so generic code over `K : Kind` gets `Amount`'s.
 ///
 /// No crate but this one can add a kind — a fourth one could bring its own
 /// `checked_add`, past the ceiling and the non-negativity checks:
@@ -176,7 +176,7 @@ mod sealed
 /// use exact_kind::{ Money, MoneyKind };
 /// let _ = MoneyKind::checked_add( Money::ZERO, Money::ZERO );
 /// ```
-pub trait Kind : sealed::Sealed {}
+pub trait Kind : sealed::Sealed + Copy + Ord + core::hash::Hash + fmt::Debug {}
 
 /// The kind of [`Decimal`]: money, which may be negative.
 #[ derive( Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash ) ]
@@ -225,9 +225,9 @@ impl< K, const SCALE : u32 > Amount< K, SCALE >
   }
 }
 
-/// `Debug` names the kind — `Decimal { minor: Minor(12340000) }` — as when each
-/// kind was a struct of its own, instead of a derived
-/// `Amount { minor: …, kind: PhantomData<…> }` that hides it in a type name.
+/// `Debug` names the kind — `Qty { minor: Minor(50000000) }` — not a derived
+/// `Amount { minor: …, kind: PhantomData<…> }` that hides it in a type name. As
+/// structs, `Qty` and `PriceAt` printed `Qty { value: Decimal { minor: … } }`.
 impl< K : Kind, const SCALE : u32 > fmt::Debug for Amount< K, SCALE >
 {
   fn fmt( &self, f : &mut fmt::Formatter< '_ > ) -> fmt::Result
@@ -1088,6 +1088,9 @@ impl< K : Kind, const SCALE : u32 > core::ops::Sub< Amount< K, SCALE > > for Res
 // Root cause: the scale a value is stored at taken for the digits it has.
 // Pitfall: the two agree for a value with every place used, which is all the
 //   first tests checked.
+//
+// Pure scale math, yet private here: `rescale` is its one caller. It moves to
+// `exact_scale` when a second crate needs it (wanguardd, rounds 2-3 of #10).
 fn fraction_digits( minor : Backing, scale : u32 ) -> u32
 {
   let frac = minor.unsigned_abs() % pow10( scale ).unsigned_abs();
