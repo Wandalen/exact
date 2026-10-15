@@ -1,0 +1,32 @@
+# 001: use exact_kind::{ Decimal, PriceAt, Qty }
+
+## Representation
+
+Imports the three conserved value types, in their generic form, every
+comparison/equality/min-max function in this crate operates on, at any scale
+(→ [`exact_arith`'s ADR-001](../../../../exact_arith/docs/decisions/001_operations_generic_over_scale.md)).
+
+## Kind
+
+Use Declaration (§ Item Kind Taxonomy : Stable Item Kinds #3)
+
+## Definition
+
+`module/exact_cmp/src/lib.rs:32`
+
+```rust
+use exact_kind::{ Decimal, PriceAt, Qty };
+```
+
+## File Usage
+
+| File | Line(s) | Context |
+|------|---------|---------|
+| `src/lib.rs` | 32 | Declaration |
+| `tests/cmp_test.rs` | 6 | Identical import, for the same three types |
+
+## Crate Usage
+
+| Crate | Via File | Purpose |
+|-------|----------|---------|
+| `exact_cmp` | `(defining crate)` | Every function signature in the crate names at least one of these three types |

@@ -1,0 +1,14 @@
+[package]
+name = "exact_conserve"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Conservation auditing — verify a batch of postings nets to zero — for exact's fixed-point value types"
+
+[dependencies]
+exact_add = { path = "../exact_add", version = "0.1.0" }
+exact_kind = { path = "../exact_kind", version = "0.1.0" }
+
+[lints]
+workspace = true
