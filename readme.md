@@ -1,5 +1,7 @@
 # exact
 
+[![RepoRanker](https://reporanker.com/badge/Wandalen/exact)](https://reporanker.com/repos/Wandalen/exact)
+
 Workstream 006's exact arithmetic: decimals, quantities, and the conservation audit,
 decomposed into the 15-crate target design, with `exact_arith` as a deliberately thin
 facade — a single block of `pub use` over the 14 leaf crates — plus one smoke lane.
