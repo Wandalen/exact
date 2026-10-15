@@ -1,0 +1,48 @@
+# 005: price_to_wire
+
+## Representation
+
+Encode a price to its wire form.
+
+## Kind
+
+Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
+
+## Definition
+
+`module/exact_bytes/src/lib.rs:240-243`
+
+```rust
+pub fn price_to_wire< const S : u32 >( v : PriceAt< S > ) -> Wire
+{
+  Wire { minor : v.minor(), scale : scale_byte::< S >(), kind : KIND_PRICE }
+}
+```
+
+## File Usage
+
+| File | Line(s) | Context |
+|------|---------|---------|
+| `src/lib.rs` | 240-243 | Declaration |
+| `tests/wire_roundtrip_test.rs:35` | — | Encoding in the price round-trip test |
+| `tests/wire_roundtrip_test.rs:159,165` | — | A price at scale 2 and at scale 8, encoded with its own scale byte |
+| `exact_arith/src/lib.rs:131` | — | Facade re-export |
+
+`exact_arith`'s own facade test does not call this function — only the Money
+roundtrip is exercised at the facade level.
+
+## Crate Usage
+
+| Crate | Via File | Purpose |
+|-------|----------|---------|
+| `exact_bytes` | `(defining crate)` | Exercised by its own price round-trip test |
+| `exact_arith` | `src/lib.rs` | Re-export only — not referenced by the facade's own test |
+
+## Caller Tree
+
+No caller anywhere, intra-crate or external — an honest empty tree.
+
+## Callee Tree
+
+- `scale_byte::< S >()` (`src/lib.rs:50`, private — no Item Instance of its own): the record's scale byte, `S` itself; its inline `const` assertion refuses at compile time a scale the `u8` cast would cut
+- **External:** `exact_kind::PriceAt::minor` (`v.minor()`, `src/lib.rs:242`)

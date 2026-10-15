@@ -1,0 +1,97 @@
+# Item Entity
+
+Catalog of every Rust Item and Associated Item declared in `exact_minor`'s
+own source tree — 17 instances across 7 Item Kinds, all in `src/lib.rs` (this
+crate's only source file). One file per declaration, classified by the
+closed Item Kind taxonomy (`item_des.rulebook.md` OT001/OT002). Each instance
+records where the Item is declared and, grep-verified against the 3 crates
+that depend on `exact_minor` (`exact_sign`, `exact_kind`, `exact_arith` — per
+their own `Cargo.toml`), every file and crate that uses it. Callable Kinds
+(Function, Associated Function/Method) additionally carry their Caller/
+Callee Tree closures.
+
+`exact_minor` is Tier 0 of the family — the root, depending on nothing. It
+owns the backing integer width (`Backing = i64`) and offers checked and
+saturating arithmetic over it, with no scale or kind attached.
+
+### Type Declaration
+
+- **Decision Criteria**: Use `docs/item/` to catalog every Rust Item (fn, struct, enum, trait, impl, etc.) declared in this crate's own source tree — one Item Instance per declared Item, classified by its exact Item Kind. No existing standard type covers per-declaration cataloging with exhaustive call-graph and cross-crate usage evidence.
+- **Contrast with `docs/type/`**: `docs/type/` documents a Domain Type's design rationale and invariants; `docs/item/` documents where a raw Rust Item is declared and every place it is used, regardless of whether it embodies a Domain Type.
+- **Required Sections**: Representation, Kind, Definition, File Usage, Crate Usage
+  (Function and Associated Function/Method kinds additionally require Caller Tree, Callee Tree)
+- **Overview Table Columns**: `ID`, `Name`, `Kind`, `Status`
+- **Quality Checklist**:
+  - [ ] Does every instance declare exactly one Kind from the closed 15+3 taxonomy?
+  - [ ] Are File Usage and Crate Usage exhaustively grep-verified against the actual workspace, not assumed (OT012)?
+  - [ ] Do Function/Associated Function/Method instances carry both Caller Tree and Callee Tree (OT006)?
+  - [ ] Is every top-level `pub fn` classified as Function, never conflated with Associated Function/Method (no inherent `impl` block exists in this crate)?
+
+### Kind Distribution
+
+| Kind | Directory | Instances |
+|------|-----------|-----------|
+| Use Declaration | `use_declaration/` | 1 |
+| Type Alias | `type_alias/` | 1 |
+| Struct | `struct/` | 2 |
+| Enum | `enum/` | 1 |
+| Implementation | `implementation/` | 2 |
+| Function | `function/` | 9 |
+| Associated Function/Method | `associated_function/` | 1 |
+| **Total** | | **17** |
+
+The `i128`-only items — the two conversions between `Minor` and `MinorWide`,
+and the nine `minor_wide_*` functions that mirror `Minor`'s, including the
+`minor_wide_from_i128`/`minor_wide_to_i128` pair — are listed in
+the [module index](../definition/readme.md) rather than given a page each,
+since each one repeats a `Minor` item at `i128` width.
+
+### Overview Table
+
+| ID | Name | Kind | Status |
+|----|------|------|--------|
+| use_declaration/001 | use core::fmt | Use Declaration | 🔄 |
+| type_alias/001 | Backing | Type Alias | 🔄 |
+| struct/001 | Minor | Struct | 🔄 |
+| struct/002 | MinorWide | Struct | 🔄 |
+| enum/001 | MinorError | Enum | 🔄 |
+| implementation/001 | Display for MinorError | Implementation | 🔄 |
+| implementation/002 | Error for MinorError | Implementation | 🔄 |
+| function/001 | minor_zero | Function | 🔄 |
+| function/002 | minor_is_zero | Function | 🔄 |
+| function/003 | minor_checked_add | Function | 🔄 |
+| function/004 | minor_checked_sub | Function | 🔄 |
+| function/005 | minor_checked_neg | Function | 🔄 |
+| function/006 | minor_saturating_add | Function | 🔄 |
+| function/007 | minor_saturating_sub | Function | 🔄 |
+| function/008 | minor_from_i64 | Function | 🔄 |
+| function/009 | minor_to_i64 | Function | 🔄 |
+| associated_function/001 | Display::fmt for MinorError | Associated Function/Method | 🔄 |
+
+### Notable Findings
+
+- **`exact_kind` is the one production caller.** `Decimal` stores a `Minor`
+  and calls `minor_checked_add`, `minor_checked_sub`, `minor_checked_neg`,
+  `minor_zero`, `minor_from_i64` and `minor_to_i64`, matching `MinorError`
+  in its private `kind_overflow`. `exact_sign` imports only `Backing`.
+  `minor_is_zero`, the two saturating functions, `MinorError`'s `Display` and
+  the `i128`-gated `MinorWide` have no production caller;
+  `exact_arith`'s facade re-exports but calls nothing (pure `pub use`).
+- **Every item is now exercised by this crate's own suite.** Until
+  2026-10-02, `minor_zero`, `minor_is_zero`, and `MinorError`'s `Display`/
+  `Error` impls had no caller anywhere, this crate's own tests included;
+  `tests/zero_test.rs` and `tests/checked_arithmetic_test.rs`'s
+  `overflow_error_names_the_failed_operation` now cover them.
+- **The saturating functions' absence of external callers has an
+  architectural reason, not an oversight**: `exact_add`'s saturating
+  arithmetic clamps to the *declared ceiling* (`Money::MAX`/`MIN`), a
+  different clamp target than these functions' raw `Backing::MAX`/`MIN` — so
+  `exact_add` correctly does not call them.
+
+### Regenerate
+
+```bash
+# Confirm instance-file count matches this readme's Overview Table row count
+find module/exact_minor/docs/item -name '*.md' -not -name readme.md | wc -l
+# → 17
+```

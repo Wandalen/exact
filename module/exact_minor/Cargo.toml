@@ -1,0 +1,21 @@
+[package]
+name = "exact_minor"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "The raw minor-unit integer and its checked/saturating arithmetic — the base type of the exact fixed-point money and quantity family"
+
+[dependencies]
+
+[features]
+# `MinorWide( i128 )` — for magnitudes past `i64`. Off by default.
+i128 = []
+
+# The `MinorWide` tests need the type they test, so Cargo skips them without the feature.
+[[test]]
+name = "wide_test"
+required-features = [ "i128" ]
+
+[lints]
+workspace = true

@@ -1,0 +1,77 @@
+# 001: price_snap_tick
+
+## Representation
+
+Snap a price to the nearest multiple of `tick`, per `rounding`. Divides to
+find the nearest grid index (sign-handled, tie-broken by `rounding`), then
+multiplies back out — the same round-then-rescale shape `exact_ratio`'s
+`*_div_round` functions use, built on the same shared `exact_round::round_div`.
+Under `Rounding::Exact` a price not already on the grid is refused as
+`SnapError::OffGrid` rather than snapped.
+
+## Kind
+
+Function (§ Item Kind Taxonomy : Stable Item Kinds #4)
+
+## Definition
+
+`module/exact_snap/src/lib.rs:150-166`
+
+```rust
+pub fn price_snap_tick< const S : u32 >( price : PriceAt< S >, tick : TickAt< S >, rounding : Rounding ) -> Result< PriceAt< S >, SnapError >
+{
+  // Fix(exact_snap_negative_tick_reversed_rounding): the price used to be
+  // divided by the signed tick, so for a tick of -5 the count was rounded on
+  // a reversed axis and multiplied back — `Down` snapped up and `Up` down.
+  // A tick of -5 marks the same grid as a tick of 5; `Tick::new` stores its
+  // magnitude, so the spacing is positive and `Down` means at or below.
+  //
+  // Root cause: rounding a quotient by a negative divisor flips its direction.
+  // Pitfall: `Down`/`Up` round the quotient toward -∞/+∞; multiplied back by
+  //   a negative spacing, that direction reverses for the value itself.
+  let spacing = tick.0.minor();
+  let q = exact_round::round_div( price.minor(), spacing, rounding )
+  .map_err( | e | round_error_to_snap_error( e, SnapError::ZeroTick ) )?;
+  let snapped = q.checked_mul( spacing ).ok_or( SnapError::Overflow )?;
+  PriceAt::< S >::from_minor( snapped ).map_err( | _ | SnapError::Overflow )
+}
+```
+
+The division and the multiplication use the tick's magnitude — `Tick::new`
+accepts a negative tick and stores its magnitude — so a negative tick snaps
+exactly like its positive counterpart instead of reversing `Down` and `Up`.
+
+## File Usage
+
+| File | Line(s) | Context |
+|------|---------|---------|
+| `src/lib.rs` | 150-166 | Declaration |
+| `tests/snap_test.rs` | 26,36,45,54,64-65,75-76,107,147,195,199 | On-grid identity, `Exact` keeping an on-grid price and refusing an off-grid one, between-grid rounding down/up, half-even on and off a tie, a negative price, a negative tick matching its positive counterpart, and overflow past the ceiling |
+| `exact_arith/src/lib.rs:136` | — | Facade re-export |
+| `exact_arith/tests/any_scale_test.rs:41,42` | — | Snaps a price in cents to a tick in cents |
+
+No production call site anywhere in the workspace outside `exact_snap`'s own
+tests — confirmed via grep across `substrate/` and `module/`.
+`exact_arith`'s own facade test suite never calls it either, the same
+facade-bypass pattern already found in `exact_add`/`exact_parse`'s catalogs.
+
+## Crate Usage
+
+| Crate | Via File | Purpose |
+|-------|----------|---------|
+| `exact_snap` | `tests/snap_test.rs` | Exercised across all 3 rounding modes and the on-grid identity case |
+| `exact_arith` | `src/lib.rs`, `tests/any_scale_test.rs` | Re-export; called at scale 2 by the any-scale facade test |
+
+## Caller Tree
+
+No caller anywhere, intra-crate or external — an honest empty tree. Every
+call site is test-only, out of scope for Caller/Callee Tree content per
+OT012.
+
+## Callee Tree
+
+- `round_error_to_snap_error` (`src/lib.rs:58`, private — no Item Instance of its own)
+- **External:** `exact_kind::Price::minor` (via `price.minor()` and `tick.0.minor()`), which delegates to `Decimal::minor`
+- **External:** `exact_round::round_div`
+- **External:** `i64::checked_mul` (core primitive method, via `q.checked_mul(...)`)
+- **External:** `exact_kind::Decimal::from_minor` (via `Price::from_minor`)
